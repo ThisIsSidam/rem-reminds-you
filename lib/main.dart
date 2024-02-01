@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
 import 'package:nagger/pages/home_page.dart';
-import 'package:nagger/pages/reminder_page.dart';
+import 'package:nagger/utils/reminder.dart';
 
 void main() async {
+
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(ReminderAdapter());
+  await Hive.openBox('reminders');
 
   runApp(const MyApp());
 }
@@ -10,13 +17,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const HomePage(),
-      routes: {
-        '/reminder_page': (context) => const ReminderPage()
-      },
+    return const MaterialApp(
+      home: HomePage(),
     );
   }
 }

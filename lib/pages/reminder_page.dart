@@ -1,23 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:nagger/data/reminders_data.dart';
 import 'package:nagger/utils/reminder.dart';
 import 'package:nagger/utils/time_buttons.dart';
 
 class ReminderPage extends StatefulWidget {
-  const ReminderPage({super.key});
+  final Reminder thisReminder;
+  final VoidCallback homeRefreshFunc;
+
+  const ReminderPage({
+    super.key, 
+    required this.thisReminder, 
+    required this.homeRefreshFunc
+  });
 
   @override
   State<ReminderPage> createState() => _ReminderPageState();
 }
 
 class _ReminderPageState extends State<ReminderPage> {
+  final RemindersData db = RemindersData();
+  final titleController = TextEditingController();
 
-  static Reminder newReminder = Reminder(
-    dateAndTime: DateTime.now().add(const Duration(minutes: 5))
-  );
+  @override
+  void initState() {
+    titleController.text = widget.thisReminder.title ?? "";
+    super.initState();
+  }
+
 
   void editTime(Duration dur) {
     setState(() {
-      newReminder.dateAndTime = newReminder.dateAndTime!.add(dur);
+      widget.thisReminder.dateAndTime = widget.thisReminder.dateAndTime.add(dur);
     });
   }
 
@@ -37,30 +50,57 @@ class _ReminderPageState extends State<ReminderPage> {
     }
 
     DateTime updatedTime = DateTime(
-      newReminder.dateAndTime!.year,
-      newReminder.dateAndTime!.month,
-      newReminder.dateAndTime!.day,
+      widget.thisReminder.dateAndTime.year,
+      widget.thisReminder.dateAndTime.month,
+      widget.thisReminder.dateAndTime.day,
       hour,
       minutes
     );
     
     setState(() {
-      newReminder.dateAndTime = updatedTime;
+      widget.thisReminder.dateAndTime = updatedTime;
     });
   }
   
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    newReminder.dateAndTime = DateTime.now().add(const Duration(minutes: 5));
+  void saveReminder() {
+    db.getReminders();
+
+    db.printAll("Before Adding");
+
+    if (widget.thisReminder.id != null)
+    {
+      print("ID: ${widget.thisReminder.id!}");
+      db.deleteReminder(widget.thisReminder.id!);
+    }
+
+    widget.thisReminder.title = titleController.text;
+    widget.thisReminder.id = widget.thisReminder.getId();
+    db.reminders[widget.thisReminder.id!] = widget.thisReminder;
+    db.updateReminders();
+
+    db.printAll("After Adding");
+
+    Navigator.pop(context);
+    widget.homeRefreshFunc();
   }
 
+  void deleteReminder() {
+    db.deleteReminder(widget.thisReminder.id!);
+    Navigator.pop(context);
+    widget.homeRefreshFunc();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text((newReminder.title == "") ? "New Reminder" : newReminder.title!),
+        title: Text(widget.thisReminder.title ?? "Wake Up To Reality!"),
         automaticallyImplyLeading: false,
       ),
       body: SizedBox(
@@ -71,7 +111,7 @@ class _ReminderPageState extends State<ReminderPage> {
             ), 
             SizedBox(
               child: TextFormField(
-                initialValue: (newReminder.title == "") ? "" : newReminder.title,
+                controller: titleController,
                 decoration: const InputDecoration(
                   hintText: "Enter title here",
                   border: OutlineInputBorder()
@@ -80,11 +120,12 @@ class _ReminderPageState extends State<ReminderPage> {
             ),
             SizedBox(
               height: 50,
-              child: Text(
-                newReminder.getDateTimeAsStr(),
-                style: const TextStyle(
-                  fontSize: 20,
-                  
+              child: Center(
+                child: Text(
+                  "${widget.thisReminder.getDateTimeAsStr()} ${widget.thisReminder.getDiff()}",
+                  style: const TextStyle(
+                    fontSize: 20, 
+                  ),
                 ),
               ),
             ),
@@ -114,6 +155,11 @@ class _ReminderPageState extends State<ReminderPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  if (widget.thisReminder.id != null)
+                    MaterialButton(
+                      onPressed: () => deleteReminder(),
+                      child: const Icon(Icons.delete)
+                    ),
                   MaterialButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -121,7 +167,7 @@ class _ReminderPageState extends State<ReminderPage> {
                     child: const Text("Close")
                   ),
                   MaterialButton(
-                    onPressed: () {},
+                    onPressed: () => saveReminder(),
                     child: const Text("Save")
                   )
                 ],

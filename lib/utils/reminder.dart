@@ -1,23 +1,38 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+part 'reminder.g.dart';
 
+@HiveType(typeId: 1)
 class Reminder {
+
+  @HiveField(0)
   String? title;
+
+  @HiveField(1)
   int? snoozeMinutes;
-  DateTime? dateAndTime;
-  bool set = false;
+
+  @HiveField(2)
+  DateTime dateAndTime;
+
+  @HiveField(3)
+  String? id;
 
   Reminder({
-    this.title = "",
+    this.title,
     this.snoozeMinutes = 5,
-    this.dateAndTime,
+    required this.dateAndTime,
   });
 
   String getDateTimeAsStr() {
     final DateFormat formatter = DateFormat('EEE, d MMM, hh:mm aaa');
-    final String formatted = formatter.format(dateAndTime!);
-    final diff = dateAndTime!.difference(DateTime.now()).inMinutes;
+    final String formatted = formatter.format(dateAndTime);
 
-    String diffStr = " in ";
+    return formatted;
+  }
+
+  String getDiff() {
+    final diff = dateAndTime.difference(DateTime.now()).inMinutes;
+    String diffStr = "in ";
 
     if (diff > 119)
     {
@@ -32,7 +47,11 @@ class Reminder {
       diffStr += "${diff+1} minutes";
     }
 
-    return formatted + diffStr;
+    return diffStr;
+  }
+
+  String getId() {
+    return title! + getDateTimeAsStr();
   }
 
 }
