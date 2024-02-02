@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
 import 'package:nagger/utils/reminder.dart';
 import 'package:nagger/utils/time_buttons.dart';
@@ -100,8 +101,13 @@ class _ReminderPageState extends State<ReminderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.thisReminder.title ?? "Wake Up To Reality!"),
+        title: Text(
+          widget.thisReminder.title ?? "Wake Up To Reality!",
+          style: TextStyle(
+            color: AppTheme.textOnPrimary
+        ),),
         automaticallyImplyLeading: false,
+        backgroundColor: AppTheme.primaryColor,
       ),
       body: SizedBox(
         child: Column(
@@ -112,9 +118,20 @@ class _ReminderPageState extends State<ReminderPage> {
             SizedBox(
               child: TextFormField(
                 controller: titleController,
-                decoration: const InputDecoration(
+                style: TextStyle(
+                  color: AppTheme.textOnPrimary
+                ),
+                decoration: InputDecoration(
                   hintText: "Enter title here",
-                  border: OutlineInputBorder()
+                  hintStyle: TextStyle(
+                    color: AppTheme.textOnPrimary
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    borderSide: BorderSide(color: AppTheme.textOnPrimary)
+                  ),
+                  fillColor: AppTheme.primaryColor,
+                  filled: true
                 ),
               ),
             ),
@@ -123,7 +140,8 @@ class _ReminderPageState extends State<ReminderPage> {
               child: Center(
                 child: Text(
                   "${widget.thisReminder.getDateTimeAsStr()} ${widget.thisReminder.getDiff()}",
-                  style: const TextStyle(
+                  style: TextStyle(
+                    color: AppTheme.textOnPrimary,
                     fontSize: 20, 
                   ),
                 ),

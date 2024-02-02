@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
 import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/utils/reminder.dart';
@@ -40,12 +41,20 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Nagger"),
-        backgroundColor: Colors.black26,
+        title: Text(
+          "Nagger",
+          style: TextStyle(
+            color: AppTheme.textOnPrimary
+          ),
+          ),
+        backgroundColor: AppTheme.primaryColor,
         actions: [
           IconButton(
             onPressed: () => refreshPage(), 
-            icon: const Icon(Icons.refresh)
+            icon: Icon(
+              Icons.refresh,
+              color: AppTheme.textOnPrimary,
+            )
           )
         ]
       ),
@@ -59,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: AppTheme.primaryColor,
         onPressed: () {
           Navigator.push(
             context,
@@ -72,7 +81,11 @@ class _HomePageState extends State<HomePage> {
               ))
             )
           );
-        }
+        },
+        child: Icon(
+          Icons.add,
+          color: AppTheme.textOnPrimary,
+        )
       ),
     );
   }

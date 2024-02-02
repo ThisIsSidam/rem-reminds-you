@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:nagger/data/app_theme.dart';
 
 import 'package:nagger/pages/home_page.dart';
 import 'package:nagger/utils/reminder.dart';
@@ -20,8 +21,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage(),
+    return MaterialApp(
+      home: const HomePage(),
+      theme: ThemeData(scaffoldBackgroundColor: AppTheme.backgroundColor),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nagger/data/app_theme.dart';
 
 class TimeEditButton extends StatelessWidget {
   final Duration editDuration;
@@ -6,7 +7,7 @@ class TimeEditButton extends StatelessWidget {
 
   const TimeEditButton({
     super.key, 
-    this.editDuration= const Duration(minutes: 0),
+    required this.editDuration,
     required this.editTime
   });
     
@@ -40,6 +41,8 @@ class TimeEditButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => editTime(editDuration),
       style: ElevatedButton.styleFrom(
+        backgroundColor: AppTheme.primaryColor,
+        foregroundColor: AppTheme.textOnPrimary,
         padding: const EdgeInsets.all(0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(0)
@@ -56,7 +59,7 @@ class TimeSetButton extends StatelessWidget {
   final ValueChanged<String> setTime;
   const TimeSetButton({
     super.key, 
-    this.time = "00:00",
+    required this.time,
     required this.setTime
   });
   
@@ -65,6 +68,8 @@ class TimeSetButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => setTime(time),
       style: ElevatedButton.styleFrom(
+        backgroundColor: AppTheme.primaryColor,
+        foregroundColor: AppTheme.textOnPrimary,
         padding: const EdgeInsets.all(0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(0)
