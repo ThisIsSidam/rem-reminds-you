@@ -21,7 +21,9 @@ class Reminder {
     this.title,
     this.snoozeMinutes = 5,
     required this.dateAndTime,
-  });
+  }){
+    id = getId();
+  }
 
   String getDateTimeAsStr() {
     final DateFormat formatter = DateFormat('EEE, d MMM, hh:mm aaa');
@@ -51,7 +53,7 @@ class Reminder {
   }
 
   String getId() {
-    return title! + getDateTimeAsStr();
+    return "${title ?? "new"}${getDateTimeAsStr()}";
   }
 
 }

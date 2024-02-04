@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
-import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/utils/reminder.dart';
 import 'package:nagger/utils/reminder_tile.dart';
 
@@ -37,6 +36,20 @@ class _HomePageState extends State<HomePage> {
     remindersMap.forEach((key, value) {remindersList.add(value);});
   }
 
+  void addNewReminder() {
+    final newReminder = Reminder(
+        dateAndTime: DateTime.now().add(const Duration(minutes: 5))
+    );
+
+    ReminderTile(
+      thisReminder: newReminder,
+      refreshFunc: refreshPage,
+    );
+    db.reminders[newReminder.getId()] = newReminder;
+    db.updateReminders();
+    refreshPage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,19 +82,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.primaryColor,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: ((context) => ReminderPage(
-                thisReminder: Reminder(
-                  dateAndTime: DateTime.now().add(const Duration(minutes: 5))
-                ), 
-                homeRefreshFunc: refreshPage,
-              ))
-            )
-          );
-        },
+        onPressed: () => addNewReminder(),
         child: Icon(
           Icons.add,
           color: AppTheme.textOnPrimary,

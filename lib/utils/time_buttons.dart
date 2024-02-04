@@ -41,6 +41,8 @@ class TimeEditButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => editTime(editDuration),
       style: ElevatedButton.styleFrom(
+        maximumSize: const Size(100, 75),
+        minimumSize: const Size(100, 50),
         backgroundColor: AppTheme.primaryColor,
         foregroundColor: AppTheme.textOnPrimary,
         padding: const EdgeInsets.all(0),
@@ -68,6 +70,8 @@ class TimeSetButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => setTime(time),
       style: ElevatedButton.styleFrom(
+        maximumSize: const Size(100, 75),
+        minimumSize: const Size(100, 50),
         backgroundColor: AppTheme.primaryColor,
         foregroundColor: AppTheme.textOnPrimary,
         padding: const EdgeInsets.all(0),
