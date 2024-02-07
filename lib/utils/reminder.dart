@@ -32,7 +32,7 @@ class Reminder {
     return formatted;
   }
 
-  String getDiff() {
+  String getDiffString() {
     final diff = dateAndTime.difference(DateTime.now()).inMinutes;
     String diffStr = "in ";
 
@@ -50,6 +50,10 @@ class Reminder {
     }
 
     return diffStr;
+  }
+
+  Duration getDiffDuration() {
+    return dateAndTime.difference(DateTime.now());
   }
 
   String getId() {

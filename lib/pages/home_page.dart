@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
+import 'package:nagger/utils/homepage_list_section.dart';
 import 'package:nagger/utils/reminder.dart';
 import 'package:nagger/utils/reminder_tile.dart';
 
@@ -14,7 +15,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var remindersMap = <String,Reminder>{};
   RemindersData db = RemindersData();
-  var remindersList = <Reminder>[];
+  var overdueList= <Reminder>[];
+  var todayList = <Reminder>[];
+  var tomorrowList = <Reminder>[];
+  var laterList = <Reminder>[];
 
   @override
   void initState() {
@@ -32,8 +36,26 @@ class _HomePageState extends State<HomePage> {
     db.getReminders();
     remindersMap = db.reminders;
 
-    remindersList = [];
-    remindersMap.forEach((key, value) {remindersList.add(value);});
+    overdueList = todayList = tomorrowList = laterList = [];
+    remindersMap.forEach((key, value) {
+      Duration due = value.getDiffDuration();
+      if (due.isNegative)
+      {
+        overdueList.add(value);
+      }
+      else if (due.inHours < 24) 
+      {
+        todayList.add(value);
+      }
+      else if (due.inHours < 48)
+      {
+        todayList.add(value);
+      }
+      else
+      {
+        laterList.add(value);
+      }
+    });
   }
 
   void addNewReminder() {
@@ -71,14 +93,31 @@ class _HomePageState extends State<HomePage> {
           )
         ]
       ),
-      body: ListView.builder(
-        itemCount: remindersList.length,
-        itemBuilder: (context, index) {
-          return ReminderTile(
-            thisReminder: remindersList[index], 
-            refreshFunc: refreshPage,
-          );
-        }
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            HomePageListSection(
+              name: "Overdue",
+              remindersList: overdueList, 
+              refreshHomePage: refreshPage
+            ),
+            HomePageListSection(
+              name: "Today",
+              remindersList: todayList, 
+              refreshHomePage: refreshPage
+            ),
+            HomePageListSection(
+              name: "Tomorrow",
+              remindersList: tomorrowList, 
+              refreshHomePage: refreshPage
+            ),
+            HomePageListSection(
+              name: "Later",
+              remindersList: laterList, 
+              refreshHomePage: refreshPage
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.primaryColor,
