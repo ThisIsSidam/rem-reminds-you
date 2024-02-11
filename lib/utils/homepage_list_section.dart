@@ -7,15 +7,26 @@ class HomePageListSection extends StatelessWidget {
   final List<Reminder> remindersList;
   final VoidCallback refreshHomePage;
 
-  const HomePageListSection({
+  HomePageListSection({
     super.key, 
     required this.name,
     required this.remindersList,
     required this.refreshHomePage
-  });
+  }){
+    print("--------------\n$name-----------");
+    for (final i in remindersList)
+    {
+        print(i.getId());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (remindersList.isEmpty)
+    {
+      return const SizedBox.shrink();
+    }
+    
     return Column(
       children: [
         SizedBox(

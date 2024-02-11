@@ -65,7 +65,8 @@ class _ReminderTileState extends State<ReminderTile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        tileText(widget.thisReminder.getDiffString())
+                        tileText(widget.thisReminder.getDiffString()),
+                        const SizedBox(height: 20,)
                       ],
                     ),
                   ),

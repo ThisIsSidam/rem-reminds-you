@@ -33,8 +33,17 @@ class Reminder {
   }
 
   String getDiffString() {
-    final diff = dateAndTime.difference(DateTime.now()).inMinutes;
-    String diffStr = "in ";
+    int diff = dateAndTime.difference(DateTime.now()).inMinutes;
+
+    String diffStr = "";
+    bool negative = false;
+
+    if (diff < 0) 
+    {
+      negative = true;
+      diff = diff.abs();
+    }
+
 
     if (diff > 119)
     {
@@ -46,10 +55,17 @@ class Reminder {
     }
     else
     {
-      diffStr += "${diff+1} minutes";
+      diffStr += "$diff minutes";
     }
 
-    return diffStr;
+    if (negative == true) 
+    {
+      return "$diffStr ago";
+    }
+    else 
+    {
+      return "in $diffStr";
+    }
   }
 
   Duration getDiffDuration() {

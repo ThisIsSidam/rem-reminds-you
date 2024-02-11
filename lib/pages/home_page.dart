@@ -36,23 +36,31 @@ class _HomePageState extends State<HomePage> {
     db.getReminders();
     remindersMap = db.reminders;
 
-    overdueList = todayList = tomorrowList = laterList = [];
+    overdueList = [];
+    todayList = [];
+    tomorrowList = [];
+    laterList = [];
+
     remindersMap.forEach((key, value) {
       Duration due = value.getDiffDuration();
       if (due.isNegative)
       {
+        print("Overdue: ${due.inMinutes}");
         overdueList.add(value);
       }
       else if (due.inHours < 24) 
       {
+        print("Today: ${due.inMinutes}");
         todayList.add(value);
       }
       else if (due.inHours < 48)
       {
-        todayList.add(value);
+        print("Tomorrow: ${due.inMinutes}");
+        tomorrowList.add(value);
       }
       else
       {
+        print("Later: ${due.inMinutes}");
         laterList.add(value);
       }
     });
