@@ -3,7 +3,7 @@ import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
 import 'package:nagger/utils/homepage_list_section.dart';
 import 'package:nagger/utils/reminder.dart';
-import 'package:nagger/utils/reminder_tile.dart';
+import 'package:nagger/utils/reminder_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -58,19 +58,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void addNewReminder() {
-    final newReminder = Reminder(
-        dateAndTime: DateTime.now().add(const Duration(minutes: 5))
-    );
-
-    ReminderTile(
-      thisReminder: newReminder,
-      refreshFunc: refreshPage,
-    );
-    db.reminders[newReminder.getId()] = newReminder;
-    db.updateReminders();
-    refreshPage();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +108,18 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.primaryColor,
-        onPressed: () => addNewReminder(),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context, 
+            isScrollControlled: true,
+            builder: (BuildContext context) => ReminderSection(
+              thisReminder: Reminder(
+                dateAndTime: DateTime.now().add(const Duration(minutes: 5))
+              ), 
+              refreshHomePage: refreshPage
+            )
+          );
+        },
         child: Icon(
           Icons.add,
           color: AppTheme.textOnPrimary,

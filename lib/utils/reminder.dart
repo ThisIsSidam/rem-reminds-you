@@ -22,7 +22,7 @@ class Reminder {
     this.snoozeMinutes = 5,
     required this.dateAndTime,
   }){
-    id = getId();
+    id = "new";
   }
 
   String getDateTimeAsStr() {

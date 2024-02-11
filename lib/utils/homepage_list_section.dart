@@ -22,7 +22,7 @@ class HomePageListSection extends StatelessWidget {
           child: Text(name),
         ),
         SizedBox(
-          height: remindersList.length * 90,
+          height: remindersList.length * 70,
           child: ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           itemCount: remindersList.length,
