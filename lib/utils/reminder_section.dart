@@ -130,7 +130,7 @@ class _ReminderSectionState extends State<ReminderSection> {
             padding: const EdgeInsets.only(
               left: 15, top: 10, bottom: 10, 
             ),
-            child: Text("${widget.thisReminder.getDateTimeAsStr()} ${widget.thisReminder.getDiffString()}"),
+            child: Text("${widget.thisReminder.getDateTimeAsStr()} · ${widget.thisReminder.getDiffString()}"),
           ),
           SizedBox(
             child: GridView.count(
