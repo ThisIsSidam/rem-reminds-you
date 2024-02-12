@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
@@ -13,6 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Timer _timer;
+  bool firstTime = true;
   var remindersMap = <String,Reminder>{};
   RemindersData db = RemindersData();
   var overdueList= <Reminder>[];
@@ -23,12 +26,32 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getList();
+
+    _scheduleRefresh();
+
     super.initState();
+  }
+
+  void _scheduleRefresh() {
+    DateTime now = DateTime.now();
+    Duration timeUntilNextRefresh = Duration(
+      seconds: 60 - now.second,
+      milliseconds: 1000 - now.millisecond
+    );
+
+    _timer = Timer(timeUntilNextRefresh, () {
+      refreshPage();
+
+      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        refreshPage();
+      });
+    });
   }
 
   void refreshPage() {
     setState(() {
       getList();
+      print("refrshPage Called");
     });
   }
 
@@ -45,25 +68,29 @@ class _HomePageState extends State<HomePage> {
       Duration due = value.getDiffDuration();
       if (due.isNegative)
       {
-        print("Overdue: ${due.inMinutes}");
         overdueList.add(value);
       }
       else if (due.inHours < 24) 
       {
-        print("Today: ${due.inMinutes}");
         todayList.add(value);
       }
       else if (due.inHours < 48)
       {
-        print("Tomorrow: ${due.inMinutes}");
         tomorrowList.add(value);
       }
       else
       {
-        print("Later: ${due.inMinutes}");
         laterList.add(value);
       }
     });
+
+    print("Refreshed");
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
 
