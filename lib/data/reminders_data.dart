@@ -2,11 +2,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nagger/utils/reminder.dart';
 
 class RemindersData {
-  Map<String, Reminder> reminders = {};
+  Map<int, Reminder> reminders = {};
   final _remindersBox = Hive.box("reminders");
 
   void getReminders() {
-    reminders = _remindersBox.get("REMINDERS")?.cast<String, Reminder>() ?? {};
+    reminders = _remindersBox.get("REMINDERS")?.cast<int, Reminder>() ?? {};
   }
 
   void updateReminders() {
@@ -14,7 +14,7 @@ class RemindersData {
   }
 
   // id is made by concatenating title and return value of getDateTimeAsStr
-  void deleteReminder(String id) {
+  void deleteReminder(int id) {
     getReminders();
     
     printAll("Before Deleting");

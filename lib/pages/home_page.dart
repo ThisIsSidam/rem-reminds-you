@@ -16,8 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Timer _timer;
   bool firstTime = true;
-  var remindersMap = <String,Reminder>{};
   RemindersData db = RemindersData();
+  var remindersList = <Reminder>[];
   var overdueList= <Reminder>[];
   var todayList = <Reminder>[];
   var tomorrowList = <Reminder>[];
@@ -57,32 +57,35 @@ class _HomePageState extends State<HomePage> {
 
   void getList() {
     db.getReminders();
-    remindersMap = db.reminders;
+    remindersList = db.reminders.values.toList();
 
     overdueList = [];
     todayList = [];
     tomorrowList = [];
     laterList = [];
 
-    remindersMap.forEach((key, value) {
-      Duration due = value.getDiffDuration();
+    remindersList.sort((a, b) => a.getDiffDuration().compareTo(b.getDiffDuration()));
+
+    for (final reminder in remindersList)
+    {
+      Duration due = reminder.getDiffDuration();
       if (due.isNegative)
       {
-        overdueList.add(value);
+        overdueList.add(reminder);
       }
       else if (due.inHours < 24) 
       {
-        todayList.add(value);
+        todayList.add(reminder);
       }
       else if (due.inHours < 48)
       {
-        tomorrowList.add(value);
+        tomorrowList.add(reminder);
       }
       else
       {
-        laterList.add(value);
+        laterList.add(reminder);
       }
-    });
+    };
 
     print("Refreshed");
   }

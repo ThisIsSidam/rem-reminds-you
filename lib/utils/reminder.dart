@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
 part 'reminder.g.dart';
 
@@ -15,14 +17,14 @@ class Reminder {
   DateTime dateAndTime;
 
   @HiveField(3)
-  String? id;
+  int? id;
 
   Reminder({
     this.title,
     this.snoozeMinutes = 5,
     required this.dateAndTime,
   }){
-    id = "new";
+    id = 101;
   }
 
   String getDateTimeAsStr() {
@@ -72,8 +74,16 @@ class Reminder {
     return dateAndTime.difference(DateTime.now());
   }
 
-  String getId() {
-    return "${title ?? "new"}${getDateTimeAsStr()}";
+  String hash() {
+    String str = "${title ?? "new"}${getDateTimeAsStr()}";
+    return sha256.convert(utf8.encode(str)).toString();
   }
+
+  int getID() {
+    final hashString = hash();
+    final hashInt = int.parse(hashString.substring(0, 8), radix: 16);
+    return hashInt;
+  }
+
 
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
+import 'package:nagger/utils/notification.dart';
 import 'package:nagger/utils/reminder.dart';
 import 'package:nagger/utils/time_edit_button.dart';
 import 'package:nagger/utils/time_set_button.dart';
@@ -21,11 +22,12 @@ class ReminderSection extends StatefulWidget {
 class _ReminderSectionState extends State<ReminderSection> {
 
   RemindersData db = RemindersData();
+  LocalNotificationService notifs = LocalNotificationService();
   TextEditingController titleController = TextEditingController();
 
   @override
   void initState() {
-    if (widget.thisReminder.id != "new")
+    if (widget.thisReminder.id != 101)
     {
       titleController.text = widget.thisReminder.title ?? "No Title 2";
     }
@@ -71,14 +73,16 @@ class _ReminderSectionState extends State<ReminderSection> {
 
     db.printAll("Before Adding");
 
-    if (widget.thisReminder.id != "new")
+    if (widget.thisReminder.id != 101)
     {
-      print("ID: ${widget.thisReminder.id!}");
+      // notifs.cancelScheduledLocalNotification(
+      //   widget.thisReminder.id;
+      // )
       db.deleteReminder(widget.thisReminder.id!);
     }
-    
+
     widget.thisReminder.title = titleController.text;
-    widget.thisReminder.id = widget.thisReminder.getId();
+    widget.thisReminder.id = widget.thisReminder.getID();
     db.reminders[widget.thisReminder.id!] = widget.thisReminder;
     
     db.updateReminders();
@@ -157,7 +161,7 @@ class _ReminderSectionState extends State<ReminderSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                if (widget.thisReminder.id != "new")
+                if (widget.thisReminder.id != 101)
                   MaterialButton(
                     onPressed: () => deleteReminder(),
                     child: const Icon(Icons.delete)
