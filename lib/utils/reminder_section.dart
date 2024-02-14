@@ -60,7 +60,7 @@ class _ReminderSectionState extends State<ReminderSection> {
       widget.thisReminder.dateAndTime.month,
       widget.thisReminder.dateAndTime.day,
       hour,
-      minutes
+      minutes,
     );
     
     setState(() {
@@ -75,15 +75,20 @@ class _ReminderSectionState extends State<ReminderSection> {
 
     if (widget.thisReminder.id != 101)
     {
-      // notifs.cancelScheduledLocalNotification(
-      //   widget.thisReminder.id;
-      // )
+      notifs.cancelScheduledLocalNotification(
+        widget.thisReminder.id ?? 101
+      );
       db.deleteReminder(widget.thisReminder.id!);
     }
 
     widget.thisReminder.title = titleController.text;
     widget.thisReminder.id = widget.thisReminder.getID();
     db.reminders[widget.thisReminder.id!] = widget.thisReminder;
+    notifs.scheduleLocalNotification(
+      id: widget.thisReminder.id ?? 101,
+      title: widget.thisReminder.title,
+      scheduleNotificationDateTime: widget.thisReminder.dateAndTime
+    );
     
     db.updateReminders();
     db.printAll("After Adding");
@@ -93,6 +98,9 @@ class _ReminderSectionState extends State<ReminderSection> {
   }
 
   void deleteReminder() {
+    notifs.cancelScheduledLocalNotification(
+      widget.thisReminder.id ?? 101
+    );
     db.deleteReminder(widget.thisReminder.id!);
     widget.refreshHomePage();
     Navigator.pop(context);

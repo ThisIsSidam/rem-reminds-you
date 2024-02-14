@@ -13,7 +13,6 @@ class RemindersData {
     _remindersBox.put("REMINDERS", reminders);
   }
 
-  // id is made by concatenating title and return value of getDateTimeAsStr
   void deleteReminder(int id) {
     getReminders();
     

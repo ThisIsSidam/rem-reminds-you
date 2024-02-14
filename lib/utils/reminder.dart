@@ -35,7 +35,16 @@ class Reminder {
   }
 
   String getDiffString() {
-    int diff = dateAndTime.difference(DateTime.now()).inMinutes;
+    int diff = dateAndTime.difference(DateTime.now()).inSeconds;
+
+    if (diff > -60 && diff < 0)
+    {
+      return "seconds ago";
+    }
+    if (diff < 60)
+    {
+      return "about to go boom";
+    }
 
     String diffStr = "";
     bool negative = false;
@@ -46,18 +55,23 @@ class Reminder {
       diff = diff.abs();
     }
 
+    if (diff < 3600)
+    {
+      int min = (diff/60).ceil();
+      if (negative == true)
+      {
+        min--;
+      }
 
-    if (diff > 119)
-    {
-      diffStr += "${(diff/60).floor()} hours";
+      diffStr += "$min minute${(min>1) ? "s":""}";
     }
-    else if (diff > 59)
+    else if (diff < 7200)
     {
-      diffStr += "1 hour, ${diff-60} minutes";
+      diffStr += "1 hour${(diff>3600) ? ", ${((diff/60)-60).ceil()} minutes" : ""}";
     }
     else
     {
-      diffStr += "$diff minutes";
+      diffStr += "${(diff/3600).ceil()} hours";
     }
 
     if (negative == true) 
@@ -81,9 +95,8 @@ class Reminder {
 
   int getID() {
     final hashString = hash();
-    final hashInt = int.parse(hashString.substring(0, 8), radix: 16);
+    final hashInt = int.parse(hashString.substring(0, 4), radix: 16);
     return hashInt;
   }
-
 
 }

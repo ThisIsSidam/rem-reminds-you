@@ -6,7 +6,7 @@ class LocalNotificationService {
   
   Future<void> setup() async {
     const androidInitializationSetting = AndroidInitializationSettings(
-      'flutter_logo'
+      '@mipmap/ic_launcher'
     );
 
     const initSettings = InitializationSettings(
@@ -38,6 +38,7 @@ class LocalNotificationService {
       location
     );
 
+    print("Notification id: $id title: $title");
     return notificationsPlugin.zonedSchedule(
       id, 
       title, 
@@ -49,22 +50,10 @@ class LocalNotificationService {
     );
   }
 
-  void cancelScheduledLocalNotification(int id) {
+  void cancelScheduledLocalNotification(int id) { 
+        print("Notification id: $id");
+
     notificationsPlugin.cancel(id);
   }
-
-  // void showLocalNotification(String title, String body) {
-  //   const androidNotificationDetails = AndroidNotificationDetails(
-  //     '0', 
-  //     'general'
-  //   );
-
-  //   print("showing...........");
-  //   const notificationDetails = NotificationDetails(
-  //     android: androidNotificationDetails
-  //   );
-
-  //   notificationsPlugin.show(0, title, body, notificationDetails);
-  // }
 
 }

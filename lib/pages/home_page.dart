@@ -32,6 +32,20 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  // Returns DateTime with 0 seconds while 5 min in the future.
+  DateTime getDateTimeForNewReminder() {
+    final now = DateTime.now();
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+      now.minute + 5,
+      0,
+      0
+    );
+  }
+
   void _scheduleRefresh() {
     DateTime now = DateTime.now();
     Duration timeUntilNextRefresh = Duration(
@@ -51,7 +65,10 @@ class _HomePageState extends State<HomePage> {
   void refreshPage() {
     setState(() {
       getList();
-      print("refrshPage Called");
+      if (DateTime.now().second > 55)
+      {
+      print("refrshPage ${DateTime.now()}");
+      }
     });
   }
 
@@ -86,8 +103,6 @@ class _HomePageState extends State<HomePage> {
         laterList.add(reminder);
       }
     };
-
-    print("Refreshed");
   }
 
   @override
@@ -152,7 +167,7 @@ class _HomePageState extends State<HomePage> {
             isScrollControlled: true,
             builder: (BuildContext context) => ReminderSection(
               thisReminder: Reminder(
-                dateAndTime: DateTime.now().add(const Duration(minutes: 5))
+                dateAndTime: getDateTimeForNewReminder()
               ), 
               refreshHomePage: refreshPage
             )
