@@ -34,53 +34,38 @@ class Reminder {
     return formatted;
   }
 
-  String getDiffString() {
-    int diff = dateAndTime.difference(DateTime.now()).inSeconds;
+String getDiffString() {
+  Duration difference = dateAndTime.difference(DateTime.now());
 
-    if (diff > -60 && diff < 0)
-    {
-      return "seconds ago";
-    }
-    if (diff < 60)
-    {
-      return "about to go boom";
-    }
+  if (difference.isNegative) {
+    difference = difference.abs();
+    return "${_formatDuration(difference)} ago";
+  } else {
+    return "in ${_formatDuration(difference)}";
+  }
+}
 
-    String diffStr = "";
-    bool negative = false;
-
-    if (diff < 0) 
+  String _formatDuration(Duration duration) {
+    if (duration.inSeconds < 60) 
     {
-      negative = true;
-      diff = diff.abs();
-    }
-
-    if (diff < 3600)
+      return 'seconds';
+    } 
+    else if (duration.inMinutes < 60) 
     {
-      int min = (diff/60).ceil();
-      if (negative == true)
-      {
-        min--;
-      }
-
-      diffStr += "$min minute${(min>1) ? "s":""}";
-    }
-    else if (diff < 7200)
+      return '${duration.inMinutes} minute${duration.inMinutes != 1 ? 's' : ''}';
+    } 
+    else if (duration.inHours < 24) 
     {
-      diffStr += "1 hour${(diff>3600) ? ", ${((diff/60)-60).ceil()} minutes" : ""}";
-    }
-    else
-    {
-      diffStr += "${(diff/3600).ceil()} hours";
-    }
-
-    if (negative == true) 
-    {
-      return "$diffStr ago";
-    }
+      int hours = duration.inHours;
+      int minutes = duration.inMinutes.remainder(60);
+      String hoursString = hours == 1 ? 'hour' : 'hours';
+      String minutesString = minutes == 1 ? 'minute' : 'minutes';
+      return '$hours $hoursString${minutes > 0 ? ', $minutes $minutesString' : ''}';
+    } 
     else 
     {
-      return "in $diffStr";
+      int days = duration.inDays;
+      return '$days day${days != 1 ? 's' : ''}';
     }
   }
 

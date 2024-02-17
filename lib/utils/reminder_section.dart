@@ -75,8 +75,8 @@ class _ReminderSectionState extends State<ReminderSection> {
 
     if (widget.thisReminder.id != 101)
     {
-      notifs.cancelScheduledLocalNotification(
-        widget.thisReminder.id ?? 101
+      notifs.cancelScheduledNotification(
+        widget.thisReminder.id ?? 7
       );
       db.deleteReminder(widget.thisReminder.id!);
     }
@@ -84,10 +84,10 @@ class _ReminderSectionState extends State<ReminderSection> {
     widget.thisReminder.title = titleController.text;
     widget.thisReminder.id = widget.thisReminder.getID();
     db.reminders[widget.thisReminder.id!] = widget.thisReminder;
-    notifs.scheduleLocalNotification(
-      id: widget.thisReminder.id ?? 101,
-      title: widget.thisReminder.title,
-      scheduleNotificationDateTime: widget.thisReminder.dateAndTime
+    notifs.scheduleNotification(
+      widget.thisReminder.id ?? 7,
+      widget.thisReminder.title ?? "Rando",
+      widget.thisReminder.dateAndTime
     );
     
     db.updateReminders();
@@ -98,8 +98,8 @@ class _ReminderSectionState extends State<ReminderSection> {
   }
 
   void deleteReminder() {
-    notifs.cancelScheduledLocalNotification(
-      widget.thisReminder.id ?? 101
+    notifs.cancelScheduledNotification(
+      widget.thisReminder.id ?? 7
     );
     db.deleteReminder(widget.thisReminder.id!);
     widget.refreshHomePage();
@@ -115,7 +115,7 @@ class _ReminderSectionState extends State<ReminderSection> {
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
-      heightFactor: 0.9,
+      heightFactor: 0.8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -146,18 +146,21 @@ class _ReminderSectionState extends State<ReminderSection> {
           ),
           SizedBox(
             child: GridView.count(
-              crossAxisCount: 4,
+              crossAxisCount: 5,
               shrinkWrap: true,
               childAspectRatio: 1.5,
               children: [
+                TimeSetButton(time: "6:00 AM", setTime: setTime),
                 TimeSetButton(time: "9:30 AM", setTime: setTime),
                 TimeSetButton(time: "12:00 PM", setTime: setTime),
                 TimeSetButton(time: "6:30 PM", setTime: setTime),
                 TimeSetButton(time: "10:00 PM", setTime: setTime),
+                TimeEditButton(editDuration: const Duration(minutes: 1), editTime: editTime,),
                 TimeEditButton(editDuration: const Duration(minutes: 10), editTime: editTime,),
                 TimeEditButton(editDuration: const Duration(hours: 1), editTime: editTime,),
                 TimeEditButton(editDuration: const Duration(hours: 3), editTime: editTime,),
                 TimeEditButton(editDuration: const Duration(days: 1), editTime: editTime,),
+                TimeEditButton(editDuration: const Duration(minutes: -1), editTime: editTime,),
                 TimeEditButton(editDuration: const Duration(minutes: -10), editTime: editTime,),
                 TimeEditButton(editDuration: const Duration(hours: -1), editTime: editTime,),
                 TimeEditButton(editDuration: const Duration(hours: -3), editTime: editTime,),

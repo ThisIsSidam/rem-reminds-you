@@ -49,14 +49,14 @@ class _HomePageState extends State<HomePage> {
   void _scheduleRefresh() {
     DateTime now = DateTime.now();
     Duration timeUntilNextRefresh = Duration(
-      seconds: 60 - now.second,
+      seconds: 10 - (now.second % 10),
       milliseconds: 1000 - now.millisecond
     );
 
     _timer = Timer(timeUntilNextRefresh, () {
       refreshPage();
 
-      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
         refreshPage();
       });
     });

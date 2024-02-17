@@ -1,59 +1,77 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
+import 'package:awesome_notifications/awesome_notifications.dart';
+// import 'package:timezone/timezone.dart' as tz;
 
 class LocalNotificationService {
-  final notificationsPlugin = FlutterLocalNotificationsPlugin();
+  final notificationsPlugin = AwesomeNotifications();
   
   Future<void> setup() async {
-    const androidInitializationSetting = AndroidInitializationSettings(
-      '@mipmap/ic_launcher'
-    );
-
-    const initSettings = InitializationSettings(
-      android: androidInitializationSetting
-    );
-
     await notificationsPlugin.initialize(
-      initSettings,
+      null,
+      [
+        NotificationChannel(
+          channelKey: '111', 
+          channelName: 'rem_channel',
+          channelDescription: 'Shows Reminder Notification',
+        )
+      ]
     ); 
   }
 
-  notificationDetails() {
-    return const NotificationDetails(
-      android: AndroidNotificationDetails('channelId', 'channelName')
+  void showNotification(String notifTitle) {
+    notificationsPlugin.createNotification(
+      content: NotificationContent(
+        id: 0, 
+        channelKey: '111',
+        title: notifTitle,
+        payload: {
+          "App name": "Nagger"
+        },
+      ),
+      actionButtons: [
+        NotificationActionButton(
+          key: 'done', 
+          label: 'Done'
+        )
+      ]
     );
   }
 
-  Future scheduleLocalNotification({
-    int id = 0,
-    String? title,
-    String? body,
-    required DateTime scheduleNotificationDateTime 
-  }) async {
-
-    final location = tz.getLocation('Asia/Kolkata');
-
-    final scheduledDateTime = tz.TZDateTime.from(
-      scheduleNotificationDateTime,
-      location
-    );
-
-    print("Notification id: $id title: $title");
-    return notificationsPlugin.zonedSchedule(
-      id, 
-      title, 
-      body,
-      scheduledDateTime,
-      await notificationDetails(),
-      uiLocalNotificationDateInterpretation: 
-        UILocalNotificationDateInterpretation.absoluteTime
+  Future<bool> scheduleNotification(
+    int notifID,
+    String notifTitle, 
+    DateTime scheduleNotificationDateTime
+  ) async {
+    return await notificationsPlugin.createNotification(
+      content: NotificationContent(
+        id: notifID, 
+        channelKey: '111',
+        title: notifTitle,
+        payload: {
+          "App name": "Nagger"
+        },
+        autoDismissible: false
+      ),
+      actionButtons: [
+        NotificationActionButton(
+          key: 'done', 
+          label: 'Done'
+        ),
+      ],
+      schedule: NotificationCalendar(
+        year: scheduleNotificationDateTime.year,
+        month: scheduleNotificationDateTime.month,
+        day: scheduleNotificationDateTime.day,
+        hour: scheduleNotificationDateTime.hour,
+        minute: scheduleNotificationDateTime.minute,
+        second: scheduleNotificationDateTime.second,
+        millisecond: scheduleNotificationDateTime.millisecond
+      )
     );
   }
 
-  void cancelScheduledLocalNotification(int id) { 
-        print("Notification id: $id");
-
+  void cancelScheduledNotification(int id) {
     notificationsPlugin.cancel(id);
+    print("$id cancelled");
   }
 
 }
