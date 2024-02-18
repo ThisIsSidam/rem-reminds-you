@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/utils/reminder.dart';
+import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/reminder_tile.dart';
 
 class HomePageListSection extends StatelessWidget {

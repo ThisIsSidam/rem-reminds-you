@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nagger/data/reminders_data.dart';
-import 'package:nagger/utils/notification.dart';
-import 'package:nagger/utils/reminder.dart';
+import 'package:nagger/data/notification.dart';
+import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/time_edit_button.dart';
 import 'package:nagger/utils/time_set_button.dart';
 

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:nagger/data/reminders_data.dart';
 import 'package:nagger/utils/homepage_list_section.dart';
-import 'package:nagger/utils/reminder.dart';
+import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/reminder_section.dart';
 
 class HomePage extends StatefulWidget {

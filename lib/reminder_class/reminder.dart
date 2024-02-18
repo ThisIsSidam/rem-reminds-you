@@ -19,6 +19,9 @@ class Reminder {
   @HiveField(3)
   int? id;
 
+  @HiveField(4)
+  bool done = false;
+
   Reminder({
     this.title,
     this.snoozeMinutes = 5,

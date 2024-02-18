@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:nagger/utils/reminder.dart';
+import 'package:nagger/reminder_class/reminder.dart';
 
 class RemindersData {
   Map<int, Reminder> reminders = {};
