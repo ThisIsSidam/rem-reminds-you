@@ -71,7 +71,7 @@ class LocalNotificationService {
 
   void cancelScheduledNotification(int id) {
     notificationsPlugin.cancel(id);
-    print("$id cancelled");
+    print("$id cancelled scheduled notification.");
   }
 
 }

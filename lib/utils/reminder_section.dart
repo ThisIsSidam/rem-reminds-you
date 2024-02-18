@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
 import 'package:nagger/utils/notification.dart';
 import 'package:nagger/utils/reminder.dart';
@@ -115,82 +114,93 @@ class _ReminderSectionState extends State<ReminderSection> {
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
-      heightFactor: 0.8,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20,),
-          TextFormField(
-            autofocus: true,
-              controller: titleController,
-              style: TextStyle(
-                color: AppTheme.textOnPrimary,
-                fontSize: 20
-              ),
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.only(
-                  left: 15, top: 10, bottom: 10
-                ),
-                hintText: "New Reminder... Enter title here",
-                hintStyle: TextStyle(
-                  color: AppTheme.textOnPrimary
-                ),
-                border: const OutlineInputBorder()
-              ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(
-              left: 15, top: 10, bottom: 10, 
-            ),
-            child: Text("${widget.thisReminder.getDateTimeAsStr()} · ${widget.thisReminder.getDiffString()}"),
-          ),
-          SizedBox(
-            child: GridView.count(
-              crossAxisCount: 5,
-              shrinkWrap: true,
-              childAspectRatio: 1.5,
-              children: [
-                TimeSetButton(time: "6:00 AM", setTime: setTime),
-                TimeSetButton(time: "9:30 AM", setTime: setTime),
-                TimeSetButton(time: "12:00 PM", setTime: setTime),
-                TimeSetButton(time: "6:30 PM", setTime: setTime),
-                TimeSetButton(time: "10:00 PM", setTime: setTime),
-                TimeEditButton(editDuration: const Duration(minutes: 1), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(minutes: 10), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(hours: 1), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(hours: 3), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(days: 1), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(minutes: -1), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(minutes: -10), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(hours: -1), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(hours: -3), editTime: editTime,),
-                TimeEditButton(editDuration: const Duration(days: -1), editTime: editTime,),
-              ],
-            ),
-          ), 
-          SizedBox(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                if (widget.thisReminder.id != 101)
-                  MaterialButton(
-                    onPressed: () => deleteReminder(),
-                    child: const Icon(Icons.delete)
+      heightFactor: 0.85,
+      child: Container(
+        color: Theme.of(context).colorScheme.background,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20,),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: TextFormField(
+                textCapitalization: TextCapitalization.sentences,
+                autofocus: true,
+                controller: titleController,
+                style: Theme.of(context).textTheme.titleMedium,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(
+                    left: 15, top: 10, bottom: 10
                   ),
-                MaterialButton(
-                  child: const Text("Close"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }
+                  hintText: "New Reminder... Enter title here",
+                  hintStyle: Theme.of(context).textTheme.titleSmall,
+                  border: const OutlineInputBorder(),
                 ),
-                MaterialButton(
-                  onPressed: () => saveReminder(),
-                  child: const Text("Save")
-                )
-              ],
+              ),
             ),
-          )
-        ],
+            Container(
+              padding: const EdgeInsets.only(
+                left: 15, top: 10, bottom: 10, 
+              ),
+              child: Text("${widget.thisReminder.getDateTimeAsStr()} · ${widget.thisReminder.getDiffString()}"),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: GridView.count(
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
+                crossAxisCount: 4,
+                shrinkWrap: true,
+                childAspectRatio: 1.5,
+                children: [
+                  TimeSetButton(time: "9:30 AM", setTime: setTime),
+                  TimeSetButton(time: "12:00 PM", setTime: setTime),
+                  TimeSetButton(time: "6:30 PM", setTime: setTime),
+                  TimeSetButton(time: "10:00 PM", setTime: setTime),
+                  TimeEditButton(editDuration: const Duration(minutes: 10), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(hours: 1), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(hours: 3), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(days: 1), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(minutes: -10), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(hours: -1), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(hours: -3), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(days: -1), editTime: editTime,),
+                ],
+              ),
+            ), 
+            SizedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (widget.thisReminder.id != 101)
+                    MaterialButton(
+                      onPressed: () => deleteReminder(),
+                      child: IconTheme(
+                        data: Theme.of(context).iconTheme,
+                        child: const Icon(Icons.delete)
+                      ),
+                    ),
+                  MaterialButton(
+                    child: Text(
+                      "Close",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }
+                  ),
+                  MaterialButton(
+                    onPressed: () => saveReminder(),
+                    child: Text(
+                      "Save",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    )
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

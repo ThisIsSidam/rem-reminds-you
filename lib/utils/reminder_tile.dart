@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/utils/reminder.dart';
 import 'package:nagger/utils/reminder_section.dart';
 
@@ -20,7 +19,6 @@ class _ReminderTileState extends State<ReminderTile> {
       textAlign: TextAlign.left,
       style: TextStyle(
         fontSize: size,
-        color: AppTheme.textOnPrimary,
       ) ,
     );
   }
@@ -28,12 +26,15 @@ class _ReminderTileState extends State<ReminderTile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(0),
+      padding: const EdgeInsets.only(
+        left: 10, right: 10,
+      ),
       child: MaterialButton(
         padding: const EdgeInsets.all(0),
         child: Container(
           decoration: BoxDecoration(
-            color: AppTheme.primaryColor,
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(5)
           ),
           child: Row(
               children: [
@@ -47,12 +48,12 @@ class _ReminderTileState extends State<ReminderTile> {
                       children: [
                         Text(
                           widget.thisReminder.title ?? "No Title",
-                          style: TextStyle(
-                            color: AppTheme.textOnPrimary,
-                            fontSize: 20
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
                         ),
-                        tileText(widget.thisReminder.getDateTimeAsStr())
+                        Text(
+                          widget.thisReminder.getDateTimeAsStr(),
+                          style: Theme.of(context).textTheme.bodyMedium
+                        )
                       ],
                     ),
                   ),
@@ -65,7 +66,10 @@ class _ReminderTileState extends State<ReminderTile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        tileText(widget.thisReminder.getDiffString()),
+                        Text(
+                          widget.thisReminder.getDiffString(),
+                          style: Theme.of(context).textTheme.bodySmall
+                        ),
                         const SizedBox(height: 20,)
                       ],
                     ),

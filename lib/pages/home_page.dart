@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:nagger/data/app_theme.dart';
 import 'package:nagger/data/reminders_data.dart';
 import 'package:nagger/utils/homepage_list_section.dart';
 import 'package:nagger/utils/reminder.dart';
@@ -118,20 +117,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(
           "Nagger",
-          style: TextStyle(
-            color: AppTheme.textOnPrimary
-          ),
-          ),
-        backgroundColor: AppTheme.primaryColor,
-        actions: [
-          IconButton(
-            onPressed: () => refreshPage(), 
-            icon: Icon(
-              Icons.refresh,
-              color: AppTheme.textOnPrimary,
-            )
-          )
-        ]
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -160,7 +147,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppTheme.primaryColor,
         onPressed: () {
           showModalBottomSheet(
             context: context, 
@@ -173,9 +159,9 @@ class _HomePageState extends State<HomePage> {
             )
           );
         },
-        child: Icon(
+        
+        child: const Icon(
           Icons.add,
-          color: AppTheme.textOnPrimary,
         )
       ),
     );

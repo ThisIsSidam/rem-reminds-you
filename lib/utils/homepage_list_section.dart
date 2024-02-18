@@ -20,21 +20,25 @@ class HomePageListSection extends StatelessWidget {
     {
       return const SizedBox.shrink();
     }
-    
     return Column(
       children: [
-        SizedBox(
-          child: Text(name),
+        Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(name)
+          ),
         ),
+        const SizedBox(height: 5,),
         SizedBox(
-          height: remindersList.length * 70,
+          height: remindersList.length * 75,
           child: ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           itemCount: remindersList.length,
           separatorBuilder: (context, index) {
             return const Divider(
-              color: Colors.black,
-              height: 2,
+              color: Colors.transparent,
+              height: 5,
             );
           },
           itemBuilder: (context, index) {
