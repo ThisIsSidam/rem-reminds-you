@@ -21,8 +21,9 @@ class ReminderSection extends StatefulWidget {
 class _ReminderSectionState extends State<ReminderSection> {
 
   RemindersData db = RemindersData();
-  LocalNotificationService notifs = LocalNotificationService();
+  NotificationController notifs = NotificationController();
   TextEditingController titleController = TextEditingController();
+  DateTime tempDateTime = DateTime.now();
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _ReminderSectionState extends State<ReminderSection> {
     {
       titleController.text = widget.thisReminder.title ?? "No Title 2";
     }
+    tempDateTime = widget.thisReminder.dateAndTime;
     super.initState();
   }
 
@@ -157,12 +159,12 @@ class _ReminderSectionState extends State<ReminderSection> {
                   TimeSetButton(time: "12:00 PM", setTime: setTime),
                   TimeSetButton(time: "6:30 PM", setTime: setTime),
                   TimeSetButton(time: "10:00 PM", setTime: setTime),
-                  TimeEditButton(editDuration: const Duration(minutes: 10), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(hours: 1), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(seconds: 5), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(minutes: 1), editTime: editTime,),
                   TimeEditButton(editDuration: const Duration(hours: 3), editTime: editTime,),
                   TimeEditButton(editDuration: const Duration(days: 1), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(minutes: -10), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(hours: -1), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(seconds: -5), editTime: editTime,),
+                  TimeEditButton(editDuration: const Duration(minutes: -1), editTime: editTime,),
                   TimeEditButton(editDuration: const Duration(hours: -3), editTime: editTime,),
                   TimeEditButton(editDuration: const Duration(days: -1), editTime: editTime,),
                 ],
@@ -173,19 +175,20 @@ class _ReminderSectionState extends State<ReminderSection> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   if (widget.thisReminder.id != 101)
-                    MaterialButton(
-                      onPressed: () => deleteReminder(),
-                      child: IconTheme(
-                        data: Theme.of(context).iconTheme,
-                        child: const Icon(Icons.delete)
-                      ),
+                  MaterialButton(
+                    onPressed: () => deleteReminder(),
+                    child: IconTheme(
+                      data: Theme.of(context).iconTheme,
+                      child: const Icon(Icons.delete)
                     ),
+                  ),
                   MaterialButton(
                     child: Text(
                       "Close",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     onPressed: () {
+                      widget.thisReminder.dateAndTime = tempDateTime;
                       Navigator.pop(context);
                     }
                   ),

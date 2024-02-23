@@ -4,6 +4,23 @@ import 'package:nagger/reminder_class/reminder.dart';
 class RemindersData {
   Map<int, Reminder> reminders = {};
   final _remindersBox = Hive.box("reminders");
+  List<int> removedInBackground = [];
+
+  RemindersData() {
+    clearPendingRemovals();
+  }
+
+  Future<void> clearPendingRemovals() async {
+    await Hive.openBox('pending_removal');
+
+    final pendingRemovals = Hive.box('pending_removal');
+    final removals = pendingRemovals.get("PENDING_REMOVAL") ?? [];
+    for (final id in removals) 
+    {
+      deleteReminder(id);
+    }
+    pendingRemovals.put("PENDING_REMOVAL", []);
+  }
 
   void getReminders() {
     reminders = _remindersBox.get("REMINDERS")?.cast<int, Reminder>() ?? {};
@@ -13,7 +30,8 @@ class RemindersData {
     _remindersBox.put("REMINDERS", reminders);
   }
 
-  void deleteReminder(int id) {
+  void deleteReminder(int id) {  
+
     getReminders();
     
     printAll("Before Deleting");
@@ -25,7 +43,6 @@ class RemindersData {
     }
     printAll("After Deleting");
   }
-
 
   void printAll(String str) {
     getReminders();

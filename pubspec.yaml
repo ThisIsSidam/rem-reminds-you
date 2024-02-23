@@ -37,6 +37,7 @@ dependencies:
   awesome_notifications: ^0.9.2
   timezone: ^0.9.2
   crypto: ^3.0.3
+  flutter_isolate: ^2.0.4
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:nagger/data/notification.dart';
 import 'package:nagger/data/reminders_data.dart';
 import 'package:nagger/utils/homepage_list_section.dart';
 import 'package:nagger/reminder_class/reminder.dart';
@@ -27,6 +30,27 @@ class _HomePageState extends State<HomePage> {
     getList();
 
     _scheduleRefresh();
+    NotificationController.initializeCallback(refreshPage);
+    NotificationController.startListeningNotificationEvents();
+
+    // Listening for reloading orderers
+    final ReceivePort receivePort = ReceivePort();
+    IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
+    receivePort.listen((dynamic message) {
+    if (message is Map<String, dynamic>)
+    {
+      if (message["message"] == 'refreshHomePage')
+      {
+        print("REFRESHING PAGE-------");
+        db.deleteReminder(message['id']);
+        refreshPage();
+      }
+      else 
+      {
+        print("Port message is not refreshHomePage");
+      }
+    }
+    });
 
     super.initState();
   }
@@ -72,6 +96,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getList() {
+    // db.clearPendingRemovals();
     db.getReminders();
     remindersList = db.reminders.values.toList();
 
@@ -119,6 +144,12 @@ class _HomePageState extends State<HomePage> {
           "Nagger",
           style: Theme.of(context).textTheme.titleLarge,
         ),
+        actions: [
+          IconButton(onPressed: refreshPage, icon: const Icon(
+            Icons.refresh,
+            color: Colors.red,
+            ))
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

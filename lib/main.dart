@@ -15,20 +15,17 @@ void main() async {
   await Hive.openBox('reminders');
 
   // Notification Service
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final localNotificationService = LocalNotificationService();
-  await localNotificationService.setup();
-
   tz.initializeTimeZones();
 
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await NotificationController.initializeLocalNotifications();
 
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
