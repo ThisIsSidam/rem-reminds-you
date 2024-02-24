@@ -91,6 +91,7 @@ class NotificationController {
     AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceivedMethod);
   }
 
+  @pragma('vm:entry-point')
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {

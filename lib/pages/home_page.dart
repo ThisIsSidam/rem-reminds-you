@@ -37,19 +37,19 @@ class _HomePageState extends State<HomePage> {
     final ReceivePort receivePort = ReceivePort();
     IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
     receivePort.listen((dynamic message) {
-    if (message is Map<String, dynamic>)
-    {
-      if (message["message"] == 'refreshHomePage')
+      if (message is Map<String, dynamic>)
       {
-        print("REFRESHING PAGE-------");
-        db.deleteReminder(message['id']);
-        refreshPage();
+        if (message["message"] == 'refreshHomePage')
+        {
+          print("REFRESHING PAGE-------");
+          db.deleteReminder(message['id']);
+          refreshPage();
+        }
+        else 
+        {
+          print("Port message is not refreshHomePage");
+        }
       }
-      else 
-      {
-        print("Port message is not refreshHomePage");
-      }
-    }
     });
 
     super.initState();
