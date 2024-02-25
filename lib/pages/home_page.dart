@@ -151,7 +151,45 @@ class _HomePageState extends State<HomePage> {
             ))
         ],
       ),
-      body: SingleChildScrollView(
+      body: remindersList.isEmpty 
+      ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "You currently don't have any reminders!",
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            SizedBox(height: 20,),
+            SizedBox(
+              height: 75,
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context, 
+                    isScrollControlled: true,
+                    builder: (BuildContext context) => ReminderSection(
+                      thisReminder: Reminder(
+                        dateAndTime: getDateTimeForNewReminder()
+                      ), 
+                      refreshHomePage: refreshPage
+                    )
+                  );  
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Set a reminder",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      )
+      : SingleChildScrollView(
         child: Column(
           children: [
             HomePageListSection(
@@ -177,7 +215,9 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: remindersList.isEmpty
+      ? null
+      : FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
             context: context, 
@@ -190,7 +230,6 @@ class _HomePageState extends State<HomePage> {
             )
           );
         },
-        
         child: const Icon(
           Icons.add,
         )

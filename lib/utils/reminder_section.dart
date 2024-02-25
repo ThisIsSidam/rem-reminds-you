@@ -159,6 +159,7 @@ class _ReminderSectionState extends State<ReminderSection> {
                   TimeSetButton(time: "12:00 PM", setTime: setTime),
                   TimeSetButton(time: "6:30 PM", setTime: setTime),
                   TimeSetButton(time: "10:00 PM", setTime: setTime),
+                  // Durations of some are altered to quickly get notifications. Will change later on.
                   TimeEditButton(editDuration: const Duration(seconds: 5), editTime: editTime,),
                   TimeEditButton(editDuration: const Duration(minutes: 1), editTime: editTime,),
                   TimeEditButton(editDuration: const Duration(hours: 3), editTime: editTime,),
