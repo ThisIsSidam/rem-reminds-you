@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:nagger/data/notification.dart';
-import 'package:nagger/data/reminders_data.dart';
+import 'package:nagger/consts/consts.dart';
+import 'package:nagger/notification/notification.dart';
+import 'package:nagger/database/database.dart';
 import 'package:nagger/utils/homepage_list_section.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/reminder_section.dart';
@@ -157,7 +158,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "You currently don't have any reminders!",
+              noRemindersPageText,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             SizedBox(height: 20,),
@@ -193,22 +194,22 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             HomePageListSection(
-              name: "Overdue",
+              name: overdueSectionTitle,
               remindersList: overdueList, 
               refreshHomePage: refreshPage
             ),
             HomePageListSection(
-              name: "Today",
+              name: todaySectionTitle,
               remindersList: todayList, 
               refreshHomePage: refreshPage
             ),
             HomePageListSection(
-              name: "Tomorrow",
+              name: tomorrowSectionTitle,
               remindersList: tomorrowList, 
               refreshHomePage: refreshPage
             ),
             HomePageListSection(
-              name: "Later",
+              name: laterSectionTitle,
               remindersList: laterList, 
               refreshHomePage: refreshPage
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nagger/consts/consts.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/reminder_section.dart';
 
@@ -47,7 +48,7 @@ class _ReminderTileState extends State<ReminderTile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.thisReminder.title ?? "No Title",
+                          widget.thisReminder.title ?? reminderNullTitle,
                           style: Theme.of(context).textTheme.titleMedium
                         ),
                         Text(

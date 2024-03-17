@@ -2,10 +2,9 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-// import 'package:timezone/timezone.dart' as tz;
 
 class NotificationController {
-  // final notificationsPlugin = AwesomeNotifications();
+
   static ReceivedAction? initialAction;
   static void Function()? refreshHomePageCallback;
 
@@ -48,7 +47,7 @@ class NotificationController {
     );
   }
 
-  Future<bool> scheduleNotification(
+  static Future<bool> scheduleNotification(
     int notifID,
     String notifTitle, 
     DateTime scheduleNotificationDateTime
@@ -82,7 +81,7 @@ class NotificationController {
     );
   }
 
-  Future<void> cancelScheduledNotification(int id) async {
+  static Future<void> cancelScheduledNotification(int id) async {
     await AwesomeNotifications().cancel(id);
     print("$id cancelled scheduled notification.");
   }

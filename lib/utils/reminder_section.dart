@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/data/reminders_data.dart';
-import 'package:nagger/data/notification.dart';
+import 'package:nagger/consts/consts.dart';
+import 'package:nagger/database/database.dart';
+import 'package:nagger/notification/notification.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/time_edit_button.dart';
 import 'package:nagger/utils/time_set_button.dart';
@@ -21,7 +22,6 @@ class ReminderSection extends StatefulWidget {
 class _ReminderSectionState extends State<ReminderSection> {
 
   RemindersData db = RemindersData();
-  NotificationController notifs = NotificationController();
   TextEditingController titleController = TextEditingController();
   DateTime tempDateTime = DateTime.now();
 
@@ -29,7 +29,7 @@ class _ReminderSectionState extends State<ReminderSection> {
   void initState() {
     if (widget.thisReminder.id != 101)
     {
-      titleController.text = widget.thisReminder.title ?? "No Title 2";
+      titleController.text = widget.thisReminder.title ?? reminderNullTitle;
     }
     tempDateTime = widget.thisReminder.dateAndTime;
     super.initState();
@@ -76,8 +76,8 @@ class _ReminderSectionState extends State<ReminderSection> {
 
     if (widget.thisReminder.id != 101)
     {
-      notifs.cancelScheduledNotification(
-        widget.thisReminder.id ?? 7
+      NotificationController.cancelScheduledNotification(
+        widget.thisReminder.id ?? reminderNullID
       );
       db.deleteReminder(widget.thisReminder.id!);
     }
@@ -85,9 +85,9 @@ class _ReminderSectionState extends State<ReminderSection> {
     widget.thisReminder.title = titleController.text;
     widget.thisReminder.id = widget.thisReminder.getID();
     db.reminders[widget.thisReminder.id!] = widget.thisReminder;
-    notifs.scheduleNotification(
-      widget.thisReminder.id ?? 7,
-      widget.thisReminder.title ?? "Rando",
+    NotificationController.scheduleNotification(
+      widget.thisReminder.id ?? reminderNullID,
+      widget.thisReminder.title ?? reminderNullTitle,
       widget.thisReminder.dateAndTime
     );
     
@@ -99,8 +99,8 @@ class _ReminderSectionState extends State<ReminderSection> {
   }
 
   void deleteReminder() {
-    notifs.cancelScheduledNotification(
-      widget.thisReminder.id ?? 7
+    NotificationController.cancelScheduledNotification(
+      widget.thisReminder.id ?? reminderNullID
     );
     db.deleteReminder(widget.thisReminder.id!);
     widget.refreshHomePage();
@@ -155,10 +155,10 @@ class _ReminderSectionState extends State<ReminderSection> {
                 shrinkWrap: true,
                 childAspectRatio: 1.5,
                 children: [
-                  TimeSetButton(time: "9:30 AM", setTime: setTime),
-                  TimeSetButton(time: "12:00 PM", setTime: setTime),
-                  TimeSetButton(time: "6:30 PM", setTime: setTime),
-                  TimeSetButton(time: "10:00 PM", setTime: setTime),
+                  TimeSetButton(time: timeSetButton0930AM, setTime: setTime),
+                  TimeSetButton(time: timeSetButton12PM, setTime: setTime),
+                  TimeSetButton(time: timeSetButton0630PM, setTime: setTime),
+                  TimeSetButton(time: timeSetButton10PM, setTime: setTime),
                   // Durations of some are altered to quickly get notifications. Will change later on.
                   TimeEditButton(editDuration: const Duration(seconds: 5), editTime: editTime,),
                   TimeEditButton(editDuration: const Duration(minutes: 1), editTime: editTime,),
@@ -185,7 +185,7 @@ class _ReminderSectionState extends State<ReminderSection> {
                   ),
                   MaterialButton(
                     child: Text(
-                      "Close",
+                      materialButtonCloseText,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     onPressed: () {
@@ -196,7 +196,7 @@ class _ReminderSectionState extends State<ReminderSection> {
                   MaterialButton(
                     onPressed: () => saveReminder(),
                     child: Text(
-                      "Save",
+                      materialButtonSaveText,
                       style: Theme.of(context).textTheme.bodyMedium,
                     )
                   )

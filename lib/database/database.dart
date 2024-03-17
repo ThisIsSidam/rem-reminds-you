@@ -1,9 +1,10 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:nagger/consts/consts.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 
 class RemindersData {
   Map<int, Reminder> reminders = {};
-  final _remindersBox = Hive.box("reminders");
+  final _remindersBox = Hive.box(remindersBoxName);
   List<int> removedInBackground = [];
 
   RemindersData() {
@@ -11,23 +12,22 @@ class RemindersData {
   }
 
   Future<void> clearPendingRemovals() async {
-    await Hive.openBox('pending_removal');
+    final pendingRemovals = await Hive.openBox(remindersBoxName);
 
-    final pendingRemovals = Hive.box('pending_removal');
-    final removals = pendingRemovals.get("PENDING_REMOVAL") ?? [];
+    final removals = pendingRemovals.get(pendingRemovalsBoxKey) ?? [];
     for (final id in removals) 
     {
       deleteReminder(id);
     }
-    pendingRemovals.put("PENDING_REMOVAL", []);
+    pendingRemovals.put(pendingRemovalsBoxKey, []);
   }
 
   void getReminders() {
-    reminders = _remindersBox.get("REMINDERS")?.cast<int, Reminder>() ?? {};
+    reminders = _remindersBox.get(remindersBoxKey)?.cast<int, Reminder>() ?? {};
   }
 
   void updateReminders() {
-    _remindersBox.put("REMINDERS", reminders);
+    _remindersBox.put(remindersBoxKey, reminders);
   }
 
   void deleteReminder(int id) {  
