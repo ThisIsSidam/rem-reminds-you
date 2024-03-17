@@ -18,17 +18,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Timer _timer;
-  bool firstTime = true;
   RemindersData db = RemindersData();
-  var remindersList = <Reminder>[];
-  var overdueList= <Reminder>[];
-  var todayList = <Reminder>[];
-  var tomorrowList = <Reminder>[];
-  var laterList = <Reminder>[];
+  int noOfReminders = 0;
+  Map<String, List<Reminder>> remindersMap = {};
 
   @override
   void initState() {
-    getList();
+    remindersMap = db.getReminderLists();
 
     _scheduleRefresh();
     NotificationController.initializeCallback(refreshPage);
@@ -88,7 +84,9 @@ class _HomePageState extends State<HomePage> {
 
   void refreshPage() {
     setState(() {
-      getList();
+      remindersMap = db.getReminderLists();
+      noOfReminders = db.getNumberOfReminders();
+
       if (DateTime.now().second > 55)
       {
       print("refrshPage ${DateTime.now()}");
@@ -96,46 +94,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void getList() {
-    // db.clearPendingRemovals();
-    db.getReminders();
-    remindersList = db.reminders.values.toList();
-
-    overdueList = [];
-    todayList = [];
-    tomorrowList = [];
-    laterList = [];
-
-    remindersList.sort((a, b) => a.getDiffDuration().compareTo(b.getDiffDuration()));
-
-    for (final reminder in remindersList)
-    {
-      Duration due = reminder.getDiffDuration();
-      if (due.isNegative)
-      {
-        overdueList.add(reminder);
-      }
-      else if (due.inHours < 24) 
-      {
-        todayList.add(reminder);
-      }
-      else if (due.inHours < 48)
-      {
-        tomorrowList.add(reminder);
-      }
-      else
-      {
-        laterList.add(reminder);
-      }
-    };
-  }
-
   @override
   void dispose() {
     _timer.cancel();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -152,89 +115,101 @@ class _HomePageState extends State<HomePage> {
             ))
         ],
       ),
-      body: remindersList.isEmpty 
-      ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              noRemindersPageText,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            SizedBox(height: 20,),
-            SizedBox(
-              height: 75,
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context, 
-                    isScrollControlled: true,
-                    builder: (BuildContext context) => ReminderSection(
-                      thisReminder: Reminder(
-                        dateAndTime: getDateTimeForNewReminder()
-                      ), 
-                      refreshHomePage: refreshPage
-                    )
-                  );  
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Set a reminder",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
+      body: noOfReminders == 0
+      ? getEmptyPage()
+      : getListedReminderPage(),
+      floatingActionButton: noOfReminders == 0
+      ? null
+      : getFloatingActionButton()
+    );
+  }
+
+  Widget getEmptyPage() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            noRemindersPageText,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          SizedBox(height: 20,),
+          SizedBox(
+            height: 75,
+            width: 200,
+            child: ElevatedButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context, 
+                  isScrollControlled: true,
+                  builder: (BuildContext context) => ReminderSection(
+                    thisReminder: Reminder(
+                      dateAndTime: getDateTimeForNewReminder()
+                    ), 
+                    refreshHomePage: refreshPage
+                  )
+                );  
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Set a reminder",
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget getListedReminderPage() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          HomePageListSection(
+            name: overdueSectionTitle,
+            remindersList: remindersMap[overdueSectionTitle] ?? [], 
+            refreshHomePage: refreshPage
+          ),
+          HomePageListSection(
+            name: todaySectionTitle,
+            remindersList: remindersMap[todaySectionTitle] ?? [], 
+            refreshHomePage: refreshPage
+          ),
+          HomePageListSection(
+            name: tomorrowSectionTitle,
+            remindersList: remindersMap[tomorrowSectionTitle] ?? [], 
+            refreshHomePage: refreshPage
+          ),
+          HomePageListSection(
+            name: laterSectionTitle,
+            remindersList: remindersMap[laterSectionTitle] ?? [], 
+            refreshHomePage: refreshPage
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getFloatingActionButton() {
+    return FloatingActionButton(
+      onPressed: () {
+        showModalBottomSheet(
+          context: context, 
+          isScrollControlled: true,
+          builder: (BuildContext context) => ReminderSection(
+            thisReminder: Reminder(
+              dateAndTime: getDateTimeForNewReminder()
+            ), 
+            refreshHomePage: refreshPage
+          )
+        );
+      },
+      child: const Icon(
+        Icons.add,
       )
-      : SingleChildScrollView(
-        child: Column(
-          children: [
-            HomePageListSection(
-              name: overdueSectionTitle,
-              remindersList: overdueList, 
-              refreshHomePage: refreshPage
-            ),
-            HomePageListSection(
-              name: todaySectionTitle,
-              remindersList: todayList, 
-              refreshHomePage: refreshPage
-            ),
-            HomePageListSection(
-              name: tomorrowSectionTitle,
-              remindersList: tomorrowList, 
-              refreshHomePage: refreshPage
-            ),
-            HomePageListSection(
-              name: laterSectionTitle,
-              remindersList: laterList, 
-              refreshHomePage: refreshPage
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: remindersList.isEmpty
-      ? null
-      : FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context, 
-            isScrollControlled: true,
-            builder: (BuildContext context) => ReminderSection(
-              thisReminder: Reminder(
-                dateAndTime: getDateTimeForNewReminder()
-              ), 
-              refreshHomePage: refreshPage
-            )
-          );
-        },
-        child: const Icon(
-          Icons.add,
-        )
-      ),
     );
   }
 }
