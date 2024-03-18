@@ -79,7 +79,7 @@ class _ReminderSectionState extends State<ReminderSection> {
 
   void deleteReminder() {
     NotificationController.cancelScheduledNotification(
-      widget.thisReminder.id ?? reminderNullID
+      widget.thisReminder.id.toString()
     );
     RemindersDatabaseController.deleteReminder(widget.thisReminder.id!);
     widget.refreshHomePage();

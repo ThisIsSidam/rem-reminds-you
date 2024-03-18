@@ -1,8 +1,10 @@
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nagger/consts/consts.dart';
+import 'package:nagger/reminder_class/reminder.dart';
 
 class NotificationController {
 
@@ -49,15 +51,16 @@ class NotificationController {
   }
 
   static Future<bool> scheduleNotification(
-    int notifID,
-    String notifTitle, 
-    DateTime scheduleNotificationDateTime
+    Reminder reminder,
+    {int repeatNumber = 0}
   ) async {
+    final dateTime = reminder.dateAndTime;
     return await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: notifID, 
+        id: (reminder.id ?? reminderNullID) + repeatNumber, 
         channelKey: '111',
-        title: notifTitle,
+        groupKey: reminder.id.toString(),
+        title: reminder.title,
         payload: {
           "App name": "Nagger"
         },
@@ -71,20 +74,25 @@ class NotificationController {
         ),
       ],
       schedule: NotificationCalendar(
-        year: scheduleNotificationDateTime.year,
-        month: scheduleNotificationDateTime.month,
-        day: scheduleNotificationDateTime.day,
-        hour: scheduleNotificationDateTime.hour,
-        minute: scheduleNotificationDateTime.minute,
-        second: scheduleNotificationDateTime.second,
-        millisecond: scheduleNotificationDateTime.millisecond
+        year: dateTime.year,
+        month: dateTime.month,
+        day: dateTime.day,
+        hour: dateTime.hour,
+        minute: dateTime.minute,
+        second: dateTime.second,
+        millisecond: dateTime.millisecond
       )
     );
   }
 
-  static Future<void> cancelScheduledNotification(int id) async {
-    await AwesomeNotifications().cancel(id);
-    print("$id cancelled scheduled notification.");
+  static Future<void> cancelScheduledNotification(String groupKey) async {
+    if (groupKey == "Null")
+    {
+      debugPrint("[NotificationController] Null groupkey given to cancel.");
+      return;
+    }
+    await AwesomeNotifications().cancelSchedulesByGroupKey(groupKey);
+    print("$groupKey cancelled scheduled notification.");
   }
 
   static Future<void> startListeningNotificationEvents() async {
@@ -96,35 +104,39 @@ class NotificationController {
     ReceivedAction receivedAction,
   ) async {
   
-    if (receivedAction.buttonKeyPressed == 'done') {
-      
-      final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-      if (mainIsolate != null) 
-      {
-        final message = {
-          'message': 'refreshHomePage',
-          'id': receivedAction.id ?? reminderNullID
-        };
-        mainIsolate.send(message);
-      }
-      else 
-      { 
-        await Hive.initFlutter();
-        await Hive.openBox("pending_removal");
-
-        final db = Hive.box("pending_removal");
-        final listo = db.get("PENDING_REMOVAL") ?? [];
-        
-        listo.add(receivedAction.id ?? 7);
-        db.put("PENDING_REMOVAL", listo);
-
-        print("To Remove: $listo");
-      }
-
+    if (receivedAction.buttonKeyPressed == 'done') 
+    {
+      onDoneButtonPressed(receivedAction);
     }
     else 
     {
       print("Unknown action with notification.");
     }
+  }
+
+  static Future<void> onDoneButtonPressed(ReceivedAction receivedAction) async {
+    final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
+    if (mainIsolate != null) 
+    {
+      final message = {
+        'message': 'refreshHomePage',
+        'id': int.parse(receivedAction.groupKey ?? "Null")
+      };
+      mainIsolate.send(message);
+    }
+    else 
+    { 
+      await Hive.initFlutter();
+      await Hive.openBox("pending_removal");
+
+      final db = Hive.box("pending_removal");
+      final listo = db.get("PENDING_REMOVAL") ?? [];
+      
+      listo.add(int.parse(receivedAction.groupKey ?? "Null"));
+      db.put("PENDING_REMOVAL", listo);
+
+      print("To Remove: $listo");
+    }
+    cancelScheduledNotification(receivedAction.groupKey ?? "Null");
   }
 }

@@ -40,23 +40,32 @@ class RemindersDatabaseController {
     if (reminder.id != 101)
     {
       NotificationController.cancelScheduledNotification(
-        reminder.id ?? reminderNullID
+        reminder.id.toString()
       );
       deleteReminder(reminder.id!);
     }
 
     reminder.id = reminder.getID();
     reminders[reminder.id!] = reminder;
-    NotificationController.scheduleNotification(
-      reminder.id ?? reminderNullID,
-      reminder.title ?? reminderNullTitle,
-      reminder.dateAndTime
-    );
+    NotificationController.scheduleNotification(reminder);
+
+    // if (reminder.getDiffDuration() < Duration(days: 7))
+    // {
+    //   scheduleRepeatedNotifications(reminder);
+    // }
     
     updateReminders();
     printAll("After Adding");
 
   }
+
+  // static void scheduleRepeatedNotifications(Reminder reminder) {
+  //   for (int i = 1; i <= 5; i++)
+  //   {
+  //     reminder.dateAndTime = reminder.dateAndTime.add(Duration(seconds: 5));
+  //     NotificationController.scheduleNotification(reminder, repeatNumber: i);
+  //   }
+  // }
 
   static void deleteReminder(int id) {  
 
