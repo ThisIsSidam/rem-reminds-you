@@ -2,6 +2,7 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:nagger/consts/consts.dart';
 
 class NotificationController {
 
@@ -102,7 +103,7 @@ class NotificationController {
       {
         final message = {
           'message': 'refreshHomePage',
-          'id': receivedAction.id ?? 7
+          'id': receivedAction.id ?? reminderNullID
         };
         mainIsolate.send(message);
       }

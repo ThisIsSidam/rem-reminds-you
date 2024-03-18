@@ -3,17 +3,13 @@ import 'package:nagger/consts/consts.dart';
 import 'package:nagger/notification/notification.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 
-class RemindersData {
-  Map<int, Reminder> reminders = {};
-  final _remindersBox = Hive.box(remindersBoxName);
-  List<int> removedInBackground = [];
+class RemindersDatabaseController {
+  static Map<int, Reminder> reminders = {};
+  static final _remindersBox = Hive.box(remindersBoxName);
+  static List<int> removedInBackground = [];
 
-  RemindersData() {
-    clearPendingRemovals();
-  }
-
-  Future<void> clearPendingRemovals() async {
-    final pendingRemovals = await Hive.openBox(remindersBoxName);
+  static Future<void> clearPendingRemovals() async {
+    final pendingRemovals = await Hive.openBox(pendingRemovalsBoxKey);
 
     final removals = pendingRemovals.get(pendingRemovalsBoxKey) ?? [];
     for (final id in removals) 
@@ -23,20 +19,20 @@ class RemindersData {
     pendingRemovals.put(pendingRemovalsBoxKey, []);
   }
 
-  void getReminders() { 
+  static void getReminders() { 
     reminders = _remindersBox.get(remindersBoxKey)?.cast<int, Reminder>() ?? {};
   }
 
-  void updateReminders() {
+  static void updateReminders() {
     _remindersBox.put(remindersBoxKey, reminders);
   }
 
-  int getNumberOfReminders() {
+  static int getNumberOfReminders() {
     getReminders();
     return reminders.length;
   }
 
-  void saveReminder(Reminder reminder) {
+  static void saveReminder(Reminder reminder) {
     getReminders();
 
     printAll("Before Adding");
@@ -62,7 +58,7 @@ class RemindersData {
 
   }
 
-  void deleteReminder(int id) {  
+  static void deleteReminder(int id) {  
 
     getReminders();
     
@@ -76,7 +72,7 @@ class RemindersData {
     printAll("After Deleting");
   }
 
-  void printAll(String str) {
+  static void printAll(String str) {
     getReminders();
 
     print(str);
@@ -87,7 +83,7 @@ class RemindersData {
     });
   }
 
-  Map<String,List<Reminder>> getReminderLists() {
+  static Map<String,List<Reminder>> getReminderLists() {
     getReminders();
     final remindersList = reminders.values.toList();
 

@@ -21,7 +21,6 @@ class ReminderSection extends StatefulWidget {
 
 class _ReminderSectionState extends State<ReminderSection> {
 
-  RemindersData db = RemindersData();
   TextEditingController titleController = TextEditingController();
   DateTime tempDateTime = DateTime.now();
 
@@ -72,6 +71,8 @@ class _ReminderSectionState extends State<ReminderSection> {
   void saveReminder() {
     widget.thisReminder.title = titleController.text;
     
+    RemindersDatabaseController.saveReminder(widget.thisReminder);
+
     widget.refreshHomePage();
     Navigator.pop(context);
   }
@@ -80,7 +81,7 @@ class _ReminderSectionState extends State<ReminderSection> {
     NotificationController.cancelScheduledNotification(
       widget.thisReminder.id ?? reminderNullID
     );
-    db.deleteReminder(widget.thisReminder.id!);
+    RemindersDatabaseController.deleteReminder(widget.thisReminder.id!);
     widget.refreshHomePage();
     Navigator.pop(context);
   }

@@ -18,13 +18,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Timer _timer;
-  RemindersData db = RemindersData();
   int noOfReminders = 0;
   Map<String, List<Reminder>> remindersMap = {};
 
   @override
   void initState() {
-    remindersMap = db.getReminderLists();
+    remindersMap = RemindersDatabaseController.getReminderLists();
 
     _scheduleRefresh();
     NotificationController.initializeCallback(refreshPage);
@@ -39,7 +38,7 @@ class _HomePageState extends State<HomePage> {
         if (message["message"] == 'refreshHomePage')
         {
           print("REFRESHING PAGE-------");
-          db.deleteReminder(message['id']);
+          RemindersDatabaseController.deleteReminder(message['id']);
           refreshPage();
         }
         else 
@@ -84,8 +83,8 @@ class _HomePageState extends State<HomePage> {
 
   void refreshPage() {
     setState(() {
-      remindersMap = db.getReminderLists();
-      noOfReminders = db.getNumberOfReminders();
+      remindersMap = RemindersDatabaseController.getReminderLists();
+      noOfReminders = RemindersDatabaseController.getNumberOfReminders();
 
       if (DateTime.now().second > 55)
       {
