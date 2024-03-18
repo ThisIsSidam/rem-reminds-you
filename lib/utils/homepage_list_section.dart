@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:nagger/consts/consts.dart';
 import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/reminder_tile.dart';
+import 'package:nagger/theme/app_theme.dart';
+import 'package:nagger/utils/reminder_section.dart';
 
 class HomePageListSection extends StatelessWidget {
   final String name;
@@ -33,23 +35,62 @@ class HomePageListSection extends StatelessWidget {
         SizedBox(
           height: remindersList.length * 75,
           child: ListView.separated(
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: remindersList.length,
-          separatorBuilder: (context, index) {
-            return const Divider(
-              color: Colors.transparent,
-              height: 5,
-            );
-          },
-          itemBuilder: (context, index) {
-            return ReminderTile(
-              thisReminder: remindersList[index], 
-              refreshFunc: refreshHomePage,
-            );
-          }
-                ),
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: remindersList.length,
+            separatorBuilder: (context, index) {
+              return const Divider(
+                color: Colors.transparent,
+                height: 5,
+              );
+            },
+            itemBuilder: (context, index) {
+              final reminder = remindersList[index];
+              return CustromListTile(context, reminder);
+            }
+          ),
         ),
       ],
+    );
+  }
+
+  Widget CustromListTile(BuildContext context, Reminder reminder) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 10, right: 10
+      ),
+      child: ListTile(
+        title: Text(
+          reminder.title ?? reminderNullTitle,
+          style: Theme.of(context).textTheme.titleMedium
+        ),
+        subtitle: Text(
+          reminder.getDateTimeAsStr(),
+          style: Theme.of(context).textTheme.bodyMedium
+        ),
+        trailing: Column(
+          children: [
+            SizedBox(height: 5,),
+            Text(
+              reminder.getDiffString(),
+              style: Theme.of(context).textTheme.bodySmall
+            ),
+          ],
+        ),
+        tileColor: myTheme.cardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5)
+        ),
+        onTap: () {
+          showModalBottomSheet(
+            context: context, 
+            isScrollControlled: true,
+            builder: (BuildContext context) => ReminderSection(
+              thisReminder: reminder, 
+              refreshHomePage: refreshHomePage
+            )
+          );
+        },
+      ),
     );
   }
 }
