@@ -37,13 +37,13 @@ class _HomePageState extends State<HomePage> {
       {
         if (message["message"] == 'refreshHomePage')
         {
-          print("REFRESHING PAGE-------");
+          debugPrint("REFRESHING PAGE-------");
           RemindersDatabaseController.deleteReminder(message['id']);
           refreshPage();
         }
         else 
         {
-          print("Port message is not refreshHomePage");
+          debugPrint("Port message is not refreshHomePage");
         }
       }
     });
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
 
       if (DateTime.now().second > 55)
       {
-      print("refrshPage ${DateTime.now()}");
+      debugPrint("refrshPage ${DateTime.now()}");
       }
     });
   }

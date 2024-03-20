@@ -93,7 +93,7 @@ class NotificationController {
       return;
     }
     await AwesomeNotifications().cancelSchedulesByGroupKey(groupKey);
-    print("$groupKey cancelled scheduled notification.");
+    debugPrint("$groupKey cancelled scheduled notification.");
   }
 
   static Future<void> startListeningNotificationEvents() async {
@@ -145,7 +145,7 @@ class NotificationController {
     }
     else 
     {
-      print("Unknown action with notification.");
+      debugPrint("Unknown action with notification.");
     }
   }
   

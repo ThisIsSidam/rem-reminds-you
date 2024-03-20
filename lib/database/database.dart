@@ -91,11 +91,11 @@ class RemindersDatabaseController {
   static void printAll(String str) {
     getReminders();
 
-    print(str);
-    print("================");
+    debugPrint(str);
+    debugPrint("================");
 
     reminders.forEach((key, value) {
-      print("Key: ($key)");
+      debugPrint("Key: ($key)");
     });
   }
 
