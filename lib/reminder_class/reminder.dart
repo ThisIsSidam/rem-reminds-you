@@ -37,16 +37,19 @@ class Reminder {
     return formatted;
   }
 
-String getDiffString() {
-  Duration difference = dateAndTime.difference(DateTime.now());
+  String getDiffString() {
+    Duration difference = dateAndTime.difference(DateTime.now());
 
-  if (difference.isNegative) {
-    difference = difference.abs();
-    return "${_formatDuration(difference)} ago";
-  } else {
-    return "in ${_formatDuration(difference)}";
+    if (difference.isNegative) 
+    {
+      difference = difference.abs();
+      return "${_formatDuration(difference)} ago";
+    } 
+    else 
+    {
+      return "in ${_formatDuration(difference)}";
+    }
   }
-}
 
   String _formatDuration(Duration duration) {
     if (duration.inSeconds < 60) 

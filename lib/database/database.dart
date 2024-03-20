@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/notification/notification.dart';
@@ -9,14 +10,19 @@ class RemindersDatabaseController {
   static List<int> removedInBackground = [];
 
   static Future<void> clearPendingRemovals() async {
-    final pendingRemovals = await Hive.openBox(pendingRemovalsBoxKey);
+    debugPrint("[clearPendingRemovals] Running");
+    final pendingRemovals = await Hive.openBox(pendingRemovalsBoxName);
 
+    debugPrint("[clearPendingRemovals] Box opened");
     final removals = pendingRemovals.get(pendingRemovalsBoxKey) ?? [];
     for (final id in removals) 
     {
+      debugPrint("[clearPendingRemovals] Removing $id");
       deleteReminder(id);
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
+    debugPrint("[clearPendingRemovals] Removing Done");
+
   }
 
   static void getReminders() { 
@@ -49,23 +55,24 @@ class RemindersDatabaseController {
     reminders[reminder.id!] = reminder;
     NotificationController.scheduleNotification(reminder);
 
-    // if (reminder.getDiffDuration() < Duration(days: 7))
-    // {
-    //   scheduleRepeatedNotifications(reminder);
-    // }
+    if (reminder.getDiffDuration() < Duration(days: 7))
+    {
+      scheduleRepeatedNotifications(reminder);
+    }
     
     updateReminders();
     printAll("After Adding");
-
   }
 
-  // static void scheduleRepeatedNotifications(Reminder reminder) {
-  //   for (int i = 1; i <= 5; i++)
-  //   {
-  //     reminder.dateAndTime = reminder.dateAndTime.add(Duration(seconds: 5));
-  //     NotificationController.scheduleNotification(reminder, repeatNumber: i);
-  //   }
-  // }
+  static void scheduleRepeatedNotifications(Reminder reminder) {
+    var tempDateTime = reminder.dateAndTime;
+    for (int i = 1; i <= 5; i++)
+    {
+      reminder.dateAndTime = reminder.dateAndTime.add(Duration(seconds: 5));
+      NotificationController.scheduleNotification(reminder, repeatNumber: i);
+    }
+    reminder.dateAndTime = tempDateTime;
+  }
 
   static void deleteReminder(int id) {  
 

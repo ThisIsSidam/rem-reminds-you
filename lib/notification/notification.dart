@@ -1,6 +1,7 @@
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nagger/consts/consts.dart';
@@ -106,37 +107,46 @@ class NotificationController {
   
     if (receivedAction.buttonKeyPressed == 'done') 
     {
-      onDoneButtonPressed(receivedAction);
+      debugPrint("[onDoneButtonPressed] Running");
+      await cancelScheduledNotification(receivedAction.groupKey ?? "Null");
+      debugPrint("[onDoneButtonPressed] Schedule Cancelled");
+
+      final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
+      debugPrint("[onDoneButtonPressed] mainIsolate connected");
+      if (mainIsolate != null) 
+      {
+        debugPrint("[onDoneButtonPressed] mainIsolate not null");
+        final message = {
+          'message': 'refreshHomePage',
+          'id': int.parse(receivedAction.groupKey ?? "Null")
+        };
+        debugPrint("[onDoneButtonPressed] Message created");
+        mainIsolate.send(message);
+        debugPrint("[onDoneButtonPressed] Message Sent");
+      }
+      else 
+      { 
+        debugPrint("[onDoneButtonPressed] mainIsolate null");
+        await Hive.initFlutter();
+        debugPrint("[onDoneButtonPressed] Hive init");
+
+        final db = await Hive.openBox(pendingRemovalsBoxName);
+        debugPrint("[onDoneButtonPressed] Box Opened");
+
+        final listo = db.get(pendingRemovalsBoxKey) ?? [];
+        
+        listo.add(int.parse(receivedAction.groupKey ?? "Null"));
+        debugPrint("[onDoneButtonPressed] Added ${receivedAction.groupKey} to remove");
+
+        db.put(pendingRemovalsBoxKey, listo);
+
+        debugPrint("[onDoneButtonPressed] To Remove: $listo");
+      }    
     }
     else 
     {
       print("Unknown action with notification.");
     }
   }
-
-  static Future<void> onDoneButtonPressed(ReceivedAction receivedAction) async {
-    final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-    if (mainIsolate != null) 
-    {
-      final message = {
-        'message': 'refreshHomePage',
-        'id': int.parse(receivedAction.groupKey ?? "Null")
-      };
-      mainIsolate.send(message);
-    }
-    else 
-    { 
-      await Hive.initFlutter();
-      await Hive.openBox("pending_removal");
-
-      final db = Hive.box("pending_removal");
-      final listo = db.get("PENDING_REMOVAL") ?? [];
-      
-      listo.add(int.parse(receivedAction.groupKey ?? "Null"));
-      db.put("PENDING_REMOVAL", listo);
-
-      print("To Remove: $listo");
-    }
-    cancelScheduledNotification(receivedAction.groupKey ?? "Null");
-  }
+  
 }

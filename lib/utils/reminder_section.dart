@@ -70,7 +70,7 @@ class _ReminderSectionState extends State<ReminderSection> {
 
   void saveReminder() {
     widget.thisReminder.title = titleController.text;
-    
+
     RemindersDatabaseController.saveReminder(widget.thisReminder);
 
     widget.refreshHomePage();

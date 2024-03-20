@@ -1,8 +1,10 @@
 const appName = "Nagger";
 
 const remindersBoxName = "reminders";
-const pendingRemovalsBoxKey = "PENDING_REMOVAL";
 const remindersBoxKey = "REMINDERS";
+
+const pendingRemovalsBoxName = "pending_removals";
+const pendingRemovalsBoxKey = "PENDING_REMOVAL";
 
 const reminderNullTitle = "No Title";
 

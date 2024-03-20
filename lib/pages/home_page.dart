@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   // Returns DateTime with 0 seconds while 5 min in the future.
   DateTime getDateTimeForNewReminder() {
     final now = DateTime.now();
-    return DateTime(
+    final result = DateTime(
       now.year,
       now.month,
       now.day,
@@ -63,6 +63,8 @@ class _HomePageState extends State<HomePage> {
       0,
       0
     );
+
+    return result;
   }
 
   void _scheduleRefresh() {
