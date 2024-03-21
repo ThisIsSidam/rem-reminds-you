@@ -10,7 +10,6 @@ import 'package:nagger/reminder_class/reminder.dart';
 class NotificationController {
 
   static ReceivedAction? initialAction;
-  static void Function()? refreshHomePageCallback;
 
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications().initialize(
@@ -26,10 +25,6 @@ class NotificationController {
 
     initialAction = await AwesomeNotifications()
       .getInitialNotificationAction(removeFromActionEvents: false);
-  }
-
-  static void initializeCallback(void Function() func) {
-    refreshHomePageCallback = func;
   }
 
   static Future<void> showNotification(String notifTitle) async {

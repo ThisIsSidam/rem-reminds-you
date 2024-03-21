@@ -16,6 +16,7 @@ void main() async {
   await Hive.openBox(remindersBoxName);
   RemindersDatabaseController.clearPendingRemovals();
 
+  // Awesome Notification
   await NotificationController.initializeLocalNotifications();
 
   runApp(const MyApp());

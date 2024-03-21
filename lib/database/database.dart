@@ -9,6 +9,9 @@ class RemindersDatabaseController {
   static final _remindersBox = Hive.box(remindersBoxName);
   static List<int> removedInBackground = [];
 
+
+  /// Removes the reminders from the database which were set as 'done' in their 
+  /// notifications when the app was terminated.
   static Future<void> clearPendingRemovals() async {
     debugPrint("[clearPendingRemovals] Running");
     final pendingRemovals = await Hive.openBox(pendingRemovalsBoxName);
@@ -25,19 +28,23 @@ class RemindersDatabaseController {
 
   }
 
+  /// Get reminders from the database.
   static void getReminders() { 
     reminders = _remindersBox.get(remindersBoxKey)?.cast<int, Reminder>() ?? {};
   }
 
+  /// Update reminders to the database.
   static void updateReminders() {
     _remindersBox.put(remindersBoxKey, reminders);
   }
 
+  /// Number of reminders present in the database.
   static int getNumberOfReminders() {
     getReminders();
     return reminders.length;
   }
 
+  /// Add a reminder to the database.
   static void saveReminder(Reminder reminder) {
     getReminders();
 
@@ -64,6 +71,8 @@ class RemindersDatabaseController {
     printAll("After Adding");
   }
 
+  /// Schedule a number of notifications with a time interval after the scheduled
+  /// time of the reminder. 
   static void scheduleRepeatedNotifications(Reminder reminder) {
     var tempDateTime = reminder.dateAndTime;
     for (int i = 1; i <= 5; i++)
@@ -74,6 +83,7 @@ class RemindersDatabaseController {
     reminder.dateAndTime = tempDateTime;
   }
 
+  /// Remove a reminder's data from the database.
   static void deleteReminder(int id) {  
 
     getReminders();
@@ -88,6 +98,7 @@ class RemindersDatabaseController {
     printAll("After Deleting");
   }
 
+  /// Print id of all the reminders which are present in the database.
   static void printAll(String str) {
     getReminders();
 
@@ -99,6 +110,8 @@ class RemindersDatabaseController {
     });
   }
 
+  /// Returns a map which consists of all the reminders in the database categorized
+  /// as per their time. The categories are Overdue, Today, Tomorrow and Later.
   static Map<String,List<Reminder>> getReminderLists() {
     getReminders();
     final remindersList = reminders.values.toList();

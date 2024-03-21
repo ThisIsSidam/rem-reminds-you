@@ -26,7 +26,6 @@ class _HomePageState extends State<HomePage> {
     remindersMap = RemindersDatabaseController.getReminderLists();
 
     _scheduleRefresh();
-    NotificationController.initializeCallback(refreshPage);
     NotificationController.startListeningNotificationEvents();
 
     // Listening for reloading orderers

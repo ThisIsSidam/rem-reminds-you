@@ -34,12 +34,15 @@ class _ReminderSectionState extends State<ReminderSection> {
     super.initState();
   }
 
+  /// Adds the Duration parameter to the Reminder object dateTime attribute.
   void editTime(Duration dur) {
     setState(() {
       widget.thisReminder.dateAndTime = widget.thisReminder.dateAndTime.add(dur);
     });
   }
 
+  /// Sets the value of the dateTime attribute of the Reminder to the 
+  /// time specified in the String parameter.
   void setTime(String time) {
     final strParts = time.split(" ");
 
@@ -68,6 +71,7 @@ class _ReminderSectionState extends State<ReminderSection> {
     });
   }
 
+  /// Orders the saving of the reminder in the database.
   void saveReminder() {
     widget.thisReminder.title = titleController.text;
 
@@ -77,6 +81,7 @@ class _ReminderSectionState extends State<ReminderSection> {
     Navigator.pop(context);
   }
 
+  /// Orders the deletion of the reminder from the database.
   void deleteReminder() {
     NotificationController.cancelScheduledNotification(
       widget.thisReminder.id.toString()
