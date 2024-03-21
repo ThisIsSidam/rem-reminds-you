@@ -117,6 +117,8 @@ class _ReminderSectionState extends State<ReminderSection> {
     );
   }
 
+  // Widget 
+
   Widget titleFormField() {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),

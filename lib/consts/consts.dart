@@ -23,3 +23,4 @@ const timeSetButton0630PM = "6:30 AM";
 const timeSetButton10PM = "10:00 PM";
 
 const reminderNullID = 7;
+const notificationNullGroupKey = "Null";

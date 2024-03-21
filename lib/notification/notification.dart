@@ -41,6 +41,10 @@ class NotificationController {
         NotificationActionButton(
           key: 'done', 
           label: 'Done'
+        ),
+        NotificationActionButton(
+          key: 'silence', 
+          label: 'Silence'
         )
       ]
     );
@@ -68,6 +72,11 @@ class NotificationController {
           label: 'Done',
           actionType: ActionType.SilentBackgroundAction
         ),
+        NotificationActionButton(
+          key: 'silence', 
+          label: 'Silence',
+          actionType: ActionType.SilentBackgroundAction
+        )
       ],
       schedule: NotificationCalendar(
         year: dateTime.year,
@@ -82,7 +91,7 @@ class NotificationController {
   }
 
   static Future<void> cancelScheduledNotification(String groupKey) async {
-    if (groupKey == "Null")
+    if (groupKey == notificationNullGroupKey)
     {
       debugPrint("[NotificationController] Null groupkey given to cancel.");
       return;
@@ -103,7 +112,7 @@ class NotificationController {
     if (receivedAction.buttonKeyPressed == 'done') 
     {
       debugPrint("[onDoneButtonPressed] Running");
-      await cancelScheduledNotification(receivedAction.groupKey ?? "Null");
+      await cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
       debugPrint("[onDoneButtonPressed] Schedule Cancelled");
 
       final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
@@ -113,7 +122,7 @@ class NotificationController {
         debugPrint("[onDoneButtonPressed] mainIsolate not null");
         final message = {
           'message': 'refreshHomePage',
-          'id': int.parse(receivedAction.groupKey ?? "Null")
+          'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
         };
         debugPrint("[onDoneButtonPressed] Message created");
         mainIsolate.send(message);
@@ -130,7 +139,7 @@ class NotificationController {
 
         final listo = db.get(pendingRemovalsBoxKey) ?? [];
         
-        listo.add(int.parse(receivedAction.groupKey ?? "Null"));
+        listo.add(int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
         debugPrint("[onDoneButtonPressed] Added ${receivedAction.groupKey} to remove");
 
         db.put(pendingRemovalsBoxKey, listo);
@@ -138,9 +147,14 @@ class NotificationController {
         debugPrint("[onDoneButtonPressed] To Remove: $listo");
       }    
     }
+    else if (receivedAction.buttonKeyPressed == 'silence')
+    {
+      cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
+      debugPrint("[onSilenceButtonPressed] Reminder ${receivedAction.groupKey} silenced");
+    }
     else 
     {
-      debugPrint("Unknown action with notification.");
+      debugPrint("[NotificationController] Unknown action with notification.");
     }
   }
   
