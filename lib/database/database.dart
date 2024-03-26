@@ -48,10 +48,13 @@ class RemindersDatabaseController {
   static void saveReminder(Reminder reminder) {
     getReminders();
 
+    debugPrint("[saveReminder] Reminder: Id${reminder.id}, T${reminder.title}, DT${reminder.dateAndTime}");
+
     printAll("Before Adding");
 
-    if (reminder.id != 101)
+    if (reminder.id != newReminderID)
     {
+      debugPrint("[saveReminder] id : ${reminder.id}");
       NotificationController.cancelScheduledNotification(
         reminder.id.toString()
       );
@@ -75,9 +78,9 @@ class RemindersDatabaseController {
   /// time of the reminder. 
   static void scheduleRepeatedNotifications(Reminder reminder) {
     var tempDateTime = reminder.dateAndTime;
-    for (int i = 1; i <= 5; i++)
+    for (int i = 1; i <= reminder.repetitionCount; i++)
     {
-      reminder.dateAndTime = reminder.dateAndTime.add(Duration(seconds: 5));
+      reminder.dateAndTime = reminder.dateAndTime.add(reminder.repetitionInterval);
       NotificationController.scheduleNotification(reminder, repeatNumber: i);
     }
     reminder.dateAndTime = tempDateTime;

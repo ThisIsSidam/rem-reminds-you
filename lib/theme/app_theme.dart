@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 
 final ThemeData myTheme = ThemeData(
   primaryColor: Colors.white,
-  cardColor: const Color.fromRGBO(122, 46, 14, 1),
+  cardColor: Colors.blueAccent,
 
   iconTheme: const IconThemeData(
-    color: Color.fromRGBO(255, 219, 207, 1)
+    color: Colors.black
   ),
   
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
-    backgroundColor: Color.fromRGBO(122, 46, 14, 1),
-    foregroundColor: Color.fromRGBO(255, 219, 207, 1)
+    backgroundColor: Colors.blueAccent,
+    foregroundColor: Colors.black
   ),
 
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
-      backgroundColor: const Color.fromRGBO(122, 46, 14, 1),
-      foregroundColor: const Color.fromRGBO(255, 219, 207, 1),
+      backgroundColor: Colors.blueAccent,
+      foregroundColor: Colors.black,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5)
       ),
@@ -27,57 +27,62 @@ final ThemeData myTheme = ThemeData(
 
   buttonTheme: ButtonThemeData(
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color.fromRGBO(122, 46, 14, 1),
+      seedColor: Colors.blueAccent,
     )
   ),
+
 
   textTheme: const TextTheme(
     titleLarge: TextStyle(
       fontSize: 22,
       fontWeight: FontWeight.bold,
-      color: Color.fromRGBO(255, 219, 207, 1)
+      color: Colors.black
     ),
     titleMedium: TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.bold,
-      color: Color.fromRGBO(255, 219, 207, 1)
+      color: Colors.black
     ),
     titleSmall: TextStyle(
       fontSize: 17,
       fontWeight: FontWeight.bold,
-      color: Color.fromRGBO(255, 219, 207, 1)
+      color: Colors.black
     ),
     bodyLarge: TextStyle(
       fontSize: 16,
-      color: Color.fromRGBO(255, 219, 207, 1)
+      color: Colors.black
     ),
     bodyMedium: TextStyle(
       fontSize: 14,
-      color: Color.fromRGBO(255, 219, 207, 1)
+      color: Colors.black
     ),
     bodySmall: TextStyle(
       fontSize: 12,
-      color: Color.fromRGBO(255, 219, 207, 1)
+      color: Colors.black
+    ),
+    labelLarge: TextStyle(
+      fontSize: 20,
+      color: Colors.white
     )
   ),
 
   inputDecorationTheme: const InputDecorationTheme(
     filled: true,
-    fillColor: Color.fromRGBO(122, 46, 14, 1),
+    fillColor: Colors.white,
     enabledBorder: OutlineInputBorder(
       borderSide: BorderSide(
-        color: Color.fromRGBO(122, 46, 14, 1),
+        color: Colors.blueAccent,
         width: 2
       ),
       borderRadius: BorderRadius.all(Radius.circular(5)),
     ),
     disabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Color.fromRGBO(122, 46, 14, 1),),
+      borderSide: BorderSide(color: Colors.blueAccent,),
       borderRadius: BorderRadius.all(Radius.circular(5))
     ), 
     focusedBorder: OutlineInputBorder(
       borderSide: BorderSide(
-        color: Color.fromRGBO(122, 46, 14, 1),
+        color: Colors.blueAccent,
         width: 2.5
       ),
       borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -91,7 +96,7 @@ final ThemeData myTheme = ThemeData(
 
   colorScheme: ColorScheme.fromSeed(
     seedColor: Colors.black,
-    background: const Color.fromRGBO(32, 27, 24, 1),
+    background: Colors.white,
     onBackground: const Color.fromRGBO(237, 223, 220, 1)
   )
 );

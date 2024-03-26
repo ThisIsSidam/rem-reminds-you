@@ -7,7 +7,7 @@ import 'package:nagger/notification/notification.dart';
 import 'package:nagger/database/database.dart';
 import 'package:nagger/utils/homepage_list_section.dart';
 import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/reminder_section.dart';
+import 'package:nagger/pages/reminder_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -139,16 +139,14 @@ class _HomePageState extends State<HomePage> {
             width: 200,
             child: ElevatedButton(
               onPressed: () {
-                showModalBottomSheet(
-                  context: context, 
-                  isScrollControlled: true,
-                  builder: (BuildContext context) => ReminderSection(
-                    thisReminder: Reminder(
-                      dateAndTime: getDateTimeForNewReminder()
-                    ), 
-                    refreshHomePage: refreshPage
+                Navigator.push(context, 
+                  MaterialPageRoute(
+                    builder: (context) => ReminderPage(
+                      thisReminder: Reminder(dateAndTime: DateTime.now().add(Duration(minutes: 5))), 
+                      refreshHomePage: refreshPage
+                    )
                   )
-                );  
+                ); 
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -196,16 +194,14 @@ class _HomePageState extends State<HomePage> {
   Widget getFloatingActionButton() {
     return FloatingActionButton(
       onPressed: () {
-        showModalBottomSheet(
-          context: context, 
-          isScrollControlled: true,
-          builder: (BuildContext context) => ReminderSection(
-            thisReminder: Reminder(
-              dateAndTime: getDateTimeForNewReminder()
-            ), 
-            refreshHomePage: refreshPage
+        Navigator.push(context, 
+          MaterialPageRoute(
+            builder: (context) => ReminderPage(
+              thisReminder: Reminder(dateAndTime: DateTime.now()), 
+              refreshHomePage: refreshPage
+            )
           )
-        );
+        ); 
       },
       child: const Icon(
         Icons.add,

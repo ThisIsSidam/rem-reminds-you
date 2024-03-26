@@ -2,32 +2,37 @@ import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
+import 'package:nagger/consts/consts.dart';
 part 'reminder.g.dart';
 
 @HiveType(typeId: 1)
 class Reminder {
 
   @HiveField(0)
-  String? title;
+  String title;
 
   @HiveField(1)
-  int? snoozeMinutes;
-
-  @HiveField(2)
   DateTime dateAndTime;
 
-  @HiveField(3)
+  @HiveField(2)
   int? id;
 
-  @HiveField(4)
+  @HiveField(3)
   bool done = false;
 
+  @HiveField(4)
+  int repetitionCount; 
+
+  @HiveField(5)
+  Duration repetitionInterval;
+
   Reminder({
-    this.title,
-    this.snoozeMinutes = 5,
+    this.title = reminderNullTitle,
+    this.repetitionCount = 0,
+    this.repetitionInterval = const Duration(seconds: 5),
     required this.dateAndTime,
   }){
-    id = 101;
+    id = newReminderID;
   }
 
   String getDateTimeAsStr() {
@@ -35,6 +40,10 @@ class Reminder {
     final String formatted = formatter.format(dateAndTime);
 
     return formatted;
+  }
+
+  Duration getDiffDuration() {
+    return dateAndTime.difference(DateTime.now());
   }
 
   String getDiffString() {
@@ -54,7 +63,8 @@ class Reminder {
   String _formatDuration(Duration duration) {
     if (duration.inSeconds < 60) 
     {
-      return 'seconds';
+      // Remove number of seconds on release. Only 'seconds' should remain.
+      return ' ${duration.inSeconds} seconds';
     } 
     else if (duration.inMinutes < 60) 
     {
@@ -63,10 +73,9 @@ class Reminder {
     else if (duration.inHours < 24) 
     {
       int hours = duration.inHours;
-      int minutes = duration.inMinutes.remainder(60);
       String hoursString = hours == 1 ? 'hour' : 'hours';
-      String minutesString = minutes == 1 ? 'minute' : 'minutes';
-      return '$hours $hoursString${minutes > 0 ? ', $minutes $minutesString' : ''}';
+
+      return '$hours $hoursString';
     } 
     else 
     {
@@ -75,19 +84,32 @@ class Reminder {
     }
   }
 
-  Duration getDiffDuration() {
-    return dateAndTime.difference(DateTime.now());
-  }
-
   String hash() {
-    String str = "${title ?? "new"}${getDateTimeAsStr()}";
+    String str = "${title}${getDateTimeAsStr()}";
     return sha256.convert(utf8.encode(str)).toString();
   }
 
   int getID() {
     final hashString = hash();
     final hashInt = int.parse(hashString.substring(0, 4), radix: 16);
+
+    if ((hashInt == 101) || (hashInt == 7))
+    {
+      getID();
+    }
     return hashInt;
+  }
+
+  String getIntervalString() {
+    return _formatDuration(repetitionInterval);
+  }
+
+  void set(Reminder reminder) {
+    this.title = reminder.title;
+    this.dateAndTime = reminder.dateAndTime;
+    this.id = reminder.id;
+    this.repetitionCount = reminder.repetitionCount;
+    this.repetitionInterval = reminder.repetitionInterval;
   }
 
 }

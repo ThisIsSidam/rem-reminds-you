@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/consts/consts.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/theme/app_theme.dart';
-import 'package:nagger/utils/reminder_section.dart';
+import 'package:nagger/pages/reminder_page.dart';
 
 class HomePageListSection extends StatelessWidget {
   final String name;
@@ -60,7 +59,7 @@ class HomePageListSection extends StatelessWidget {
       ),
       child: ListTile(
         title: Text(
-          reminder.title ?? reminderNullTitle,
+          reminder.title,
           style: Theme.of(context).textTheme.titleMedium
         ),
         subtitle: Text(
@@ -81,14 +80,14 @@ class HomePageListSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(5)
         ),
         onTap: () {
-          showModalBottomSheet(
-            context: context, 
-            isScrollControlled: true,
-            builder: (BuildContext context) => ReminderSection(
-              thisReminder: reminder, 
-              refreshHomePage: refreshHomePage
+          Navigator.push(context, 
+            MaterialPageRoute(
+              builder: (context) => ReminderPage(
+                thisReminder: reminder, 
+                refreshHomePage: refreshHomePage
+              )
             )
-          );
+          ); 
         },
       ),
     );
