@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/reminder_class/reminder.dart';
@@ -62,51 +61,41 @@ class RS_DatetimeInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("[mediaQuery] ${MediaQuery.of(context).viewInsets.bottom}");
-    return FractionallySizedBox(
-      heightFactor: 0.5,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10, 
-          vertical: 10
+    return Column(
+      children: [
+        Expanded(
+          child: GridView.count(
+            mainAxisSpacing: 5,
+            crossAxisSpacing: 5,
+            crossAxisCount: 4,
+            shrinkWrap: true,
+            childAspectRatio: 1.5,
+            children: [
+              TimeSetButton(time: timeSetButton0930AM, setTime: setTime,),
+              TimeSetButton(time: timeSetButton12PM, setTime: setTime,),
+              TimeSetButton(time: timeSetButton0630PM, setTime: setTime,),
+              TimeSetButton(time: timeSetButton10PM, setTime: setTime,),
+              // Durations of some are altered to quickly get notifications. Will change later on.
+              TimeEditButton(editDuration: const Duration(seconds: 5), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(minutes: 1), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(hours: 3), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(days: 1), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(seconds: -5), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(minutes: -1), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(hours: -3), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(days: -1), editTime: editTime,),
+            ],
+          ),
         ),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.count(
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-                crossAxisCount: 4,
-                shrinkWrap: true,
-                childAspectRatio: 1.5,
-                children: [
-                  TimeSetButton(time: timeSetButton0930AM, setTime: setTime,),
-                  TimeSetButton(time: timeSetButton12PM, setTime: setTime,),
-                  TimeSetButton(time: timeSetButton0630PM, setTime: setTime,),
-                  TimeSetButton(time: timeSetButton10PM, setTime: setTime,),
-                  // Durations of some are altered to quickly get notifications. Will change later on.
-                  TimeEditButton(editDuration: const Duration(seconds: 5), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(minutes: 1), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(hours: 3), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(days: 1), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(seconds: -5), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(minutes: -1), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(hours: -3), editTime: editTime,),
-                  TimeEditButton(editDuration: const Duration(days: -1), editTime: editTime,),
-                ],
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                moveFocus(fieldType);
-              }, 
-              child: Text(
-                "Set",
-              )
-            )
-          ],
-        ),
-      ),
+        ElevatedButton(
+          onPressed: () {
+            moveFocus(fieldType);
+          }, 
+          child: Text(
+            "Set",
+          )
+        )
+      ],
     );
   }
 }

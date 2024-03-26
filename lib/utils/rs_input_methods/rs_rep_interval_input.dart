@@ -17,31 +17,24 @@ class RS_RepIntervalInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FocusManager.instance.primaryFocus?.unfocus();
     debugPrint("Showing durationgButtonsGrid");
-    return FractionallySizedBox(
-      heightFactor: 0.45,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
-        child: GridView.count(
-          mainAxisSpacing: 5,
-          crossAxisSpacing: 5,
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          childAspectRatio: 1.5,
-          children: [
-            intervalEditButton(Duration(minutes: 2)),
-            intervalEditButton(Duration(minutes: 5)),
-            intervalEditButton(Duration(minutes: 10)),
-            intervalEditButton(Duration(minutes: 15)),
-            intervalEditButton(Duration(minutes: 30)),
-            intervalEditButton(Duration(minutes: 45)),
-            intervalEditButton(Duration(hours: 1)),
-            intervalEditButton(Duration(hours: 2)),
-            intervalEditButton(Duration(hours: 3)),
-          ],
-        ),
-      ),
+    return GridView.count(
+      mainAxisSpacing: 5,
+      crossAxisSpacing: 5,
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      childAspectRatio: 1.5,
+      children: [
+        intervalEditButton(Duration(minutes: 2)),
+        intervalEditButton(Duration(minutes: 5)),
+        intervalEditButton(Duration(minutes: 10)),
+        intervalEditButton(Duration(minutes: 15)),
+        intervalEditButton(Duration(minutes: 30)),
+        intervalEditButton(Duration(minutes: 45)),
+        intervalEditButton(Duration(hours: 1)),
+        intervalEditButton(Duration(hours: 2)),
+        intervalEditButton(Duration(hours: 3)),
+      ],
     );
   }
 

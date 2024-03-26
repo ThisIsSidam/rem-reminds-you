@@ -6,6 +6,7 @@ import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/misc_methods/misc_methods.dart';
 import 'package:nagger/utils/rs_field.dart';
 import 'package:nagger/utils/rs_input_methods/rs_datetime_input.dart';
+import 'package:nagger/utils/rs_input_methods/rs_input_section.dart';
 import 'package:nagger/utils/rs_input_methods/rs_rep_count_input.dart';
 import 'package:nagger/utils/rs_input_methods/rs_rep_interval_input.dart';
 
@@ -267,30 +268,35 @@ class _ReminderSectionState extends State<ReminderPage> {
     );
   }
 
-  Widget showInputField(
-  ) {
+  Widget showInputField() {
     if (currentFieldType == FieldType.Time)
     {
-      return RS_DatetimeInput(
-        thisReminder: widget.thisReminder,
-        save:  saveReminderOptions,
-        moveFocus: changeCurrentInputField,
+      return RS_InputSection(
+        child: RS_DatetimeInput(
+          thisReminder: widget.thisReminder,
+          save:  saveReminderOptions,
+          moveFocus: changeCurrentInputField,
+        ),
       );
     }
     else if (currentFieldType == FieldType.R_Count)
     {
-      return RS_RepCountInput(
-        thisReminder: widget.thisReminder, 
-        save: saveReminderOptions,
-        moveFocus: changeCurrentInputField,
+      return RS_InputSection(
+        child: RS_RepCountInput(
+          thisReminder: widget.thisReminder, 
+          save: saveReminderOptions,
+          moveFocus: changeCurrentInputField,
+        ),
       );
     }
     else
     {
-      return RS_RepIntervalInput(
-        thisReminder: widget.thisReminder, 
-        save: saveReminderOptions,
-        moveFocus: changeCurrentInputField,
+      return RS_InputSection(
+        child: RS_RepIntervalInput(
+          thisReminder: widget.thisReminder, 
+          save: saveReminderOptions,
+          moveFocus: changeCurrentInputField,
+        ),
       );
     }
   }

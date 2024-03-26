@@ -17,25 +17,18 @@ class RS_RepCountInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  FocusManager.instance.primaryFocus?.unfocus();
-    return FractionallySizedBox(
-      heightFactor: 0.45,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
-        child: GridView.count(
-          mainAxisSpacing: 5,
-          crossAxisSpacing: 5,
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          childAspectRatio: 1.5,
-          children: [
-            countEditButton(3),
-            countEditButton(5),
-            countEditButton(10),
-            countEditButton(15),
-          ],
-        ),
-      ),
+    return GridView.count(
+      mainAxisSpacing: 5,
+      crossAxisSpacing: 5,
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      childAspectRatio: 1.5,
+      children: [
+        countEditButton(3),
+        countEditButton(5),
+        countEditButton(10),
+        countEditButton(15),
+      ],
     );
   }
 
