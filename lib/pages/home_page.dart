@@ -86,11 +86,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       remindersMap = RemindersDatabaseController.getReminderLists();
       noOfReminders = RemindersDatabaseController.getNumberOfReminders();
-
-      if (DateTime.now().second > 55)
-      {
-      debugPrint("refrshPage ${DateTime.now()}");
-      }
     });
   }
 

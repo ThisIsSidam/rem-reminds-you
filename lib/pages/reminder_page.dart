@@ -4,6 +4,7 @@ import 'package:nagger/database/database.dart';
 import 'package:nagger/notification/notification.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/misc_methods/misc_methods.dart';
+import 'package:nagger/utils/misc_methods/title_parser.dart';
 import 'package:nagger/utils/rs_field.dart';
 import 'package:nagger/utils/rs_input_methods/rs_datetime_input.dart';
 import 'package:nagger/utils/rs_input_methods/rs_input_section.dart';
@@ -27,18 +28,21 @@ class ReminderPage extends StatefulWidget {
 
 class _ReminderSectionState extends State<ReminderPage> {
 
-  late Reminder tempReminder;
+  late Reminder initialReminder;
   FieldType currentFieldType = FieldType.Title;
   bool _isKeyboardVisible = true;
   final _titleFocusNode = FocusNode();
-  final dateTimeFieldFocusNode = FocusNode();
-  final repetitionCountFocusNode = FocusNode();
-  final repetitionIntervalFocusNode = FocusNode();
+  late TitleParser titleParser;
 
   @override
   void initState() {
-    tempReminder = widget.thisReminder;
+    initialReminder = widget.thisReminder;
     _titleFocusNode.addListener(_onTitleFocusChange);
+
+    titleParser = TitleParser(
+      thisReminder: widget.thisReminder, 
+      save: saveReminderOptions
+    );
 
     super.initState();
   }
@@ -52,6 +56,7 @@ class _ReminderSectionState extends State<ReminderPage> {
 
   void saveReminderOptions(Reminder reminder) {
     setState(() {
+      debugPrint("[saveReminderOptions] called");
       widget.thisReminder.set(reminder);
     });
   }
@@ -206,11 +211,7 @@ class _ReminderSectionState extends State<ReminderPage> {
             borderSide: BorderSide(color: Theme.of(context).cardColor),
           ),
         ),
-        onChanged: (String str) {
-          setState(() {
-            widget.thisReminder.title = str;
-          });
-        },
+        onChanged: titleParser.parse,
         onFieldSubmitted: (_) {
           changeCurrentInputField(FieldType.Title);
         },
@@ -219,6 +220,36 @@ class _ReminderSectionState extends State<ReminderPage> {
       getFocus: setCurrentInputField, 
     );
   }
+
+  // void onTitleFieldChange(String str) {
+  //   final tempReminder = widget.thisReminder;
+  //   final titleParser = TitleParser(str: str);
+
+  //   widget.thisReminder.title = titleParser.getTitle;
+  //   Duration? duration = titleParser.getDuration;
+  //   DateTime? dateTime = titleParser.getDateTime;
+  //   if (duration != null)
+  //   {
+  //     tempReminder.dateAndTime.add(duration);
+  //     saveReminderOptions(tempReminder);
+  //     debugPrint("[onTitleFieldChange] duration added");
+  //   }
+  //   if (dateTime != null)
+  //   {
+  //     DateTime updatedDateTime = DateTime(
+  //       tempReminder.dateAndTime.year,
+  //       tempReminder.dateAndTime.month,
+  //       tempReminder.dateAndTime.day,
+  //       dateTime.hour,
+  //       dateTime.minute
+  //     );
+  //     tempReminder.updatedTime(updatedDateTime);
+  //     saveReminderOptions(tempReminder);
+  //     debugPrint("[onTitleFieldChange] time set");
+  //   }
+
+  //   debugPrint("[onTitleFieldChange] Running end");
+  // }
 
   Widget dateTimeField(BuildContext context) {
     return RS_Field(
@@ -309,7 +340,7 @@ class _ReminderSectionState extends State<ReminderPage> {
           MaterialButton(
             child: const Icon(Icons.close),
             onPressed: () {
-              widget.thisReminder.set(tempReminder);
+              widget.thisReminder.set(initialReminder);
               Navigator.pop(context);
             }
           ),

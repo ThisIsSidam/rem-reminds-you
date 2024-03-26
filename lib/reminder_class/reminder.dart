@@ -104,6 +104,14 @@ class Reminder {
     return _formatDuration(repetitionInterval);
   }
 
+  void updatedTime(DateTime updatedTime) {
+    if (updatedTime.isBefore(DateTime.now()))
+    {
+      updatedTime = updatedTime.add(Duration(days: 1));
+    }
+    dateAndTime = updatedTime;
+  }
+
   void set(Reminder reminder) {
     this.title = reminder.title;
     this.dateAndTime = reminder.dateAndTime;

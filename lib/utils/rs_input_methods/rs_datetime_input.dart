@@ -47,15 +47,7 @@ class RS_DatetimeInput extends StatelessWidget {
       minutes,
     );
 
-    debugPrint("Updated Time 1 : $updatedTime");
-
-    if (updatedTime.isBefore(DateTime.now()))
-    {
-      updatedTime = updatedTime.add(Duration(days: 1));
-      debugPrint("Updated Time 2 : $updatedTime");
-    }
-
-    thisReminder.dateAndTime = updatedTime;
+    thisReminder.updatedTime(updatedTime);
     save(thisReminder);
   }
 
