@@ -101,17 +101,26 @@ class _ReminderSectionState extends State<ReminderPage> {
   void changeCurrentInputWidget(FieldType fieldType) {
     FieldType toChange;
 
-    if (fieldType == FieldType.Title) {
+    if (fieldType == FieldType.Title) 
+    {
       toChange = FieldType.Time;
       MiscMethods.removeKeyboard(context);
       _isKeyboardVisible = false;
-    } else if (fieldType == FieldType.Time) {
+    } 
+    else if (fieldType == FieldType.Time) 
+    {
       toChange = FieldType.R_Count;
-    } else if (fieldType == FieldType.R_Count) {
+    } 
+    else if (fieldType == FieldType.R_Count) 
+    {
       toChange = FieldType.R_Interval;
-    } else if (fieldType == FieldType.R_Interval) {
+    } 
+    else if (fieldType == FieldType.R_Interval) 
+    {
       toChange = FieldType.None;
-    } else {
+    } 
+    else 
+    {
       toChange = FieldType.None;
     }
 
@@ -170,6 +179,7 @@ class _ReminderSectionState extends State<ReminderPage> {
               InputFields.titleField(
                 context,
                 widget.thisReminder,
+                currentFieldType,
                 _titleFocusNode,
                 titleParser,
                 titleParsedDateTimeFound,
@@ -180,12 +190,14 @@ class _ReminderSectionState extends State<ReminderPage> {
               if (titleParsedDateTimeFound)
                 InputFields.titleParsedDateTimeField(
                   context,
+                  currentFieldType,
                   titleParsedReminder,
                   saveReminderOptions,
                 ),
               InputFields.dateTimeField(
                 context,
                 widget.thisReminder,
+                currentFieldType,
                 setCurrentInputWidget,
               ),
               Padding(
@@ -205,12 +217,14 @@ class _ReminderSectionState extends State<ReminderPage> {
                 InputFields.repetitionCountField(
                   context,
                   widget.thisReminder,
+                  currentFieldType,
                   setCurrentInputWidget,
                 ),
               if (_notificationRepeatEnabled)
                 InputFields.repetitionIntervalField(
                   context,
                   widget.thisReminder,
+                  currentFieldType,
                   setCurrentInputWidget,
                 ),
               BottomButtons.bottomRowButtons(

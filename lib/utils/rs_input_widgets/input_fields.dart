@@ -9,6 +9,7 @@ class InputFields {
   static Widget titleField(
     BuildContext context,
     Reminder thisReminder,
+    FieldType currentFieldType,
     FocusNode _titleFocusNode,
     TitleParser titleParser,
     bool titleParsedDateTimeFound,
@@ -18,6 +19,7 @@ class InputFields {
   ) {
     return RS_Field(
       fieldType: FieldType.Title,
+      currentFieldType: currentFieldType,
       label: "Title",
       thisReminder: thisReminder,
       fieldWidget: TextFormField(
@@ -54,11 +56,13 @@ class InputFields {
 
   static Widget titleParsedDateTimeField(
     BuildContext context,
+    FieldType currentFieldType,
     Reminder titleParsedReminder,
     void Function(Reminder) saveReminderOptions,
   ) {
     return RS_Field(
       fieldType: FieldType.ParsedTime,
+      currentFieldType: currentFieldType,
       label: "Parsed Time",
       thisReminder: titleParsedReminder,
       fieldWidget: ListTile(
@@ -83,10 +87,12 @@ class InputFields {
   static Widget dateTimeField(
     BuildContext context,
     Reminder thisReminder,
+    FieldType currentFieldType,
     void Function(FieldType) setCurrentInputField,
   ) {
     return RS_Field(
       fieldType: FieldType.Time,
+      currentFieldType: currentFieldType,
       label: "Time",
       fieldWidget: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,10 +115,12 @@ class InputFields {
   static Widget repetitionCountField(
     BuildContext context,
     Reminder thisReminder,
+    FieldType currentFieldType,
     void Function(FieldType) setCurrentInputField,
   ) {
     return RS_Field(
       fieldType: FieldType.R_Count,
+      currentFieldType: currentFieldType,
       label: "Repeat",
       fieldWidget: Text(
         "${thisReminder.repetitionCount.toString()} times",
@@ -126,10 +134,12 @@ class InputFields {
   static Widget repetitionIntervalField(
     BuildContext context,
     Reminder thisReminder,
+    FieldType currentFieldType,
     void Function(FieldType) setCurrentInputField,
   ) {
     return RS_Field(
       fieldType: FieldType.R_Interval,
+      currentFieldType: currentFieldType,
       label: "Interval",
       fieldWidget: Text(
         "Every ${thisReminder.getIntervalString()}",

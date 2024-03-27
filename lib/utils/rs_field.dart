@@ -6,6 +6,7 @@ import 'package:nagger/reminder_class/reminder.dart';
 class RS_Field extends StatefulWidget {
   
   final FieldType fieldType;
+  final FieldType currentFieldType;
   final String label;
   final Reminder thisReminder;
   final Widget fieldWidget;
@@ -14,6 +15,7 @@ class RS_Field extends StatefulWidget {
   const RS_Field({
     super.key,
     required this.fieldType,
+    required this.currentFieldType,
     required this.label,
     required this.fieldWidget,
     required this.thisReminder,
@@ -39,7 +41,11 @@ class _RS_FieldState extends State<RS_Field> {
       child: Container(
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide()
+            bottom: BorderSide(
+              color: widget.currentFieldType == widget.fieldType
+              ? Theme.of(context).cardColor
+              : Colors.black
+            )
           )
         ),
         child: widget.fieldWidget,
