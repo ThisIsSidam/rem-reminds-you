@@ -299,7 +299,9 @@ class _ReminderSectionState extends State<ReminderPage> {
       fieldType: FieldType.R_Count, 
       label: "Repeat", 
       fieldWidget: Text(
-        "${widget.thisReminder.repetitionCount.toString()} times",
+        widget.thisReminder.id == newReminderID
+        ? "" 
+        :"${widget.thisReminder.repetitionCount.toString()} times",
         style: Theme.of(context).textTheme.bodyLarge
       ), 
       thisReminder: widget.thisReminder, 
@@ -312,7 +314,9 @@ class _ReminderSectionState extends State<ReminderPage> {
       fieldType: FieldType.R_Interval, 
       label: "Interval", 
       fieldWidget: Text(
-        "Every ${widget.thisReminder.getIntervalString()}",
+        widget.thisReminder.id == newReminderID
+        ? "" 
+        :"Every ${widget.thisReminder.getIntervalString()}",
         style: Theme.of(context).textTheme.bodyLarge
       ), 
       thisReminder: widget.thisReminder, 

@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(context, 
           MaterialPageRoute(
             builder: (context) => ReminderPage(
-              thisReminder: Reminder(dateAndTime: DateTime.now()), 
+              thisReminder: Reminder(dateAndTime: DateTime.now().add(Duration(minutes: 5))), 
               refreshHomePage: refreshPage
             )
           )

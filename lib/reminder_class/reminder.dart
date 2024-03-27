@@ -29,7 +29,6 @@ class Reminder {
   Reminder({
     this.title = reminderNullTitle,
     required this.dateAndTime,
-    this.id,
     this.done = false,
     this.repetitionCount = 0,
     this.repetitionInterval = const Duration(seconds: 5),
@@ -126,7 +125,6 @@ class Reminder {
     return Reminder(
       title: reminder.title,
       dateAndTime: reminder.dateAndTime,
-      id: reminder.id,
       done: reminder.done,
       repetitionCount: reminder.repetitionCount,
       repetitionInterval: reminder.repetitionInterval
