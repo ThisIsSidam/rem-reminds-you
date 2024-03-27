@@ -182,7 +182,7 @@ class _ReminderSectionState extends State<ReminderPage> {
               dateTimeField(context),
               repetitionCountField(context),
               repetitionIntervalField(context),
-              bottomRowMaterialButtons()
+              bottomRowButtons()
             ],
           ),
           if 
@@ -353,25 +353,38 @@ class _ReminderSectionState extends State<ReminderPage> {
     }
   }
 
-  Widget bottomRowMaterialButtons() {
+  Widget bottomRowButtons() {
     return SizedBox(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          MaterialButton(
-            child: const Icon(Icons.close),
-            onPressed: () {
-              widget.thisReminder.set(initialReminder);
-              Navigator.pop(context);
+          bottomRowButton(
+            "Close",
+            () {
+                widget.thisReminder.set(initialReminder);
+                Navigator.pop(context);
             }
           ),
-          MaterialButton(
-            child: const Icon(Icons.check_circle),
-            onPressed: () => saveReminder(),
+          bottomRowButton(
+            "Save", 
+            saveReminder
           )
         ],
       ),
     );
   }
+
+  Widget bottomRowButton(String label, void Function() onTap)
+  {
+    return SizedBox(
+      height: 50,
+      width: 100,
+      child: ElevatedButton(
+        child: Text(label),
+        onPressed: onTap
+      ),
+    );
+  } 
+  
 
 }
