@@ -28,9 +28,11 @@ class Reminder {
 
   Reminder({
     this.title = reminderNullTitle,
+    required this.dateAndTime,
+    this.id,
+    this.done = false,
     this.repetitionCount = 0,
     this.repetitionInterval = const Duration(seconds: 5),
-    required this.dateAndTime,
   }){
     id = newReminderID;
   }
@@ -120,4 +122,16 @@ class Reminder {
     this.repetitionInterval = reminder.repetitionInterval;
   }
 
+  static Reminder deepCopyReminder(Reminder reminder) {
+    return Reminder(
+      title: reminder.title,
+      dateAndTime: reminder.dateAndTime,
+      id: reminder.id,
+      done: reminder.done,
+      repetitionCount: reminder.repetitionCount,
+      repetitionInterval: reminder.repetitionInterval
+    );
+  }
+
 }
+

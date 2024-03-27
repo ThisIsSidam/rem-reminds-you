@@ -11,7 +11,7 @@ import 'package:nagger/utils/rs_input_methods/rs_input_section.dart';
 import 'package:nagger/utils/rs_input_methods/rs_rep_count_input.dart';
 import 'package:nagger/utils/rs_input_methods/rs_rep_interval_input.dart';
 
-enum FieldType {Title, Time, R_Count, R_Interval, None}
+enum FieldType {Title, ParsedTime, Time, R_Count, R_Interval, None}
 
 class ReminderPage extends StatefulWidget {
   final Reminder thisReminder;
@@ -33,15 +33,19 @@ class _ReminderSectionState extends State<ReminderPage> {
   bool _isKeyboardVisible = true;
   final _titleFocusNode = FocusNode();
   late TitleParser titleParser;
+  bool titleParsedDateTimeFound = false;
+  late Reminder titleParsedReminder;
 
   @override
   void initState() {
     initialReminder = widget.thisReminder;
+    titleParsedReminder = Reminder.deepCopyReminder(widget.thisReminder);
+
     _titleFocusNode.addListener(_onTitleFocusChange);
 
     titleParser = TitleParser(
-      thisReminder: widget.thisReminder, 
-      save: saveReminderOptions
+      thisReminder: titleParsedReminder, 
+      save: saveTitleParsedReminderOptions
     );
 
     super.initState();
@@ -59,6 +63,15 @@ class _ReminderSectionState extends State<ReminderPage> {
       debugPrint("[saveReminderOptions] called");
       widget.thisReminder.set(reminder);
     });
+  }
+
+  void saveTitleParsedReminderOptions(Reminder reminder) {
+    setState(() {
+      titleParsedReminder = reminder;
+    });
+
+    debugPrint("[saveTitleParsed..] parsed: ${titleParsedReminder.dateAndTime}");
+    debugPrint("[saveTitleParsed..] parsed: ${widget.thisReminder.dateAndTime}");
   }
 
   /// Orders the saving of the reminder in the database.
@@ -164,6 +177,8 @@ class _ReminderSectionState extends State<ReminderPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               titleField(context),
+              if (titleParsedDateTimeFound)
+                titleParsedDateTimeField(context),
               dateTimeField(context),
               repetitionCountField(context),
               repetitionIntervalField(context),
@@ -189,6 +204,7 @@ class _ReminderSectionState extends State<ReminderPage> {
     return RS_Field(
       fieldType: FieldType.Title, 
       label: "Title", 
+      thisReminder: widget.thisReminder, 
       fieldWidget: TextFormField(
         autofocus: true,
         focusNode: _titleFocusNode,
@@ -203,7 +219,6 @@ class _ReminderSectionState extends State<ReminderPage> {
             top: 10,
             bottom: 10,
           ),
-          hintStyle: Theme.of(context).textTheme.titleSmall,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.black),
               ),
@@ -211,45 +226,51 @@ class _ReminderSectionState extends State<ReminderPage> {
             borderSide: BorderSide(color: Theme.of(context).cardColor),
           ),
         ),
-        onChanged: titleParser.parse,
-        onFieldSubmitted: (_) {
+        onChanged: (String str) {
+          widget.thisReminder.title = str;
+          bool done = titleParser.parse(str);
+          
+          setState(() {
+            if (done) {
+              titleParsedDateTimeFound = true;
+            }
+            else
+            {
+              titleParsedDateTimeFound = false;
+            }
+          });
+        },
+        onFieldSubmitted: (String str) {
           changeCurrentInputField(FieldType.Title);
         },
       ),
-      thisReminder: widget.thisReminder, 
-      getFocus: setCurrentInputField, 
     );
   }
 
-  // void onTitleFieldChange(String str) {
-  //   final tempReminder = widget.thisReminder;
-  //   final titleParser = TitleParser(str: str);
-
-  //   widget.thisReminder.title = titleParser.getTitle;
-  //   Duration? duration = titleParser.getDuration;
-  //   DateTime? dateTime = titleParser.getDateTime;
-  //   if (duration != null)
-  //   {
-  //     tempReminder.dateAndTime.add(duration);
-  //     saveReminderOptions(tempReminder);
-  //     debugPrint("[onTitleFieldChange] duration added");
-  //   }
-  //   if (dateTime != null)
-  //   {
-  //     DateTime updatedDateTime = DateTime(
-  //       tempReminder.dateAndTime.year,
-  //       tempReminder.dateAndTime.month,
-  //       tempReminder.dateAndTime.day,
-  //       dateTime.hour,
-  //       dateTime.minute
-  //     );
-  //     tempReminder.updatedTime(updatedDateTime);
-  //     saveReminderOptions(tempReminder);
-  //     debugPrint("[onTitleFieldChange] time set");
-  //   }
-
-  //   debugPrint("[onTitleFieldChange] Running end");
-  // }
+  Widget titleParsedDateTimeField(BuildContext context) {
+    return RS_Field(
+      fieldType: FieldType.ParsedTime, 
+      label: "Parsed Time", // Parsed Time
+      thisReminder: widget.thisReminder, 
+      fieldWidget: ListTile(
+        title: Text(
+          titleParsedReminder.getDateTimeAsStr(),
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        subtitle: Text(
+          titleParsedReminder.getDiffString(),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        trailing: MaterialButton(
+          child: Icon(Icons.check_box),
+          onPressed: () {
+            saveReminderOptions(titleParsedReminder);
+            titleParsedDateTimeFound = false;
+          },
+        ),
+      ), 
+    );
+  }
 
   Widget dateTimeField(BuildContext context) {
     return RS_Field(

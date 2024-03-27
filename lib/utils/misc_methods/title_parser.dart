@@ -4,10 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 
 class TitleParser {
-  String _title = ""; 
-  Duration? _toAdd;
-  DateTime? _toSet;
-
+  String originalTitle = ""; 
   Reminder thisReminder;
   final Function(Reminder) save;
 
@@ -16,14 +13,15 @@ class TitleParser {
     required this.save 
   });
   
-  void parse(String str) {
+  bool parse(String str) {
+    originalTitle = str;
     final parseString = extractTitle(str);
 
     if(parseString != null)
     {
       if (!matchFinder(parseString))
       {
-        _title = _title + parseString;
+        originalTitle = originalTitle + parseString;
       }
       else
       {
@@ -31,26 +29,16 @@ class TitleParser {
         debugPrint("[TitleParserConstr] T: ${thisReminder.title}");
         debugPrint("[TitleParserConstr] D: ${thisReminder.dateAndTime}");
 
-        save(thisReminder);   
+        save(thisReminder); 
+        return true;  
       }
     }
     else
     {
       debugPrint("[TitleParserConstr] parseString null");
     }
+    return false;
 
-  }
-
-  Duration? get getDuration {
-    return _toAdd;
-  }
-
-  DateTime? get getDateTime {
-    return _toSet;
-  }
-
-  String get getTitle {
-    return _title;
   }
 
   String? extractTitle(String str) {
@@ -58,7 +46,7 @@ class TitleParser {
     final atIndex = str.lastIndexOf(' at ');
 
     if (inIndex == -1 && atIndex == -1) {
-      _title = str;
+      thisReminder.title = str;
     }
 
     final separatorIndex = (inIndex > atIndex && inIndex != -1) ? inIndex : atIndex;
@@ -107,7 +95,6 @@ class TitleParser {
 
     final value = int.parse(match.group(1)!);
     final unit = match.group(2);
-
 
     switch (unit) {
       case 'minutes':

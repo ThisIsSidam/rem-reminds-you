@@ -9,7 +9,7 @@ class RS_Field extends StatefulWidget {
   final String label;
   final Reminder thisReminder;
   final Widget fieldWidget;
-  final Function(FieldType) getFocus;
+  final Function(FieldType)? getFocus;
 
   const RS_Field({
     super.key,
@@ -17,7 +17,7 @@ class RS_Field extends StatefulWidget {
     required this.label,
     required this.fieldWidget,
     required this.thisReminder,
-    required this.getFocus,
+    this.getFocus,
   }
   );
 
@@ -28,13 +28,13 @@ class RS_Field extends StatefulWidget {
 class _RS_FieldState extends State<RS_Field> {
 
   Widget getWidget() {
-    if (widget.fieldType == FieldType.Title)
+    if (widget.getFocus == null)
     {
       return widget.fieldWidget;
     }
     return GestureDetector(
       onTap: () {
-        widget.getFocus(widget.fieldType);
+        widget.getFocus!(widget.fieldType);
       },
       child: Container(
         decoration: BoxDecoration(
