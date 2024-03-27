@@ -3,23 +3,21 @@ import 'package:nagger/consts/consts.dart';
 import 'package:nagger/database/database.dart';
 import 'package:nagger/notification/notification.dart';
 import 'package:nagger/reminder_class/reminder.dart';
+import 'package:nagger/utils/bottom_buttons.dart';
 import 'package:nagger/utils/misc_methods/misc_methods.dart';
-import 'package:nagger/utils/misc_methods/title_parser.dart';
-import 'package:nagger/utils/rs_field.dart';
-import 'package:nagger/utils/rs_input_methods/rs_datetime_input.dart';
-import 'package:nagger/utils/rs_input_methods/rs_input_section.dart';
-import 'package:nagger/utils/rs_input_methods/rs_rep_count_input.dart';
-import 'package:nagger/utils/rs_input_methods/rs_rep_interval_input.dart';
+import 'package:nagger/utils/rs_input_widgets/input_fields.dart';
+import 'package:nagger/utils/rs_input_widgets/input_section_widget_selecter.dart';
+import 'package:nagger/utils/title_parser/title_parser.dart';
 
-enum FieldType {Title, ParsedTime, Time, R_Count, R_Interval, None}
+enum FieldType { Title, ParsedTime, Time, R_Count, R_Interval, None }
 
 class ReminderPage extends StatefulWidget {
   final Reminder thisReminder;
   final VoidCallback refreshHomePage;
   const ReminderPage({
-    super.key, 
+    super.key,
     required this.thisReminder,
-    required this.refreshHomePage
+    required this.refreshHomePage,
   });
 
   @override
@@ -27,7 +25,6 @@ class ReminderPage extends StatefulWidget {
 }
 
 class _ReminderSectionState extends State<ReminderPage> {
-
   late Reminder initialReminder;
   FieldType currentFieldType = FieldType.Title;
   bool _isKeyboardVisible = true;
@@ -35,6 +32,7 @@ class _ReminderSectionState extends State<ReminderPage> {
   late TitleParser titleParser;
   bool titleParsedDateTimeFound = false;
   late Reminder titleParsedReminder;
+  bool _notificationRepeatEnabled = true;
 
   @override
   void initState() {
@@ -44,20 +42,26 @@ class _ReminderSectionState extends State<ReminderPage> {
     _titleFocusNode.addListener(_onTitleFocusChange);
 
     titleParser = TitleParser(
-      thisReminder: titleParsedReminder, 
-      save: saveTitleParsedReminderOptions
+      thisReminder: titleParsedReminder,
+      save: saveTitleParsedReminderOptions,
     );
 
     super.initState();
   }
 
   void _onTitleFocusChange() {
-    if (_titleFocusNode.hasFocus)
-    {
+    if (_titleFocusNode.hasFocus) {
       currentFieldType = FieldType.Title;
     }
   }
 
+  void _toggleRepeatMode(bool value) {
+    setState(() {
+      _notificationRepeatEnabled = value;
+    });
+  }
+
+  /// Save the edits done by the widgets to the reminder
   void saveReminderOptions(Reminder reminder) {
     setState(() {
       debugPrint("[saveReminderOptions] called");
@@ -65,62 +69,61 @@ class _ReminderSectionState extends State<ReminderPage> {
     });
   }
 
+
+  /// Save the version of reminder parser uses
   void saveTitleParsedReminderOptions(Reminder reminder) {
     setState(() {
       titleParsedReminder = reminder;
+      titleParsedDateTimeFound = true; // Set titleParsedDateTimeFound to true
     });
 
     debugPrint("[saveTitleParsed..] parsed: ${titleParsedReminder.dateAndTime}");
     debugPrint("[saveTitleParsed..] parsed: ${widget.thisReminder.dateAndTime}");
   }
 
-  /// Orders the saving of the reminder in the database.
   void saveReminder() {
-    RemindersDatabaseController.saveReminder(
-      widget.thisReminder
-    );
-
+    RemindersDatabaseController.saveReminder(widget.thisReminder);
     widget.refreshHomePage();
     Navigator.pop(context);
   }
 
-  void changeCurrentInputField(FieldType fieldType) {
+  void deleteReminder() {
+    NotificationController.cancelScheduledNotification(
+        widget.thisReminder.id.toString());
+    RemindersDatabaseController.deleteReminder(widget.thisReminder.id!);
+    widget.refreshHomePage();
+    Navigator.pop(context);
+  }
+
+  /// Moves the currentInputField to the one after it.
+  /// Used after the value is selected and there is no more
+  /// need of the inputWidget.
+  void changeCurrentInputWidget(FieldType fieldType) {
     FieldType toChange;
 
-    if (fieldType == FieldType.Title)
-    {
+    if (fieldType == FieldType.Title) {
       toChange = FieldType.Time;
-    }
-    else if (fieldType == FieldType.Time)
-    {
-      toChange = FieldType.R_Count;
-    }
-    else if (fieldType == FieldType.R_Count)
-    {
-      toChange = FieldType.R_Interval;
-    }
-    else if (fieldType == FieldType.R_Interval)
-    {
-      toChange = FieldType.None;
-    }
-    else
-    {
-      toChange = FieldType.None;
-    }
-    
-    if (toChange != FieldType.Title)
-    {
       MiscMethods.removeKeyboard(context);
       _isKeyboardVisible = false;
+    } else if (fieldType == FieldType.Time) {
+      toChange = FieldType.R_Count;
+    } else if (fieldType == FieldType.R_Count) {
+      toChange = FieldType.R_Interval;
+    } else if (fieldType == FieldType.R_Interval) {
+      toChange = FieldType.None;
+    } else {
+      toChange = FieldType.None;
     }
+
     setState(() {
       currentFieldType = toChange;
     });
   }
 
-  void setCurrentInputField(FieldType fieldType) {
-    if (currentFieldType == fieldType)
-    {
+  /// Used to set the appropriate input widget when 
+  /// the field is tapped.
+  void setCurrentInputWidget(FieldType fieldType) {
+    if (currentFieldType == fieldType) {
       return;
     }
 
@@ -129,26 +132,14 @@ class _ReminderSectionState extends State<ReminderPage> {
     });
     debugPrint("[setCurrentInputField] ${currentFieldType}");
 
-    if (currentFieldType != FieldType.Title)
-    {
+    if (currentFieldType != FieldType.Title) {
       MiscMethods.removeKeyboard(context);
       _isKeyboardVisible = false;
+    } else {
+      _isKeyboardVisible = true;
     }
-    else
-    {
-      _isKeyboardVisible == true;
-    }    
   }
 
-  /// Orders the deletion of the reminder from the database.
-  void deleteReminder() {
-    NotificationController.cancelScheduledNotification(
-      widget.thisReminder.id.toString()
-    );
-    RemindersDatabaseController.deleteReminder(widget.thisReminder.id!);
-    widget.refreshHomePage();
-    Navigator.pop(context);
-  }
 
   @override
   void dispose() {
@@ -159,236 +150,91 @@ class _ReminderSectionState extends State<ReminderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Reminder"),
+        title: const Text("Reminder"),
         actions: [
           if (widget.thisReminder.id != newReminderID)
-          MaterialButton(
-            child: IconTheme(
-              data: Theme.of(context).iconTheme,
-              child: const Icon(Icons.delete)
+            MaterialButton(
+              child: IconTheme(
+                data: Theme.of(context).iconTheme,
+                child: const Icon(Icons.delete),
+              ),
+              onPressed: () => deleteReminder(),
             ),
-            onPressed: () => deleteReminder(),
-          ),
         ],
       ),
       body: Stack(
-        children:[
+        children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleField(context),
+              InputFields.titleField(
+                context,
+                widget.thisReminder,
+                _titleFocusNode,
+                titleParser,
+                titleParsedDateTimeFound,
+                titleParsedReminder,
+                saveTitleParsedReminderOptions,
+                changeCurrentInputWidget,
+              ),
               if (titleParsedDateTimeFound)
-                titleParsedDateTimeField(context),
-              dateTimeField(context),
-              repetitionCountField(context),
-              repetitionIntervalField(context),
-              bottomRowButtons()
+                InputFields.titleParsedDateTimeField(
+                  context,
+                  titleParsedReminder,
+                  saveReminderOptions,
+                ),
+              InputFields.dateTimeField(
+                context,
+                widget.thisReminder,
+                setCurrentInputWidget,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Repeat'),
+                    Switch(
+                      value: _notificationRepeatEnabled,
+                      onChanged: _toggleRepeatMode,
+                    ),
+                  ],
+                ),
+              ),
+              if (_notificationRepeatEnabled)
+                InputFields.repetitionCountField(
+                  context,
+                  widget.thisReminder,
+                  setCurrentInputWidget,
+                ),
+              if (_notificationRepeatEnabled)
+                InputFields.repetitionIntervalField(
+                  context,
+                  widget.thisReminder,
+                  setCurrentInputWidget,
+                ),
+              BottomButtons.bottomRowButtons(
+                context,
+                initialReminder,
+                saveReminder,
+                widget.thisReminder,
+              ),
             ],
           ),
-          if 
-          (
-            (currentFieldType != FieldType.Title) && 
-            (currentFieldType != FieldType.None) &&
-            (!_isKeyboardVisible)
-          )
+          if ((currentFieldType != FieldType.Title) &&
+              (currentFieldType != FieldType.None) &&
+              (!_isKeyboardVisible))
             Align(
               alignment: Alignment.bottomCenter,
-              child: showInputField()
-            )
-        ] 
-      ),
-    );
-  }
-
-  Widget titleField(BuildContext context) {
-    return RS_Field(
-      fieldType: FieldType.Title, 
-      label: "Title", 
-      thisReminder: widget.thisReminder, 
-      fieldWidget: TextFormField(
-        autofocus: true,
-        focusNode: _titleFocusNode,
-        initialValue: widget.thisReminder.id == newReminderID
-        ? null
-        : widget.thisReminder.title,
-        textCapitalization: TextCapitalization.sentences,
-        style: Theme.of(context).textTheme.bodyLarge,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(
-            left: 15,
-            top: 10,
-            bottom: 10,
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.black),
+              child: InputSections.showInputSection(
+                currentFieldType,
+                widget.thisReminder,
+                saveReminderOptions,
+                changeCurrentInputWidget,
               ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).cardColor),
-          ),
-        ),
-        onChanged: (String str) {
-          widget.thisReminder.title = str;
-          bool done = titleParser.parse(str);
-          
-          setState(() {
-            if (done) {
-              titleParsedDateTimeFound = true;
-            }
-            else
-            {
-              titleParsedDateTimeFound = false;
-            }
-          });
-        },
-        onFieldSubmitted: (String str) {
-          changeCurrentInputField(FieldType.Title);
-        },
-      ),
-    );
-  }
-
-  Widget titleParsedDateTimeField(BuildContext context) {
-    return RS_Field(
-      fieldType: FieldType.ParsedTime, 
-      label: "Parsed Time", // Parsed Time
-      thisReminder: widget.thisReminder, 
-      fieldWidget: ListTile(
-        title: Text(
-          titleParsedReminder.getDateTimeAsStr(),
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        subtitle: Text(
-          titleParsedReminder.getDiffString(),
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        trailing: MaterialButton(
-          child: Icon(Icons.check_box),
-          onPressed: () {
-            saveReminderOptions(titleParsedReminder);
-            titleParsedDateTimeFound = false;
-          },
-        ),
-      ), 
-    );
-  }
-
-  Widget dateTimeField(BuildContext context) {
-    return RS_Field(
-      fieldType: FieldType.Time, 
-      label: "Time", 
-      fieldWidget: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            widget.thisReminder.getDateTimeAsStr(),
-            style: Theme.of(context).textTheme.bodyLarge
-          ),
-          Text(
-            widget.thisReminder.getDiffString(),
-            style: Theme.of(context).textTheme.bodyLarge
-          ),
-        ],
-      ), 
-      thisReminder: widget.thisReminder, 
-      getFocus: setCurrentInputField
-    );
-  }
-
-  Widget repetitionCountField(BuildContext context) {
-    return RS_Field(
-      fieldType: FieldType.R_Count, 
-      label: "Repeat", 
-      fieldWidget: Text(
-        widget.thisReminder.id == newReminderID
-        ? "" 
-        :"${widget.thisReminder.repetitionCount.toString()} times",
-        style: Theme.of(context).textTheme.bodyLarge
-      ), 
-      thisReminder: widget.thisReminder, 
-      getFocus: setCurrentInputField
-    );
-  }
-
-  Widget repetitionIntervalField(BuildContext context) {
-    return RS_Field(
-      fieldType: FieldType.R_Interval, 
-      label: "Interval", 
-      fieldWidget: Text(
-        widget.thisReminder.id == newReminderID
-        ? "" 
-        :"Every ${widget.thisReminder.getIntervalString()}",
-        style: Theme.of(context).textTheme.bodyLarge
-      ), 
-      thisReminder: widget.thisReminder, 
-      getFocus: setCurrentInputField
-    );
-  }
-
-  Widget showInputField() {
-    if (currentFieldType == FieldType.Time)
-    {
-      return RS_InputSection(
-        child: RS_DatetimeInput(
-          thisReminder: widget.thisReminder,
-          save:  saveReminderOptions,
-          moveFocus: changeCurrentInputField,
-        ),
-      );
-    }
-    else if (currentFieldType == FieldType.R_Count)
-    {
-      return RS_InputSection(
-        child: RS_RepCountInput(
-          thisReminder: widget.thisReminder, 
-          save: saveReminderOptions,
-          moveFocus: changeCurrentInputField,
-        ),
-      );
-    }
-    else
-    {
-      return RS_InputSection(
-        child: RS_RepIntervalInput(
-          thisReminder: widget.thisReminder, 
-          save: saveReminderOptions,
-          moveFocus: changeCurrentInputField,
-        ),
-      );
-    }
-  }
-
-  Widget bottomRowButtons() {
-    return SizedBox(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          bottomRowButton(
-            "Close",
-            () {
-                widget.thisReminder.set(initialReminder);
-                Navigator.pop(context);
-            }
-          ),
-          bottomRowButton(
-            "Save", 
-            saveReminder
-          )
+            )
         ],
       ),
     );
   }
-
-  Widget bottomRowButton(String label, void Function() onTap)
-  {
-    return SizedBox(
-      height: 50,
-      width: 100,
-      child: ElevatedButton(
-        child: Text(label),
-        onPressed: onTap
-      ),
-    );
-  } 
-  
-
 }
