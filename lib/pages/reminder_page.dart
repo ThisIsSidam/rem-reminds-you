@@ -55,9 +55,13 @@ class _ReminderSectionState extends State<ReminderPage> {
     }
   }
 
-  void _toggleRepeatMode(bool value) {
+  void _toggleNotificationRepeatMode(bool value) {
     setState(() {
       _notificationRepeatEnabled = value;
+      if (currentFieldType == FieldType.R_Count || currentFieldType == FieldType.R_Interval)
+      {
+        currentFieldType = FieldType.None;
+      }
     });
   }
 
@@ -122,6 +126,14 @@ class _ReminderSectionState extends State<ReminderPage> {
     else 
     {
       toChange = FieldType.None;
+    }
+
+    if (!_notificationRepeatEnabled)
+    {
+      if (toChange == FieldType.R_Count || toChange == FieldType.R_Interval)
+      {
+        toChange = FieldType.None;
+      }
     }
 
     setState(() {
@@ -208,7 +220,7 @@ class _ReminderSectionState extends State<ReminderPage> {
                     const Text('Repeat'),
                     Switch(
                       value: _notificationRepeatEnabled,
-                      onChanged: _toggleRepeatMode,
+                      onChanged: _toggleNotificationRepeatMode,
                     ),
                   ],
                 ),
