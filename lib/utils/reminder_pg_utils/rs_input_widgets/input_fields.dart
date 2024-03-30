@@ -6,47 +6,58 @@ import 'package:nagger/utils/reminder_pg_utils/rs_field.dart';
 import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
 class InputFields {
-  static Widget titleField(
-    BuildContext context,
-    Reminder thisReminder,
-    FieldType currentFieldType,
-    FocusNode _titleFocusNode,
-    TitleParser titleParser,
-    bool titleParsedDateTimeFound,
-    Reminder titleParsedReminder,
-    void Function(Reminder) saveTitleParsedReminderOptions,
-    void Function(FieldType) changeCurrentInputField,
-  ) {
+  final BuildContext context;
+  final Reminder thisReminder;
+  final FieldType currentFieldType;
+  final FocusNode titleFocusNode;
+  final TitleParser titleParser;
+  bool titleParsedDateTimeFound;
+  final Reminder titleParsedReminder;
+  final void Function(Reminder) saveTitleParsedReminderOptions;
+  final void Function(FieldType) changeCurrentInputWidget;
+  final void Function(Reminder) saveReminderOptions;
+  final void Function(FieldType) setCurrentInputWidget;
+
+  InputFields({
+    required this.context,
+    required this.thisReminder,
+    required this.currentFieldType,
+    required this.titleFocusNode,
+    required this.titleParser,
+    required this.titleParsedDateTimeFound,
+    required this.titleParsedReminder,
+    required this.saveTitleParsedReminderOptions,
+    required this.changeCurrentInputWidget,
+    required this.saveReminderOptions,
+    required this.setCurrentInputWidget,
+  });
+
+  Widget titleField() {
     return RS_Field(
       fieldType: FieldType.Title,
       currentFieldType: currentFieldType,
       label: "Title",
       thisReminder: thisReminder,
       fieldWidget: TextFormField(
-        autofocus: true,
-        focusNode: _titleFocusNode,
+        autofocus: thisReminder.id == newReminderID,
+        focusNode: titleFocusNode,
         initialValue: thisReminder.id == newReminderID ? null : thisReminder.title,
         textCapitalization: TextCapitalization.sentences,
         style: Theme.of(context).textTheme.bodyMedium,
         onChanged: (String str) {
           thisReminder.title = str;
           bool done = titleParser.parse(str);
-
           titleParsedDateTimeFound = done;
         },
         onFieldSubmitted: (String str) {
-          changeCurrentInputField(FieldType.Title);
+          changeCurrentInputWidget(FieldType.Title);
         },
       ),
     );
   }
 
-  static Widget titleParsedDateTimeField(
-    BuildContext context,
-    FieldType currentFieldType,
-    Reminder titleParsedReminder,
-    void Function(Reminder) saveReminderOptions,
-  ) {
+  Widget titleParsedDateTimeField() {
+    
     return RS_Field(
       fieldType: FieldType.ParsedTime,
       currentFieldType: currentFieldType,
@@ -72,12 +83,7 @@ class InputFields {
     );
   }
 
-  static Widget dateTimeField(
-    BuildContext context,
-    Reminder thisReminder,
-    FieldType currentFieldType,
-    void Function(FieldType) setCurrentInputField,
-  ) {
+  Widget dateTimeField() {
     return RS_Field(
       fieldType: FieldType.Time,
       currentFieldType: currentFieldType,
@@ -102,16 +108,11 @@ class InputFields {
         ),
       ),
       thisReminder: thisReminder,
-      getFocus: setCurrentInputField,
+      getFocus: setCurrentInputWidget,
     );
   }
 
-  static Widget repetitionCountField(
-    BuildContext context,
-    Reminder thisReminder,
-    FieldType currentFieldType,
-    void Function(FieldType) setCurrentInputField,
-  ) {
+  Widget repetitionCountField() {
     return RS_Field(
       fieldType: FieldType.R_Count,
       currentFieldType: currentFieldType,
@@ -127,16 +128,11 @@ class InputFields {
         ),
       ),
       thisReminder: thisReminder,
-      getFocus: setCurrentInputField,
+      getFocus: setCurrentInputWidget,
     );
   }
 
-  static Widget repetitionIntervalField(
-    BuildContext context,
-    Reminder thisReminder,
-    FieldType currentFieldType,
-    void Function(FieldType) setCurrentInputField,
-  ) {
+  Widget repetitionIntervalField() {
     return RS_Field(
       fieldType: FieldType.R_Interval,
       currentFieldType: currentFieldType,
@@ -152,7 +148,7 @@ class InputFields {
         ),
       ),
       thisReminder: thisReminder,
-      getFocus: setCurrentInputField,
+      getFocus: setCurrentInputWidget,
     );
   }
 }

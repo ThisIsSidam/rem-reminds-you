@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nagger/consts/const_colors.dart';
 import 'package:nagger/utils/other_utils/snack_bar.dart';
 
+/// The 'Normal' and 'Routine Reminders' buttons placed exactly below
+/// the app bar in reminderPage.
 class SectionButtons extends StatefulWidget {
   const SectionButtons({
     super.key,

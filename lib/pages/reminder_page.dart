@@ -6,12 +6,12 @@ import 'package:nagger/database/database.dart';
 import 'package:nagger/notification/notification.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/other_utils/snack_bar.dart';
-import 'package:nagger/utils/reminder_pg_utils/bottom_buttons.dart';
+import 'package:nagger/utils/reminder_pg_utils/buttons/bottom_buttons.dart';
 import 'package:nagger/utils/other_utils/material_container.dart';
 import 'package:nagger/utils/misc_methods/misc_methods.dart';
 import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_fields.dart';
 import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_section_widget_selecter.dart';
-import 'package:nagger/utils/reminder_pg_utils/section_buttons.dart';
+import 'package:nagger/utils/reminder_pg_utils/buttons/section_buttons.dart';
 import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
 enum FieldType { Title, ParsedTime, Time, R_Count, R_Interval, None }
@@ -33,11 +33,14 @@ class _ReminderSectionState extends State<ReminderPage> {
   late Reminder initialReminder;
   FieldType currentFieldType = FieldType.Title;
   bool _isKeyboardVisible = true;
-  final _titleFocusNode = FocusNode();
   late TitleParser titleParser;
   bool titleParsedDateTimeFound = false;
   late Reminder titleParsedReminder;
   bool _notificationRepeatEnabled = false;
+
+  // Handling the closing upon appearance of another input widget.
+  final _titleFocusNode = FocusNode();
+  
 
   @override
   void initState() {
@@ -184,6 +187,21 @@ class _ReminderSectionState extends State<ReminderPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    InputFields inputFields = InputFields(
+      context: context, 
+      thisReminder: widget.thisReminder, 
+      currentFieldType: currentFieldType, 
+      titleFocusNode: _titleFocusNode, 
+      titleParser: titleParser, 
+      titleParsedDateTimeFound: titleParsedDateTimeFound, 
+      titleParsedReminder: titleParsedReminder, 
+      saveTitleParsedReminderOptions: saveTitleParsedReminderOptions, 
+      changeCurrentInputWidget: changeCurrentInputWidget, 
+      saveReminderOptions: saveReminderOptions, 
+      setCurrentInputWidget: setCurrentInputWidget
+    );
+
     ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -221,31 +239,10 @@ class _ReminderSectionState extends State<ReminderPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // SectionButtons(),
-                    InputFields.titleField(
-                      context,
-                      widget.thisReminder,
-                      currentFieldType,
-                      _titleFocusNode,
-                      titleParser,
-                      titleParsedDateTimeFound,
-                      titleParsedReminder,
-                      saveTitleParsedReminderOptions,
-                      changeCurrentInputWidget,
-                    ),
+                    inputFields.titleField(),
                     if (titleParsedDateTimeFound)
-                      InputFields.titleParsedDateTimeField(
-                        context,
-                        currentFieldType,
-                        titleParsedReminder,
-                        saveReminderOptions,
-                      ),
-                    InputFields.dateTimeField(
-                      context,
-                      widget.thisReminder,
-                      currentFieldType,
-                      setCurrentInputWidget,
-                    ),
+                      inputFields.titleParsedDateTimeField(),
+                    inputFields.dateTimeField(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -263,19 +260,9 @@ class _ReminderSectionState extends State<ReminderPage> {
                       ),
                     ),
                     if (_notificationRepeatEnabled)
-                      InputFields.repetitionCountField(
-                        context,
-                        widget.thisReminder,
-                        currentFieldType,
-                        setCurrentInputWidget,
-                      ),
+                      inputFields.repetitionCountField(),
                     if (_notificationRepeatEnabled)
-                      InputFields.repetitionIntervalField(
-                        context,
-                        widget.thisReminder,
-                        currentFieldType,
-                        setCurrentInputWidget,
-                      ),
+                      inputFields.repetitionIntervalField(),
                   ],
                 ),
               ),
@@ -300,7 +287,7 @@ class _ReminderSectionState extends State<ReminderPage> {
               child: MaterialContainer(
                 // padding: EdgeInsetsDirectional.all(8),
                 elevation: 100,
-                child: InputSections.showInputSection(
+                child: InputSectionWidgetSelector.showInputSection(
                   currentFieldType,
                   widget.thisReminder,
                   saveReminderOptions,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/reminder_pg_utils/time_buttons/time_edit_button.dart';
-import 'package:nagger/utils/reminder_pg_utils/time_buttons/time_set_button.dart';
+import 'package:nagger/utils/reminder_pg_utils/buttons/time_edit_button.dart';
+import 'package:nagger/utils/reminder_pg_utils/buttons/time_set_button.dart';
 
 class RS_DatetimeInput extends StatelessWidget {
   final Reminder thisReminder;
