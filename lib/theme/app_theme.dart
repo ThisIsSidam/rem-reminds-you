@@ -94,7 +94,7 @@ final ThemeData myTheme = ThemeData(
 
   colorScheme: ColorScheme.fromSeed(
     seedColor: ConstColors.white,
-    primaryContainer: Color.fromARGB(255,39,40,45),
+    primaryContainer: ConstColors.darkGrey,
   ),
 
 
