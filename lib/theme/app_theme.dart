@@ -1,102 +1,101 @@
 
 import 'package:flutter/material.dart';
+import 'package:nagger/consts/const_colors.dart';
 
 final ThemeData myTheme = ThemeData(
-  primaryColor: Colors.white,
-  cardColor: Colors.blueAccent,
+  scaffoldBackgroundColor: Color.fromARGB(255,33,34,38),
+  primaryColor: ConstColors.blue,
+  cardColor: ConstColors.darkGrey,
 
   iconTheme: const IconThemeData(
-    color: Colors.black
+    color: ConstColors.white
   ),
-  
+
+
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
-    backgroundColor: Colors.blueAccent,
-    foregroundColor: Colors.black
+    backgroundColor: ConstColors.blue,
+    foregroundColor: ConstColors.white
   ),
 
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
-      backgroundColor: Colors.blueAccent,
-      foregroundColor: Colors.black,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5)
-      ),
+      backgroundColor: ConstColors.darkGrey,
+      foregroundColor: ConstColors.white,
+      shape: BeveledRectangleBorder(),
     )
   ),
-
-  buttonTheme: ButtonThemeData(
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.blueAccent,
-    )
-  ),
-
 
   textTheme: const TextTheme(
     titleLarge: TextStyle(
-      fontSize: 22,
+      fontSize: 18,
       fontWeight: FontWeight.bold,
-      color: Colors.black
+      color: ConstColors.white
     ),
     titleMedium: TextStyle(
-      fontSize: 20,
+      fontSize: 16,
       fontWeight: FontWeight.bold,
-      color: Colors.black
+      color: ConstColors.white
     ),
     titleSmall: TextStyle(
-      fontSize: 17,
+      fontSize: 14,
       fontWeight: FontWeight.bold,
-      color: Colors.black
+      color: ConstColors.lightGrey
     ),
     bodyLarge: TextStyle(
-      fontSize: 16,
-      color: Colors.black
+      fontSize: 14,
+      color: ConstColors.white
     ),
     bodyMedium: TextStyle(
-      fontSize: 14,
-      color: Colors.black
+      fontSize: 12,
+      color: ConstColors.white
     ),
     bodySmall: TextStyle(
-      fontSize: 12,
-      color: Colors.black
+      fontSize: 10,
+      color: ConstColors.white
     ),
     labelLarge: TextStyle(
       fontSize: 20,
-      color: Colors.white
+      color: ConstColors.lightGrey
     )
+  ),
+
+  switchTheme: SwitchThemeData(
+    trackColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+      return ConstColors.blue.withOpacity(.48);
+    }
+    return ConstColors.blue.withOpacity(.48);
+  })
   ),
 
   inputDecorationTheme: const InputDecorationTheme(
     filled: true,
-    fillColor: Colors.white,
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.blueAccent,
-        width: 2
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(5)),
+    fillColor: Colors.transparent,
+    contentPadding: const EdgeInsets.only(
+      left: 15,
+      top: 10,
+      bottom: 10,
     ),
-    disabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.blueAccent,),
-      borderRadius: BorderRadius.all(Radius.circular(5))
-    ), 
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.blueAccent,
-        width: 2.5
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(5)),
+    enabledBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: ConstColors.lightGrey),
+    ),
+    focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: ConstColors.blue),
     ),
   ),
 
   appBarTheme: const AppBarTheme(
-    color: Colors.transparent,
+    surfaceTintColor: Colors.transparent,
+    shadowColor: ConstColors.darkGrey,
+    color: ConstColors.darkGrey,
     elevation: 0
   ),
 
   colorScheme: ColorScheme.fromSeed(
-    seedColor: Colors.black,
-    background: Colors.white,
-    onBackground: const Color.fromRGBO(237, 223, 220, 1)
-  )
+    seedColor: ConstColors.white,
+    primaryContainer: Color.fromARGB(255,39,40,45),
+  ),
+
+
 );

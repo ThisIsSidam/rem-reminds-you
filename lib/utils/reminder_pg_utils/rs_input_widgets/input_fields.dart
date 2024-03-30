@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/rs_field.dart';
-import 'package:nagger/utils/title_parser/title_parser.dart';
+import 'package:nagger/utils/reminder_pg_utils/rs_field.dart';
+import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
 class InputFields {
   static Widget titleField(
@@ -27,20 +27,7 @@ class InputFields {
         focusNode: _titleFocusNode,
         initialValue: thisReminder.id == newReminderID ? null : thisReminder.title,
         textCapitalization: TextCapitalization.sentences,
-        style: Theme.of(context).textTheme.bodyLarge,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(
-            left: 15,
-            top: 10,
-            bottom: 10,
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.black),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).cardColor),
-          ),
-        ),
+        style: Theme.of(context).textTheme.bodyMedium,
         onChanged: (String str) {
           thisReminder.title = str;
           bool done = titleParser.parse(str);
@@ -66,9 +53,10 @@ class InputFields {
       label: "Parsed Time",
       thisReminder: titleParsedReminder,
       fieldWidget: ListTile(
+        contentPadding: EdgeInsets.only(right: 0),
         title: Text(
           titleParsedReminder.getDateTimeAsStr(),
-          style: Theme.of(context).textTheme.bodyLarge,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         subtitle: Text(
           titleParsedReminder.getDiffString(),
@@ -94,18 +82,24 @@ class InputFields {
       fieldType: FieldType.Time,
       currentFieldType: currentFieldType,
       label: "Time",
-      fieldWidget: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            thisReminder.getDateTimeAsStr(),
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          Text(
-            thisReminder.getDiffString(),
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-        ],
+      fieldWidget: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 2
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              thisReminder.getDateTimeAsStr(),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            Text(
+              thisReminder.getDiffString(),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
       ),
       thisReminder: thisReminder,
       getFocus: setCurrentInputField,
@@ -122,9 +116,15 @@ class InputFields {
       fieldType: FieldType.R_Count,
       currentFieldType: currentFieldType,
       label: "Repeat",
-      fieldWidget: Text(
-        "${thisReminder.repetitionCount.toString()} times",
-        style: Theme.of(context).textTheme.bodyLarge,
+      fieldWidget: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 2
+        ),
+        child: Text(
+          "${thisReminder.repetitionCount.toString()} times",
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
       ),
       thisReminder: thisReminder,
       getFocus: setCurrentInputField,
@@ -141,9 +141,15 @@ class InputFields {
       fieldType: FieldType.R_Interval,
       currentFieldType: currentFieldType,
       label: "Interval",
-      fieldWidget: Text(
-        "Every ${thisReminder.getIntervalString()}",
-        style: Theme.of(context).textTheme.bodyLarge,
+      fieldWidget: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 2
+        ),
+        child: Text(
+          "Every ${thisReminder.getIntervalString()}",
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
       ),
       thisReminder: thisReminder,
       getFocus: setCurrentInputField,

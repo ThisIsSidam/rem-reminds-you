@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/rs_input_widgets/rs_datetime_input.dart';
-import 'package:nagger/utils/rs_input_widgets/rs_input_section.dart';
-import 'package:nagger/utils/rs_input_widgets/rs_rep_count_input.dart';
-import 'package:nagger/utils/rs_input_widgets/rs_rep_interval_input.dart';
+import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/rs_datetime_input.dart';
+import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/rs_input_section.dart';
+import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/rs_rep_count_input.dart';
+import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/rs_rep_interval_input.dart';
 
 class InputSections {
   static Widget showInputSection(

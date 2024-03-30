@@ -16,7 +16,8 @@ class TimeSetButton extends StatelessWidget {
       child: Text(
         time,
         style: Theme.of(context).textTheme.bodyMedium,
-      )
+      ),
+      style: Theme.of(context).elevatedButtonTheme.style
     );
   }
 }

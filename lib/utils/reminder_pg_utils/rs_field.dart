@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nagger/consts/const_colors.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/reminder_class/reminder.dart';
@@ -44,7 +45,7 @@ class _RS_FieldState extends State<RS_Field> {
             bottom: BorderSide(
               color: widget.currentFieldType == widget.fieldType
               ? Theme.of(context).cardColor
-              : Colors.black
+              : ConstColors.lightGrey
             )
           )
         ),
@@ -64,7 +65,7 @@ class _RS_FieldState extends State<RS_Field> {
             width: reminderSectionFieldsLeftMargin,
             child: Text(
               widget.label,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleSmall,
             )
           ),
           Expanded(

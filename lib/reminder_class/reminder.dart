@@ -30,7 +30,7 @@ class Reminder {
     this.title = reminderNullTitle,
     required this.dateAndTime,
     this.done = false,
-    this.repetitionCount = 0,
+    this.repetitionCount = 1,
     this.repetitionInterval = const Duration(seconds: 5),
   }){
     id = newReminderID;

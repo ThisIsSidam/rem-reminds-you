@@ -19,28 +19,28 @@ class RS_RepIntervalInput extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint("Showing durationgButtonsGrid");
     return GridView.count(
-      mainAxisSpacing: 5,
-      crossAxisSpacing: 5,
+      mainAxisSpacing: 1,
+      crossAxisSpacing: 1,
       crossAxisCount: 3,
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
-        intervalEditButton(Duration(minutes: 2)),
-        intervalEditButton(Duration(minutes: 5)),
-        intervalEditButton(Duration(minutes: 10)),
-        intervalEditButton(Duration(minutes: 15)),
-        intervalEditButton(Duration(minutes: 30)),
-        intervalEditButton(Duration(minutes: 45)),
-        intervalEditButton(Duration(hours: 1)),
-        intervalEditButton(Duration(hours: 2)),
-        intervalEditButton(Duration(hours: 3)),
+        intervalEditButton(Duration(minutes: 2), context),
+        intervalEditButton(Duration(minutes: 5), context),
+        intervalEditButton(Duration(minutes: 10), context),
+        intervalEditButton(Duration(minutes: 15), context),
+        intervalEditButton(Duration(minutes: 30), context),
+        intervalEditButton(Duration(minutes: 45), context),
+        intervalEditButton(Duration(hours: 1), context),
+        intervalEditButton(Duration(hours: 2), context),
+        intervalEditButton(Duration(hours: 3), context),
       ],
     );
   }
 
-  Widget intervalEditButton(Duration duration) {
+  Widget intervalEditButton(Duration duration, BuildContext context) {
     return SizedBox(
-      height: 75,
+      height: 60,
       width: 150,
       child: ElevatedButton(
         onPressed: () {
@@ -52,7 +52,8 @@ class RS_RepIntervalInput extends StatelessWidget {
         child: Text(
           (duration.inMinutes < 60)
           ? "${duration.inMinutes.toString()} mn"
-          : "${duration.inHours.toString()} hrs"
+          : "${duration.inHours.toString()} hrs",
+          style: Theme.of(context).textTheme.bodyLarge,
         )
       ),
     );

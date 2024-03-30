@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:nagger/consts/const_colors.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/notification/notification.dart';
 import 'package:nagger/database/database.dart';
-import 'package:nagger/utils/homepage_list_section.dart';
+import 'package:nagger/utils/home_pg_utils/homepage_list_section.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/pages/reminder_page.dart';
 
@@ -97,8 +98,30 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (noOfReminders == 0)
+    {
+      return Scaffold(
+        appBar: AppBar(
+          surfaceTintColor: null,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text(
+            "Nagger",
+          style: Theme.of(context).textTheme.titleLarge,
+          ),
+          actions: [
+            IconButton(onPressed: refreshPage, icon: const Icon(
+              Icons.refresh,
+              color: Colors.red,
+            ))
+          ],
+        ),
+        body: getEmptyPage()
+      );
+    }
     return Scaffold(
       appBar: AppBar(
+        elevation: 5,
+        shadowColor: ConstColors.darkGrey,
         title: Text(
           "Nagger",
           style: Theme.of(context).textTheme.titleLarge,
@@ -110,12 +133,8 @@ class _HomePageState extends State<HomePage> {
             ))
         ],
       ),
-      body: noOfReminders == 0
-      ? getEmptyPage()
-      : getListedReminderPage(),
-      floatingActionButton: noOfReminders == 0
-      ? null
-      : getFloatingActionButton()
+      body: getListedReminderPage(),
+      floatingActionButton: getFloatingActionButton()
     );
   }
 
@@ -150,41 +169,56 @@ class _HomePageState extends State<HomePage> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                backgroundColor: Theme.of(context).primaryColor
+              ),
             ),
           )
         ],
       ),
     );
   }
+Widget getListedReminderPage() {
+  return ListView.separated(
+    padding: EdgeInsets.symmetric(vertical: 8.0),
+    itemCount: 4,
+    separatorBuilder: (BuildContext context, int index) => SizedBox(height: 8.0),
+    itemBuilder: (BuildContext context, int index) {
+      switch (index) {
+        case 0:
+          return HomePageListSection(
+            label: overdueSectionTitle,
+            remindersList: remindersMap[overdueSectionTitle] ?? [],
+            refreshHomePage: refreshPage,
+          );
+        case 1:
+          return HomePageListSection(
+            label: todaySectionTitle,
+            remindersList: remindersMap[todaySectionTitle] ?? [],
+            refreshHomePage: refreshPage,
+          );
+        case 2:
+          return HomePageListSection(
+            label: tomorrowSectionTitle,
+            remindersList: remindersMap[tomorrowSectionTitle] ?? [],
+            refreshHomePage: refreshPage,
+          );
+        case 3:
+          return HomePageListSection(
+            label: laterSectionTitle,
+            remindersList: remindersMap[laterSectionTitle] ?? [],
+            refreshHomePage: refreshPage,
+          );
+        default:
+          return SizedBox.shrink();
+      }
+    },
+  );
+}
 
-  Widget getListedReminderPage() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          HomePageListSection(
-            name: overdueSectionTitle,
-            remindersList: remindersMap[overdueSectionTitle] ?? [], 
-            refreshHomePage: refreshPage
-          ),
-          HomePageListSection(
-            name: todaySectionTitle,
-            remindersList: remindersMap[todaySectionTitle] ?? [], 
-            refreshHomePage: refreshPage
-          ),
-          HomePageListSection(
-            name: tomorrowSectionTitle,
-            remindersList: remindersMap[tomorrowSectionTitle] ?? [], 
-            refreshHomePage: refreshPage
-          ),
-          HomePageListSection(
-            name: laterSectionTitle,
-            remindersList: remindersMap[laterSectionTitle] ?? [], 
-            refreshHomePage: refreshPage
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget getFloatingActionButton() {
     return FloatingActionButton(

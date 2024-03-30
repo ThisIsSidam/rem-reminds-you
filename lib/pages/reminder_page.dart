@@ -1,13 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/database/database.dart';
 import 'package:nagger/notification/notification.dart';
 import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/bottom_buttons.dart';
+import 'package:nagger/utils/other_utils/snack_bar.dart';
+import 'package:nagger/utils/reminder_pg_utils/bottom_buttons.dart';
+import 'package:nagger/utils/other_utils/material_container.dart';
 import 'package:nagger/utils/misc_methods/misc_methods.dart';
-import 'package:nagger/utils/rs_input_widgets/input_fields.dart';
-import 'package:nagger/utils/rs_input_widgets/input_section_widget_selecter.dart';
-import 'package:nagger/utils/title_parser/title_parser.dart';
+import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_fields.dart';
+import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_section_widget_selecter.dart';
+import 'package:nagger/utils/reminder_pg_utils/section_buttons.dart';
+import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
 enum FieldType { Title, ParsedTime, Time, R_Count, R_Interval, None }
 
@@ -32,7 +37,7 @@ class _ReminderSectionState extends State<ReminderPage> {
   late TitleParser titleParser;
   bool titleParsedDateTimeFound = false;
   late Reminder titleParsedReminder;
-  bool _notificationRepeatEnabled = true;
+  bool _notificationRepeatEnabled = false;
 
   @override
   void initState() {
@@ -86,6 +91,16 @@ class _ReminderSectionState extends State<ReminderPage> {
   }
 
   void saveReminder() {
+    if (widget.thisReminder.title == "No Title")
+    {
+      showSnackBar(context, "Enter a title!");
+      return;
+    }
+    if (widget.thisReminder.dateAndTime.isBefore(DateTime.now()))
+    {
+      showSnackBar(context, "Time machine is broke. Can't remind you in the past!");
+      return;
+    }
     RemindersDatabaseController.saveReminder(widget.thisReminder);
     widget.refreshHomePage();
     Navigator.pop(context);
@@ -169,9 +184,20 @@ class _ReminderSectionState extends State<ReminderPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Reminder"),
+        toolbarHeight: 100,
+        scrolledUnderElevation: 5,
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Reminder",
+          style: theme.textTheme.titleMedium
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(40),
+          child: SectionButtons()
+        ),
         actions: [
           if (widget.thisReminder.id != newReminderID)
             MaterialButton(
@@ -185,65 +211,84 @@ class _ReminderSectionState extends State<ReminderPage> {
       ),
       body: Stack(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          ListView(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
             children: [
-              InputFields.titleField(
-                context,
-                widget.thisReminder,
-                currentFieldType,
-                _titleFocusNode,
-                titleParser,
-                titleParsedDateTimeFound,
-                titleParsedReminder,
-                saveTitleParsedReminderOptions,
-                changeCurrentInputWidget,
-              ),
-              if (titleParsedDateTimeFound)
-                InputFields.titleParsedDateTimeField(
-                  context,
-                  currentFieldType,
-                  titleParsedReminder,
-                  saveReminderOptions,
-                ),
-              InputFields.dateTimeField(
-                context,
-                widget.thisReminder,
-                currentFieldType,
-                setCurrentInputWidget,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              MaterialContainer(
+                padding: EdgeInsetsDirectional.all(8),
+                elevation: 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Repeat'),
-                    Switch(
-                      value: _notificationRepeatEnabled,
-                      onChanged: _toggleNotificationRepeatMode,
+                    // SectionButtons(),
+                    InputFields.titleField(
+                      context,
+                      widget.thisReminder,
+                      currentFieldType,
+                      _titleFocusNode,
+                      titleParser,
+                      titleParsedDateTimeFound,
+                      titleParsedReminder,
+                      saveTitleParsedReminderOptions,
+                      changeCurrentInputWidget,
                     ),
+                    if (titleParsedDateTimeFound)
+                      InputFields.titleParsedDateTimeField(
+                        context,
+                        currentFieldType,
+                        titleParsedReminder,
+                        saveReminderOptions,
+                      ),
+                    InputFields.dateTimeField(
+                      context,
+                      widget.thisReminder,
+                      currentFieldType,
+                      setCurrentInputWidget,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Repeat Notifications',
+                            style: theme.textTheme.titleSmall
+                          ),
+                          Switch(
+                            value: _notificationRepeatEnabled,
+                            onChanged: _toggleNotificationRepeatMode,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_notificationRepeatEnabled)
+                      InputFields.repetitionCountField(
+                        context,
+                        widget.thisReminder,
+                        currentFieldType,
+                        setCurrentInputWidget,
+                      ),
+                    if (_notificationRepeatEnabled)
+                      InputFields.repetitionIntervalField(
+                        context,
+                        widget.thisReminder,
+                        currentFieldType,
+                        setCurrentInputWidget,
+                      ),
                   ],
                 ),
               ),
-              if (_notificationRepeatEnabled)
-                InputFields.repetitionCountField(
+              SizedBox(height: 20,),
+              MaterialContainer(
+                padding: EdgeInsetsDirectional.all(8),
+                elevation: 5,
+                child: BottomButtons.bottomRowButtons(
                   context,
+                  initialReminder,
+                  saveReminder,
                   widget.thisReminder,
-                  currentFieldType,
-                  setCurrentInputWidget,
                 ),
-              if (_notificationRepeatEnabled)
-                InputFields.repetitionIntervalField(
-                  context,
-                  widget.thisReminder,
-                  currentFieldType,
-                  setCurrentInputWidget,
-                ),
-              BottomButtons.bottomRowButtons(
-                context,
-                initialReminder,
-                saveReminder,
-                widget.thisReminder,
               ),
             ],
           ),
@@ -252,11 +297,15 @@ class _ReminderSectionState extends State<ReminderPage> {
               (!_isKeyboardVisible))
             Align(
               alignment: Alignment.bottomCenter,
-              child: InputSections.showInputSection(
-                currentFieldType,
-                widget.thisReminder,
-                saveReminderOptions,
-                changeCurrentInputWidget,
+              child: MaterialContainer(
+                // padding: EdgeInsetsDirectional.all(8),
+                elevation: 100,
+                child: InputSections.showInputSection(
+                  currentFieldType,
+                  widget.thisReminder,
+                  saveReminderOptions,
+                  changeCurrentInputWidget,
+                ),
               ),
             )
         ],

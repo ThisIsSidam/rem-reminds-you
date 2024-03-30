@@ -18,9 +18,9 @@ class RS_RepCountInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      mainAxisSpacing: 5,
-      crossAxisSpacing: 5,
-      crossAxisCount: 2,
+      mainAxisSpacing: 1,
+      crossAxisSpacing: 1,
+      crossAxisCount: 4,
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [

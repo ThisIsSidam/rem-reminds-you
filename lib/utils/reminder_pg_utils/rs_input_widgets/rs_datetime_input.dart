@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/time_buttons/time_edit_button.dart';
-import 'package:nagger/utils/time_buttons/time_set_button.dart';
+import 'package:nagger/utils/reminder_pg_utils/time_buttons/time_edit_button.dart';
+import 'package:nagger/utils/reminder_pg_utils/time_buttons/time_set_button.dart';
 
 class RS_DatetimeInput extends StatelessWidget {
   final Reminder thisReminder;
@@ -57,8 +57,8 @@ class RS_DatetimeInput extends StatelessWidget {
       children: [
         Expanded(
           child: GridView.count(
-            mainAxisSpacing: 5,
-            crossAxisSpacing: 5,
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
             crossAxisCount: 4,
             shrinkWrap: true,
             childAspectRatio: 1.5,
@@ -76,18 +76,25 @@ class RS_DatetimeInput extends StatelessWidget {
               TimeEditButton(editDuration: const Duration(minutes: -1), editTime: editTime,),
               TimeEditButton(editDuration: const Duration(hours: -3), editTime: editTime,),
               TimeEditButton(editDuration: const Duration(days: -1), editTime: editTime,),
+              ElevatedButton(
+                onPressed: () {
+                  moveFocus(fieldType);
+                }, 
+                child: Text(
+                  "Next",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor
+                ),
+              )
             ],
           ),
         ),
-        ElevatedButton(
-          onPressed: () {
-            moveFocus(fieldType);
-          }, 
-          child: Text(
-            "Set",
-          )
-        )
       ],
     );
   }
+
+  
+
 }
