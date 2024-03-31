@@ -13,7 +13,6 @@ class InputFields {
   final TitleParser titleParser;
   bool titleParsedDateTimeFound;
   final Reminder titleParsedReminder;
-  final void Function(Reminder) saveTitleParsedReminderOptions;
   final void Function(FieldType) changeCurrentInputWidget;
   final void Function(Reminder) saveReminderOptions;
   final void Function(FieldType) setCurrentInputWidget;
@@ -26,7 +25,6 @@ class InputFields {
     required this.titleParser,
     required this.titleParsedDateTimeFound,
     required this.titleParsedReminder,
-    required this.saveTitleParsedReminderOptions,
     required this.changeCurrentInputWidget,
     required this.saveReminderOptions,
     required this.setCurrentInputWidget,
@@ -46,8 +44,7 @@ class InputFields {
         style: Theme.of(context).textTheme.bodyMedium,
         onChanged: (String str) {
           thisReminder.title = str;
-          bool done = titleParser.parse(str);
-          titleParsedDateTimeFound = done;
+          titleParser.parse(str);
         },
         onFieldSubmitted: (String str) {
           changeCurrentInputWidget(FieldType.Title);
@@ -63,8 +60,11 @@ class InputFields {
       currentFieldType: currentFieldType,
       label: "Parsed Time",
       thisReminder: titleParsedReminder,
+      padding: EdgeInsets.only(
+        left:10, right: 10, top: 0, bottom: 0
+      ),
       fieldWidget: ListTile(
-        contentPadding: EdgeInsets.only(right: 0),
+        contentPadding: EdgeInsets.zero,
         title: Text(
           titleParsedReminder.getDateTimeAsStr(),
           style: Theme.of(context).textTheme.bodyMedium,
@@ -74,7 +74,8 @@ class InputFields {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: MaterialButton(
-          child: const Icon(Icons.check_box),
+          child: const Icon(Icons.done),
+          color: Theme.of(context).primaryColor,
           onPressed: () {
             saveReminderOptions(titleParsedReminder);
           },

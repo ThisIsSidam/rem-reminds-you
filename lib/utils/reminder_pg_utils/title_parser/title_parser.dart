@@ -6,14 +6,16 @@ import 'package:nagger/reminder_class/reminder.dart';
 class TitleParser {
   String originalTitle = ""; 
   Reminder thisReminder;
+  final Function(bool) toggleParsedDateTimeField;
   final Function(Reminder) save;
 
   TitleParser({
     required this.thisReminder,
+    required this.toggleParsedDateTimeField,
     required this.save 
   });
   
-  bool parse(String str) {
+  void parse(String str) {
     originalTitle = str;
     final parseString = extractTitle(str);
 
@@ -30,14 +32,15 @@ class TitleParser {
         debugPrint("[TitleParserConstr] D: ${thisReminder.dateAndTime}");
 
         save(thisReminder); 
-        return true;  
+        toggleParsedDateTimeField(true);
+        return;
       }
     }
     else
     {
       debugPrint("[TitleParserConstr] parseString null");
     }
-    return false;
+    toggleParsedDateTimeField(false);
 
   }
 

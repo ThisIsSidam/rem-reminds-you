@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/database/database.dart';
 import 'package:nagger/notification/notification.dart';
@@ -41,7 +39,6 @@ class _ReminderSectionState extends State<ReminderPage> {
   // Handling the closing upon appearance of another input widget.
   final _titleFocusNode = FocusNode();
   
-
   @override
   void initState() {
     initialReminder = widget.thisReminder;
@@ -51,6 +48,7 @@ class _ReminderSectionState extends State<ReminderPage> {
 
     titleParser = TitleParser(
       thisReminder: titleParsedReminder,
+      toggleParsedDateTimeField: toggleParsedDateTimeField,
       save: saveTitleParsedReminderOptions,
     );
 
@@ -78,6 +76,11 @@ class _ReminderSectionState extends State<ReminderPage> {
     setState(() {
       debugPrint("[saveReminderOptions] called");
       widget.thisReminder.set(reminder);
+
+      if (titleParsedDateTimeFound)
+      {
+        titleParsedDateTimeFound = false;
+      }
     });
   }
 
@@ -86,11 +89,17 @@ class _ReminderSectionState extends State<ReminderPage> {
   void saveTitleParsedReminderOptions(Reminder reminder) {
     setState(() {
       titleParsedReminder = reminder;
-      titleParsedDateTimeFound = true; // Set titleParsedDateTimeFound to true
     });
 
     debugPrint("[saveTitleParsed..] parsed: ${titleParsedReminder.dateAndTime}");
     debugPrint("[saveTitleParsed..] parsed: ${widget.thisReminder.dateAndTime}");
+  }
+
+  void toggleParsedDateTimeField(bool flag) {
+    debugPrint("[togglePar...] $flag");
+    setState(() {
+      titleParsedDateTimeFound = flag;
+    });
   }
 
   void saveReminder() {
@@ -196,7 +205,6 @@ class _ReminderSectionState extends State<ReminderPage> {
       titleParser: titleParser, 
       titleParsedDateTimeFound: titleParsedDateTimeFound, 
       titleParsedReminder: titleParsedReminder, 
-      saveTitleParsedReminderOptions: saveTitleParsedReminderOptions, 
       changeCurrentInputWidget: changeCurrentInputWidget, 
       saveReminderOptions: saveReminderOptions, 
       setCurrentInputWidget: setCurrentInputWidget
@@ -240,8 +248,6 @@ class _ReminderSectionState extends State<ReminderPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     inputFields.titleField(),
-                    if (titleParsedDateTimeFound)
-                      inputFields.titleParsedDateTimeField(),
                     inputFields.dateTimeField(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -279,13 +285,22 @@ class _ReminderSectionState extends State<ReminderPage> {
               ),
             ],
           ),
+
+          if (titleParsedDateTimeFound)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: MaterialContainer(
+                elevation: 5,
+                child: inputFields.titleParsedDateTimeField()
+              )
+            ),
+
           if ((currentFieldType != FieldType.Title) &&
               (currentFieldType != FieldType.None) &&
               (!_isKeyboardVisible))
             Align(
               alignment: Alignment.bottomCenter,
               child: MaterialContainer(
-                // padding: EdgeInsetsDirectional.all(8),
                 elevation: 100,
                 child: InputSectionWidgetSelector.showInputSection(
                   currentFieldType,

@@ -11,6 +11,7 @@ class RS_Field extends StatefulWidget {
   final String label;
   final Reminder thisReminder;
   final Widget fieldWidget;
+  final EdgeInsetsGeometry padding;
   final Function(FieldType)? getFocus;
 
   const RS_Field({
@@ -20,6 +21,7 @@ class RS_Field extends StatefulWidget {
     required this.label,
     required this.fieldWidget,
     required this.thisReminder,
+    this.padding = const EdgeInsets.all(8),
     this.getFocus,
   }
   );
@@ -40,6 +42,7 @@ class _RS_FieldState extends State<RS_Field> {
         widget.getFocus!(widget.fieldType);
       },
       child: Container(
+        padding: EdgeInsets.zero,
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -57,9 +60,8 @@ class _RS_FieldState extends State<RS_Field> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: widget.padding,
       child: Row(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
             width: reminderSectionFieldsLeftMargin,
