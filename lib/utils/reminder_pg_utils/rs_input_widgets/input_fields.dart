@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/pages/reminder_page.dart';
 import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/reminder_pg_utils/rs_field.dart';
+import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/rs_field.dart';
 import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
 class InputFields {
@@ -148,6 +148,26 @@ class InputFields {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
       ),
+      thisReminder: thisReminder,
+      getFocus: setCurrentInputWidget,
+    );
+  }
+
+  Widget recurringReminderField() {
+    return RS_Field(
+      fieldType: FieldType.Frequency, 
+      currentFieldType: currentFieldType, 
+      label: "Frequency", 
+      fieldWidget: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 2
+        ),
+        child: Text(
+          thisReminder.getRecurringFrequencyAsString(),
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ), 
       thisReminder: thisReminder,
       getFocus: setCurrentInputWidget,
     );

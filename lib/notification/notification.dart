@@ -1,7 +1,6 @@
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -117,6 +116,7 @@ class NotificationController {
     {int repeatNumber = 0}
   ) async {
     final dateTime = reminder.dateAndTime;
+    final recurringFrequency = reminder.recurringFrequency;
     return await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: (reminder.id ?? reminderNullID) + repeatNumber, 
@@ -141,13 +141,15 @@ class NotificationController {
         )
       ],
       schedule: NotificationCalendar(
-        year: dateTime.year,
-        month: dateTime.month,
+        weekday: recurringFrequency == RecurringFrequency.weekly
+        ? dateTime.weekday
+        : null,
         day: dateTime.day,
         hour: dateTime.hour,
         minute: dateTime.minute,
         second: dateTime.second,
-        millisecond: dateTime.millisecond
+        millisecond: dateTime.millisecond,
+        repeats: true
       )
     );
   }

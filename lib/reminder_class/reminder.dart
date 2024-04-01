@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:nagger/consts/consts.dart';
 part 'reminder.g.dart';
 
+part 'recurring_frequency.dart';
+
 @HiveType(typeId: 1)
 class Reminder {
 
@@ -26,12 +28,16 @@ class Reminder {
   @HiveField(5)
   Duration repetitionInterval;
 
+  @HiveField(6) 
+  int recurringFrequency;
+
   Reminder({
     this.title = reminderNullTitle,
     required this.dateAndTime,
     this.done = false,
     this.repetitionCount = 1,
     this.repetitionInterval = const Duration(seconds: 5),
+    this.recurringFrequency = 0
   }){
     id = newReminderID;
   }
@@ -59,6 +65,12 @@ class Reminder {
     {
       return "in ${_formatDuration(difference)}";
     }
+  }
+
+  String getRecurringFrequencyAsString() {
+    return RecurringFrequencyExtension.getDisplayName(
+      RecurringFrequencyExtension.fromInt(recurringFrequency)
+    );
   }
 
   String _formatDuration(Duration duration) {

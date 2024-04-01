@@ -25,15 +25,15 @@ class RS_RepIntervalInput extends StatelessWidget {
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
-        intervalEditButton(Duration(minutes: 2), context),
         intervalEditButton(Duration(seconds: 5), context),
-        intervalEditButton(Duration(seconds: 10), context),
+        intervalEditButton(Duration(seconds: 20), context),
+        intervalEditButton(Duration(minutes: 1), context),
+        intervalEditButton(Duration(minutes: 5), context),
+        intervalEditButton(Duration(minutes: 10), context),
         intervalEditButton(Duration(minutes: 15), context),
         intervalEditButton(Duration(minutes: 30), context),
         intervalEditButton(Duration(minutes: 45), context),
         intervalEditButton(Duration(hours: 1), context),
-        intervalEditButton(Duration(hours: 2), context),
-        intervalEditButton(Duration(hours: 3), context),
       ],
     );
   }

@@ -12,7 +12,7 @@ import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_section_wi
 import 'package:nagger/utils/reminder_pg_utils/buttons/section_buttons.dart';
 import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
-enum FieldType { Title, ParsedTime, Time, R_Count, R_Interval, None }
+enum FieldType {Title, ParsedTime, Time, R_Count, R_Interval, Frequency, None}
 
 class ReminderPage extends StatefulWidget {
   final Reminder thisReminder;
@@ -31,13 +31,14 @@ class _ReminderSectionState extends State<ReminderPage> {
   late Reminder initialReminder;
   FieldType currentFieldType = FieldType.Title;
   bool _isKeyboardVisible = true;
+
   late TitleParser titleParser;
   bool titleParsedDateTimeFound = false;
   late Reminder titleParsedReminder;
-  bool _notificationRepeatEnabled = false;
-
   // Handling the closing upon appearance of another input widget.
   final _titleFocusNode = FocusNode();
+  
+  bool _repetitiveNotifsEnabled = false;
   
   @override
   void initState() {
@@ -61,9 +62,9 @@ class _ReminderSectionState extends State<ReminderPage> {
     }
   }
 
-  void _toggleNotificationRepeatMode(bool value) {
+  void _toggleRepetitiveNotifMode(bool value) {
     setState(() {
-      _notificationRepeatEnabled = value;
+      _repetitiveNotifsEnabled = value;
       if (currentFieldType == FieldType.R_Count || currentFieldType == FieldType.R_Interval)
       {
         currentFieldType = FieldType.None;
@@ -148,18 +149,23 @@ class _ReminderSectionState extends State<ReminderPage> {
     } 
     else if (fieldType == FieldType.R_Interval) 
     {
-      toChange = FieldType.None;
+      toChange = FieldType.Frequency;
     } 
+    else if (fieldType == FieldType.Frequency)
+    {
+      toChange = FieldType.None;
+    }
     else 
     {
       toChange = FieldType.None;
     }
 
-    if (!_notificationRepeatEnabled)
+
+    if (!_repetitiveNotifsEnabled)
     {
       if (toChange == FieldType.R_Count || toChange == FieldType.R_Interval)
       {
-        toChange = FieldType.None;
+        toChange = FieldType.Frequency;
       }
     }
 
@@ -171,6 +177,7 @@ class _ReminderSectionState extends State<ReminderPage> {
   /// Used to set the appropriate input widget when 
   /// the field is tapped.
   void setCurrentInputWidget(FieldType fieldType) {
+    debugPrint("called");
     if (currentFieldType == fieldType) {
       return;
     }
@@ -250,25 +257,26 @@ class _ReminderSectionState extends State<ReminderPage> {
                     inputFields.titleField(),
                     inputFields.dateTimeField(),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Repeat Notifications',
+                            'Repetitive Notifications',
                             style: theme.textTheme.titleSmall
                           ),
                           Switch(
-                            value: _notificationRepeatEnabled,
-                            onChanged: _toggleNotificationRepeatMode,
+                            value: _repetitiveNotifsEnabled,
+                            onChanged: _toggleRepetitiveNotifMode,
                           ),
                         ],
                       ),
                     ),
-                    if (_notificationRepeatEnabled)
+                    if (_repetitiveNotifsEnabled)
                       inputFields.repetitionCountField(),
-                    if (_notificationRepeatEnabled)
+                    if (_repetitiveNotifsEnabled)
                       inputFields.repetitionIntervalField(),
+                    inputFields.recurringReminderField()
                   ],
                 ),
               ),
@@ -285,7 +293,6 @@ class _ReminderSectionState extends State<ReminderPage> {
               ),
             ],
           ),
-
           if (titleParsedDateTimeFound)
             Align(
               alignment: Alignment.bottomCenter,
@@ -295,9 +302,12 @@ class _ReminderSectionState extends State<ReminderPage> {
               )
             ),
 
-          if ((currentFieldType != FieldType.Title) &&
-              (currentFieldType != FieldType.None) &&
-              (!_isKeyboardVisible))
+          if 
+          (
+            (currentFieldType != FieldType.Title) &&
+            (currentFieldType != FieldType.None) &&
+            (!_isKeyboardVisible)
+          )
             Align(
               alignment: Alignment.bottomCenter,
               child: MaterialContainer(

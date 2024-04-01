@@ -20,21 +20,26 @@ class RS_RepCountInput extends StatelessWidget {
     return GridView.count(
       mainAxisSpacing: 1,
       crossAxisSpacing: 1,
-      crossAxisCount: 4,
+      crossAxisCount: 3,
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
         countEditButton(3),
         countEditButton(5),
+        countEditButton(7),
         countEditButton(10),
+        countEditButton(12),
         countEditButton(15),
+        countEditButton(20),
+        countEditButton(25),
+        countEditButton(30),
       ],
     );
   }
 
   Widget countEditButton(int count) {
     return SizedBox(
-      height: 75,
+      height: 50,
       width: 150,
       child: ElevatedButton(
         onPressed: () {
