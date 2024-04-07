@@ -35,7 +35,7 @@ class Reminder {
     this.title = reminderNullTitle,
     required this.dateAndTime,
     this.done = false,
-    this.repetitionCount = 1,
+    this.repetitionCount = 0,
     this.repetitionInterval = const Duration(seconds: 5),
     this.recurringFrequency = 0
   }){
@@ -141,6 +141,19 @@ class Reminder {
       repetitionCount: reminder.repetitionCount,
       repetitionInterval: reminder.repetitionInterval
     );
+  }
+
+  String get cronExpression {
+    switch (recurringFrequency) {
+      case 0:
+        return "0 ${dateAndTime.minute} ${dateAndTime.hour} ${dateAndTime.day} ${dateAndTime.month} ?";
+      case 1:
+        return "0 ${dateAndTime.minute} ${dateAndTime.hour} * * ?";
+      case 2:
+        return "0 ${dateAndTime.minute} ${dateAndTime.hour} ? * ${dateAndTime.weekday}";
+      default:
+        return "0 ${dateAndTime.minute} ${dateAndTime.hour} ${dateAndTime.day} ${dateAndTime.month} ?";
+    }
   }
 
 }

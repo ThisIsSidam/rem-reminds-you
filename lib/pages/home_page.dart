@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:nagger/consts/const_colors.dart';
 import 'package:nagger/consts/consts.dart';
@@ -29,26 +27,11 @@ class _HomePageState extends State<HomePage> {
     _scheduleRefresh();
     NotificationController.startListeningNotificationEvents();
 
-    // Listening for reloading orderers
-    final ReceivePort receivePort = ReceivePort();
-    IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
-    receivePort.listen((dynamic message) {
-      if (message is Map<String, dynamic>)
-      {
-        if (message["message"] == 'refreshHomePage')
-        {
-          debugPrint("REFRESHING PAGE-------");
-          RemindersDatabaseController.deleteReminder(message['id']);
-          refreshPage();
-        }
-        else 
-        {
-          debugPrint("Port message is not refreshHomePage");
-        }
-      }
-    });
-
     super.initState();
+    
+    NotificationController.deleteAndRefresh = deleteAndRefresh;
+
+
   }
 
   // Returns DateTime with 0 seconds while 5 min in the future.
@@ -88,6 +71,12 @@ class _HomePageState extends State<HomePage> {
       remindersMap = RemindersDatabaseController.getReminderLists();
       noOfReminders = RemindersDatabaseController.getNumberOfReminders();
     });
+  }
+
+  void deleteAndRefresh(int id) {
+    debugPrint("REFRESHING PAGE-------");
+    RemindersDatabaseController.deleteReminder(id);
+    refreshPage();
   }
 
   @override

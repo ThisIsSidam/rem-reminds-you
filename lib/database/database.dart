@@ -65,10 +65,10 @@ class RemindersDatabaseController {
     reminders[reminder.id!] = reminder;
     NotificationController.scheduleNotification(reminder);
 
-    if (reminder.getDiffDuration() < Duration(days: 7))
-    {
-      scheduleRepeatedNotifications(reminder);
-    }
+    // if (reminder.getDiffDuration() < Duration(days: 7))
+    // {
+    //   scheduleRepeatedNotifications(reminder);
+    // }
     
     updateReminders();
     printAll("After Adding");

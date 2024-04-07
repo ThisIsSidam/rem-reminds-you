@@ -1,5 +1,3 @@
-import 'dart:isolate';
-import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -115,8 +113,6 @@ class NotificationController {
     Reminder reminder,
     {int repeatNumber = 0}
   ) async {
-    final dateTime = reminder.dateAndTime;
-    final recurringFrequency = reminder.recurringFrequency;
     return await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: (reminder.id ?? reminderNullID) + repeatNumber, 
@@ -140,17 +136,15 @@ class NotificationController {
           actionType: ActionType.SilentBackgroundAction
         )
       ],
-      schedule: NotificationCalendar(
-        weekday: recurringFrequency == RecurringFrequency.weekly
-        ? dateTime.weekday
-        : null,
-        day: dateTime.day,
-        hour: dateTime.hour,
-        minute: dateTime.minute,
-        second: dateTime.second,
-        millisecond: dateTime.millisecond,
-        repeats: true
+      schedule: NotificationAndroidCrontab(
+        crontabExpression: reminder.cronExpression,
+        preciseSchedules: [
+          reminder.dateAndTime
+        ],
+        allowWhileIdle: true,
+        repeats: true,
       )
+
     );
   }
 
@@ -164,7 +158,7 @@ class NotificationController {
     debugPrint("$groupKey cancelled scheduled notification.");
   }
 
-  static Future<void> startListeningNotificationEvents() async {
+  static Future<void> startListeningNotificationEvents(Function(int)? deleteAndRefresh) async {
     AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceivedMethod);
   }
 
@@ -179,17 +173,11 @@ class NotificationController {
       await cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
       debugPrint("[onDoneButtonPressed] Schedule Cancelled");
 
-      final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-      debugPrint("[onDoneButtonPressed] mainIsolate connected");
-      if (mainIsolate != null) 
+      if (deleteAndRefresh != null) 
       {
         debugPrint("[onDoneButtonPressed] mainIsolate not null");
-        final message = {
-          'message': 'refreshHomePage',
-          'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
-        };
-        debugPrint("[onDoneButtonPressed] Message created");
-        mainIsolate.send(message);
+        
+        deleteAndRefresh(int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
         debugPrint("[onDoneButtonPressed] Message Sent");
       }
       else 
