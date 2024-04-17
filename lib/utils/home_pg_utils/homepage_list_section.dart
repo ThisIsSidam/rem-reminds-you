@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/theme/app_theme.dart';
 import 'package:nagger/pages/reminder_page.dart';
@@ -66,12 +68,19 @@ class HomePageListSection extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyMedium
         ),
         trailing: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 5,),
             Text(
               reminder.getDiffString(),
               style: Theme.of(context).textTheme.bodySmall
             ),
+            if (reminder.recurringFrequency != RecurringFrequency.none)
+            Text(
+              "⟳ ${reminder.recurringFrequency.name}",
+              style: Theme.of(context).textTheme.bodySmall,
+            )
           ],
         ),
         tileColor: myTheme.cardColor,

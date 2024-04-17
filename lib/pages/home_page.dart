@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:nagger/consts/const_colors.dart';
 import 'package:nagger/consts/consts.dart';
@@ -29,7 +31,24 @@ class _HomePageState extends State<HomePage> {
 
     super.initState();
     
-    NotificationController.deleteAndRefresh = deleteAndRefresh;
+    // Listening for reloading orderers
+    final ReceivePort receivePort = ReceivePort();
+    IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
+    receivePort.listen((dynamic message) {
+      if (message is Map<String, dynamic>)
+      {
+        if (message["message"] == 'refreshHomePage')
+        {
+          debugPrint("REFRESHING PAGE-------");
+          RemindersDatabaseController.deleteReminder(message['id']);
+          refreshPage();
+        }
+        else 
+        {
+          debugPrint("Port message is not refreshHomePage");
+        }
+      }
+    });
 
 
   }
@@ -60,7 +79,7 @@ class _HomePageState extends State<HomePage> {
     _timer = Timer(timeUntilNextRefresh, () {
       refreshPage();
 
-      _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         refreshPage();
       });
     });
@@ -170,43 +189,44 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-Widget getListedReminderPage() {
-  return ListView.separated(
-    padding: EdgeInsets.symmetric(vertical: 8.0),
-    itemCount: 4,
-    separatorBuilder: (BuildContext context, int index) => SizedBox(height: 8.0),
-    itemBuilder: (BuildContext context, int index) {
-      switch (index) {
-        case 0:
-          return HomePageListSection(
-            label: overdueSectionTitle,
-            remindersList: remindersMap[overdueSectionTitle] ?? [],
-            refreshHomePage: refreshPage,
-          );
-        case 1:
-          return HomePageListSection(
-            label: todaySectionTitle,
-            remindersList: remindersMap[todaySectionTitle] ?? [],
-            refreshHomePage: refreshPage,
-          );
-        case 2:
-          return HomePageListSection(
-            label: tomorrowSectionTitle,
-            remindersList: remindersMap[tomorrowSectionTitle] ?? [],
-            refreshHomePage: refreshPage,
-          );
-        case 3:
-          return HomePageListSection(
-            label: laterSectionTitle,
-            remindersList: remindersMap[laterSectionTitle] ?? [],
-            refreshHomePage: refreshPage,
-          );
-        default:
-          return SizedBox.shrink();
-      }
-    },
-  );
-}
+
+  Widget getListedReminderPage() {
+    return ListView.separated(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      itemCount: 4,
+      separatorBuilder: (BuildContext context, int index) => SizedBox(height: 8.0),
+      itemBuilder: (BuildContext context, int index) {
+        switch (index) {
+          case 0:
+            return HomePageListSection(
+              label: overdueSectionTitle,
+              remindersList: remindersMap[overdueSectionTitle] ?? [],
+              refreshHomePage: refreshPage,
+            );
+          case 1:
+            return HomePageListSection(
+              label: todaySectionTitle,
+              remindersList: remindersMap[todaySectionTitle] ?? [],
+              refreshHomePage: refreshPage,
+            );
+          case 2:
+            return HomePageListSection(
+              label: tomorrowSectionTitle,
+              remindersList: remindersMap[tomorrowSectionTitle] ?? [],
+              refreshHomePage: refreshPage,
+            );
+          case 3:
+            return HomePageListSection(
+              label: laterSectionTitle,
+              remindersList: remindersMap[laterSectionTitle] ?? [],
+              refreshHomePage: refreshPage,
+            );
+          default:
+            return SizedBox.shrink();
+        }
+      },
+    );
+  }
 
 
   Widget getFloatingActionButton() {

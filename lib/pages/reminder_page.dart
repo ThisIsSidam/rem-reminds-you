@@ -63,13 +63,15 @@ class _ReminderSectionState extends State<ReminderPage> {
   }
 
   void _toggleRepetitiveNotifMode(bool value) {
-    setState(() {
-      _repetitiveNotifsEnabled = value;
-      if (currentFieldType == FieldType.R_Count || currentFieldType == FieldType.R_Interval)
-      {
-        currentFieldType = FieldType.None;
-      }
-    });
+    debugPrint("Repetive Notifs are shut off for a while.");
+
+    // setState(() {
+    //   _repetitiveNotifsEnabled = value;
+    //   if (currentFieldType == FieldType.R_Count || currentFieldType == FieldType.R_Interval)
+    //   {
+    //     currentFieldType = FieldType.None;
+    //   }
+    // });
   }
 
   /// Save the edits done by the widgets to the reminder
@@ -120,11 +122,61 @@ class _ReminderSectionState extends State<ReminderPage> {
   }
 
   void deleteReminder() {
-    NotificationController.cancelScheduledNotification(
-        widget.thisReminder.id.toString());
-    RemindersDatabaseController.deleteReminder(widget.thisReminder.id!);
-    widget.refreshHomePage();
-    Navigator.pop(context);
+
+    void finalDelete() {
+      NotificationController.cancelScheduledNotification(
+        widget.thisReminder.id.toString()
+      );
+      RemindersDatabaseController.deleteReminder(widget.thisReminder.id!);
+      widget.refreshHomePage();
+      Navigator.pop(context);
+    }
+
+    if (widget.thisReminder.recurringFrequency != RecurringFrequency.none) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            elevation: 5,
+            surfaceTintColor: Colors.transparent,
+            backgroundColor: Theme.of(context).cardColor,
+            title: Text(
+              'Recurring Reminder',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            content: Text(
+              'This is a recurring reminder. Are you sure you want to delete it?',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text(
+                  'Cancel',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              TextButton(
+                onPressed: () { // Reminder won't be deleted unless RF is none.
+                  widget.thisReminder.recurringFrequency = RecurringFrequency.none;
+                  finalDelete();
+                },
+                child: Text(
+                  'Delete',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    } 
+    else 
+    {
+      finalDelete();
+    }
   }
 
   /// Moves the currentInputField to the one after it.

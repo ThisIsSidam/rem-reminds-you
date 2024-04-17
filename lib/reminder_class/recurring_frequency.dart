@@ -7,7 +7,7 @@ enum RecurringFrequency {
   custom
 }
 
-class RecurringFrequencyExtension {
+class RecurringFrequencyExtension{
   static String getDisplayName(RecurringFrequency frequency) {
     switch (frequency) {
       case RecurringFrequency.none:

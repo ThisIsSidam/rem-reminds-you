@@ -3,11 +3,16 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
 import 'package:nagger/consts/consts.dart';
-part 'reminder.g.dart';
 
+part 'reminder.g.dart';
 part 'recurring_frequency.dart';
 
 @HiveType(typeId: 1)
+/// Holds data for reminders. All attributes are easy to understand.
+/// But the terms [Repetitive] and [Recurring] may cuase some confusion.
+/// The term [Repetition] is used for repetition of notification and not the reminder
+/// itself. It is for the nagging effect the notifications may have.
+/// The term [Recurring] is used for recurrence of reminder, on daily basis or any other.
 class Reminder {
 
   @HiveField(0)
@@ -29,7 +34,10 @@ class Reminder {
   Duration repetitionInterval;
 
   @HiveField(6) 
-  int recurringFrequency;
+  int _recurringFrequency = 0;
+
+  @HiveField(7)
+  bool recurringScheduleSet;
 
   Reminder({
     this.title = reminderNullTitle,
@@ -37,9 +45,20 @@ class Reminder {
     this.done = false,
     this.repetitionCount = 0,
     this.repetitionInterval = const Duration(seconds: 5),
-    this.recurringFrequency = 0
+    RecurringFrequency recurringFrequency = RecurringFrequency.none,
+    this.recurringScheduleSet = false
   }){
     id = newReminderID;
+    
+    this._recurringFrequency = RecurringFrequencyExtension.getIndex(recurringFrequency);
+  }
+
+  RecurringFrequency get recurringFrequency {
+    return RecurringFrequencyExtension.fromInt(_recurringFrequency);
+  }
+
+  void set recurringFrequency(RecurringFrequency frequency) {
+    _recurringFrequency = RecurringFrequencyExtension.getIndex(frequency);
   }
 
   String getDateTimeAsStr() {
@@ -69,7 +88,7 @@ class Reminder {
 
   String getRecurringFrequencyAsString() {
     return RecurringFrequencyExtension.getDisplayName(
-      RecurringFrequencyExtension.fromInt(recurringFrequency)
+      RecurringFrequencyExtension.fromInt(_recurringFrequency)
     );
   }
 
@@ -117,6 +136,7 @@ class Reminder {
     return _formatDuration(repetitionInterval);
   }
 
+  /// If the time to be updated is in the past, increase it by a day.
   void updatedTime(DateTime updatedTime) {
     if (updatedTime.isBefore(DateTime.now()))
     {
@@ -143,18 +163,27 @@ class Reminder {
     );
   }
 
-  String get cronExpression {
-    switch (recurringFrequency) {
-      case 0:
-        return "0 ${dateAndTime.minute} ${dateAndTime.hour} ${dateAndTime.day} ${dateAndTime.month} ?";
-      case 1:
-        return "0 ${dateAndTime.minute} ${dateAndTime.hour} * * ?";
-      case 2:
-        return "0 ${dateAndTime.minute} ${dateAndTime.hour} ? * ${dateAndTime.weekday}";
-      default:
-        return "0 ${dateAndTime.minute} ${dateAndTime.hour} ${dateAndTime.day} ${dateAndTime.month} ?";
+  Duration recurringToAdd() {
+
+    if (_recurringFrequency == RecurringFrequency.none)
+    {
+      return Duration(seconds: 0);
+    }
+
+    final recurringFrequencyNotInt = RecurringFrequencyExtension.fromInt(_recurringFrequency);
+
+    if (recurringFrequencyNotInt == RecurringFrequency.daily)
+    {
+      return Duration(days: 1);
+    }
+    else if (recurringFrequencyNotInt == RecurringFrequency.weekly)
+    {
+      return Duration(days: 7);
+    }
+    else 
+    {
+      return Duration(seconds: 0);
     }
   }
-
 }
 

@@ -1,3 +1,6 @@
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -113,6 +116,10 @@ class NotificationController {
     Reminder reminder,
     {int repeatNumber = 0}
   ) async {
+
+    final recurringFrequency = reminder.recurringFrequency;
+    final dateTime = reminder.dateAndTime;
+
     return await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: (reminder.id ?? reminderNullID) + repeatNumber, 
@@ -136,15 +143,21 @@ class NotificationController {
           actionType: ActionType.SilentBackgroundAction
         )
       ],
-      schedule: NotificationAndroidCrontab(
-        crontabExpression: reminder.cronExpression,
-        preciseSchedules: [
-          reminder.dateAndTime
-        ],
-        allowWhileIdle: true,
-        repeats: true,
+      schedule: NotificationCalendar(
+        weekday: recurringFrequency == RecurringFrequency.weekly
+        ? dateTime.weekday
+        : null,
+        day: dateTime.day,
+        hour: dateTime.hour,
+        minute: dateTime.minute,
+        second: dateTime.second,
+        millisecond: dateTime.millisecond,
+        repeats: true
       )
-
+      // schedule: NotificationCalendar(
+      //   second: dateTime.second,
+      //   repeats: true
+      // )
     );
   }
 
@@ -154,11 +167,12 @@ class NotificationController {
       debugPrint("[NotificationController] Null groupkey given to cancel.");
       return;
     }
+
     await AwesomeNotifications().cancelSchedulesByGroupKey(groupKey);
     debugPrint("$groupKey cancelled scheduled notification.");
   }
 
-  static Future<void> startListeningNotificationEvents(Function(int)? deleteAndRefresh) async {
+  static Future<void> startListeningNotificationEvents() async {
     AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceivedMethod);
   }
 
@@ -166,43 +180,30 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
-  
+
     if (receivedAction.buttonKeyPressed == 'done') 
     {
-      debugPrint("[onDoneButtonPressed] Running");
-      await cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
-      debugPrint("[onDoneButtonPressed] Schedule Cancelled");
-
-      if (deleteAndRefresh != null) 
+      final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
+      if (mainIsolate != null) 
       {
-        debugPrint("[onDoneButtonPressed] mainIsolate not null");
-        
-        deleteAndRefresh(int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
-        debugPrint("[onDoneButtonPressed] Message Sent");
+        final message = {
+          'message': 'refreshHomePage',
+          'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
+        };
+        mainIsolate.send(message);
       }
       else 
       { 
-        debugPrint("[onDoneButtonPressed] mainIsolate null");
         await Hive.initFlutter();
-        debugPrint("[onDoneButtonPressed] Hive init");
 
         final db = await Hive.openBox(pendingRemovalsBoxName);
-        debugPrint("[onDoneButtonPressed] Box Opened");
 
         final listo = db.get(pendingRemovalsBoxKey) ?? [];
         
         listo.add(int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
-        debugPrint("[onDoneButtonPressed] Added ${receivedAction.groupKey} to remove");
 
         db.put(pendingRemovalsBoxKey, listo);
-
-        debugPrint("[onDoneButtonPressed] To Remove: $listo");
       }    
-    }
-    else if (receivedAction.buttonKeyPressed == 'silence')
-    {
-      cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
-      debugPrint("[onSilenceButtonPressed] Reminder ${receivedAction.groupKey} silenced");
     }
     else 
     {

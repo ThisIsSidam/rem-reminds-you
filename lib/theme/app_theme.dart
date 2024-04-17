@@ -22,6 +22,7 @@ final ThemeData myTheme = ThemeData(
       padding: const EdgeInsets.all(0),
       backgroundColor: ConstColors.darkGrey,
       foregroundColor: ConstColors.white,
+      surfaceTintColor: Colors.transparent,
       shape: BeveledRectangleBorder(),
     )
   ),

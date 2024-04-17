@@ -46,8 +46,7 @@ class RS_RecurringFrequencyInput extends StatelessWidget {
             return;
           }
 
-          thisReminder.recurringFrequency = 
-            RecurringFrequencyExtension.getIndex(frequency);
+          thisReminder.recurringFrequency = frequency;
 
           save(thisReminder);
           moveFocus(fieldType);

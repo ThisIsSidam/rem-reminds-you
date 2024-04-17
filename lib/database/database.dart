@@ -92,12 +92,43 @@ class RemindersDatabaseController {
     getReminders();
     
     printAll("Before Deleting");
-    if (reminders.containsKey(id)) {
+
+    if (!reminders.containsKey(id)) {
+      print("Reminder with ID ($id) does not exist in the map.");
+      printAll("After Deleting");
+      return;
+    } 
+
+    Reminder reminder = reminders[id]!;
+
+    if (reminder.recurringFrequency == RecurringFrequency.none)
+    {
       reminders.remove(id);
       updateReminders();
-    } else {
-      print("Reminder with ID ($id) does not exist in the map.");
+      printAll("After Deleting");
+      return;
     }
+
+    DateTime toUpdate = reminder.dateAndTime;
+    RecurringFrequency recFrequency= reminder.recurringFrequency;
+
+
+    if (recFrequency == RecurringFrequency.daily)
+    {
+      toUpdate = toUpdate.add(Duration(days: 1));
+    }
+    else if (recFrequency == RecurringFrequency.weekly)
+    {
+      toUpdate = toUpdate.add(Duration(days: 7));
+    }
+    else 
+    {
+      debugPrint("[deleteReminder] Custom Recurring not yet handled");
+    }
+
+    reminder.dateAndTime = toUpdate;
+    reminders[id] = reminder;
+    updateReminders();
     printAll("After Deleting");
   }
 
