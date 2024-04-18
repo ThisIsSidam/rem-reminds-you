@@ -1,3 +1,6 @@
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nagger/consts/consts.dart';
@@ -25,17 +28,42 @@ class RemindersDatabaseController {
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
     debugPrint("[clearPendingRemovals] Removing Done");
-
   }
 
   /// Get reminders from the database.
-  static void getReminders() { 
+  static Map<int, Reminder> getReminders() {
+
+    if (!_remindersBox.isOpen)
+    {
+      Future(
+        () {Hive.openBox(remindersBoxName);}
+      );
+    }
+
     reminders = _remindersBox.get(remindersBoxKey)?.cast<int, Reminder>() ?? {};
+    return reminders;
+  }
+
+  static Map<int, Map<String, dynamic>> getRemindersAsMaps() {
+    final reminders = getReminders();
+    return reminders.map((key, value) => MapEntry(key, value.toMap()));  
   }
 
   /// Update reminders to the database.
   static void updateReminders() {
     _remindersBox.put(remindersBoxKey, reminders);
+
+    final SendPort? backgroundIsolate = IsolateNameServer.lookupPortByName("background_service");
+    if (backgroundIsolate != null) 
+    {
+      debugPrint("[updateReminders] message sending");
+      final message = RemindersDatabaseController.getRemindersAsMaps();
+      backgroundIsolate.send(message);
+    }
+    else
+    {
+      debugPrint("[updateReminders] background Isolate is null");
+    }
   }
 
   /// Number of reminders present in the database.

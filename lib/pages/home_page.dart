@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:nagger/consts/const_colors.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/notification/notification.dart';
@@ -101,6 +102,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _timer.cancel();
+
     super.dispose();
   }
 
@@ -151,6 +153,40 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+
+          ElevatedButton(
+              child: const Text("Foreground Mode"),
+              onPressed: () {
+                debugPrint("Switched to Foreground mode");
+                FlutterBackgroundService().invoke('setAssForeground');
+              }, 
+            ),
+            ElevatedButton(
+              child: const Text("Background Mode"),
+              onPressed: () {
+                debugPrint("Switched to Background mode");
+                FlutterBackgroundService().invoke('setAssBackground');
+              }, 
+            ),
+            ElevatedButton(
+              child: Text("Switch"),
+              onPressed: () async {
+                final service = FlutterBackgroundService();
+                var isRunning = await service.isRunning();
+                if (isRunning) {
+                  service.invoke('stopService');
+                }
+                else 
+                {
+                  service.startService();
+                }
+                setState(() {});
+              }, 
+            ),
+
+
+
+
           Text(
             noRemindersPageText,
             style: Theme.of(context).textTheme.bodyMedium,

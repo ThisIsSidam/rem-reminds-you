@@ -38,6 +38,8 @@ dependencies:
   timezone: ^0.9.2
   crypto: ^3.0.3
   flutter_isolate: ^2.0.4
+  flutter_background_service: ^5.0.5
+  flutter_background_service_android: ^6.2.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

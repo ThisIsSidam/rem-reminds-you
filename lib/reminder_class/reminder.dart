@@ -42,15 +42,40 @@ class Reminder {
   Reminder({
     this.title = reminderNullTitle,
     required this.dateAndTime,
+    this.id = newReminderID,
     this.done = false,
     this.repetitionCount = 0,
     this.repetitionInterval = const Duration(seconds: 5),
     RecurringFrequency recurringFrequency = RecurringFrequency.none,
     this.recurringScheduleSet = false
   }){
-    id = newReminderID;
-    
     this._recurringFrequency = RecurringFrequencyExtension.getIndex(recurringFrequency);
+  }
+
+  factory Reminder.fromMap(Map<String, dynamic> map) {
+    return Reminder(
+      title: map['title'],
+      dateAndTime: DateTime.fromMillisecondsSinceEpoch(map['dateAndTime']),
+      id: map['id'],
+      done: map['done'] ?? false,
+      repetitionCount: map['repetitionCount'] ?? 0,
+      repetitionInterval: Duration(seconds: map['repetitionInterval']),
+      recurringFrequency: RecurringFrequencyExtension.fromInt(map['_recurringFrequency']),
+      recurringScheduleSet: map['recurringScheduleSet'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'dateAndTime': dateAndTime.millisecondsSinceEpoch,
+      'id': id,
+      'done': done,
+      'repetitionCount': repetitionCount,
+      'repetitionInterval': repetitionInterval.inSeconds,
+      '_recurringFrequency': _recurringFrequency,
+      'recurringScheduleSet': recurringScheduleSet,
+    };
   }
 
   RecurringFrequency get recurringFrequency {
