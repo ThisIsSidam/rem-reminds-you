@@ -12,6 +12,9 @@ const pendingRemovalsBoxName = "pending_removals";
 const pendingRemovalsBoxKey = "PENDING_REMOVAL";
 
 
+// Isolate names
+String bg_isolate_name = "background_service_isolate";
+
 const materialButtonCloseText = "Close";
 const materialButtonSaveText = "Save";
 const noRemindersPageText = "You currently don't have any reminders!";

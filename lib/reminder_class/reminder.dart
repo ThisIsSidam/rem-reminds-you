@@ -6,6 +6,7 @@ import 'package:nagger/consts/consts.dart';
 
 part 'reminder.g.dart';
 part 'recurring_frequency.dart';
+part 'reminder_status.dart';
 
 @HiveType(typeId: 1)
 /// Holds data for reminders. All attributes are easy to understand.
@@ -25,7 +26,7 @@ class Reminder {
   int? id;
 
   @HiveField(3)
-  bool done = false;
+  int reminderStatus = 0; // Is an enum but saved as int coz saving enums in hive is a problem.
 
   @HiveField(4)
   int repetitionCount; 
@@ -34,7 +35,7 @@ class Reminder {
   Duration repetitionInterval;
 
   @HiveField(6) 
-  int _recurringFrequency = 0;
+  int _recurringFrequency = 0; // Is an enum but saved as int coz saving enums in hive is a problem.
 
   @HiveField(7)
   bool recurringScheduleSet;
@@ -43,13 +44,14 @@ class Reminder {
     this.title = reminderNullTitle,
     required this.dateAndTime,
     this.id = newReminderID,
-    this.done = false,
+    ReminderStatus reminderStatus = ReminderStatus.pending, 
     this.repetitionCount = 0,
     this.repetitionInterval = const Duration(seconds: 5),
     RecurringFrequency recurringFrequency = RecurringFrequency.none,
     this.recurringScheduleSet = false
   }){
     this._recurringFrequency = RecurringFrequencyExtension.getIndex(recurringFrequency);
+    this.reminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
   }
 
   factory Reminder.fromMap(Map<String, dynamic> map) {
@@ -57,7 +59,7 @@ class Reminder {
       title: map['title'],
       dateAndTime: DateTime.fromMillisecondsSinceEpoch(map['dateAndTime']),
       id: map['id'],
-      done: map['done'] ?? false,
+      reminderStatus: RemindersStatusExtension.fromInt(map['done'] ?? 0),
       repetitionCount: map['repetitionCount'] ?? 0,
       repetitionInterval: Duration(seconds: map['repetitionInterval']),
       recurringFrequency: RecurringFrequencyExtension.fromInt(map['_recurringFrequency']),
@@ -70,7 +72,7 @@ class Reminder {
       'title': title,
       'dateAndTime': dateAndTime.millisecondsSinceEpoch,
       'id': id,
-      'done': done,
+      'done': reminderStatus,
       'repetitionCount': repetitionCount,
       'repetitionInterval': repetitionInterval.inSeconds,
       '_recurringFrequency': _recurringFrequency,
@@ -182,7 +184,7 @@ class Reminder {
     return Reminder(
       title: reminder.title,
       dateAndTime: reminder.dateAndTime,
-      done: reminder.done,
+      reminderStatus: RemindersStatusExtension.fromInt(reminder.reminderStatus),
       repetitionCount: reminder.repetitionCount,
       repetitionInterval: reminder.repetitionInterval
     );

@@ -2,6 +2,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/notification/notification.dart';
@@ -50,14 +51,22 @@ class RemindersDatabaseController {
   }
 
   /// Update reminders to the database.
-  static void updateReminders() {
+  static void updateReminders() async {
     _remindersBox.put(remindersBoxKey, reminders);
 
-    final SendPort? backgroundIsolate = IsolateNameServer.lookupPortByName("background_service");
+    final SendPort? backgroundIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
     if (backgroundIsolate != null) 
     {
       debugPrint("[updateReminders] message sending");
       final message = RemindersDatabaseController.getRemindersAsMaps();
+
+      if (_remindersBox.length == 1)
+      {
+        // Length 1 means the service was closed before this reminder was saved.
+        debugPrint("[updateReminders] starting bg service");
+        await FlutterBackgroundService().startService();
+      }
+
       backgroundIsolate.send(message);
     }
     else
@@ -93,11 +102,6 @@ class RemindersDatabaseController {
     reminders[reminder.id!] = reminder;
     NotificationController.scheduleNotification(reminder);
 
-    // if (reminder.getDiffDuration() < Duration(days: 7))
-    // {
-    //   scheduleRepeatedNotifications(reminder);
-    // }
-    
     updateReminders();
     printAll("After Adding");
   }
@@ -105,11 +109,16 @@ class RemindersDatabaseController {
   /// Schedule a number of notifications with a time interval after the scheduled
   /// time of the reminder. 
   static void scheduleRepeatedNotifications(Reminder reminder) {
+    debugPrint("[scheduleRepeatedNotifications] called");
     var tempDateTime = reminder.dateAndTime;
-    for (int i = 1; i <= reminder.repetitionCount; i++)
+    for (int i = 1; i <= 5; i++)
     {
-      reminder.dateAndTime = reminder.dateAndTime.add(reminder.repetitionInterval);
-      NotificationController.scheduleNotification(reminder, repeatNumber: i);
+      debugPrint("[scheduleRepeatedNotifications] scheduled 1");
+      reminder.dateAndTime = reminder.dateAndTime.add(Duration(seconds: 10));
+      NotificationController.scheduleNotification(
+        reminder, 
+        repeatNumber: i
+      );
     }
     reminder.dateAndTime = tempDateTime;
   }

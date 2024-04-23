@@ -49,13 +49,6 @@ Future<void> initializeService() async {
 
 void onStart(ServiceInstance service) async {
 
-  // Flutter SEction
-  await Hive.initFlutter();
-  Hive.registerAdapter(DurationAdapter());
-  Hive.registerAdapter(ReminderAdapter());
-  await Hive.openBox(remindersBoxName);
-
-
   // Control Section
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
@@ -71,45 +64,93 @@ void onStart(ServiceInstance service) async {
     service.stopSelf();
   });
 
-  String content = "null";
+  // Data Retrieval Section
+  List<Reminder> reminders = [];
 
-  final receivePort = ReceivePort();
-  IsolateNameServer.registerPortWithName(receivePort.sendPort, "background_service");
-  receivePort.listen((message) {
+  final ReceivePort receivePort = ReceivePort();
+  IsolateNameServer.registerPortWithName(receivePort.sendPort, bg_isolate_name);
+  receivePort.listen((dynamic message) {
+    debugPrint("[BGS] Message Received");
+    if (message is Map<int, Map<String, dynamic>>) {
 
-    if (message is! Map<int, Map<String, dynamic>>)
-    {
-      debugPrint("[BackgroundService] Message not reminder's data");
+      List<Map<String, dynamic>> messageValues = message.values.toList();
+      List<Reminder> listOfReminders = List<Reminder>.generate(
+        messageValues.length, (index) => Reminder.fromMap(messageValues[index])
+      );
+
+      listOfReminders.sort((a, b) {
+        DateTime aDateTime = a.dateAndTime;
+        DateTime bDateTime = b.dateAndTime;
+        return aDateTime.compareTo(bDateTime);
+      });
+      for (final rem in listOfReminders)
+      {
+        debugPrint("[BGS] Reminders : ${rem.title}");
+      }
+      reminders.clear();
+      reminders.addAll(listOfReminders);
+
+      debugPrint("[BGS] $reminders");
+
+    } else {
+      debugPrint("[BGS] Unknown Content");
     }
-
-
-    debugPrint("[BackgroundService] Message is reminder's data");
-    final Map<int, Reminder> reminders = {
-      for (var entry in message.entries)
-        entry.key: Reminder.fromMap(entry.value),
-    };
-
-    debugPrint("[BackgroundService] $reminders");
-    final remindersList = reminders.values;
-
-    if (remindersList.isNotEmpty)
-    {
-      content = remindersList.first.title;
-    }
-    debugPrint("[BackgroundService] $content");
-    
   });
 
+  final List<Reminder> overdueList = [];   
+
+  // Update Notification
+  void updateNotification(AndroidServiceInstance service) {
+    // Stop service if no reminders
+    if (reminders.isEmpty) 
+    {
+      debugPrint("[BGS] empty content");
+      // await service.stopSelf();
+    }
+    else
+    {
+      Reminder? nextReminder;  
+      for (final reminder in reminders)
+      {
+        if (reminder.dateAndTime.isBefore(DateTime.now())) overdueList.add(reminder);
+        else 
+        {
+          nextReminder = reminder;
+          break;
+        }
+      }     
+
+      if (nextReminder == null)
+      {
+        service.setForegroundNotificationInfo(
+          title: "No Next Reminders",
+          content: "Finish due reminders or silence them, this notifications will disappear."
+        );
+      }
+      else
+      {
+        // Updating Notification
+        service.setForegroundNotificationInfo(
+          title: "Upcoming Reminder: ${nextReminder.title}",
+          content: "${nextReminder.dateAndTime}"
+        );
+      }
+    }
+  }
+
   // Life Section
-  Timer.periodic(const Duration(seconds: 10), (timer) async {
+  Timer.periodic(const Duration(seconds: 30), (timer) async {
     debugPrint("Service Running");
     if (service is AndroidServiceInstance) {
-      if (await service.isForegroundService()) {
-        service.setForegroundNotificationInfo(
-          title: "Upcoming Reminder",
-          content: "$content"
-        );
+      if (await service.isForegroundService()) 
+      {
         debugPrint("service is in foreground mode");
+
+        updateNotification(service);
+        // for (final reminder in overdueList)
+        // {
+        //   if (reminder.)
+        // }
       }
       else
       {

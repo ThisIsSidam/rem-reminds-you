@@ -114,7 +114,9 @@ class NotificationController {
 
   static Future<bool> scheduleNotification(
     Reminder reminder,
-    {int repeatNumber = 0}
+    {
+    int repeatNumber = 0
+    }
   ) async {
 
     final recurringFrequency = reminder.recurringFrequency;
