@@ -23,7 +23,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       dateAndTime: fields[1] as DateTime,
     )
       ..id = fields[2] as int?
-      ..reminderStatus = fields[3] as int;
+      .._reminderStatus = fields[3] as int;
   }
 
   @override
@@ -37,7 +37,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..writeByte(2)
       ..write(obj.id)
       ..writeByte(3)
-      ..write(obj.reminderStatus)
+      ..write(obj._reminderStatus)
       ..writeByte(4)
       ..write(obj.repetitionCount)
       ..writeByte(5)

@@ -50,6 +50,11 @@ class RemindersDatabaseController {
     return reminders.map((key, value) => MapEntry(key, value.toMap()));  
   }
 
+  static Reminder? getReminder(int id) {
+    getReminders();
+    return reminders[id];
+  }
+
   /// Update reminders to the database.
   static void updateReminders() async {
     _remindersBox.put(remindersBoxKey, reminders);

@@ -65,7 +65,7 @@ void onStart(ServiceInstance service) async {
   });
 
   // Data Retrieval Section
-  List<Reminder> reminders = [];
+  Map<int, Reminder> reminders = {};
 
   final ReceivePort receivePort = ReceivePort();
   IsolateNameServer.registerPortWithName(receivePort.sendPort, bg_isolate_name);
@@ -87,20 +87,51 @@ void onStart(ServiceInstance service) async {
       {
         debugPrint("[BGS] Reminders : ${rem.title}");
       }
-      reminders.clear();
-      reminders.addAll(listOfReminders);
+      reminders = {
+        for(final rem in listOfReminders) rem.id ?? reminderNullID : rem
+      };
 
       debugPrint("[BGS] $reminders");
 
-    } else {
-      debugPrint("[BGS] Unknown Content");
+    } 
+    else if (message is Map<String, String>)
+    {
+      debugPrint("[BGS] Received a Mapstrstr");
+      try {
+        final id = int.parse(message['id'] ?? reminderNullID.toString());
+        final thisReminder = reminders[id];
+        final action = message['action'];
+
+        if (thisReminder == null)
+        {
+          throw "[BGS] Null Reminder";
+        }
+
+        debugPrint("[actionReceiver] id: $id action: $action");
+
+        if (action == 'done') thisReminder.reminderStatus = ReminderStatus.done;
+        else if (action == 'silence') thisReminder.reminderStatus = ReminderStatus.silenced;
+        else throw "[BGS] unknown action given";
+
+        reminders[id] = thisReminder;
+      }
+      catch(e)
+      {
+        debugPrint(e.toString());
+      }
+    }
+    else {
+      debugPrint("[BGS] Unknown Content $message");
     }
   });
 
   final List<Reminder> overdueList = [];   
+  final Map<int, int> repeatNumbers = {};
 
   // Update Notification
   void updateNotification(AndroidServiceInstance service) {
+    overdueList.clear(); // Clear for filling updated ones.
+    
     // Stop service if no reminders
     if (reminders.isEmpty) 
     {
@@ -109,18 +140,20 @@ void onStart(ServiceInstance service) async {
     }
     else
     {
-      Reminder? nextReminder;  
-      for (final reminder in reminders)
+      Reminder nextReminder = newReminder; 
+      bool nextReminderFlag = false; 
+      for (final reminder in reminders.values)
       {
         if (reminder.dateAndTime.isBefore(DateTime.now())) overdueList.add(reminder);
         else 
         {
+          nextReminderFlag = true;
           nextReminder = reminder;
           break;
         }
       }     
 
-      if (nextReminder == null)
+      if (!nextReminderFlag)
       {
         service.setForegroundNotificationInfo(
           title: "No Next Reminders",
@@ -132,14 +165,14 @@ void onStart(ServiceInstance service) async {
         // Updating Notification
         service.setForegroundNotificationInfo(
           title: "Upcoming Reminder: ${nextReminder.title}",
-          content: "${nextReminder.dateAndTime}"
+          content: "${nextReminder.getDiffString()}"
         );
       }
     }
   }
 
   // Life Section
-  Timer.periodic(const Duration(seconds: 30), (timer) async {
+  Timer.periodic(const Duration(seconds: 20), (timer) async {
     debugPrint("Service Running");
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) 
@@ -147,10 +180,35 @@ void onStart(ServiceInstance service) async {
         debugPrint("service is in foreground mode");
 
         updateNotification(service);
-        // for (final reminder in overdueList)
-        // {
-        //   if (reminder.)
-        // }
+
+        for (final reminder in overdueList)
+        {
+          debugPrint("[timerperiodic] ${reminder.title} ${reminder.reminderStatus}"); // To be removed
+
+          debugPrint("[BGS] ${reminder.title} ${reminder.reminderStatus}");
+          if (reminder.reminderStatus == ReminderStatus.done)
+          {
+            debugPrint("[BGS-tp] ${reminder.title} -> done");
+            break;
+          }
+          if (reminder.reminderStatus == ReminderStatus.silenced)
+          {
+            debugPrint("[BGS-tp] ${reminder.title} -> silenced");
+            break;
+          }
+          if (reminder.dateAndTime.isAfter(DateTime.now()))
+          {
+            debugPrint("[BGS-tp] ${reminder.title} -> Pending, shouldn't be here");
+            break;
+          }
+
+          final remId = reminder.id;
+          if (remId != null)
+          {
+            NotificationController.showNotification(reminder, repeatNumber: repeatNumbers[remId] ?? 1);
+            repeatNumbers[remId] = (repeatNumbers[remId] ?? 0) + 1;
+          }
+        }
       }
       else
       {
@@ -163,5 +221,3 @@ void onStart(ServiceInstance service) async {
     }
   });
 }
-
-

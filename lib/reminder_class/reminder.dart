@@ -26,7 +26,7 @@ class Reminder {
   int? id;
 
   @HiveField(3)
-  int reminderStatus = 0; // Is an enum but saved as int coz saving enums in hive is a problem.
+  int _reminderStatus = 0; // Is an enum but saved as int coz saving enums in hive is a problem.
 
   @HiveField(4)
   int repetitionCount; 
@@ -51,7 +51,7 @@ class Reminder {
     this.recurringScheduleSet = false
   }){
     this._recurringFrequency = RecurringFrequencyExtension.getIndex(recurringFrequency);
-    this.reminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
+    this._reminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
   }
 
   factory Reminder.fromMap(Map<String, dynamic> map) {
@@ -72,12 +72,20 @@ class Reminder {
       'title': title,
       'dateAndTime': dateAndTime.millisecondsSinceEpoch,
       'id': id,
-      'done': reminderStatus,
+      'done': _reminderStatus,
       'repetitionCount': repetitionCount,
       'repetitionInterval': repetitionInterval.inSeconds,
       '_recurringFrequency': _recurringFrequency,
       'recurringScheduleSet': recurringScheduleSet,
     };
+  }
+
+  ReminderStatus get reminderStatus {
+    return RemindersStatusExtension.fromInt(_reminderStatus);
+  }
+
+  void set reminderStatus(ReminderStatus status) {
+    _reminderStatus = RemindersStatusExtension.getIndex(status);
   }
 
   RecurringFrequency get recurringFrequency {
@@ -184,7 +192,7 @@ class Reminder {
     return Reminder(
       title: reminder.title,
       dateAndTime: reminder.dateAndTime,
-      reminderStatus: RemindersStatusExtension.fromInt(reminder.reminderStatus),
+      reminderStatus: RemindersStatusExtension.fromInt(reminder._reminderStatus),
       repetitionCount: reminder.repetitionCount,
       repetitionInterval: reminder.repetitionInterval
     );

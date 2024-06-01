@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -89,26 +90,33 @@ class NotificationController {
     return userAuthorized;
   }
 
-  static Future<void> showNotification(String notifTitle) async {
+  static Future<void> showNotification(
+    Reminder reminder,
+    {int repeatNumber = 0}
+  ) async {
     await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 0, 
+content: NotificationContent(
+        id: (reminder.id ?? reminderNullID) + repeatNumber, 
         channelKey: '111',
-        title: notifTitle,
+        groupKey: reminder.id.toString(),
+        title: reminder.title,
         payload: {
           "App name": "Nagger"
         },
+        autoDismissible: false
       ),
       actionButtons: [
         NotificationActionButton(
           key: 'done', 
-          label: 'Done'
+          label: 'Done',
+          actionType: ActionType.SilentBackgroundAction
         ),
         NotificationActionButton(
           key: 'silence', 
-          label: 'Silence'
+          label: 'Silence',
+          actionType: ActionType.SilentBackgroundAction
         )
-      ]
+      ],
     );
   }
 
@@ -156,10 +164,6 @@ class NotificationController {
         millisecond: dateTime.millisecond,
         repeats: true
       )
-      // schedule: NotificationCalendar(
-      //   second: dateTime.second,
-      //   repeats: true
-      // )
     );
   }
 
@@ -182,35 +186,122 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
+    debugPrint("[NotificationController] onActionReceivedMethod called");
+
+    final SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
+    debugPrint("[NotificationController] bgIsolate: $bgIsolate");
+
+    void sendToBgIsolate() { // Only called when main is not active.
+      if (bgIsolate != null) 
+      {
+        debugPrint("[NotificationController] message sending to bgIsolate");
+        final message = {
+          'action': receivedAction.buttonKeyPressed,
+          'id': receivedAction.groupKey ?? notificationNullGroupKey
+        };
+        bgIsolate.send(message);
+      }
+      else 
+      {
+        debugPrint("[NotificationController] background Isolate is null");
+      }
+    }
+
+    SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
+    debugPrint("[NotificationController] mainIsolate: $mainIsolate");
+
+    bool isMainActive = await isMainIsolateActive();
 
     if (receivedAction.buttonKeyPressed == 'done') 
     {
-      final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-      if (mainIsolate != null) 
+      if (isMainActive == true) 
       {
+        debugPrint("[NotificationController] main is active 3");
         final message = {
-          'message': 'refreshHomePage',
+          'action': 'done',
           'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
         };
-        mainIsolate.send(message);
+        mainIsolate!.send(message);
       }
       else 
       { 
+        debugPrint("[NotificationController] main not active");
         await Hive.initFlutter();
 
         final db = await Hive.openBox(pendingRemovalsBoxName);
+        debugPrint("[NotificationController] pendingRemovalsBox: $db");
 
         final listo = db.get(pendingRemovalsBoxKey) ?? [];
-        
+        debugPrint("[NotificationController] listo: $listo");
+
         listo.add(int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
 
         db.put(pendingRemovalsBoxKey, listo);
-      }    
+        sendToBgIsolate();
+        
+      } 
+    }
+    else if (receivedAction.buttonKeyPressed == 'silence')
+    {
+      if (isMainActive == true) 
+      {
+        debugPrint("[NotificationController] main is active 4");
+        final message = {
+          'action': 'silence',
+          'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
+        };
+        mainIsolate!.send(message);
+      }
+      else 
+      { 
+        debugPrint("[NotificationController] main not active");
+        sendToBgIsolate();
+      } 
     }
     else 
     {
       debugPrint("[NotificationController] Unknown action with notification.");
     }
   }
-  
+
+  @pragma('vm:entry-point')
+  static Future<bool> isMainIsolateActive() async {
+    debugPrint("[NotificationController] isMainIsolateActive called");
+    final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
+    if (mainIsolate != null) 
+    {
+      debugPrint("[NotificationController] mainIsolate: $mainIsolate");
+      final receivePort = ReceivePort();
+      IsolateNameServer.registerPortWithName(receivePort.sendPort, 'NotificationIsolate');
+      mainIsolate.send('ping');
+      final timeout = Duration(seconds: 3);
+      try {
+        debugPrint("[NotificationController] awaiting pong");
+        final pong = await receivePort.first.timeout(timeout);
+        if (pong == 'pong') 
+        {
+          debugPrint("[NotificationController] received pong");
+          debugPrint("[NotificationController] main isolate is active");
+          return true;
+        }
+      } catch (e) {
+        if (e is TimeoutException) {
+          debugPrint("[NotificationController] timed out waiting for pong");
+          debugPrint("[NotificationController] main isolate is not active");
+          return false;
+        }
+      } finally {
+        debugPrint("[NotificationController] closing receivePort");
+        receivePort.close();
+        bool nameRemoved = IsolateNameServer.removePortNameMapping('NotificationIsolate');
+        debugPrint("[NotificationController] nameRemoved: $nameRemoved");
+      }
+    }
+    debugPrint("[NotificationController] mainIsolate is null");
+    debugPrint("[NotificationController] main isolate is not active");
+    return false;
+  }
+
+
+
 }

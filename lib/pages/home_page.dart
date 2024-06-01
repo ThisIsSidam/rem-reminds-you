@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   late Timer _timer;
   int noOfReminders = 0;
   Map<String, List<Reminder>> remindersMap = {};
+  final ReceivePort receivePort = ReceivePort();
 
   @override
   void initState() {
@@ -33,21 +34,53 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     
     // Listening for reloading orderers
-    final ReceivePort receivePort = ReceivePort();
     IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
     receivePort.listen((dynamic message) {
       if (message is Map<String, dynamic>)
       {
-        if (message["message"] == 'refreshHomePage')
+        final id = message['id'];
+
+        if (message["action"] == 'done')
         {
           debugPrint("REFRESHING PAGE-------");
-          RemindersDatabaseController.deleteReminder(message['id']);
+          RemindersDatabaseController.deleteReminder(id);
           refreshPage();
+        }
+        else if (message["action"] == "silence")
+        {
+          debugPrint("[homepageListener] silencing");
+          final reminder = RemindersDatabaseController.getReminder(id);
+          if (reminder == null)
+          {
+            throw "Reminder not present";
+          }
+          reminder.reminderStatus = ReminderStatus.silenced;
+          RemindersDatabaseController.saveReminder(reminder);
         }
         else 
         {
           debugPrint("Port message is not refreshHomePage");
         }
+      }
+      else if (message is String)
+      {
+        debugPrint("[homepageListener] received a string");
+        if (message == "ping")
+        {
+          debugPrint("[homepageListener] sending back pong");
+          final notifPingPort = IsolateNameServer.lookupPortByName('NotificationIsolate');
+          if (notifPingPort != null) notifPingPort.send("pong");
+          else debugPrint("[homePageListener] notifPingPort is null");
+          debugPrint("[homepageListener] sent back pong");
+        }
+        else 
+        {
+          debugPrint("[homepageListener] Unknown string received");
+        }
+      }
+      else 
+      {
+        debugPrint("[homepageListener] Unknown message received $message");
       }
     });
 
@@ -102,6 +135,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _timer.cancel();
+    receivePort.close();
 
     super.dispose();
   }
