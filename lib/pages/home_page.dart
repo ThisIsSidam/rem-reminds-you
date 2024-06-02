@@ -162,6 +162,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     debugPrint("[HomePage] Disposing");
     _timer.cancel();
     receivePort.close();
+    IsolateNameServer.removePortNameMapping('main');
     debugPrint("[HomePage] Disposed---------");
 
     super.dispose();

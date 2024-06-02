@@ -2,7 +2,6 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/notification/notification.dart';
@@ -64,13 +63,6 @@ class RemindersDatabaseController {
     {
       debugPrint("[updateReminders] message sending");
       final message = RemindersDatabaseController.getRemindersAsMaps();
-
-      if (_remindersBox.length == 1)
-      {
-        // Length 1 means the service was closed before this reminder was saved.
-        debugPrint("[updateReminders] starting bg service");
-        await FlutterBackgroundService().startService();
-      }
 
       backgroundIsolate.send(message);
     }
