@@ -9,6 +9,11 @@ import 'package:nagger/consts/consts.dart';
 import 'package:nagger/notification/notification.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 
+//===========================================================
+// This is very badly written code. Please don't judge.
+// Also, might not make sense so don't edit anything. 
+//===========================================================
+
 bool mainIsActive = false;
 Map<int, Reminder> reminders = {};
 /// Does not include reminders with done and silence status
@@ -59,11 +64,11 @@ void onStart(ServiceInstance service) async {
 
   // Life Section
   Timer.periodic(const Duration(seconds: 20), (timer) async {
-    debugPrint("Service Running");
+    debugPrint("[BGS-tp] Service Running");
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) 
       {
-        debugPrint("service is in foreground mode");
+        debugPrint("[BGS-tp] service is in foreground mode");
 
         updateNotification(service);
 
@@ -131,54 +136,72 @@ Future<void> stopBackgroundService(
   }
 
 void updateNotification(AndroidServiceInstance service) async{
+  debugPrint("[BGS] updateNotification called");
   activeStatusReminders.clear(); // Clear for filling updated ones.
+  Reminder nextReminder = newReminder; 
+  bool nextReminderFlag = false; 
   
   // Stop service if no reminders
   if(reminders.isNotEmpty)
   {
-    Reminder nextReminder = newReminder; 
-    bool nextReminderFlag = false; 
+    debugPrint("[BGS] Reminders not empty");
     for (final reminder in reminders.values)
     {
-      debugPrint("[BGS] ${reminder.title}");
+      debugPrint("[BGS] Reminder: ${reminder.title}");
       if (reminder.isInPast()) // Stores all active reminders in dueStatusReminders
       {
-        if (reminder.reminderStatus == ReminderStatus.active) activeStatusReminders.add(reminder);
-        else continue;
+        if (reminder.reminderStatus == ReminderStatus.active) 
+        {
+          debugPrint("[BGS] Reminder is active");
+          activeStatusReminders.add(reminder);
+        }
+        else 
+        {
+          debugPrint("[BGS] Reminder is not active");
+          continue;
+        }
       }
       else // Store only first pending reminder in nextReminder.
       {
+        debugPrint("[BGS] Reminder is not in the past");
         nextReminderFlag = true;
         nextReminder = reminder;
         break; 
       }
-    }   
+    }  
+  }
+  else
+  {
+    debugPrint("[BGS] Reminders empty");
+  } 
 
-    if (activeStatusReminders.isEmpty && !nextReminderFlag) 
-    {
-      debugPrint("[BGS] Stopping Service, no upcoming rems.");
-      service.setForegroundNotificationInfo(
-        title: "On Standby",
-        content: "Will disappear automatically."
-      );
-      await stopBackgroundService(service);
-    }
+  if (activeStatusReminders.isEmpty && !nextReminderFlag) 
+  {
+    debugPrint("[BGS] Stopping Service, no upcoming rems.");
+    service.setForegroundNotificationInfo(
+      title: "On Standby",
+      content: "Will disappear automatically."
+    );
+    await stopBackgroundService(service);
+    return;
+  }
 
-    if (!nextReminderFlag)
-    {
-      service.setForegroundNotificationInfo(
-        title: "No Next Reminders",
-        content: "Finish due reminders or silence them, this notifications will disappear."
-      );
-    }
-    else
-    {
-      // Updating Notification
-      service.setForegroundNotificationInfo(
-        title: "Upcoming Reminder: ${nextReminder.title}",
-        content: "${nextReminder.getDiffString()}"
-      );
-    }
+  if (!nextReminderFlag)
+  {
+    debugPrint("[BGS] No next reminders");
+    service.setForegroundNotificationInfo(
+      title: "No Next Reminders",
+      content: "Finish due reminders or silence them, this notifications will disappear."
+    );
+  }
+  else
+  {
+    // Updating Notification
+    debugPrint("[BGS] Updating notification");
+    service.setForegroundNotificationInfo(
+      title: "Upcoming Reminder: ${nextReminder.title}",
+      content: "${nextReminder.getDiffString()}"
+    );
   }
 }
 

@@ -12,7 +12,6 @@ class RemindersDatabaseController {
   static final _remindersBox = Hive.box(remindersBoxName);
   static List<int> removedInBackground = [];
 
-
   /// Removes the reminders from the database which were set as 'done' in their 
   /// notifications when the app was terminated.
   static Future<void> clearPendingRemovals() async {
