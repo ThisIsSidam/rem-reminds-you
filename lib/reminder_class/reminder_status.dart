@@ -4,8 +4,7 @@ part of 'reminder.dart';
 // should be send or not.
 
 enum ReminderStatus {
-  pending, // Time is yet to come, no notifs.
-  due, // Time has come, send notifs.
+  active, // Notif
   silenced, // No notif
   done // No notif
 }
@@ -13,14 +12,12 @@ enum ReminderStatus {
 class RemindersStatusExtension{
   static String getDisplayName(ReminderStatus frequency) {
     switch (frequency) {
-      case ReminderStatus.pending:
-        return 'None';
-      case ReminderStatus.due:
-        return 'Daily';
+      case ReminderStatus.active:
+        return 'active';
       case ReminderStatus.silenced:
-        return 'Weekly';
+        return 'silenced';
       case ReminderStatus.done:
-        return 'Custom';
+        return 'done';
     }
   }
 
@@ -28,7 +25,7 @@ class RemindersStatusExtension{
     return ReminderStatus.values.firstWhere(
       (frequency) =>
           getDisplayName(frequency).toLowerCase() == value.toLowerCase(),
-      orElse: () => ReminderStatus.pending,
+      orElse: () => ReminderStatus.done,
     );
   }
 

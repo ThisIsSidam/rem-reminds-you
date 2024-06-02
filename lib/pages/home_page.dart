@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:nagger/consts/const_colors.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/notification/notification.dart';
@@ -18,15 +17,17 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late Timer _timer;
   int noOfReminders = 0;
   Map<String, List<Reminder>> remindersMap = {};
   final ReceivePort receivePort = ReceivePort();
+  final bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
 
   @override
   void initState() {
     remindersMap = RemindersDatabaseController.getReminderLists();
+    WidgetsBinding.instance.addObserver(this);
 
     _scheduleRefresh();
     NotificationController.startListeningNotificationEvents();
@@ -72,6 +73,16 @@ class _HomePageState extends State<HomePage> {
           if (notifPingPort != null) notifPingPort.send("pong");
           else debugPrint("[homePageListener] notifPingPort is null");
           debugPrint("[homepageListener] sent back pong");
+        }
+        else if (message == 'ping_from_bgIsolate')
+        {
+          debugPrint("[homepageListener] received ping_from_bgIsolate");
+          if (bgIsolate != null) // Initailized on top
+          {
+            bgIsolate!.send("pong");
+          }
+          else debugPrint("[homePageListener] bgIsolate is null");
+          debugPrint("[homepageListener] sent back pong to bgIsolate");
         }
         else 
         {
@@ -133,9 +144,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint("[HomePage] didChangeAppLifecycleState called with state: $state");
+    super.didChangeAppLifecycleState(state);
+    debugPrint("[HomePage] AppLifecycleState: $state");
+    if (state == AppLifecycleState.detached) {
+      debugPrint("[HomePage] Disposing");
+      dispose();
+    }
+    else {
+      debugPrint("[HomePage] Not disposing");
+    }
+  }
+
+  @override
   void dispose() {
+    debugPrint("[HomePage] Disposing");
     _timer.cancel();
     receivePort.close();
+    debugPrint("[HomePage] Disposed---------");
 
     super.dispose();
   }
@@ -187,40 +214,6 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
-          ElevatedButton(
-              child: const Text("Foreground Mode"),
-              onPressed: () {
-                debugPrint("Switched to Foreground mode");
-                FlutterBackgroundService().invoke('setAssForeground');
-              }, 
-            ),
-            ElevatedButton(
-              child: const Text("Background Mode"),
-              onPressed: () {
-                debugPrint("Switched to Background mode");
-                FlutterBackgroundService().invoke('setAssBackground');
-              }, 
-            ),
-            ElevatedButton(
-              child: Text("Switch"),
-              onPressed: () async {
-                final service = FlutterBackgroundService();
-                var isRunning = await service.isRunning();
-                if (isRunning) {
-                  service.invoke('stopService');
-                }
-                else 
-                {
-                  service.startService();
-                }
-                setState(() {});
-              }, 
-            ),
-
-
-
-
           Text(
             noRemindersPageText,
             style: Theme.of(context).textTheme.bodyMedium,

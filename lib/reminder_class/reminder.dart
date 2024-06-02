@@ -44,7 +44,7 @@ class Reminder {
     this.title = reminderNullTitle,
     required this.dateAndTime,
     this.id = newReminderID,
-    ReminderStatus reminderStatus = ReminderStatus.pending, 
+    ReminderStatus reminderStatus = ReminderStatus.active, 
     this.repetitionCount = 0,
     this.repetitionInterval = const Duration(seconds: 5),
     RecurringFrequency recurringFrequency = RecurringFrequency.none,
@@ -219,6 +219,10 @@ class Reminder {
     {
       return Duration(seconds: 0);
     }
+  }
+
+  bool isInPast() {
+    return dateAndTime.isBefore(DateTime.now());
   }
 }
 

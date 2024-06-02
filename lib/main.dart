@@ -64,14 +64,123 @@ void onStart(ServiceInstance service) async {
     service.stopSelf();
   });
 
-  // Data Retrieval Section
-  Map<int, Reminder> reminders = {};
 
+
+
+  // Objects and Variables Section
+  bool mainIsActive = false;
+  Map<int, Reminder> reminders = {};
+  /// Does not include reminders with done and silence status
+  final List<Reminder> activeStatusReminders = [];   
+  final Map<int, int> repeatNumbers = {};
+
+
+
+
+  // Checks if main is active or not. If not, the background service is stopped.
+  Future<void> stopBackgroundService() async {
+    debugPrint("[BGS] Attempting to stop background service");
+    final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
+    if (mainIsolate == null) {
+      debugPrint("[BGS] mainIsolate is null");
+      await service.stopSelf();
+    } else {
+      debugPrint("[BGS] mainIsolate found");
+      mainIsActive = false;
+      mainIsolate.send('ping_from_bgIsolate');
+      debugPrint("[BGS] sent ping_from_bgIsolate");
+
+      await Future.delayed(Duration(seconds: 2));
+      if (!mainIsActive)
+      {
+        debugPrint("[BGS] mainIsolate is not active");
+        await service.stopSelf();
+      }
+      else
+      {
+        debugPrint("[BGS] mainIsolate is active");
+      }
+    }
+  }
+
+
+
+
+
+  // Update Notification
+  /// Reload the overdueList as it is changes with time. 
+  /// Also update the permanenet notification shown to the user. 
+  void updateNotification(AndroidServiceInstance service) async{
+    activeStatusReminders.clear(); // Clear for filling updated ones.
+    
+    // Stop service if no reminders
+    if (reminders.isEmpty) 
+    {
+      debugPrint("[BGS] empty content");
+      service.setForegroundNotificationInfo(
+        title: "On Standby",
+        content: "Automatically disappear if you don't set any reminders."
+      );
+      await stopBackgroundService();
+    }
+    else
+    {
+      Reminder nextReminder = newReminder; 
+      bool nextReminderFlag = false; 
+      for (final reminder in reminders.values)
+      {
+        debugPrint("[BGS] ${reminder.title}");
+        if (reminder.isInPast()) // Stores all active reminders in dueStatusReminders
+        {
+          if (reminder.reminderStatus == ReminderStatus.active) activeStatusReminders.add(reminder);
+          else continue;
+        }
+        else // Store only first pending reminder in nextReminder.
+        {
+          nextReminderFlag = true;
+          nextReminder = reminder;
+          break; 
+        }
+      }   
+
+      if (activeStatusReminders.isEmpty && !nextReminderFlag) 
+      {
+        debugPrint("[BGS] Stopping Service, no upcoming rems.");
+        service.setForegroundNotificationInfo(
+          title: "On Standby",
+          content: "Will disappear automatically."
+        );
+        await stopBackgroundService();
+      }
+
+      if (!nextReminderFlag)
+      {
+        service.setForegroundNotificationInfo(
+          title: "No Next Reminders",
+          content: "Finish due reminders or silence them, this notifications will disappear."
+        );
+      }
+      else
+      {
+        // Updating Notification
+        service.setForegroundNotificationInfo(
+          title: "Upcoming Reminder: ${nextReminder.title}",
+          content: "${nextReminder.getDiffString()}"
+        );
+      }
+    }
+  }
+
+
+
+
+
+  // Data Retrieval Section
   final ReceivePort receivePort = ReceivePort();
   IsolateNameServer.registerPortWithName(receivePort.sendPort, bg_isolate_name);
   receivePort.listen((dynamic message) {
     debugPrint("[BGS] Message Received");
-    if (message is Map<int, Map<String, dynamic>>) {
+    if (message is Map<int, Map<String, dynamic>>) { // Received Reminders from Hive DB
 
       List<Map<String, dynamic>> messageValues = message.values.toList();
       List<Reminder> listOfReminders = List<Reminder>.generate(
@@ -92,9 +201,9 @@ void onStart(ServiceInstance service) async {
       };
 
       debugPrint("[BGS] $reminders");
-
+      if (service is AndroidServiceInstance) updateNotification(service);
     } 
-    else if (message is Map<String, String>)
+    else if (message is Map<String, String>) // Received update after button click on notification. id and action.
     {
       debugPrint("[BGS] Received a Mapstrstr");
       try {
@@ -109,8 +218,11 @@ void onStart(ServiceInstance service) async {
 
         debugPrint("[actionReceiver] id: $id action: $action");
 
-        if (action == 'done') thisReminder.reminderStatus = ReminderStatus.done;
-        else if (action == 'silence') thisReminder.reminderStatus = ReminderStatus.silenced;
+        if (action == 'done' || action == 'silence')
+        {
+          thisReminder.reminderStatus = RemindersStatusExtension.fromString(action!);
+          reminders[id] = thisReminder;
+        } 
         else throw "[BGS] unknown action given";
 
         reminders[id] = thisReminder;
@@ -119,57 +231,24 @@ void onStart(ServiceInstance service) async {
       {
         debugPrint(e.toString());
       }
+      if (service is AndroidServiceInstance) updateNotification(service);
+    }
+    else if (message is String)
+    {
+      debugPrint("[BGS] Message: $message");
+      debugPrint("[BGS] b4msg mainIsActive: $mainIsActive");
+      if (message == 'pong') mainIsActive = true;
+      else debugPrint("[BGS] Unknown Content $message");
+      debugPrint("[BGS] afterMsg mainIsActive: $mainIsActive");
     }
     else {
       debugPrint("[BGS] Unknown Content $message");
     }
   });
 
-  final List<Reminder> overdueList = [];   
-  final Map<int, int> repeatNumbers = {};
 
-  // Update Notification
-  void updateNotification(AndroidServiceInstance service) {
-    overdueList.clear(); // Clear for filling updated ones.
-    
-    // Stop service if no reminders
-    if (reminders.isEmpty) 
-    {
-      debugPrint("[BGS] empty content");
-      // await service.stopSelf();
-    }
-    else
-    {
-      Reminder nextReminder = newReminder; 
-      bool nextReminderFlag = false; 
-      for (final reminder in reminders.values)
-      {
-        if (reminder.dateAndTime.isBefore(DateTime.now())) overdueList.add(reminder);
-        else 
-        {
-          nextReminderFlag = true;
-          nextReminder = reminder;
-          break;
-        }
-      }     
 
-      if (!nextReminderFlag)
-      {
-        service.setForegroundNotificationInfo(
-          title: "No Next Reminders",
-          content: "Finish due reminders or silence them, this notifications will disappear."
-        );
-      }
-      else
-      {
-        // Updating Notification
-        service.setForegroundNotificationInfo(
-          title: "Upcoming Reminder: ${nextReminder.title}",
-          content: "${nextReminder.getDiffString()}"
-        );
-      }
-    }
-  }
+
 
   // Life Section
   Timer.periodic(const Duration(seconds: 20), (timer) async {
@@ -181,24 +260,19 @@ void onStart(ServiceInstance service) async {
 
         updateNotification(service);
 
-        for (final reminder in overdueList)
+        for (final reminder in activeStatusReminders)
         {
           debugPrint("[timerperiodic] ${reminder.title} ${reminder.reminderStatus}"); // To be removed
 
-          debugPrint("[BGS] ${reminder.title} ${reminder.reminderStatus}");
-          if (reminder.reminderStatus == ReminderStatus.done)
+          if (reminder.reminderStatus != ReminderStatus.active)
           {
-            debugPrint("[BGS-tp] ${reminder.title} -> done");
+            debugPrint("[BGS-tp] ${reminder.title} status not active. Shouldn't be here.");
             break;
           }
-          if (reminder.reminderStatus == ReminderStatus.silenced)
+
+          if (!reminder.isInPast())
           {
-            debugPrint("[BGS-tp] ${reminder.title} -> silenced");
-            break;
-          }
-          if (reminder.dateAndTime.isAfter(DateTime.now()))
-          {
-            debugPrint("[BGS-tp] ${reminder.title} -> Pending, shouldn't be here");
+            debugPrint("[BGS-tp] ${reminder.title} is in future. Shouldn't be here.");
             break;
           }
 
