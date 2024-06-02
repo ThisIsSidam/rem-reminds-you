@@ -91,8 +91,8 @@ void onStart(ServiceInstance service) async {
           final remId = reminder.id;
           if (remId != null)
           {
-            NotificationController.showNotification(reminder, repeatNumber: repeatNumbers[remId] ?? 1);
             repeatNumbers[remId] = (repeatNumbers[remId] ?? 0) + 1;
+            NotificationController.showNotification(reminder, repeatNumber: repeatNumbers[remId] ?? 0);
           }
         }
       }
