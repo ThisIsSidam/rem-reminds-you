@@ -35,6 +35,7 @@ const reminderNullID = 7;
 const reminderDefaultRepetitionCount = 5;
 const notificationNullGroupKey = "Null";
 
-const reminderSectionFieldsLeftMargin = 75.0;
+const reminderSectionFieldsLeftMarginSmall = 50.0;
+const reminderSectionFieldsLeftMarginLarge = 150.0;
 
 const String repetitionIntervalHourly = 'Hourly';

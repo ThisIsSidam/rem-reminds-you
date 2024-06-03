@@ -12,7 +12,7 @@ import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_section_wi
 import 'package:nagger/utils/reminder_pg_utils/buttons/section_buttons.dart';
 import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
-enum FieldType {Title, ParsedTime, Time, R_Count, R_Interval, Frequency, None}
+enum FieldType {Title, ParsedTime, Time, R_Interval, Frequency, None}
 
 class ReminderPage extends StatefulWidget {
   final Reminder thisReminder;
@@ -38,8 +38,6 @@ class _ReminderSectionState extends State<ReminderPage> {
   // Handling the closing upon appearance of another input widget.
   final _titleFocusNode = FocusNode();
   
-  bool _repetitiveNotifsEnabled = false;
-  
   @override
   void initState() {
     initialReminder = widget.thisReminder;
@@ -60,18 +58,6 @@ class _ReminderSectionState extends State<ReminderPage> {
     if (_titleFocusNode.hasFocus) {
       currentFieldType = FieldType.Title;
     }
-  }
-
-  void _toggleRepetitiveNotifMode(bool value) {
-    debugPrint("Repetive Notifs are shut off for a while.");
-
-    // setState(() {
-    //   _repetitiveNotifsEnabled = value;
-    //   if (currentFieldType == FieldType.R_Count || currentFieldType == FieldType.R_Interval)
-    //   {
-    //     currentFieldType = FieldType.None;
-    //   }
-    // });
   }
 
   /// Save the edits done by the widgets to the reminder
@@ -193,10 +179,6 @@ class _ReminderSectionState extends State<ReminderPage> {
     } 
     else if (fieldType == FieldType.Time) 
     {
-      toChange = FieldType.R_Count;
-    } 
-    else if (fieldType == FieldType.R_Count) 
-    {
       toChange = FieldType.R_Interval;
     } 
     else if (fieldType == FieldType.R_Interval) 
@@ -210,15 +192,6 @@ class _ReminderSectionState extends State<ReminderPage> {
     else 
     {
       toChange = FieldType.None;
-    }
-
-
-    if (!_repetitiveNotifsEnabled)
-    {
-      if (toChange == FieldType.R_Count || toChange == FieldType.R_Interval)
-      {
-        toChange = FieldType.Frequency;
-      }
     }
 
     setState(() {
@@ -308,26 +281,7 @@ class _ReminderSectionState extends State<ReminderPage> {
                   children: [
                     inputFields.titleField(),
                     inputFields.dateTimeField(),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Repetitive Notifications',
-                            style: theme.textTheme.titleSmall
-                          ),
-                          Switch(
-                            value: _repetitiveNotifsEnabled,
-                            onChanged: _toggleRepetitiveNotifMode,
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (_repetitiveNotifsEnabled)
-                      inputFields.repetitionCountField(),
-                    if (_repetitiveNotifsEnabled)
-                      inputFields.repetitionIntervalField(),
+                    inputFields.repetitionIntervalField(),
                     inputFields.recurringReminderField()
                   ],
                 ),

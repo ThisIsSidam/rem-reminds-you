@@ -64,7 +64,9 @@ class _RS_FieldState extends State<RS_Field> {
       child: Row(
         children: [
           SizedBox(
-            width: reminderSectionFieldsLeftMargin,
+            width: widget.label.length > 10 
+            ? reminderSectionFieldsLeftMarginLarge
+            : reminderSectionFieldsLeftMarginSmall ,
             child: Text(
               widget.label,
               style: Theme.of(context).textTheme.titleSmall,

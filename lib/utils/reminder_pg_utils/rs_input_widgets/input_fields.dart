@@ -113,31 +113,11 @@ class InputFields {
     );
   }
 
-  Widget repetitionCountField() {
-    return RS_Field(
-      fieldType: FieldType.R_Count,
-      currentFieldType: currentFieldType,
-      label: "Repeat",
-      fieldWidget: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 2
-        ),
-        child: Text(
-          "${thisReminder.repetitionCount.toString()} times",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ),
-      thisReminder: thisReminder,
-      getFocus: setCurrentInputWidget,
-    );
-  }
-
   Widget repetitionIntervalField() {
     return RS_Field(
       fieldType: FieldType.R_Interval,
       currentFieldType: currentFieldType,
-      label: "Interval",
+      label: "Recurrening Interval",
       fieldWidget: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,
@@ -157,7 +137,7 @@ class InputFields {
     return RS_Field(
       fieldType: FieldType.Frequency, 
       currentFieldType: currentFieldType, 
-      label: "Frequency", 
+      label: "Repeat Notification", 
       fieldWidget: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,

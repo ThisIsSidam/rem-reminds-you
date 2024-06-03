@@ -4,7 +4,6 @@ import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/datetime_input.dart';
 import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_section.dart';
 import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/recurring_frequency.dart';
-import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/rep_count_input.dart';
 import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/rep_interval_input.dart';
 
 class InputSectionWidgetSelector {
@@ -24,16 +23,6 @@ class InputSectionWidgetSelector {
         ),
       );
     } 
-    else if (currentFieldType == FieldType.R_Count) 
-    {
-      return RS_InputSection(
-        child: RS_RepCountInput(
-          thisReminder: thisReminder,
-          save: saveReminderOptions,
-          moveFocus: changeCurrentInputField,
-        ),
-      );
-    }
     else if (currentFieldType == FieldType.R_Interval) 
     {
       return RS_InputSection(
