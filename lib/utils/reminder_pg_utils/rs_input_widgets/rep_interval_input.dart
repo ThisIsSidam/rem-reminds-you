@@ -25,14 +25,11 @@ class RS_RepIntervalInput extends StatelessWidget {
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
-        intervalEditButton(Duration(seconds: 5), context),
-        intervalEditButton(Duration(seconds: 20), context),
         intervalEditButton(Duration(minutes: 1), context),
         intervalEditButton(Duration(minutes: 5), context),
         intervalEditButton(Duration(minutes: 10), context),
         intervalEditButton(Duration(minutes: 15), context),
         intervalEditButton(Duration(minutes: 30), context),
-        intervalEditButton(Duration(minutes: 45), context),
         intervalEditButton(Duration(hours: 1), context),
       ],
     );
@@ -50,12 +47,7 @@ class RS_RepIntervalInput extends StatelessWidget {
           moveFocus(fieldType);
         }, 
         child: Text(
-          // (duration.inMinutes < 60)
-          // ? "${duration.inMinutes.toString()} mn"
-          // : "${duration.inHours.toString()} hrs",
-          (duration.inSeconds < 60)
-          ? "${duration.inSeconds.toString()} sc"
-          : "${duration.inMinutes.toString()} min",
+          "${duration.inMinutes} minutes",
           style: Theme.of(context).textTheme.bodyLarge,
         )
       ),

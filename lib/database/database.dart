@@ -120,22 +120,29 @@ class RemindersDatabaseController {
   }
 
   /// Remove a reminder's data from the database.
-  static void deleteReminder(int id) {  
+  static void deleteReminder(int id, {bool allRecurringVersions = false}) {  
 
     getReminders();
     
     printAll("Before Deleting");
 
-    if (!reminders.containsKey(id)) {
-      print("Reminder with ID ($id) does not exist in the map.");
+    if (!reminders.containsKey(id)) { // Reminder not found in database
+      debugPrint("Reminder with ID ($id) does not exist in the map.");
       printAll("After Deleting");
       return;
     } 
 
     Reminder reminder = reminders[id]!;
 
-    if (reminder.recurringFrequency == RecurringFrequency.none)
-    {
+    // Have to cancel scheduled notification in all cases.
+    NotificationController.cancelScheduledNotification(
+      id.toString()
+    );
+
+    if ( // Handle Deletion of Non-recurring or latest instance of recurring reminder.
+      reminder.recurringFrequency == RecurringFrequency.none || 
+      allRecurringVersions
+    ) {
       reminders.remove(id);
       updateReminders();
       printAll("After Deleting");
@@ -144,7 +151,6 @@ class RemindersDatabaseController {
 
     DateTime toUpdate = reminder.dateAndTime;
     RecurringFrequency recFrequency= reminder.recurringFrequency;
-
 
     if (recFrequency == RecurringFrequency.daily)
     {
@@ -160,6 +166,7 @@ class RemindersDatabaseController {
     }
 
     reminder.dateAndTime = toUpdate;
+    NotificationController.scheduleNotification(reminder); // Schedule with updated time.
     reminders[id] = reminder;
     updateReminders();
     printAll("After Deleting");

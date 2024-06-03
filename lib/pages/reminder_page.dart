@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nagger/consts/consts.dart';
 import 'package:nagger/database/database.dart';
-import 'package:nagger/notification/notification.dart';
 import 'package:nagger/reminder_class/reminder.dart';
 import 'package:nagger/utils/other_utils/snack_bar.dart';
 import 'package:nagger/utils/reminder_pg_utils/buttons/bottom_buttons.dart';
@@ -109,11 +108,11 @@ class _ReminderSectionState extends State<ReminderPage> {
 
   void deleteReminder() {
 
-    void finalDelete() {
-      NotificationController.cancelScheduledNotification(
-        widget.thisReminder.id.toString()
+    void finalDelete({deleteAllRecurring = false}) {
+      RemindersDatabaseController.deleteReminder(
+        widget.thisReminder.id!,
+        allRecurringVersions: deleteAllRecurring
       );
-      RemindersDatabaseController.deleteReminder(widget.thisReminder.id!);
       widget.refreshHomePage();
       Navigator.pop(context);
     }
@@ -131,7 +130,7 @@ class _ReminderSectionState extends State<ReminderPage> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             content: Text(
-              'This is a recurring reminder. Are you sure you want to delete it?',
+              'This is a recurring reminder.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
@@ -145,12 +144,23 @@ class _ReminderSectionState extends State<ReminderPage> {
                 ),
               ),
               TextButton(
-                onPressed: () { // Reminder won't be deleted unless RF is none.
-                  widget.thisReminder.recurringFrequency = RecurringFrequency.none;
-                  finalDelete();
+                onPressed: () {
+                  finalDelete(deleteAllRecurring: false);
+                  Navigator.of(context).pop(); // Close the dialog
                 },
                 child: Text(
-                  'Delete',
+                  'Delete This Only',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              TextButton(
+                onPressed: () { // Reminder won't be deleted unless RF is none.
+                  widget.thisReminder.recurringFrequency = RecurringFrequency.none;
+                  finalDelete(deleteAllRecurring: true);
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text(
+                  'Delete All',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),

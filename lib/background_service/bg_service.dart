@@ -63,7 +63,7 @@ void onStart(ServiceInstance service) async {
   startListners(service);
 
   // Life Section
-  Timer.periodic(const Duration(seconds: 20), (timer) async {
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
     debugPrint("[BGS-tp] Service Running");
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) 
