@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
-        android:label="nagger"
+        android:label="Rem Reminds You"
         android:name="${applicationName}"
         android:icon="@mipmap/icon">
 

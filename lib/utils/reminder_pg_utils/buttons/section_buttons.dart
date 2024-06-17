@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/consts/const_colors.dart';
-import 'package:nagger/utils/other_utils/snack_bar.dart';
+import 'package:Rem/consts/const_colors.dart';
+import 'package:Rem/utils/other_utils/snack_bar.dart';
 
 /// The 'Normal' and 'Routine Reminders' buttons placed exactly below
 /// the app bar in reminderPage.

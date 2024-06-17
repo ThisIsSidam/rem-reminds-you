@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:nagger/consts/const_colors.dart';
+import 'package:Rem/consts/const_colors.dart';
 
 final ThemeData myTheme = ThemeData(
   scaffoldBackgroundColor: Color.fromARGB(255,33,34,38),

@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/theme/app_theme.dart';
-import 'package:nagger/pages/reminder_page.dart';
-import 'package:nagger/utils/other_utils/material_container.dart';
+import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/theme/app_theme.dart';
+import 'package:Rem/pages/reminder_page.dart';
+import 'package:Rem/utils/other_utils/material_container.dart';
 
 class HomePageListSection extends StatelessWidget {
   final String label;

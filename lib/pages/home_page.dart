@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:nagger/consts/const_colors.dart';
-import 'package:nagger/consts/consts.dart';
-import 'package:nagger/notification/notification.dart';
-import 'package:nagger/database/database.dart';
-import 'package:nagger/utils/home_pg_utils/homepage_list_section.dart';
-import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/pages/reminder_page.dart';
+import 'package:Rem/consts/const_colors.dart';
+import 'package:Rem/consts/consts.dart';
+import 'package:Rem/notification/notification.dart';
+import 'package:Rem/database/database.dart';
+import 'package:Rem/utils/home_pg_utils/homepage_list_section.dart';
+import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/pages/reminder_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -177,7 +177,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           surfaceTintColor: null,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "Nagger",
+            "Rem Reminds You",
           style: Theme.of(context).textTheme.titleLarge,
           ),
           actions: [
@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         elevation: 5,
         shadowColor: ConstColors.darkGrey,
         title: Text(
-          "Nagger",
+          "Rem",
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [

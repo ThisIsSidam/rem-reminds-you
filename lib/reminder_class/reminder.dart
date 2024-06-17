@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
-import 'package:nagger/consts/consts.dart';
+import 'package:Rem/consts/consts.dart';
 
 part 'reminder.g.dart';
 part 'recurring_frequency.dart';

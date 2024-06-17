@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "nagger" "\0"
+            VALUE "FileDescription", "Rem" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "nagger" "\0"
+            VALUE "InternalName", "Rem" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "nagger.exe" "\0"
-            VALUE "ProductName", "nagger" "\0"
+            VALUE "OriginalFilename", "Rem.exe" "\0"
+            VALUE "ProductName", "Rem" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

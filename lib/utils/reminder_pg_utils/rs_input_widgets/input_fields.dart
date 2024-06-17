@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/consts/consts.dart';
-import 'package:nagger/pages/reminder_page.dart';
-import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/rs_field.dart';
-import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
+import 'package:Rem/consts/consts.dart';
+import 'package:Rem/pages/reminder_page.dart';
+import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/rs_field.dart';
+import 'package:Rem/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
 class InputFields {
   final BuildContext context;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/consts/const_colors.dart';
-import 'package:nagger/reminder_class/reminder.dart';
+import 'package:Rem/consts/const_colors.dart';
+import 'package:Rem/reminder_class/reminder.dart';
 
 // The 'Save' and 'Close' buttons placed on the bottom of reminderPage.
 class BottomButtons {

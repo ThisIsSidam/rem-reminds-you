@@ -6,9 +6,9 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:nagger/app.dart';
-import 'package:nagger/consts/consts.dart';
-import 'package:nagger/reminder_class/reminder.dart';
+import 'package:Rem/app.dart';
+import 'package:Rem/consts/consts.dart';
+import 'package:Rem/reminder_class/reminder.dart';
 
 class NotificationController {
 
@@ -101,7 +101,7 @@ content: NotificationContent(
         groupKey: reminder.id.toString(),
         title: reminder.title,
         payload: {
-          "App name": "Nagger"
+          "App name": "Rem"
         },
         autoDismissible: false
       ),
@@ -137,7 +137,7 @@ content: NotificationContent(
         groupKey: reminder.id.toString(),
         title: reminder.title,
         payload: {
-          "App name": "Nagger"
+          "App name": "Rem"
         },
         autoDismissible: false
       ),

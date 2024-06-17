@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/pages/reminder_page.dart';
-import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/other_utils/snack_bar.dart';
+import 'package:Rem/pages/reminder_page.dart';
+import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/other_utils/snack_bar.dart';
 
 class RS_RecurringFrequencyInput extends StatelessWidget {
   final Reminder thisReminder;

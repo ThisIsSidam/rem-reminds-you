@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:nagger/app.dart';
-import 'package:nagger/background_service/bg_service.dart';
-import 'package:nagger/consts/consts.dart';
-import 'package:nagger/database/database.dart';
-import 'package:nagger/notification/notification.dart';
-import 'package:nagger/reminder_class/duration.g.dart';
-import 'package:nagger/reminder_class/reminder.dart';
+import 'package:Rem/app.dart';
+import 'package:Rem/background_service/bg_service.dart';
+import 'package:Rem/consts/consts.dart';
+import 'package:Rem/database/database.dart';
+import 'package:Rem/notification/notification.dart';
+import 'package:Rem/reminder_class/duration.g.dart';
+import 'package:Rem/reminder_class/reminder.dart';
 
 void main() async {
 

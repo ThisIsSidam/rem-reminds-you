@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:nagger/reminder_class/reminder.dart';
+import 'package:Rem/reminder_class/reminder.dart';
 
 class TitleParser {
   String originalTitle = ""; 

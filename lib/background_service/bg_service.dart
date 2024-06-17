@@ -5,9 +5,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:nagger/consts/consts.dart';
-import 'package:nagger/notification/notification.dart';
-import 'package:nagger/reminder_class/reminder.dart';
+import 'package:Rem/consts/consts.dart';
+import 'package:Rem/notification/notification.dart';
+import 'package:Rem/reminder_class/reminder.dart';
 
 //===========================================================
 // This is very badly written code. Please don't judge.

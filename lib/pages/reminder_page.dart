@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:nagger/consts/consts.dart';
-import 'package:nagger/database/database.dart';
-import 'package:nagger/reminder_class/reminder.dart';
-import 'package:nagger/utils/other_utils/snack_bar.dart';
-import 'package:nagger/utils/reminder_pg_utils/buttons/bottom_buttons.dart';
-import 'package:nagger/utils/other_utils/material_container.dart';
-import 'package:nagger/utils/misc_methods/misc_methods.dart';
-import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_fields.dart';
-import 'package:nagger/utils/reminder_pg_utils/rs_input_widgets/input_section_widget_selecter.dart';
-import 'package:nagger/utils/reminder_pg_utils/buttons/section_buttons.dart';
-import 'package:nagger/utils/reminder_pg_utils/title_parser/title_parser.dart';
+import 'package:Rem/consts/consts.dart';
+import 'package:Rem/database/database.dart';
+import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/other_utils/snack_bar.dart';
+import 'package:Rem/utils/reminder_pg_utils/buttons/bottom_buttons.dart';
+import 'package:Rem/utils/other_utils/material_container.dart';
+import 'package:Rem/utils/misc_methods/misc_methods.dart';
+import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/input_fields.dart';
+import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/input_section_widget_selecter.dart';
+import 'package:Rem/utils/reminder_pg_utils/buttons/section_buttons.dart';
+import 'package:Rem/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
 enum FieldType {Title, ParsedTime, Time, R_Interval, Frequency, None}
 
