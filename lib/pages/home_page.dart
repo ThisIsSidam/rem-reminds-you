@@ -29,7 +29,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     remindersMap = RemindersDatabaseController.getReminderLists();
     WidgetsBinding.instance.addObserver(this);
 
-    _scheduleRefresh();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {refreshPage();}); // Refreshes page every second
+
     NotificationController.startListeningNotificationEvents();
 
     super.initState();
@@ -111,23 +112,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       0
     );
 
+    debugPrint("[HomePage] Given Time: $result");
     return result;
-  }
-
-  void _scheduleRefresh() {
-    DateTime now = DateTime.now();
-    Duration timeUntilNextRefresh = Duration(
-      seconds: 10 - (now.second % 10),
-      milliseconds: 1000 - now.millisecond
-    );
-
-    _timer = Timer(timeUntilNextRefresh, () {
-      refreshPage();
-
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        refreshPage();
-      });
-    });
   }
 
   void refreshPage() {
@@ -177,15 +163,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           surfaceTintColor: null,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "Rem Reminds You",
+            "Rem",
           style: Theme.of(context).textTheme.titleLarge,
           ),
-          actions: [
-            IconButton(onPressed: refreshPage, icon: const Icon(
-              Icons.refresh,
-              color: Colors.red,
-            ))
-          ],
         ),
         body: getEmptyPage()
       );
@@ -198,12 +178,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           "Rem",
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        actions: [
-          IconButton(onPressed: refreshPage, icon: const Icon(
-            Icons.refresh,
-            color: Colors.red,
-            ))
-        ],
       ),
       body: getListedReminderPage(),
       floatingActionButton: getFloatingActionButton()
@@ -228,7 +202,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 Navigator.push(context, 
                   MaterialPageRoute(
                     builder: (context) => ReminderPage(
-                      thisReminder: Reminder(dateAndTime: DateTime.now().add(Duration(minutes: 5))), 
+                      thisReminder: Reminder(dateAndTime: getDateTimeForNewReminder()), 
                       refreshHomePage: refreshPage
                     )
                   )
@@ -299,7 +273,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         Navigator.push(context, 
           MaterialPageRoute(
             builder: (context) => ReminderPage(
-              thisReminder: Reminder(dateAndTime: DateTime.now().add(Duration(minutes: 5))), 
+              thisReminder: Reminder(dateAndTime: getDateTimeForNewReminder()), 
               refreshHomePage: refreshPage
             )
           )

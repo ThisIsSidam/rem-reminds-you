@@ -197,18 +197,21 @@ class RemindersDatabaseController {
 
     remindersList.sort((a, b) => a.getDiffDuration().compareTo(b.getDiffDuration()));
 
+    final now = DateTime.now();
+
+
     for (final reminder in remindersList)
     {
-      Duration due = reminder.getDiffDuration();
-      if (due.isNegative)
+      DateTime dateTime = reminder.dateAndTime;
+      if (dateTime.isBefore(now))
       {
         overdueList.add(reminder);
       }
-      else if (due.inHours < 24) 
+      else if (dateTime.day == now.day && dateTime.month == now.month && dateTime.year == now.year) 
       {
         todayList.add(reminder);
       }
-      else if (due.inHours < 48)
+      else if (dateTime.day == now.day+1 && dateTime.month == now.month && dateTime.year == now.year)
       {
         tomorrowList.add(reminder);
       }

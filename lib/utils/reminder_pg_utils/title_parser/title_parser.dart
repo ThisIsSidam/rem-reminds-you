@@ -27,10 +27,6 @@ class TitleParser {
       }
       else
       {
-        debugPrint("[TitleParserConstr] calling save");
-        debugPrint("[TitleParserConstr] T: ${thisReminder.title}");
-        debugPrint("[TitleParserConstr] D: ${thisReminder.dateAndTime}");
-
         save(thisReminder); 
         toggleParsedDateTimeField(true);
         return;

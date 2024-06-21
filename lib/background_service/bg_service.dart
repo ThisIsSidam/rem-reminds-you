@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
@@ -11,12 +10,12 @@ import 'package:Rem/reminder_class/reminder.dart';
 
 //===========================================================
 // This is very badly written code. Please don't judge.
-// Also, might not make sense so don't edit anything. 
+// Might not make sense. I have tried my best to make it 
+// readable. 
 //===========================================================
 
 bool mainIsActive = false;
 Map<int, Reminder> reminders = {};
-/// Does not include reminders with done and silence status
 final List<Reminder> activeStatusReminders = [];   
 final Map<int, int> repeatNumbers = {};
 final ReceivePort receivePort = ReceivePort();
@@ -60,38 +59,68 @@ void onStart(ServiceInstance service) async {
     onStop(service);
   });
 
+  // 
+  if (service is AndroidServiceInstance)
+  {
+    service.setForegroundNotificationInfo(
+      title: "On Standby",
+      content: "Will disappear automatically if not needed."
+    );
+  }
+  
   startListners(service);
 
   // Life Section
-  Timer.periodic(const Duration(minutes: 1), (timer) async {
-    debugPrint("[BGS-tp] Service Running");
+  final now = DateTime.now();
+  final Duration delay = DateTime(now.year, now.month, now.day, now.hour, now.minute + 1)
+      .difference(now);
+  debugPrint("[BBGGSS] delay: ${delay.inSeconds}");
+  Timer.periodic(Duration(seconds: delay.inSeconds), (timerFirst) async {
+    bgServicePeriodicWork(service);
+    debugPrint("[BGS-tp] Timer Running 1");
+    Timer.periodic(Duration(minutes: 1), (timer) {
+      bgServicePeriodicWork(service);
+      debugPrint("[BGS-tp] Timer Running 2");
+    });
+    timerFirst.cancel();
+  });
+}
+
+Future<void> bgServicePeriodicWork(ServiceInstance service) async {
+  // debugPrint("[BGS-tp] Service Running");
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) 
       {
-        debugPrint("[BGS-tp] service is in foreground mode");
+        // debugPrint("[BGS-tp] service is in foreground mode");
 
         updateNotification(service);
 
         for (final reminder in activeStatusReminders)
         {
-          debugPrint("[timerperiodic] ${reminder.title} ${reminder.reminderStatus}"); // To be removed
+          // debugPrint("[timerperiodic] ${reminder.title} ${reminder.reminderStatus}"); // To be removed
 
           if (reminder.reminderStatus != ReminderStatus.active)
           {
-            debugPrint("[BGS-tp] ${reminder.title} status not active. Shouldn't be here.");
-            break;
+            // debugPrint("[BGS-tp] ${reminder.title} status not active. Shouldn't be here.");
+            continue;
           }
 
-          if (!reminder.isInPast())
+          if (!reminder.isTimesUp())
           {
-            debugPrint("[BGS-tp] ${reminder.title} is in future. Shouldn't be here.");
-            break;
+            // debugPrint("[BGS-tp] ${reminder.title} is in future. Shouldn't be here.");
+            continue;
           }
 
           final remId = reminder.id;
           if (remId != null)
           {
+            if (repeatNumbers[remId] == null) // Ignore the first time and give value for future 
+            {
+              repeatNumbers[remId] = 0;
+              continue;
+            } 
             repeatNumbers[remId] = (repeatNumbers[remId] ?? 0) + 1;
+            debugPrint("[BGS-tp] ${reminder.title} ${repeatNumbers[remId]}");
             NotificationController.showNotification(reminder, repeatNumber: repeatNumbers[remId] ?? 0);
           }
         }
@@ -105,38 +134,37 @@ void onStart(ServiceInstance service) async {
     {
       debugPrint("Service not AndroidServiceInstance");
     }
-  });
 }
 
 Future<void> stopBackgroundService(
   AndroidServiceInstance service
 ) async {
-    debugPrint("[BGS] Attempting to stop background service");
-    final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-    if (mainIsolate == null) {
-      debugPrint("[BGS] mainIsolate is null");
-      onStop(service);
-    } else {
-      debugPrint("[BGS] mainIsolate found");
-      mainIsActive = false;
-      mainIsolate.send('ping_from_bgIsolate');
-      debugPrint("[BGS] sent ping_from_bgIsolate");
+  // debugPrint("[BGS] Attempting to stop background service");
+  final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
+  if (mainIsolate == null) {
+    // debugPrint("[BGS] mainIsolate is null");
+    onStop(service);
+  } else {
+    // debugPrint("[BGS] mainIsolate found");
+    mainIsActive = false;
+    mainIsolate.send('ping_from_bgIsolate');
+    // debugPrint("[BGS] sent ping_from_bgIsolate");
 
-      await Future.delayed(Duration(seconds: 2));
-      if (!mainIsActive)
-      {
-        debugPrint("[BGS] mainIsolate is not active");
-        onStop(service);
-      }
-      else
-      {
-        debugPrint("[BGS] mainIsolate is active");
-      }
+    await Future.delayed(Duration(seconds: 2));
+    if (!mainIsActive)
+    {
+      // debugPrint("[BGS] mainIsolate is not active");
+      onStop(service);
+    }
+    else
+    {
+      debugPrint("[BGS] mainIsolate is active");
     }
   }
+}
 
 void updateNotification(AndroidServiceInstance service) async{
-  debugPrint("[BGS] updateNotification called");
+  debugPrint("[BGS] updateNotification called\n\n\n\n\ncalled");
   activeStatusReminders.clear(); // Clear for filling updated ones.
   Reminder nextReminder = newReminder; 
   bool nextReminderFlag = false; 
@@ -144,26 +172,26 @@ void updateNotification(AndroidServiceInstance service) async{
   // Stop service if no reminders
   if(reminders.isNotEmpty)
   {
-    debugPrint("[BGS] Reminders not empty");
+    // debugPrint("[BGS] Reminders not empty");
     for (final reminder in reminders.values)
     {
-      debugPrint("[BGS] Reminder: ${reminder.title}");
-      if (reminder.isInPast()) // Stores all active reminders in dueStatusReminders
+      // debugPrint("[BGS] Reminder: ${reminder.title}");
+      if (reminder.isTimesUp()) // Stores all active reminders in activeStatusReminders
       {
         if (reminder.reminderStatus == ReminderStatus.active) 
         {
-          debugPrint("[BGS] Reminder is active");
+          // debugPrint("[BGS] Reminder is active");
           activeStatusReminders.add(reminder);
         }
         else 
         {
-          debugPrint("[BGS] Reminder is not active");
+          // debugPrint("[BGS] Reminder is not active");
           continue;
         }
       }
       else // Store only first pending reminder in nextReminder.
       {
-        debugPrint("[BGS] Reminder is not in the past");
+        // debugPrint("[BGS] Reminder is not in the past");
         nextReminderFlag = true;
         nextReminder = reminder;
         break; 
@@ -172,15 +200,15 @@ void updateNotification(AndroidServiceInstance service) async{
   }
   else
   {
-    debugPrint("[BGS] Reminders empty");
+    // debugPrint("[BGS] Reminders empty");
   } 
 
   if (activeStatusReminders.isEmpty && !nextReminderFlag) 
   {
-    debugPrint("[BGS] Stopping Service, no upcoming rems.");
+    // debugPrint("[BGS] Stopping Service, no upcoming rems.");
     service.setForegroundNotificationInfo(
       title: "On Standby",
-      content: "Will disappear automatically."
+      content: "Will disappear automatically if not needed."
     );
     await stopBackgroundService(service);
     return;
@@ -188,7 +216,7 @@ void updateNotification(AndroidServiceInstance service) async{
 
   if (!nextReminderFlag)
   {
-    debugPrint("[BGS] No next reminders");
+    // debugPrint("[BGS] No next reminders");
     service.setForegroundNotificationInfo(
       title: "No Next Reminders",
       content: "Finish due reminders or silence them, this notifications will disappear."
@@ -197,7 +225,8 @@ void updateNotification(AndroidServiceInstance service) async{
   else
   {
     // Updating Notification
-    debugPrint("[BGS] Updating notification");
+    nextReminder.dateAndTime = nextReminder.dateAndTime.subtract(Duration(seconds: 5));
+    debugPrint("[BGS] Updating [${nextReminder.getDiffString()}]");
     service.setForegroundNotificationInfo(
       title: "Upcoming Reminder: ${nextReminder.title}",
       content: "${nextReminder.getDiffString()}"
@@ -212,7 +241,7 @@ void startListners(
 
   // Listening for reminders
   receivePort.listen((dynamic message) {
-    debugPrint("[BGS] Message Received");
+    // debugPrint("[BGS] Message Received");
     if (message is Map<int, Map<String, dynamic>>) { // Received Reminders from Hive DB
 
       handleReceivedRemindersData(message);
@@ -225,12 +254,12 @@ void startListners(
     }
     else if (message is String) // String messages, ping, pong.
     {
-      debugPrint("[BGS] Message: $message");
+      // debugPrint("[BGS] Message: $message");
       if (message == 'pong') mainIsActive = true;
-      else debugPrint("[BGS] Unknown Content $message");
+      // else debugPrint("[BGS] Unknown Content $message");
     }
     else {
-      debugPrint("[BGS] Unknown Content $message");
+      // debugPrint("[BGS] Unknown Content $message");
     }
   });
 }

@@ -128,26 +128,28 @@ class Reminder {
   }
 
   String _formatDuration(Duration duration) {
-    if (duration.inSeconds < 60) 
+    if (duration.inSeconds < 11) 
     {
-      // Remove number of seconds on release. Only 'seconds' should remain.
-      return ' ${duration.inSeconds} seconds';
+      return 'seconds';
+    }
+    else if (duration.inSeconds < 60)
+    {
+      return 'a minute';
     } 
     else if (duration.inMinutes < 60) 
     {
-      return '${duration.inMinutes} minute${duration.inMinutes != 1 ? 's' : ''}';
+      return '${duration.inMinutes+1} minutes';
     } 
     else if (duration.inHours < 24) 
     {
-      int hours = duration.inHours;
-      String hoursString = hours == 1 ? 'hour' : 'hours';
+      int hours = duration.inHours +1;
 
-      return '$hours $hoursString';
+      return '$hours hours';
     } 
     else 
     {
-      int days = duration.inDays;
-      return '$days day${days != 1 ? 's' : ''}';
+      int days = duration.inDays + 1;
+      return '$days days';
     }
   }
 
@@ -177,6 +179,14 @@ class Reminder {
     {
       updatedTime = updatedTime.add(Duration(days: 1));
     }
+    updatedTime = DateTime( // Seconds should be 0
+      updatedTime.year,
+      updatedTime.month,
+      updatedTime.day,
+      updatedTime.hour,
+      updatedTime.minute,
+      0
+    );
     dateAndTime = updatedTime;
   }
 
@@ -221,8 +231,9 @@ class Reminder {
     }
   }
 
-  bool isInPast() {
-    return dateAndTime.isBefore(DateTime.now());
+  /// Check if the current date and time is before 5 seconds from the reminder's date and time.
+  bool isTimesUp() {
+    return dateAndTime.isBefore(DateTime.now().add(Duration(seconds: 5)));
   }
 }
 

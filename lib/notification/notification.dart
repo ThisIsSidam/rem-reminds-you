@@ -99,7 +99,7 @@ content: NotificationContent(
         id: (reminder.id ?? reminderNullID) + repeatNumber, 
         channelKey: '111',
         groupKey: reminder.id.toString(),
-        title: reminder.title,
+        title: "Reminder: ${reminder.title}",
         payload: {
           "App name": "Rem"
         },
@@ -135,7 +135,7 @@ content: NotificationContent(
         id: (reminder.id ?? reminderNullID) + repeatNumber, 
         channelKey: '111',
         groupKey: reminder.id.toString(),
-        title: reminder.title,
+        title: "Reminder: ${reminder.title}",
         payload: {
           "App name": "Rem"
         },

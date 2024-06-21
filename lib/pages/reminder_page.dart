@@ -78,9 +78,6 @@ class _ReminderSectionState extends State<ReminderPage> {
     setState(() {
       titleParsedReminder = reminder;
     });
-
-    debugPrint("[saveTitleParsed..] parsed: ${titleParsedReminder.dateAndTime}");
-    debugPrint("[saveTitleParsed..] parsed: ${widget.thisReminder.dateAndTime}");
   }
 
   void toggleParsedDateTimeField(bool flag) {
@@ -91,6 +88,7 @@ class _ReminderSectionState extends State<ReminderPage> {
   }
 
   void saveReminder() {
+    debugPrint("[saveReminder] saving Time: ${widget.thisReminder.dateAndTime}");
     if (widget.thisReminder.title == "No Title")
     {
       showSnackBar(context, "Enter a title!");
