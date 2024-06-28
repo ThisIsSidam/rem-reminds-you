@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         else if (message == 'ping_from_bgIsolate')
         {
           debugPrint("[homepageListener] received ping_from_bgIsolate");
-          if (bgIsolate != null) // Initailized on top
+          if (bgIsolate != null) // Initialized on top
           {
             bgIsolate!.send("pong");
           }

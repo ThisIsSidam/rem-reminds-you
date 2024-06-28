@@ -1,6 +1,5 @@
 import 'dart:isolate';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Rem/consts/consts.dart';
@@ -15,18 +14,18 @@ class RemindersDatabaseController {
   /// Removes the reminders from the database which were set as 'done' in their 
   /// notifications when the app was terminated.
   static Future<void> clearPendingRemovals() async {
-    debugPrint("[clearPendingRemovals] Running");
+    // debugPrint("[clearPendingRemovals] Running");
     final pendingRemovals = await Hive.openBox(pendingRemovalsBoxName);
 
-    debugPrint("[clearPendingRemovals] Box opened");
+    // debugPrint("[clearPendingRemovals] Box opened");
     final removals = pendingRemovals.get(pendingRemovalsBoxKey) ?? [];
     for (final id in removals) 
     {
-      debugPrint("[clearPendingRemovals] Removing $id");
+      // debugPrint("[clearPendingRemovals] Removing $id");
       deleteReminder(id);
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
-    debugPrint("[clearPendingRemovals] Removing Done");
+    // debugPrint("[clearPendingRemovals] Removing Done");
   }
 
   /// Get reminders from the database.

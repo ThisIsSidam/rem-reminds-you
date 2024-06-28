@@ -14,6 +14,7 @@ import 'package:Rem/reminder_class/reminder.dart';
 // readable. 
 //===========================================================
 
+@pragma('vm:entry-point')
 bool mainIsActive = false;
 Map<int, Reminder> reminders = {};
 final List<Reminder> activeStatusReminders = [];   
@@ -36,12 +37,16 @@ Future<void> initializeService() async {
   service.startService();
 }
 
+@pragma('vm:entry-point')
 void onStop(ServiceInstance service) async {
+  debugPrint("[BGS onStop] called | ${service.runtimeType}");
   receivePort.close();
   IsolateNameServer.removePortNameMapping(bg_isolate_name);
   await service.stopSelf();
+  debugPrint("[BGS onStop] service stopped");
 }
 
+@pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
 
   // Control Section
@@ -136,35 +141,40 @@ Future<void> bgServicePeriodicWork(ServiceInstance service) async {
     }
 }
 
-Future<void> stopBackgroundService(
+@pragma('vm:entry-point')
+Future<bool> stopBackgroundService(
   AndroidServiceInstance service
 ) async {
-  // debugPrint("[BGS] Attempting to stop background service");
+  debugPrint("[BGS] Attempting to stop background service");
   final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
   if (mainIsolate == null) {
-    // debugPrint("[BGS] mainIsolate is null");
+    debugPrint("[BGS] mainIsolate is null");
     onStop(service);
+    return true;
   } else {
-    // debugPrint("[BGS] mainIsolate found");
+    debugPrint("[BGS] mainIsolate found");
     mainIsActive = false;
     mainIsolate.send('ping_from_bgIsolate');
-    // debugPrint("[BGS] sent ping_from_bgIsolate");
+    debugPrint("[BGS] sent ping_from_bgIsolate");
 
-    await Future.delayed(Duration(seconds: 2));
-    if (!mainIsActive)
+    await Future.delayed(Duration(seconds: 5));
+    if (mainIsActive)
     {
-      // debugPrint("[BGS] mainIsolate is not active");
-      onStop(service);
+      debugPrint("[BGS] mainIsolate is active");
+      return false;
     }
     else
     {
-      debugPrint("[BGS] mainIsolate is active");
+      debugPrint("[BGS] mainIsolate is not active");
+      onStop(service);
+      return true;
     }
   }
 }
 
+@pragma('vm:entry-point')
 void updateNotification(AndroidServiceInstance service) async{
-  debugPrint("[BGS] updateNotification called\n\n\n\n\ncalled");
+  debugPrint("[BGS] updateNotification called");
   activeStatusReminders.clear(); // Clear for filling updated ones.
   Reminder nextReminder = newReminder; 
   bool nextReminderFlag = false; 
@@ -200,12 +210,12 @@ void updateNotification(AndroidServiceInstance service) async{
   }
   else
   {
-    // debugPrint("[BGS] Reminders empty");
+    debugPrint("[BGS] Reminders empty");
   } 
 
   if (activeStatusReminders.isEmpty && !nextReminderFlag) 
   {
-    // debugPrint("[BGS] Stopping Service, no upcoming rems.");
+    debugPrint("[BGS] Stopping Service, no upcoming rems.");
     service.setForegroundNotificationInfo(
       title: "On Standby",
       content: "Will disappear automatically if not needed."
@@ -234,6 +244,7 @@ void updateNotification(AndroidServiceInstance service) async{
   }
 }
 
+@pragma('vm:entry-point')
 void startListners(
   ServiceInstance service
 ) {
@@ -241,7 +252,7 @@ void startListners(
 
   // Listening for reminders
   receivePort.listen((dynamic message) {
-    // debugPrint("[BGS] Message Received");
+    debugPrint("[BGS] Message \n\n\n\n\nReceived $message");
     if (message is Map<int, Map<String, dynamic>>) { // Received Reminders from Hive DB
 
       handleReceivedRemindersData(message);
@@ -254,8 +265,12 @@ void startListners(
     }
     else if (message is String) // String messages, ping, pong.
     {
-      // debugPrint("[BGS] Message: $message");
-      if (message == 'pong') mainIsActive = true;
+      debugPrint("[BGS] Message: $message");
+      if (message == 'pong') 
+      {
+        mainIsActive = true;
+        debugPrint("[BGS Listener] mainIsActive: $mainIsActive");
+      }
       // else debugPrint("[BGS] Unknown Content $message");
     }
     else {
@@ -264,6 +279,7 @@ void startListners(
   });
 }
 
+@pragma('vm:entry-point')
 void handleReceivedRemindersData(Map<int, Map<String, dynamic>> message) {
   List<Map<String, dynamic>> messageValues = message.values.toList();
     List<Reminder> listOfReminders = List<Reminder>.generate(
@@ -286,6 +302,7 @@ void handleReceivedRemindersData(Map<int, Map<String, dynamic>> message) {
     debugPrint("[BGS] $reminders");
 }
 
+@pragma('vm:entry-point')
 void handleNotificationButtonClickUpdate(Map<String, String> message) {
   debugPrint("[BGS] Received a Mapstrstr");
   try {
