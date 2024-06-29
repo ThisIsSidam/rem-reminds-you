@@ -7,9 +7,11 @@ final Reminder newReminder = Reminder(dateAndTime: DateTime.now().add(Duration(s
 
 const remindersBoxName = "reminders";
 const remindersBoxKey = "REMINDERS";
+const archivesKey = "ARCHIVES";
 
 const pendingRemovalsBoxName = "pending_removals";
 const pendingRemovalsBoxKey = "PENDING_REMOVAL";
+
 
 
 // Isolate names

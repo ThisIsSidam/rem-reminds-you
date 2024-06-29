@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:Rem/pages/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/consts/consts.dart';
@@ -225,6 +226,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           )
         ],
       ),
+    );
+  }
+
+  Widget archiveIcon() {
+    return IconButton(
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Archive()));
+      }, 
+      icon: Icon(Icons.archive)
     );
   }
 

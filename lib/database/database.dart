@@ -42,6 +42,10 @@ class RemindersDatabaseController {
     return reminders;
   }
 
+  static Map<int, Reminder> getArchives() {
+    return _remindersBox.get(archivesKey)?.cast<int, Reminder>() ?? {};
+  }
+
   static Map<int, Map<String, dynamic>> getRemindersAsMaps() {
     final reminders = getReminders();
     return reminders.map((key, value) => MapEntry(key, value.toMap()));  
@@ -118,6 +122,18 @@ class RemindersDatabaseController {
     reminder.dateAndTime = tempDateTime;
   }
 
+  static void moveReminderToArchives(int id) {
+    getReminders();
+
+    final reminder = reminders.remove(id);
+    if (reminder != null) {
+      final Map<int, Reminder> archives = _remindersBox.get(archivesKey)?.cast<int, Reminder>() ?? {};
+      archives[id] = reminder;
+      _remindersBox.put(archivesKey, archives);
+    }
+    else throw  "[moveReminderToArchives] Reminder not found";
+  }
+
   /// Remove a reminder's data from the database.
   static void deleteReminder(int id, {bool allRecurringVersions = false}) {  
 
@@ -142,7 +158,8 @@ class RemindersDatabaseController {
       reminder.recurringFrequency == RecurringFrequency.none || 
       allRecurringVersions
     ) {
-      reminders.remove(id);
+      moveReminderToArchives(id);
+      // reminders.remove(id);
       updateReminders();
       printAll("After Deleting");
       return;

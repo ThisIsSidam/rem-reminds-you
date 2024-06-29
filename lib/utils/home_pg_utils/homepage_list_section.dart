@@ -7,13 +7,13 @@ import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/utils/other_utils/material_container.dart';
 
 class HomePageListSection extends StatelessWidget {
-  final String label;
+  final String? label;
   final List<Reminder> remindersList;
   final VoidCallback refreshHomePage;
 
   const HomePageListSection({
     super.key, 
-    required this.label,
+    this.label,
     required this.remindersList,
     required this.refreshHomePage
   });
@@ -28,13 +28,14 @@ class HomePageListSection extends StatelessWidget {
       elevation: 5,
       child: Column(
         children: [
+          if (label != null)
           MaterialContainer(
             padding: const EdgeInsets.only(
               left: 15, top: 15, bottom: 5
             ),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(label)
+              child: Text(label ?? "No Label")
             ),
           ),
           SizedBox(
