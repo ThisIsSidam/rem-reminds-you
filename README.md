@@ -2,10 +2,9 @@
 
 This is a simple reminder app built using Flutter. But it is not so simple as it reminds user repetetively until the reminder gets marked as "Done" or "Silence".
 
-<!-- ## Screenshots
 
-![Screenshot 1](screenshots/Screenshot_1.jpg)
-![Screenshot 2](screenshots/Screenshot_2.jpg) -->
+## Images
+<img src="screenshots/flutter_01.png" width="200" /> <img src="screenshots/flutter_02.png" width="200" /> <img src="screenshots/flutter_03.png" width="200" /> <img src="screenshots/flutter_04.png" width="200" />  
 
 ## Features
 
