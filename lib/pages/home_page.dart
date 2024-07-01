@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   int noOfReminders = 0;
   Map<String, List<Reminder>> remindersMap = {};
   final ReceivePort receivePort = ReceivePort();
-  final bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
+  SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
 
   @override
   void initState() {
@@ -82,7 +82,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           {
             bgIsolate!.send("pong");
           }
-          else debugPrint("[homePageListener] bgIsolate is null");
+          else // Reloading the isolate
+          {
+            bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
+            if (bgIsolate != null) bgIsolate!.send("pong");
+            else debugPrint("[homePageListener] bgIsolate is null");
+          }
           debugPrint("[homepageListener] sent back pong to bgIsolate");
         }
         else 
