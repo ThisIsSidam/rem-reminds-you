@@ -17,15 +17,15 @@ This is a simple reminder app built using Flutter. But it is not so simple as it
 
 ## Features to be implemented
 
-- Archive List
+- Archive List. Silence functionality would be removed as all "Done" reminders would be accessbile in archives.
 - Routine Reminders. Such as, "Drink Water" every 30 minutes. These wouldn't have repetitive notifications.
 
 ## Getting Started
 
 - Clone this repository
-- Open the project in Android Studio or VS Code and run it
+- Open the project in Android Studio or VS Code and build using `flutter build apk`. 
 - Add reminders and mark them as done
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU GPLv3. See the [LICENSE](LICENSE) file for details.
