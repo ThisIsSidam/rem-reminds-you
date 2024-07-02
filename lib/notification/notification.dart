@@ -111,11 +111,6 @@ content: NotificationContent(
           label: 'Done',
           actionType: ActionType.SilentBackgroundAction
         ),
-        NotificationActionButton(
-          key: 'silence', 
-          label: 'Silence',
-          actionType: ActionType.SilentBackgroundAction
-        )
       ],
     );
   }
@@ -147,11 +142,6 @@ content: NotificationContent(
           label: 'Done',
           actionType: ActionType.SilentBackgroundAction
         ),
-        NotificationActionButton(
-          key: 'silence', 
-          label: 'Silence',
-          actionType: ActionType.SilentBackgroundAction
-        )
       ],
       schedule: NotificationCalendar(
         weekday: recurringFrequency == RecurringFrequency.weekly
@@ -239,23 +229,6 @@ content: NotificationContent(
         db.put(pendingRemovalsBoxKey, listo);
         sendToBgIsolate();
         
-      } 
-    }
-    else if (receivedAction.buttonKeyPressed == 'silence')
-    {
-      if (isMainActive == true) 
-      {
-        debugPrint("[NotificationController] main is active 4");
-        final message = {
-          'action': 'silence',
-          'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
-        };
-        mainIsolate!.send(message);
-      }
-      else 
-      { 
-        debugPrint("[NotificationController] main not active");
-        sendToBgIsolate();
       } 
     }
     else 

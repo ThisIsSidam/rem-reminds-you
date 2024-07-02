@@ -49,17 +49,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           RemindersDatabaseController.homepageDeleteReminder(id);
           refreshPage();
         }
-        else if (message["action"] == "silence")
-        {
-          debugPrint("[homepageListener] silencing");
-          final reminder = RemindersDatabaseController.getReminder(id);
-          if (reminder == null)
-          {
-            throw "Reminder not present";
-          }
-          reminder.reminderStatus = ReminderStatus.silenced;
-          RemindersDatabaseController.saveReminder(reminder);
-        }
         else 
         {
           debugPrint("Port message is not refreshHomePage");

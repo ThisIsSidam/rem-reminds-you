@@ -5,7 +5,6 @@ part of 'reminder.dart';
 
 enum ReminderStatus {
   active, // Notif
-  silenced, // No notif
   done // No notif
 }
 
@@ -14,8 +13,6 @@ class RemindersStatusExtension{
     switch (frequency) {
       case ReminderStatus.active:
         return 'active';
-      case ReminderStatus.silenced:
-        return 'silenced';
       case ReminderStatus.done:
         return 'done';
     }

@@ -229,7 +229,7 @@ void updateNotification(AndroidServiceInstance service) async{
     // debugPrint("[BGS] No next reminders");
     service.setForegroundNotificationInfo(
       title: "No Next Reminders",
-      content: "Finish due reminders or silence them, this notifications will disappear."
+      content: "Finish due reminders, this notifications will disappear."
     );
   }
   else
@@ -317,7 +317,7 @@ void handleNotificationButtonClickUpdate(Map<String, String> message) {
 
     debugPrint("[actionReceiver] id: $id action: $action");
 
-    if (action == 'done' || action == 'silence')
+    if (action == 'done')
     {
       thisReminder.reminderStatus = RemindersStatusExtension.fromString(action!);
       reminders[id] = thisReminder;
