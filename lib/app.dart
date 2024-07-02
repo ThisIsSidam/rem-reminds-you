@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp>{
     NotificationController.checkNotificationPermissions();
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: const HomePage(),
       theme: myTheme
     );

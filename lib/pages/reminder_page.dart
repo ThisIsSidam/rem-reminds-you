@@ -107,7 +107,7 @@ class _ReminderSectionState extends State<ReminderPage> {
   void deleteReminder() {
 
     void finalDelete({deleteAllRecurring = false}) {
-      RemindersDatabaseController.deleteReminder(
+      RemindersDatabaseController.homepageDeleteReminder(
         widget.thisReminder.id!,
         allRecurringVersions: deleteAllRecurring
       );

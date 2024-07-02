@@ -1,0 +1,61 @@
+import 'package:Rem/consts/consts.dart';
+import 'package:Rem/database/archives_ext.dart';
+import 'package:Rem/pages/reminder_page.dart';
+import 'package:Rem/reminder_class/reminder.dart';
+import 'package:flutter/material.dart';
+
+class ArchiveReminderEntryListTile extends StatelessWidget {
+  final Reminder reminder;
+  final VoidCallback refreshHomePage;
+
+  const ArchiveReminderEntryListTile({
+    super.key,
+    required this.reminder,
+    required this.refreshHomePage
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 0, right: 0
+      ),
+      child: ListTile(
+        title: Text(
+          reminder.title,
+          style: Theme.of(context).textTheme.titleMedium
+        ),
+        subtitle: Text(
+          reminder.getDateTimeAsStr(),
+          style: Theme.of(context).textTheme.bodyMedium
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.delete),
+          style: Theme.of(context).iconButtonTheme.style,
+          onPressed: onTapDelete,
+        ),
+        tileColor: Theme.of(context).cardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5)
+        ),
+        onTap: () {
+          Navigator.push(context, 
+            MaterialPageRoute(
+              builder: (context) => ReminderPage(
+                thisReminder: reminder, 
+                refreshHomePage: refreshHomePage
+              )
+            )
+          ); 
+        },
+      ),
+    );
+  }
+
+  void onTapDelete() {
+    if (reminder.id == null) {
+      throw "Couldn't fetch reminder id";
+    }
+    Archives.archivesDeleteReminder(reminder.id ?? reminderNullID);
+  }
+}

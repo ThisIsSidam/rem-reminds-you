@@ -17,6 +17,7 @@ void main() async {
   Hive.registerAdapter(DurationAdapter());
   Hive.registerAdapter(ReminderAdapter());
   await Hive.openBox(remindersBoxName);
+  await Hive.openBox(indiValuesBoxName);
   
   RemindersDatabaseController.clearPendingRemovals();
 

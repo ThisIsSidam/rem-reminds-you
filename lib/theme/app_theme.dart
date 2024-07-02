@@ -11,6 +11,11 @@ final ThemeData myTheme = ThemeData(
     color: ConstColors.white
   ),
 
+  iconButtonTheme: IconButtonThemeData(
+    style: IconButton.styleFrom(
+      foregroundColor: ConstColors.white
+    )
+  ),
 
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: ConstColors.blue,

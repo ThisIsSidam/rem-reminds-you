@@ -1,5 +1,7 @@
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:Rem/database/archives_ext.dart';
+import 'package:Rem/utils/other_utils/generate_id.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Rem/consts/consts.dart';
@@ -10,6 +12,8 @@ class RemindersDatabaseController {
   static Map<int, Reminder> reminders = {};
   static final _remindersBox = Hive.box(remindersBoxName);
   static List<int> removedInBackground = [];
+
+  static Box<dynamic> get remindersBox => _remindersBox;
 
   /// Removes the reminders from the database which were set as 'done' in their 
   /// notifications when the app was terminated.
@@ -22,14 +26,14 @@ class RemindersDatabaseController {
     for (final id in removals) 
     {
       // debugPrint("[clearPendingRemovals] Removing $id");
-      deleteReminder(id);
+      homepageDeleteReminder(id);
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
     // debugPrint("[clearPendingRemovals] Removing Done");
   }
 
   /// Get reminders from the database.
-  static Map<int, Reminder> getReminders() {
+  static Map<int, Reminder> getReminders({key = remindersBoxKey}) {
 
     if (!_remindersBox.isOpen)
     {
@@ -40,10 +44,6 @@ class RemindersDatabaseController {
 
     reminders = _remindersBox.get(remindersBoxKey)?.cast<int, Reminder>() ?? {};
     return reminders;
-  }
-
-  static Map<int, Reminder> getArchives() {
-    return _remindersBox.get(archivesKey)?.cast<int, Reminder>() ?? {};
   }
 
   static Map<int, Map<String, dynamic>> getRemindersAsMaps() {
@@ -94,10 +94,10 @@ class RemindersDatabaseController {
       NotificationController.cancelScheduledNotification(
         reminder.id.toString()
       );
-      deleteReminder(reminder.id!);
+      homepageDeleteReminder(reminder.id!);
     }
 
-    reminder.id = reminder.getID();
+    reminder.id = generateId(reminder);
     reminders[reminder.id!] = reminder;
     NotificationController.scheduleNotification(reminder);
 
@@ -105,37 +105,8 @@ class RemindersDatabaseController {
     printAll("After Adding");
   }
 
-  /// Schedule a number of notifications with a time interval after the scheduled
-  /// time of the reminder. 
-  static void scheduleRepeatedNotifications(Reminder reminder) {
-    debugPrint("[scheduleRepeatedNotifications] called");
-    var tempDateTime = reminder.dateAndTime;
-    for (int i = 1; i <= 5; i++)
-    {
-      debugPrint("[scheduleRepeatedNotifications] scheduled 1");
-      reminder.dateAndTime = reminder.dateAndTime.add(Duration(seconds: 10));
-      NotificationController.scheduleNotification(
-        reminder, 
-        repeatNumber: i
-      );
-    }
-    reminder.dateAndTime = tempDateTime;
-  }
-
-  static void moveReminderToArchives(int id) {
-    getReminders();
-
-    final reminder = reminders.remove(id);
-    if (reminder != null) {
-      final Map<int, Reminder> archives = _remindersBox.get(archivesKey)?.cast<int, Reminder>() ?? {};
-      archives[id] = reminder;
-      _remindersBox.put(archivesKey, archives);
-    }
-    else throw  "[moveReminderToArchives] Reminder not found";
-  }
-
-  /// Remove a reminder's data from the database.
-  static void deleteReminder(int id, {bool allRecurringVersions = false}) {  
+  /// Does not actually delete. Moves the reminder to Archives.
+  static void homepageDeleteReminder(int id, {bool allRecurringVersions = false}) {  
 
     getReminders();
     
@@ -158,8 +129,7 @@ class RemindersDatabaseController {
       reminder.recurringFrequency == RecurringFrequency.none || 
       allRecurringVersions
     ) {
-      moveReminderToArchives(id);
-      // reminders.remove(id);
+      Archives.addReminderToArchives(reminder);
       updateReminders();
       printAll("After Deleting");
       return;
@@ -187,6 +157,8 @@ class RemindersDatabaseController {
     updateReminders();
     printAll("After Deleting");
   }
+
+  
 
   /// Print id of all the reminders which are present in the database.
   static void printAll(String str) {

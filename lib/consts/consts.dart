@@ -7,11 +7,15 @@ final Reminder newReminder = Reminder(dateAndTime: DateTime.now().add(Duration(s
 
 const remindersBoxName = "reminders";
 const remindersBoxKey = "REMINDERS";
+
+const archivesBoxName = "archives";
 const archivesKey = "ARCHIVES";
 
 const pendingRemovalsBoxName = "pending_removals";
 const pendingRemovalsBoxKey = "PENDING_REMOVAL";
 
+const indiValuesBoxName = "indi_values";
+const reminderIDGeneratorCurrentCountKey = "reminder_id_generator_current_count";
 
 
 // Isolate names
@@ -31,9 +35,9 @@ const timeSetButton12PM = "12:00 PM";
 const timeSetButton0630PM = "6:30 AM";
 const timeSetButton10PM = "10:00 PM";
 
-const newReminderID = 101;
+const newReminderID = -100;
 const reminderNullTitle = "No Title";
-const reminderNullID = 7;
+const reminderNullID = -1;
 const reminderDefaultRepetitionCount = 5;
 const notificationNullGroupKey = "Null";
 

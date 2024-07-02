@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:Rem/pages/archive.dart';
+import 'package:Rem/pages/archive_page.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/database/database.dart';
-import 'package:Rem/utils/home_pg_utils/homepage_list_section.dart';
+import 'package:Rem/utils/entry_list_widget.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/pages/reminder_page.dart';
 
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         if (message["action"] == 'done')
         {
           debugPrint("REFRESHING PAGE-------");
-          RemindersDatabaseController.deleteReminder(id);
+          RemindersDatabaseController.homepageDeleteReminder(id);
           refreshPage();
         }
         else if (message["action"] == "silence")
@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   void deleteAndRefresh(int id) {
     debugPrint("REFRESHING PAGE-------");
-    RemindersDatabaseController.deleteReminder(id);
+    RemindersDatabaseController.homepageDeleteReminder(id);
     refreshPage();
   }
 
@@ -170,8 +170,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
             "Rem",
-          style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
+          actions: [
+            archiveIcon()
+          ],
         ),
         body: getEmptyPage()
       );
@@ -184,6 +187,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           "Rem",
           style: Theme.of(context).textTheme.titleLarge,
         ),
+        actions: [
+          archiveIcon()
+        ],
       ),
       body: getListedReminderPage(),
       floatingActionButton: getFloatingActionButton()
@@ -238,7 +244,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return IconButton(
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => Archive()));
-      }, 
+      },
+      style: Theme.of(context).iconButtonTheme.style, 
       icon: Icon(Icons.archive)
     );
   }

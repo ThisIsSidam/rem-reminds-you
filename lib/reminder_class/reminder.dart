@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
 import 'package:Rem/consts/consts.dart';
 
@@ -151,22 +149,6 @@ class Reminder {
       int days = duration.inDays + 1;
       return '$days days';
     }
-  }
-
-  String hash() {
-    String str = "${title}${getDateTimeAsStr()}";
-    return sha256.convert(utf8.encode(str)).toString();
-  }
-
-  int getID() {
-    final hashString = hash();
-    final hashInt = int.parse(hashString.substring(0, 4), radix: 16);
-
-    if ((hashInt == 101) || (hashInt == 7))
-    {
-      getID();
-    }
-    return hashInt;
   }
 
   String getIntervalString() {
