@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         if (message["action"] == 'done')
         {
           debugPrint("REFRESHING PAGE-------");
-          RemindersDatabaseController.homepageDeleteReminder(id);
+          RemindersDatabaseController.deleteReminder(id);
           refreshPage();
         }
         else 
@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   void deleteAndRefresh(int id) {
     debugPrint("REFRESHING PAGE-------");
-    RemindersDatabaseController.homepageDeleteReminder(id);
+    RemindersDatabaseController.deleteReminder(id);
     refreshPage();
   }
 
@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Widget archiveIcon() {
     return IconButton(
       onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Archive()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ArchivePage()));
       },
       style: Theme.of(context).iconButtonTheme.style, 
       icon: Icon(Icons.archive)

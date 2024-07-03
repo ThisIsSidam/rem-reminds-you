@@ -5,7 +5,8 @@ part of 'reminder.dart';
 
 enum ReminderStatus {
   active, // Notif
-  done // No notif
+  done, // No notif
+  archived
 }
 
 class RemindersStatusExtension{
@@ -15,6 +16,10 @@ class RemindersStatusExtension{
         return 'active';
       case ReminderStatus.done:
         return 'done';
+      case ReminderStatus.archived:
+        return 'archived';
+      default:
+        return 'unknown';
     }
   }
 

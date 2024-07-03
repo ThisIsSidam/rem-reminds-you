@@ -1,6 +1,6 @@
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:Rem/database/archives_ext.dart';
+import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/utils/other_utils/generate_id.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -26,7 +26,7 @@ class RemindersDatabaseController {
     for (final id in removals) 
     {
       // debugPrint("[clearPendingRemovals] Removing $id");
-      homepageDeleteReminder(id);
+      deleteReminder(id);
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
     // debugPrint("[clearPendingRemovals] Removing Done");
@@ -42,7 +42,7 @@ class RemindersDatabaseController {
       );
     }
 
-    reminders = _remindersBox.get(remindersBoxKey)?.cast<int, Reminder>() ?? {};
+    reminders = _remindersBox.get(key)?.cast<int, Reminder>() ?? {};
     return reminders;
   }
 
@@ -84,17 +84,28 @@ class RemindersDatabaseController {
   static void saveReminder(Reminder reminder) {
     getReminders();
 
-    debugPrint("[saveReminder] Reminder: Id${reminder.id}, T${reminder.title}, DT${reminder.dateAndTime}");
-
     printAll("Before Adding");
 
-    if (reminder.id != newReminderID)
+    if (reminder.id == null)
+    {
+      throw "[saveReminder] Reminder id is null";
+    }
+    else if (reminder.id != newReminderID) // Upon edits, we delete the previous version and create an entirely new one
     {
       debugPrint("[saveReminder] id : ${reminder.id}");
       NotificationController.cancelScheduledNotification(
         reminder.id.toString()
       );
-      homepageDeleteReminder(reminder.id!);
+      deleteReminder(reminder.id!);
+    }
+
+    if (reminder.reminderStatus == ReminderStatus.archived) // Moving from archives to main reminder database.
+    {
+      ArchivesDatabase.deleteArchivedReminder(reminder.id!);
+      reminders[reminder.id!] = reminder;
+      updateReminders();
+      printAll("After Adding");
+      return;
     }
 
     reminder.id = generateId(reminder);
@@ -106,16 +117,15 @@ class RemindersDatabaseController {
   }
 
   /// Does not actually delete. Moves the reminder to Archives.
-  static void homepageDeleteReminder(int id, {bool allRecurringVersions = false}) {  
+  static void deleteReminder(int id, {bool allRecurringVersions = false}) {  
 
     getReminders();
     
     printAll("Before Deleting");
 
     if (!reminders.containsKey(id)) { // Reminder not found in database
-      debugPrint("Reminder with ID ($id) does not exist in the map.");
       printAll("After Deleting");
-      return;
+      throw "[homepageDeleteReminder] Reminder not found in database";
     } 
 
     Reminder reminder = reminders[id]!;
@@ -125,16 +135,21 @@ class RemindersDatabaseController {
       id.toString()
     );
 
-    if ( // Handle Deletion of Non-recurring or latest instance of recurring reminder.
+    if ( // Handle Deletion of Non-recurring or all recurrence of recurring reminder.
       reminder.recurringFrequency == RecurringFrequency.none || 
       allRecurringVersions
     ) {
-      Archives.addReminderToArchives(reminder);
+      final deletedRem = reminders.remove(id);
+      debugPrint("[homepageDeleteReminder] Deleted ${deletedRem!.id}");
+
+      ArchivesDatabase.addReminderToArchives(reminder);
+      
       updateReminders();
       printAll("After Deleting");
       return;
     }
 
+    // Handle moving-up recurring reminder to next recurring date-time.
     DateTime toUpdate = reminder.dateAndTime;
     RecurringFrequency recFrequency= reminder.recurringFrequency;
 

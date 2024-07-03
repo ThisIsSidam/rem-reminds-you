@@ -1,5 +1,5 @@
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/database/archives_ext.dart';
+import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +56,6 @@ class ArchiveReminderEntryListTile extends StatelessWidget {
     if (reminder.id == null) {
       throw "Couldn't fetch reminder id";
     }
-    Archives.archivesDeleteReminder(reminder.id ?? reminderNullID);
+    ArchivesDatabase.deleteArchivedReminder(reminder.id ?? reminderNullID);
   }
 }
