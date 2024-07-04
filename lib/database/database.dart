@@ -90,7 +90,12 @@ class RemindersDatabaseController {
     {
       throw "[saveReminder] Reminder id is null";
     }
-    else if (reminder.id != newReminderID) // Upon edits, we delete the previous version and create an entirely new one
+    else if 
+    (
+      // Upon edits, we delete the previous version and create an entirely new one
+      reminder.id != newReminderID && // New Reminders wouldn't be present in database
+      reminder.reminderStatus != ReminderStatus.archived // Archived reminders would be present only in Archived Database
+    ) 
     {
       debugPrint("[saveReminder] id : ${reminder.id}");
       NotificationController.cancelScheduledNotification(
@@ -102,6 +107,7 @@ class RemindersDatabaseController {
     if (reminder.reminderStatus == ReminderStatus.archived) // Moving from archives to main reminder database.
     {
       ArchivesDatabase.deleteArchivedReminder(reminder.id!);
+      reminder.reminderStatus = ReminderStatus.active;
       reminders[reminder.id!] = reminder;
       updateReminders();
       printAll("After Adding");
