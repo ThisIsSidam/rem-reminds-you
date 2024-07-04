@@ -265,7 +265,12 @@ class _ReminderSectionState extends State<ReminderPage> {
           child: SectionButtons()
         ),
         actions: [
-          if (widget.thisReminder.id != newReminderID)
+          // Don't show delete button for reminders which haven't yet been saved even once
+          // Or for archived reminders coz their delete button is outside.
+          if ( 
+            widget.thisReminder.id != newReminderID && 
+            widget.thisReminder.reminderStatus != ReminderStatus.archived
+          )
             MaterialButton(
               child: IconTheme(
                 data: Theme.of(context).iconTheme,

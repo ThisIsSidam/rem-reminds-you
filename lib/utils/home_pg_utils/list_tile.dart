@@ -2,11 +2,18 @@ import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:flutter/material.dart';
 
-Widget HomePageReminderEntryListTile(
-  BuildContext context, 
-  Reminder reminder,
-  VoidCallback refreshHomePage
-) {
+class HomePageReminderEntryListTile extends StatelessWidget {
+  final Reminder reminder;
+  final VoidCallback refreshHomePage;
+
+  const HomePageReminderEntryListTile({
+    super.key,
+    required this.reminder,
+    required this.refreshHomePage
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
         left: 0, right: 0
@@ -53,3 +60,4 @@ Widget HomePageReminderEntryListTile(
       ),
     );
   }
+}

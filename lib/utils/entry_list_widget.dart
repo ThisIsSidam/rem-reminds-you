@@ -1,20 +1,21 @@
-import 'package:Rem/utils/home_pg_utils/list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/utils/other_utils/material_container.dart';
 
-class HomePageListSection extends StatelessWidget {
+class EntryListWidget extends StatelessWidget {
   final String? label;
   final List<Reminder> remindersList;
   final VoidCallback refreshHomePage;
+  final Widget Function(Reminder, VoidCallback) listEntryWidget;
 
-  const HomePageListSection({
+  const EntryListWidget({
     super.key, 
     this.label,
     required this.remindersList,
-    required this.refreshHomePage
+    required this.refreshHomePage,
+    required this.listEntryWidget
   });
 
   @override
@@ -44,7 +45,8 @@ class HomePageListSection extends StatelessWidget {
               itemCount: remindersList.length,
               itemBuilder: (context, index) {
                 final reminder = remindersList[index];
-                return HomePageReminderEntryListTile(context, reminder, refreshHomePage);
+
+                return listEntryWidget(reminder, refreshHomePage);   
               }
             ),
           ),
@@ -52,4 +54,6 @@ class HomePageListSection extends StatelessWidget {
       ),
     );
   }
+
+  
 }

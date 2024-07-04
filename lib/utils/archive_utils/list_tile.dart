@@ -38,6 +38,7 @@ class ArchiveReminderEntryListTile extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5)
         ),
+
         onTap: () {
           Navigator.push(context, 
             MaterialPageRoute(
@@ -57,5 +58,6 @@ class ArchiveReminderEntryListTile extends StatelessWidget {
       throw "Couldn't fetch reminder id";
     }
     ArchivesDatabase.deleteArchivedReminder(reminder.id ?? reminderNullID);
+    refreshHomePage();
   }
 }

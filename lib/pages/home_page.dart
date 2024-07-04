@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:Rem/pages/archive_page.dart';
+import 'package:Rem/utils/home_pg_utils/list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/consts/consts.dart';
@@ -240,6 +241,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget getListedReminderPage() {
+
+    Widget getListTile(Reminder rem, VoidCallback refreshHomePage) 
+      => HomePageReminderEntryListTile(reminder: rem, refreshHomePage: refreshHomePage);
+
+
     return ListView.separated(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       itemCount: 4,
@@ -247,28 +253,32 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       itemBuilder: (BuildContext context, int index) {
         switch (index) {
           case 0:
-            return HomePageListSection(
+            return EntryListWidget(
               label: overdueSectionTitle,
               remindersList: remindersMap[overdueSectionTitle] ?? [],
               refreshHomePage: refreshPage,
+              listEntryWidget: getListTile,
             );
           case 1:
-            return HomePageListSection(
+            return EntryListWidget(
               label: todaySectionTitle,
               remindersList: remindersMap[todaySectionTitle] ?? [],
               refreshHomePage: refreshPage,
+              listEntryWidget: getListTile,
             );
           case 2:
-            return HomePageListSection(
+            return EntryListWidget(
               label: tomorrowSectionTitle,
               remindersList: remindersMap[tomorrowSectionTitle] ?? [],
               refreshHomePage: refreshPage,
+              listEntryWidget: getListTile,
             );
           case 3:
-            return HomePageListSection(
+            return EntryListWidget(
               label: laterSectionTitle,
               remindersList: remindersMap[laterSectionTitle] ?? [],
               refreshHomePage: refreshPage,
+              listEntryWidget: getListTile,
             );
           default:
             return SizedBox.shrink();
