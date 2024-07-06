@@ -4,9 +4,7 @@ import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:Rem/app.dart';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 
@@ -31,63 +29,10 @@ class NotificationController {
 
   }
 
-  static Future<void> checkNotificationPermissions() async {
+  static Future<bool> checkNotificationPermissions() async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
 
-    if (!isAllowed) {
-      // Notification permissions are not allowed, request permissions
-      await displayNotificationRationale();
-    }
-  }
-
-  static Future<bool> displayNotificationRationale() async {
-    bool userAuthorized = false;
-    BuildContext context = MyApp.navigatorKey.currentContext!;
-    await showDialog(
-      context: context,
-      builder: (BuildContext ctx) {
-        ThemeData theme = Theme.of(context);
-        return AlertDialog(
-          backgroundColor: theme.colorScheme.primaryContainer,
-          title: Text(
-            'Allow Notifications',
-            style: theme.textTheme.titleLarge,
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "We can't remind you without notifications. Give us the permission. Pretty please.",
-                style: theme.textTheme.bodyMedium,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-              },
-              child: Text(
-                'Deny',
-                style: theme.textTheme.titleMedium,
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                userAuthorized = await AwesomeNotifications().requestPermissionToSendNotifications();
-                Navigator.of(ctx).pop();
-              },
-              child: Text(
-                'Allow',
-                style: theme.textTheme.titleMedium
-              ),
-            ),
-          ],
-        );
-      },
-    );
-
-    return userAuthorized;
+    return isAllowed;
   }
 
   static Future<void> showNotification(
