@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 
 class ArchiveReminderEntryListTile extends StatelessWidget {
   final Reminder reminder;
-  final VoidCallback refreshHomePage;
+  final VoidCallback refreshPage;
 
   const ArchiveReminderEntryListTile({
     super.key,
     required this.reminder,
-    required this.refreshHomePage
+    required this.refreshPage
   });
 
   @override
@@ -44,7 +44,7 @@ class ArchiveReminderEntryListTile extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => ReminderPage(
                 thisReminder: reminder, 
-                refreshHomePage: refreshHomePage
+                refreshHomePage: refreshPage
               )
             )
           ); 
@@ -58,6 +58,6 @@ class ArchiveReminderEntryListTile extends StatelessWidget {
       throw "Couldn't fetch reminder id";
     }
     ArchivesDatabase.deleteArchivedReminder(reminder.id ?? reminderNullID);
-    refreshHomePage();
+    refreshPage();
   }
 }

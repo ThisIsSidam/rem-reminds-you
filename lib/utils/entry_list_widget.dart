@@ -7,14 +7,14 @@ import 'package:Rem/utils/other_utils/material_container.dart';
 class EntryListWidget extends StatelessWidget {
   final String? label;
   final List<Reminder> remindersList;
-  final VoidCallback refreshHomePage;
+  final VoidCallback refreshPage;
   final Widget Function(Reminder, VoidCallback) listEntryWidget;
 
   const EntryListWidget({
     super.key, 
     this.label,
     required this.remindersList,
-    required this.refreshHomePage,
+    required this.refreshPage,
     required this.listEntryWidget
   });
 
@@ -46,7 +46,7 @@ class EntryListWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 final reminder = remindersList[index];
 
-                return listEntryWidget(reminder, refreshHomePage);   
+                return listEntryWidget(reminder, refreshPage);   
               }
             ),
           ),

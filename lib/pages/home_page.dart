@@ -256,28 +256,28 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             return EntryListWidget(
               label: overdueSectionTitle,
               remindersList: remindersMap[overdueSectionTitle] ?? [],
-              refreshHomePage: refreshPage,
+              refreshPage: refreshPage,
               listEntryWidget: getListTile,
             );
           case 1:
             return EntryListWidget(
               label: todaySectionTitle,
               remindersList: remindersMap[todaySectionTitle] ?? [],
-              refreshHomePage: refreshPage,
+              refreshPage: refreshPage,
               listEntryWidget: getListTile,
             );
           case 2:
             return EntryListWidget(
               label: tomorrowSectionTitle,
               remindersList: remindersMap[tomorrowSectionTitle] ?? [],
-              refreshHomePage: refreshPage,
+              refreshPage: refreshPage,
               listEntryWidget: getListTile,
             );
           case 3:
             return EntryListWidget(
               label: laterSectionTitle,
               remindersList: remindersMap[laterSectionTitle] ?? [],
-              refreshHomePage: refreshPage,
+              refreshPage: refreshPage,
               listEntryWidget: getListTile,
             );
           default:
