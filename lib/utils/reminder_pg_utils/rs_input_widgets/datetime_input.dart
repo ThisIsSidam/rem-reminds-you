@@ -68,12 +68,12 @@ class RS_DatetimeInput extends StatelessWidget {
               TimeSetButton(time: timeSetButton0630PM, setTime: setTime,),
               TimeSetButton(time: timeSetButton10PM, setTime: setTime,),
               // Durations of some are altered to quickly get notifications. Will change later on.
-              TimeEditButton(editDuration: const Duration(seconds: 5), editTime: editTime,),
-              TimeEditButton(editDuration: const Duration(minutes: 1), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(minutes: 10), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(hours: 1), editTime: editTime,),
               TimeEditButton(editDuration: const Duration(hours: 3), editTime: editTime,),
               TimeEditButton(editDuration: const Duration(days: 1), editTime: editTime,),
-              TimeEditButton(editDuration: const Duration(seconds: -5), editTime: editTime,),
-              TimeEditButton(editDuration: const Duration(minutes: -1), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(minutes: -10), editTime: editTime,),
+              TimeEditButton(editDuration: const Duration(hours: -1), editTime: editTime,),
               TimeEditButton(editDuration: const Duration(hours: -3), editTime: editTime,),
               TimeEditButton(editDuration: const Duration(days: -1), editTime: editTime,),
               ElevatedButton(
