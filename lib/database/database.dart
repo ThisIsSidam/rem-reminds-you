@@ -101,6 +101,7 @@ class RemindersDatabaseController {
       NotificationController.cancelScheduledNotification(
         reminder.id.toString()
       );
+      reminders.remove(reminder.id);
     }
 
     if (reminder.reminderStatus == ReminderStatus.archived) // Moving from archives to main reminder database.
