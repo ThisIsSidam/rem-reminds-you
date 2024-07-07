@@ -101,7 +101,6 @@ class RemindersDatabaseController {
       NotificationController.cancelScheduledNotification(
         reminder.id.toString()
       );
-      deleteReminder(reminder.id!);
     }
 
     if (reminder.reminderStatus == ReminderStatus.archived) // Moving from archives to main reminder database.
@@ -114,7 +113,14 @@ class RemindersDatabaseController {
       return;
     }
 
-    reminder.id = generateId(reminder);
+
+    // Manage id. Get new only if current is null or new.
+    int? id = reminder.id;
+    if (id == null || id == reminderNullID || id == newReminderID) {
+      id = generateId(reminder);
+    }
+
+    reminder.id = id;
     reminders[reminder.id!] = reminder;
     NotificationController.scheduleNotification(reminder);
 
