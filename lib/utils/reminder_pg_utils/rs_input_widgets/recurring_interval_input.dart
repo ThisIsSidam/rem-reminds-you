@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 
-class RS_RepIntervalInput extends StatelessWidget {
+class RS_RecurringIntervalInput extends StatelessWidget {
   final Reminder thisReminder;
   final Function(Reminder) save;
   final Function(FieldType) moveFocus;
   final fieldType = FieldType.R_Interval;
 
-  const RS_RepIntervalInput({
+  const RS_RecurringIntervalInput({
     super.key,
     required this.thisReminder,
     required this.save,
@@ -17,7 +17,6 @@ class RS_RepIntervalInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Showing durationgButtonsGrid");
     return GridView.count(
       mainAxisSpacing: 1,
       crossAxisSpacing: 1,

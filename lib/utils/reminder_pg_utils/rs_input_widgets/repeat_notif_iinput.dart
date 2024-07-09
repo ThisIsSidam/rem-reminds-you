@@ -3,13 +3,13 @@ import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/utils/other_utils/snack_bar.dart';
 
-class RS_RecurringFrequencyInput extends StatelessWidget {
+class RS_RepeatNotifInput extends StatelessWidget {
   final Reminder thisReminder;
   final Function(Reminder) save;
   final Function(FieldType) moveFocus;
   final fieldType = FieldType.Frequency;
 
-  const RS_RecurringFrequencyInput({
+  const RS_RepeatNotifInput({
     super.key,
     required this.thisReminder,
     required this.save,

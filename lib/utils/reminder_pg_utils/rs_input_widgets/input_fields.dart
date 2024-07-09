@@ -113,7 +113,7 @@ class InputFields {
     );
   }
 
-  Widget repetitionIntervalField() {
+  Widget recurringIntervalField() {
     return RS_Field(
       fieldType: FieldType.R_Interval,
       currentFieldType: currentFieldType,
@@ -133,7 +133,7 @@ class InputFields {
     );
   }
 
-  Widget recurringReminderField() {
+  Widget repeatReminderField() {
     return RS_Field(
       fieldType: FieldType.Frequency, 
       currentFieldType: currentFieldType, 

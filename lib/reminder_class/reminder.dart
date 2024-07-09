@@ -44,7 +44,7 @@ class Reminder {
     this.id = newReminderID,
     ReminderStatus reminderStatus = ReminderStatus.active, 
     this.repetitionCount = 0,
-    this.repetitionInterval = const Duration(seconds: 5),
+    this.repetitionInterval = const Duration(minutes: 10),
     RecurringFrequency recurringFrequency = RecurringFrequency.none,
     this.recurringScheduleSet = false
   }){
@@ -152,7 +152,7 @@ class Reminder {
   }
 
   String getIntervalString() {
-    return _formatDuration(repetitionInterval);
+    return "${repetitionInterval.inMinutes} minutes";
   }
 
   /// If the time to be updated is in the past, increase it by a day.

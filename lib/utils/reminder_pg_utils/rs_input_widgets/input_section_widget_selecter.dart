@@ -3,8 +3,8 @@ import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/datetime_input.dart';
 import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/input_section.dart';
-import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/recurring_frequency.dart';
-import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/rep_interval_input.dart';
+import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/repeat_notif_iinput.dart';
+import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/recurring_interval_input.dart';
 
 class InputSectionWidgetSelector {
   static Widget showInputSection(
@@ -26,7 +26,7 @@ class InputSectionWidgetSelector {
     else if (currentFieldType == FieldType.R_Interval) 
     {
       return RS_InputSection(
-        child: RS_RepIntervalInput(
+        child: RS_RecurringIntervalInput(
           thisReminder: thisReminder,
           save: saveReminderOptions,
           moveFocus: changeCurrentInputField,
@@ -36,7 +36,7 @@ class InputSectionWidgetSelector {
     else
     {
       return RS_InputSection(
-        child: RS_RecurringFrequencyInput(
+        child: RS_RepeatNotifInput(
           thisReminder: thisReminder, 
           save: saveReminderOptions, 
           moveFocus: changeCurrentInputField
