@@ -32,10 +32,6 @@ class TitleParser {
         return;
       }
     }
-    else
-    {
-      debugPrint("[TitleParserConstr] parseString null");
-    }
     toggleParsedDateTimeField(false);
 
   }
@@ -69,10 +65,6 @@ class TitleParser {
     {
       return parseDurationInput(match1);
     }
-    else
-    {
-      debugPrint("[matchFinder] match1 null");
-    }
 
     final timeRegExp = RegExp(r'(\d+:\d+)\s*(AM|am|PM|pm)?');
 
@@ -80,10 +72,6 @@ class TitleParser {
     if (match2 != null)
     {
       return parseDateTimeInput(match2);
-    }
-    else
-    {
-      debugPrint("[matchFinder] match2 null");
     }
     
     return false;

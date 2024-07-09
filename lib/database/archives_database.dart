@@ -70,8 +70,6 @@ class ArchivesDatabase {
       }
 
       archives[reminder.id ?? reminderNullID] = reminder;
-      print("[addReminderToArchives] ${reminder.id}");
-      print("[addReminderToArchives] ${archives[reminder.id]}");
       _putArchivedReminders(archives);
 
       viewAllArchivedReminders("After Adding in Archives");
@@ -82,18 +80,10 @@ class ArchivesDatabase {
   static void viewAllArchivedReminders(String str) {
     final map = getArchivedReminders();
 
-    print("\x1B[33m$str\x1B[0m");
-    print("===============");
-
     if (map.isEmpty)
     {
       print("No reminders in Archives");
       return;
-    }
-
-    for (final rem in map.keys)
-    {
-      print("\x1B[33m$rem\x1B[0m");
     }
   }
 }

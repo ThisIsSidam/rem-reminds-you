@@ -63,7 +63,6 @@ class RemindersDatabaseController {
     final SendPort? backgroundIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
     if (backgroundIsolate != null) 
     {
-      debugPrint("[updateReminders] message sending");
       final message = RemindersDatabaseController.getRemindersAsMaps();
 
       backgroundIsolate.send(message);
@@ -84,7 +83,7 @@ class RemindersDatabaseController {
   static void saveReminder(Reminder reminder) {
     getReminders();
 
-    printAll("Before Adding");
+    printAll("Before Saving");
 
     if (reminder.id == null)
     {
@@ -110,7 +109,7 @@ class RemindersDatabaseController {
       reminder.reminderStatus = ReminderStatus.active;
       reminders[reminder.id!] = reminder;
       updateReminders();
-      printAll("After Adding");
+      printAll("After Saving");
       return;
     }
 
@@ -152,8 +151,7 @@ class RemindersDatabaseController {
       reminder.recurringInterval == RecurringInterval.none || 
       allRecurringVersions
     ) {
-      final deletedRem = reminders.remove(id);
-      debugPrint("[homepageDeleteReminder] Deleted ${deletedRem!.id}");
+      reminders.remove(id);
 
       ArchivesDatabase.addReminderToArchives(reminder);
       
