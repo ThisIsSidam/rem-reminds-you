@@ -20,18 +20,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  late Timer _timer;
   int noOfReminders = 0;
+  late Timer _timer; // ignore: unused_field  
   Map<String, List<Reminder>> remindersMap = {};
   final ReceivePort receivePort = ReceivePort();
   SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
 
   @override
   void initState() {
-    remindersMap = RemindersDatabaseController.getReminderLists();
+    managerRefresh();
     WidgetsBinding.instance.addObserver(this);
-
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {refreshPage();}); // Refreshes page every second
 
     NotificationController.startListeningNotificationEvents();
 
@@ -91,7 +89,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         debugPrint("[homepageListener] Unknown message received $message");
       }
     });
+  }
 
+  /// Calls refresh for the first time and starts a timer in the next minute point which
+  /// refreshes and sets up another timer for refreshing each minute, and cancels itself. 
+  /// First timer is only to set the second timer at exactly 00 seconds.
+  void managerRefresh() {
+    refreshPage(); // Gets called once at start then after each AppLifeCycleState.resumed
+    final seconds = 60 - DateTime.now().second;
+    Timer.periodic(Duration(seconds: seconds), (timer_first){
+      refreshPage();
+      _timer = Timer.periodic(Duration(minutes: 1), (timer){
+        refreshPage();
+      });
+      timer_first.cancel();
+    });
 
   }
 
@@ -134,6 +146,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       debugPrint("[HomePage] Disposing");
       dispose();
     }
+    if (state == AppLifecycleState.resumed) {
+      refreshPage();
+    }
     else {
       debugPrint("[HomePage] Not disposing");
     }
@@ -142,7 +157,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void dispose() {
     debugPrint("[HomePage] Disposing");
-    _timer.cancel();
     receivePort.close();
     IsolateNameServer.removePortNameMapping('main');
     debugPrint("[HomePage] Disposed---------");
@@ -152,6 +166,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+
     if (noOfReminders == 0)
     {
       return Scaffold(
