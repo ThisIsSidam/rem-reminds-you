@@ -23,7 +23,7 @@ class InputSectionWidgetSelector {
         ),
       );
     } 
-    else if (currentFieldType == FieldType.R_Interval) 
+    else if (currentFieldType == FieldType.Rec_Interval) 
     {
       return RS_InputSection(
         child: RS_RecurringIntervalInput(

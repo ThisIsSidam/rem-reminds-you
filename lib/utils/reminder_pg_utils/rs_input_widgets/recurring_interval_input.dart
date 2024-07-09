@@ -6,7 +6,7 @@ class RS_RecurringIntervalInput extends StatelessWidget {
   final Reminder thisReminder;
   final Function(Reminder) save;
   final Function(FieldType) moveFocus;
-  final fieldType = FieldType.R_Interval;
+  final fieldType = FieldType.Rec_Interval;
 
   const RS_RecurringIntervalInput({
     super.key,

@@ -10,8 +10,8 @@ enum ReminderStatus {
 }
 
 class RemindersStatusExtension{
-  static String getDisplayName(ReminderStatus frequency) {
-    switch (frequency) {
+  static String getDisplayName(ReminderStatus interval) {
+    switch (interval) {
       case ReminderStatus.active:
         return 'active';
       case ReminderStatus.done:
@@ -25,8 +25,8 @@ class RemindersStatusExtension{
 
   static ReminderStatus fromString(String value) {
     return ReminderStatus.values.firstWhere(
-      (frequency) =>
-          getDisplayName(frequency).toLowerCase() == value.toLowerCase(),
+      (interval) =>
+          getDisplayName(interval).toLowerCase() == value.toLowerCase(),
       orElse: () => ReminderStatus.done,
     );
   }
@@ -35,7 +35,7 @@ class RemindersStatusExtension{
     return ReminderStatus.values[value];
   }
 
-  static int getIndex(ReminderStatus frequency) {
-    return frequency.index;
+  static int getIndex(ReminderStatus interval) {
+    return interval.index;
   }
 }

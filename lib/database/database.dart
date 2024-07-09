@@ -149,7 +149,7 @@ class RemindersDatabaseController {
     );
 
     if ( // Handle Deletion of Non-recurring or all recurrence of recurring reminder.
-      reminder.recurringFrequency == RecurringFrequency.none || 
+      reminder.recurringInterval == RecurringInterval.none || 
       allRecurringVersions
     ) {
       final deletedRem = reminders.remove(id);
@@ -164,13 +164,13 @@ class RemindersDatabaseController {
 
     // Handle moving-up recurring reminder to next recurring date-time.
     DateTime toUpdate = reminder.dateAndTime;
-    RecurringFrequency recFrequency= reminder.recurringFrequency;
+    RecurringInterval recInterval= reminder.recurringInterval;
 
-    if (recFrequency == RecurringFrequency.daily)
+    if (recInterval == RecurringInterval.daily)
     {
       toUpdate = toUpdate.add(Duration(days: 1));
     }
-    else if (recFrequency == RecurringFrequency.weekly)
+    else if (recInterval == RecurringInterval.weekly)
     {
       toUpdate = toUpdate.add(Duration(days: 7));
     }

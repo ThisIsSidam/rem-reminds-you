@@ -11,7 +11,7 @@ import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/input_section_widge
 import 'package:Rem/utils/reminder_pg_utils/buttons/section_buttons.dart';
 import 'package:Rem/utils/reminder_pg_utils/title_parser/title_parser.dart';
 
-enum FieldType {Title, ParsedTime, Time, R_Interval, Frequency, None}
+enum FieldType {Title, ParsedTime, Time, Rec_Interval, Repeat, None}
 
 class ReminderPage extends StatefulWidget {
   final Reminder thisReminder;
@@ -115,7 +115,7 @@ class _ReminderSectionState extends State<ReminderPage> {
       Navigator.pop(context);
     }
 
-    if (widget.thisReminder.recurringFrequency != RecurringFrequency.none) {
+    if (widget.thisReminder.recurringInterval != RecurringInterval.none) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -153,7 +153,7 @@ class _ReminderSectionState extends State<ReminderPage> {
               ),
               TextButton(
                 onPressed: () { // Reminder won't be deleted unless RF is none.
-                  widget.thisReminder.recurringFrequency = RecurringFrequency.none;
+                  widget.thisReminder.recurringInterval = RecurringInterval.none;
                   finalDelete(deleteAllRecurring: true);
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -187,13 +187,13 @@ class _ReminderSectionState extends State<ReminderPage> {
     } 
     else if (fieldType == FieldType.Time) 
     {
-      toChange = FieldType.R_Interval;
+      toChange = FieldType.Rec_Interval;
     } 
-    else if (fieldType == FieldType.R_Interval) 
+    else if (fieldType == FieldType.Rec_Interval) 
     {
-      toChange = FieldType.Frequency;
+      toChange = FieldType.Repeat;
     } 
-    else if (fieldType == FieldType.Frequency)
+    else if (fieldType == FieldType.Repeat)
     {
       toChange = FieldType.None;
     }

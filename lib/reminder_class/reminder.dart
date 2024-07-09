@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:Rem/consts/consts.dart';
 
 part 'reminder.g.dart';
-part 'recurring_frequency.dart';
+part 'recurring_interval.dart';
 part 'reminder_status.dart';
 
 @HiveType(typeId: 1)
@@ -33,7 +33,7 @@ class Reminder {
   Duration repetitionInterval;
 
   @HiveField(6) 
-  int _recurringFrequency = 0; // Is an enum but saved as int coz saving enums in hive is a problem.
+  int _recurringInterval = 0; // Is an enum but saved as int coz saving enums in hive is a problem.
 
   @HiveField(7)
   bool recurringScheduleSet;
@@ -45,10 +45,10 @@ class Reminder {
     ReminderStatus reminderStatus = ReminderStatus.active, 
     this.repetitionCount = 0,
     this.repetitionInterval = const Duration(minutes: 10),
-    RecurringFrequency recurringFrequency = RecurringFrequency.none,
+    RecurringInterval recurringInterval = RecurringInterval.none,
     this.recurringScheduleSet = false
   }){
-    this._recurringFrequency = RecurringFrequencyExtension.getIndex(recurringFrequency);
+    this._recurringInterval = RecurringIntervalExtension.getIndex(recurringInterval);
     this._reminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
   }
 
@@ -60,7 +60,7 @@ class Reminder {
       reminderStatus: RemindersStatusExtension.fromInt(map['done'] ?? 0),
       repetitionCount: map['repetitionCount'] ?? 0,
       repetitionInterval: Duration(seconds: map['repetitionInterval']),
-      recurringFrequency: RecurringFrequencyExtension.fromInt(map['_recurringFrequency']),
+      recurringInterval: RecurringIntervalExtension.fromInt(map['_recurringInterval']),
       recurringScheduleSet: map['recurringScheduleSet'] ?? false,
     );
   }
@@ -73,7 +73,7 @@ class Reminder {
       'done': _reminderStatus,
       'repetitionCount': repetitionCount,
       'repetitionInterval': repetitionInterval.inSeconds,
-      '_recurringFrequency': _recurringFrequency,
+      '_recurringInterval': _recurringInterval,
       'recurringScheduleSet': recurringScheduleSet,
     };
   }
@@ -86,12 +86,12 @@ class Reminder {
     _reminderStatus = RemindersStatusExtension.getIndex(status);
   }
 
-  RecurringFrequency get recurringFrequency {
-    return RecurringFrequencyExtension.fromInt(_recurringFrequency);
+  RecurringInterval get recurringInterval {
+    return RecurringIntervalExtension.fromInt(_recurringInterval);
   }
 
-  void set recurringFrequency(RecurringFrequency frequency) {
-    _recurringFrequency = RecurringFrequencyExtension.getIndex(frequency);
+  void set recurringInterval(RecurringInterval interval) {
+    _recurringInterval = RecurringIntervalExtension.getIndex(interval);
   }
 
   String getDateTimeAsStr() {
@@ -119,9 +119,9 @@ class Reminder {
     }
   }
 
-  String getRecurringFrequencyAsString() {
-    return RecurringFrequencyExtension.getDisplayName(
-      RecurringFrequencyExtension.fromInt(_recurringFrequency)
+  String getRecurringIntervalAsString() {
+    return RecurringIntervalExtension.getDisplayName(
+      RecurringIntervalExtension.fromInt(_recurringInterval)
     );
   }
 
@@ -192,18 +192,18 @@ class Reminder {
 
   Duration recurringToAdd() {
 
-    if (_recurringFrequency == RecurringFrequency.none)
+    if (_recurringInterval == RecurringInterval.none)
     {
       return Duration(seconds: 0);
     }
 
-    final recurringFrequencyNotInt = RecurringFrequencyExtension.fromInt(_recurringFrequency);
+    final recurringIntervalNotInt = RecurringIntervalExtension.fromInt(_recurringInterval);
 
-    if (recurringFrequencyNotInt == RecurringFrequency.daily)
+    if (recurringIntervalNotInt == RecurringInterval.daily)
     {
       return Duration(days: 1);
     }
-    else if (recurringFrequencyNotInt == RecurringFrequency.weekly)
+    else if (recurringIntervalNotInt == RecurringInterval.weekly)
     {
       return Duration(days: 7);
     }

@@ -36,9 +36,9 @@ class HomePageReminderEntryListTile extends StatelessWidget {
               reminder.getDiffString(),
               style: Theme.of(context).textTheme.bodySmall
             ),
-            if (reminder.recurringFrequency != RecurringFrequency.none)
+            if (reminder.recurringInterval != RecurringInterval.none)
             Text(
-              "⟳ ${reminder.recurringFrequency.name}",
+              "⟳ ${reminder.recurringInterval.name}",
               style: Theme.of(context).textTheme.bodySmall,
             )
           ],
