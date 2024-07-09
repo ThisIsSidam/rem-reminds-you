@@ -121,15 +121,12 @@ content: NotificationContent(
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
-    debugPrint("[NotificationController] onActionReceivedMethod called");
 
     final SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
-    debugPrint("[NotificationController] bgIsolate: $bgIsolate");
 
     void sendToBgIsolate() { // Only called when main is not active.
       if (bgIsolate != null) 
       {
-        debugPrint("[NotificationController] message sending to bgIsolate");
         final message = {
           'action': receivedAction.buttonKeyPressed,
           'id': receivedAction.groupKey ?? notificationNullGroupKey
@@ -143,7 +140,6 @@ content: NotificationContent(
     }
 
     SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-    debugPrint("[NotificationController] mainIsolate: $mainIsolate");
 
     bool isMainActive = await isMainIsolateActive();
 
@@ -151,7 +147,6 @@ content: NotificationContent(
     {
       if (isMainActive == true) 
       {
-        debugPrint("[NotificationController] main is active 3");
         final message = {
           'action': 'done',
           'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
@@ -160,14 +155,11 @@ content: NotificationContent(
       }
       else 
       { 
-        debugPrint("[NotificationController] main not active");
         await Hive.initFlutter();
 
         final db = await Hive.openBox(pendingRemovalsBoxName);
-        debugPrint("[NotificationController] pendingRemovalsBox: $db");
 
         final listo = db.get(pendingRemovalsBoxKey) ?? [];
-        debugPrint("[NotificationController] listo: $listo");
 
         listo.add(int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
 
@@ -184,39 +176,28 @@ content: NotificationContent(
 
   @pragma('vm:entry-point')
   static Future<bool> isMainIsolateActive() async {
-    debugPrint("[NotificationController] isMainIsolateActive called");
     final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
     if (mainIsolate != null) 
     {
-      debugPrint("[NotificationController] mainIsolate: $mainIsolate");
       final receivePort = ReceivePort();
       IsolateNameServer.registerPortWithName(receivePort.sendPort, 'NotificationIsolate');
       mainIsolate.send('ping');
       final timeout = Duration(seconds: 3);
       try {
-        debugPrint("[NotificationController] awaiting pong");
         final pong = await receivePort.first.timeout(timeout);
         if (pong == 'pong') 
         {
-          debugPrint("[NotificationController] received pong");
-          debugPrint("[NotificationController] main isolate is active");
           return true;
         }
       } catch (e) {
         if (e is TimeoutException) {
-          debugPrint("[NotificationController] timed out waiting for pong");
-          debugPrint("[NotificationController] main isolate is not active");
           return false;
         }
       } finally {
-        debugPrint("[NotificationController] closing receivePort");
         receivePort.close();
-        bool nameRemoved = IsolateNameServer.removePortNameMapping('NotificationIsolate');
-        debugPrint("[NotificationController] nameRemoved: $nameRemoved");
+        IsolateNameServer.removePortNameMapping('NotificationIsolate');
       }
     }
-    debugPrint("[NotificationController] mainIsolate is null");
-    debugPrint("[NotificationController] main isolate is not active");
     return false;
   }
 

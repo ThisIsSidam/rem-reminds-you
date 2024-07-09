@@ -62,7 +62,6 @@ class _ReminderSectionState extends State<ReminderPage> {
   /// Save the edits done by the widgets to the reminder
   void saveReminderOptions(Reminder reminder) {
     setState(() {
-      debugPrint("[saveReminderOptions] called");
       widget.thisReminder.set(reminder);
 
       if (titleParsedDateTimeFound)
@@ -81,14 +80,12 @@ class _ReminderSectionState extends State<ReminderPage> {
   }
 
   void toggleParsedDateTimeField(bool flag) {
-    debugPrint("[togglePar...] $flag");
     setState(() {
       titleParsedDateTimeFound = flag;
     });
   }
 
   void saveReminder() {
-    debugPrint("[saveReminder] saving Time: ${widget.thisReminder.dateAndTime}");
     if (widget.thisReminder.title == "No Title")
     {
       showSnackBar(context, "Enter a title!");
@@ -218,7 +215,6 @@ class _ReminderSectionState extends State<ReminderPage> {
     setState(() {
       currentFieldType = fieldType;
     });
-    debugPrint("[setCurrentInputField] ${currentFieldType}");
 
     if (currentFieldType != FieldType.Title) {
       MiscMethods.removeKeyboard(context);

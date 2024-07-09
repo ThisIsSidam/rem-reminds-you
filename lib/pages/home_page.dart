@@ -44,7 +44,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
         if (message["action"] == 'done')
         {
-          debugPrint("REFRESHING PAGE-------");
           RemindersDatabaseController.deleteReminder(id);
           refreshPage();
         }
@@ -55,18 +54,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       }
       else if (message is String)
       {
-        debugPrint("[homepageListener] received a string");
         if (message == "ping")
         {
-          debugPrint("[homepageListener] sending back pong");
           final notifPingPort = IsolateNameServer.lookupPortByName('NotificationIsolate');
           if (notifPingPort != null) notifPingPort.send("pong");
           else debugPrint("[homePageListener] notifPingPort is null");
-          debugPrint("[homepageListener] sent back pong");
         }
         else if (message == 'ping_from_bgIsolate')
         {
-          debugPrint("[homepageListener] received ping_from_bgIsolate");
           if (bgIsolate != null) // Initialized on top
           {
             bgIsolate!.send("pong");
@@ -77,7 +72,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             if (bgIsolate != null) bgIsolate!.send("pong");
             else debugPrint("[homePageListener] bgIsolate is null");
           }
-          debugPrint("[homepageListener] sent back pong to bgIsolate");
         }
         else 
         {
@@ -139,11 +133,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint("[HomePage] didChangeAppLifecycleState called with state: $state");
     super.didChangeAppLifecycleState(state);
-    debugPrint("[HomePage] AppLifecycleState: $state");
     if (state == AppLifecycleState.detached) {
-      debugPrint("[HomePage] Disposing");
       dispose();
     }
     if (state == AppLifecycleState.resumed) {
@@ -156,10 +147,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    debugPrint("[HomePage] Disposing");
     receivePort.close();
     IsolateNameServer.removePortNameMapping('main');
-    debugPrint("[HomePage] Disposed---------");
 
     super.dispose();
   }

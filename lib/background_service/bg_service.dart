@@ -39,11 +39,9 @@ Future<void> initializeService() async {
 
 @pragma('vm:entry-point')
 void onStop(ServiceInstance service) async {
-  debugPrint("[BGS onStop] called | ${service.runtimeType}");
   receivePort.close();
   IsolateNameServer.removePortNameMapping(bg_isolate_name);
   await service.stopSelf();
-  debugPrint("[BGS onStop] service stopped");
 }
 
 @pragma('vm:entry-point')
@@ -79,13 +77,10 @@ void onStart(ServiceInstance service) async {
   final now = DateTime.now();
   final Duration delay = DateTime(now.year, now.month, now.day, now.hour, now.minute + 1)
       .difference(now);
-  debugPrint("[BBGGSS] delay: ${delay.inSeconds}");
   Timer.periodic(Duration(seconds: delay.inSeconds), (timerFirst) async {
     bgServicePeriodicWork(service);
-    debugPrint("[BGS-tp] Timer Running 1");
     Timer.periodic(Duration(minutes: 1), (timer) {
       bgServicePeriodicWork(service);
-      debugPrint("[BGS-tp] Timer Running 2");
     });
     timerFirst.cancel();
   });
@@ -145,27 +140,21 @@ Future<void> bgServicePeriodicWork(ServiceInstance service) async {
 Future<bool> stopBackgroundService(
   AndroidServiceInstance service
 ) async {
-  debugPrint("[BGS] Attempting to stop background service");
   final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
   if (mainIsolate == null) {
-    debugPrint("[BGS] mainIsolate is null");
     onStop(service);
     return true;
   } else {
-    debugPrint("[BGS] mainIsolate found");
     mainIsActive = false;
     mainIsolate.send('ping_from_bgIsolate');
-    debugPrint("[BGS] sent ping_from_bgIsolate");
 
     await Future.delayed(Duration(seconds: 5));
     if (mainIsActive)
     {
-      debugPrint("[BGS] mainIsolate is active");
       return false;
     }
     else
     {
-      debugPrint("[BGS] mainIsolate is not active");
       onStop(service);
       return true;
     }
@@ -174,7 +163,6 @@ Future<bool> stopBackgroundService(
 
 @pragma('vm:entry-point')
 void updateNotification(AndroidServiceInstance service) async{
-  debugPrint("[BGS] updateNotification called");
   activeStatusReminders.clear(); // Clear for filling updated ones.
   Reminder nextReminder = newReminder; 
   bool nextReminderFlag = false; 
@@ -215,7 +203,6 @@ void updateNotification(AndroidServiceInstance service) async{
 
   if (activeStatusReminders.isEmpty && !nextReminderFlag) 
   {
-    debugPrint("[BGS] Stopping Service, no upcoming rems.");
     service.setForegroundNotificationInfo(
       title: "On Standby",
       content: "Will disappear automatically if not needed."
@@ -236,7 +223,6 @@ void updateNotification(AndroidServiceInstance service) async{
   {
     // Updating Notification
     nextReminder.dateAndTime = nextReminder.dateAndTime.subtract(Duration(seconds: 5));
-    debugPrint("[BGS] Updating [${nextReminder.getDiffString()}]");
     service.setForegroundNotificationInfo(
       title: "Upcoming Reminder: ${nextReminder.title}",
       content: "${nextReminder.getDiffString()}"
@@ -252,7 +238,6 @@ void startListners(
 
   // Listening for reminders
   receivePort.listen((dynamic message) {
-    debugPrint("[BGS] Message \n\n\n\n\nReceived $message");
     if (message is Map<int, Map<String, dynamic>>) { // Received Reminders from Hive DB
 
       handleReceivedRemindersData(message);
@@ -304,7 +289,6 @@ void handleReceivedRemindersData(Map<int, Map<String, dynamic>> message) {
 
 @pragma('vm:entry-point')
 void handleNotificationButtonClickUpdate(Map<String, String> message) {
-  debugPrint("[BGS] Received a Mapstrstr");
   try {
     final id = int.parse(message['id'] ?? reminderNullID.toString());
     final thisReminder = reminders[id];
@@ -315,7 +299,6 @@ void handleNotificationButtonClickUpdate(Map<String, String> message) {
       throw "[BGS] Null Reminder";
     }
 
-    debugPrint("[actionReceiver] id: $id action: $action");
 
     if (action == 'done')
     {

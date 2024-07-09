@@ -63,7 +63,6 @@ class RemindersDatabaseController {
     final SendPort? backgroundIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
     if (backgroundIsolate != null) 
     {
-      debugPrint("[updateReminders] message sending");
       final message = RemindersDatabaseController.getRemindersAsMaps();
 
       backgroundIsolate.send(message);
@@ -152,8 +151,7 @@ class RemindersDatabaseController {
       reminder.recurringInterval == RecurringInterval.none || 
       allRecurringVersions
     ) {
-      final deletedRem = reminders.remove(id);
-      debugPrint("[homepageDeleteReminder] Deleted ${deletedRem!.id}");
+      reminders.remove(id);
 
       ArchivesDatabase.addReminderToArchives(reminder);
       
