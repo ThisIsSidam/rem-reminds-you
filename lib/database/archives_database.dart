@@ -85,10 +85,5 @@ class ArchivesDatabase {
       print("No reminders in Archives");
       return;
     }
-
-    for (final rem in map.keys)
-    {
-      print("\x1B[33m$rem\x1B[0m");
-    }
   }
 }

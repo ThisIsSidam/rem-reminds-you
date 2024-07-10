@@ -74,10 +74,9 @@ void onStart(ServiceInstance service) async {
   startListners(service);
 
   // Life Section
-  final now = DateTime.now();
-  final Duration delay = DateTime(now.year, now.month, now.day, now.hour, now.minute + 1)
-      .difference(now);
-  Timer.periodic(Duration(seconds: delay.inSeconds), (timerFirst) async {
+  final seconds = 60 - DateTime.now().second;
+
+  Timer.periodic(Duration(seconds: seconds, milliseconds: 500), (timerFirst) async {
     bgServicePeriodicWork(service);
     Timer.periodic(Duration(minutes: 1), (timer) {
       bgServicePeriodicWork(service);
@@ -116,12 +115,14 @@ Future<void> bgServicePeriodicWork(ServiceInstance service) async {
           {
             if (repeatNumbers[remId] == null) // Ignore the first time and give value for future 
             {
-              repeatNumbers[remId] = 0;
+              repeatNumbers[remId] = 1;
               continue;
             } 
             repeatNumbers[remId] = (repeatNumbers[remId] ?? 0) + 1;
-            debugPrint("[BGS-tp] ${reminder.title} ${repeatNumbers[remId]}");
-            NotificationController.showNotification(reminder, repeatNumber: repeatNumbers[remId] ?? 0);
+            if ((repeatNumbers[remId] ?? 0) % reminders[remId]!.recurringInterval.inMinutes == 0)
+            {
+              NotificationController.showNotification(reminder, repeatNumber: repeatNumbers[remId] ?? 1);
+            }
           }
         }
       }
@@ -196,10 +197,6 @@ void updateNotification(AndroidServiceInstance service) async{
       }
     }  
   }
-  else
-  {
-    debugPrint("[BGS] Reminders empty");
-  } 
 
   if (activeStatusReminders.isEmpty && !nextReminderFlag) 
   {
@@ -222,7 +219,6 @@ void updateNotification(AndroidServiceInstance service) async{
   else
   {
     // Updating Notification
-    nextReminder.dateAndTime = nextReminder.dateAndTime.subtract(Duration(seconds: 5));
     service.setForegroundNotificationInfo(
       title: "Upcoming Reminder: ${nextReminder.title}",
       content: "${nextReminder.getDiffString()}"
@@ -250,11 +246,9 @@ void startListners(
     }
     else if (message is String) // String messages, ping, pong.
     {
-      debugPrint("[BGS] Message: $message");
       if (message == 'pong') 
       {
         mainIsActive = true;
-        debugPrint("[BGS Listener] mainIsActive: $mainIsActive");
       }
       // else debugPrint("[BGS] Unknown Content $message");
     }
@@ -276,15 +270,9 @@ void handleReceivedRemindersData(Map<int, Map<String, dynamic>> message) {
       DateTime bDateTime = b.dateAndTime;
       return aDateTime.compareTo(bDateTime);
     });
-    for (final rem in listOfReminders)
-    {
-      debugPrint("[BGS] Reminders : ${rem.title}");
-    }
     reminders = {
       for(final rem in listOfReminders) rem.id ?? reminderNullID : rem
     };
-
-    debugPrint("[BGS] $reminders");
 }
 
 @pragma('vm:entry-point')

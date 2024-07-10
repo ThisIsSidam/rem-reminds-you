@@ -40,7 +40,7 @@ class RS_RecurringIntervalInput extends StatelessWidget {
       width: 150,
       child: ElevatedButton(
         onPressed: () {
-          thisReminder.repetitionInterval = duration;
+          thisReminder.recurringInterval = duration;
 
           save(thisReminder);
           moveFocus(fieldType);

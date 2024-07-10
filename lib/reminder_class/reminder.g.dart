@@ -19,7 +19,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
     return Reminder(
       title: fields[0] as String,
       repetitionCount: fields[4] as int,
-      repetitionInterval: fields[5] as Duration,
+      recurringInterval: fields[5] as Duration,
       dateAndTime: fields[1] as DateTime,
     )
       ..id = fields[2] as int?
@@ -41,7 +41,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..writeByte(4)
       ..write(obj.repetitionCount)
       ..writeByte(5)
-      ..write(obj.repetitionInterval);
+      ..write(obj.recurringInterval);
   }
 
   @override
