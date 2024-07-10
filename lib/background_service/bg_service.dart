@@ -120,7 +120,7 @@ Future<void> bgServicePeriodicWork(ServiceInstance service) async {
               continue;
             } 
             repeatNumbers[remId] = (repeatNumbers[remId] ?? 0) + 1;
-            if ((repeatNumbers[remId] ?? 0) % reminders[remId]!.repetitionInterval.inMinutes == 0)
+            if ((repeatNumbers[remId] ?? 0) % reminders[remId]!.recurringInterval.inMinutes == 0)
             {
               NotificationController.showNotification(reminder, repeatNumber: repeatNumbers[remId] ?? 1);
             }

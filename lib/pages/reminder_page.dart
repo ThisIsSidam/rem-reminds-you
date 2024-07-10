@@ -112,7 +112,7 @@ class _ReminderSectionState extends State<ReminderPage> {
       Navigator.pop(context);
     }
 
-    if (widget.thisReminder.recurringInterval != RecurringInterval.none) {
+    if (widget.thisReminder.repeatInterval != RepeatInterval.none) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -150,7 +150,7 @@ class _ReminderSectionState extends State<ReminderPage> {
               ),
               TextButton(
                 onPressed: () { // Reminder won't be deleted unless RF is none.
-                  widget.thisReminder.recurringInterval = RecurringInterval.none;
+                  widget.thisReminder.repeatInterval = RepeatInterval.none;
                   finalDelete(deleteAllRecurring: true);
                   Navigator.of(context).pop(); // Close the dialog
                 },

@@ -1,39 +1,39 @@
 part of 'reminder.dart';
 
-enum RecurringInterval {
+enum RepeatInterval {
   none,
   daily,
   weekly,
   custom
 }
 
-class RecurringIntervalExtension{
-  static String getDisplayName(RecurringInterval interval) {
+class RepeatIntervalExtension{
+  static String getDisplayName(RepeatInterval interval) {
     switch (interval) {
-      case RecurringInterval.none:
+      case RepeatInterval.none:
         return 'None';
-      case RecurringInterval.daily:
+      case RepeatInterval.daily:
         return 'Daily';
-      case RecurringInterval.weekly:
+      case RepeatInterval.weekly:
         return 'Weekly';
-      case RecurringInterval.custom:
+      case RepeatInterval.custom:
         return 'Custom';
     }
   }
 
-  static RecurringInterval fromString(String value) {
-    return RecurringInterval.values.firstWhere(
+  static RepeatInterval fromString(String value) {
+    return RepeatInterval.values.firstWhere(
       (interval) =>
           getDisplayName(interval).toLowerCase() == value.toLowerCase(),
-      orElse: () => RecurringInterval.none,
+      orElse: () => RepeatInterval.none,
     );
   }
 
-  static RecurringInterval fromInt(int value) {
-    return RecurringInterval.values[value];
+  static RepeatInterval fromInt(int value) {
+    return RepeatInterval.values[value];
   }
 
-  static int getIndex(RecurringInterval interval) {
+  static int getIndex(RepeatInterval interval) {
     return interval.index;
   }
 }

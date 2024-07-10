@@ -67,7 +67,7 @@ content: NotificationContent(
     }
   ) async {
 
-    final recurringInterval = reminder.recurringInterval;
+    final repeatInterval = reminder.repeatInterval;
     final dateTime = reminder.dateAndTime;
 
     return await AwesomeNotifications().createNotification(
@@ -89,7 +89,7 @@ content: NotificationContent(
         ),
       ],
       schedule: NotificationCalendar(
-        weekday: recurringInterval == RecurringInterval.weekly
+        weekday: repeatInterval == RepeatInterval.weekly
         ? dateTime.weekday
         : null,
         day: dateTime.day,

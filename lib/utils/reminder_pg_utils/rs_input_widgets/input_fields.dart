@@ -144,7 +144,7 @@ class InputFields {
           vertical: 2
         ),
         child: Text(
-          thisReminder.getRecurringIntervalAsString(),
+          thisReminder.getRepeatIntervalAsString(),
           style: Theme.of(context).textTheme.bodyMedium,
         ),
       ), 
