@@ -74,10 +74,9 @@ void onStart(ServiceInstance service) async {
   startListners(service);
 
   // Life Section
-  final now = DateTime.now();
-  final Duration delay = DateTime(now.year, now.month, now.day, now.hour, now.minute + 1)
-      .difference(now);
-  Timer.periodic(Duration(seconds: delay.inSeconds), (timerFirst) async {
+  final seconds = 60 - DateTime.now().second;
+
+  Timer.periodic(Duration(seconds: seconds, milliseconds: 500), (timerFirst) async {
     bgServicePeriodicWork(service);
     Timer.periodic(Duration(minutes: 1), (timer) {
       bgServicePeriodicWork(service);
@@ -220,7 +219,6 @@ void updateNotification(AndroidServiceInstance service) async{
   else
   {
     // Updating Notification
-    nextReminder.dateAndTime = nextReminder.dateAndTime.subtract(Duration(seconds: 5));
     service.setForegroundNotificationInfo(
       title: "Upcoming Reminder: ${nextReminder.title}",
       content: "${nextReminder.getDiffString()}"
