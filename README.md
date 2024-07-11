@@ -30,4 +30,4 @@ This is a simple reminder app built using Flutter. But it is not so simple as it
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU GPL3. See the [LICENSE](LICENSE) file for details.
