@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:Rem/reminder_class/extra_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
@@ -172,7 +173,7 @@ void updateNotification(AndroidServiceInstance service) async{
   if(reminders.isNotEmpty)
   {
     // debugPrint("[BGS] Reminders not empty");
-    for (final reminder in reminders.values)
+    for (final reminder in sortRemindersByDateTime(reminders.values.toList()))
     {
       // debugPrint("[BGS] Reminder: ${reminder.title}");
       if (reminder.isTimesUp()) // Stores all active reminders in activeStatusReminders
@@ -198,12 +199,14 @@ void updateNotification(AndroidServiceInstance service) async{
     }  
   }
 
+
   if (activeStatusReminders.isEmpty && !nextReminderFlag) 
   {
     service.setForegroundNotificationInfo(
       title: "On Standby",
       content: "Will disappear automatically if not needed."
     );
+    Future.delayed(Duration(seconds: 2));
     await stopBackgroundService(service);
     return;
   }
@@ -212,7 +215,7 @@ void updateNotification(AndroidServiceInstance service) async{
   {
     // debugPrint("[BGS] No next reminders");
     service.setForegroundNotificationInfo(
-      title: "No Next Reminders",
+      title: "One reminder left",
       content: "Finish due reminders, this notifications will disappear."
     );
   }
@@ -291,6 +294,7 @@ void handleNotificationButtonClickUpdate(Map<String, String> message) {
     if (action == 'done')
     {
       thisReminder.reminderStatus = RemindersStatusExtension.fromString(action!);
+      thisReminder.incrementRepeatDuration();
       reminders[id] = thisReminder;
     } 
     else throw "[BGS] unknown action given";
