@@ -182,6 +182,7 @@ class Reminder {
 
   static Reminder deepCopyReminder(Reminder reminder) {
     return Reminder(
+      id: reminder.id,
       title: reminder.title,
       dateAndTime: reminder.dateAndTime,
       reminderStatus: RemindersStatusExtension.fromInt(reminder._reminderStatus),
