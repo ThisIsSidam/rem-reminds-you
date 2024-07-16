@@ -160,24 +160,8 @@ class RemindersDatabaseController {
       return;
     }
 
-    // Handle moving-up recurring reminder to next recurring date-time.
-    DateTime toUpdate = reminder.dateAndTime;
-    RepeatInterval recurringInterval= reminder.repeatInterval;
-
-    if (recurringInterval == RepeatInterval.daily)
-    {
-      toUpdate = toUpdate.add(Duration(days: 1));
-    }
-    else if (recurringInterval == RepeatInterval.weekly)
-    {
-      toUpdate = toUpdate.add(Duration(days: 7));
-    }
-    else 
-    {
-      debugPrint("[deleteReminder] Custom Recurring not yet handled");
-    }
-
-    reminder.dateAndTime = toUpdate;
+    // Handle moving-up recurring reminder to next recurring date-time and saving it in db..
+    reminder.incrementRepeatDuration();
     NotificationController.scheduleNotification(reminder); // Schedule with updated time.
     reminders[id] = reminder;
     updateReminders();

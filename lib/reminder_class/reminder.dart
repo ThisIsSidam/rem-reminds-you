@@ -190,27 +190,32 @@ class Reminder {
     );
   }
 
-  Duration incrementRepeatDuration() {
+  /// Increment the date and time by 1 day or 1 week depending on the repeat interval.
+  void incrementRepeatDuration() {
 
     if (_repeatInterval == RepeatInterval.none)
     {
-      return Duration(seconds: 0);
+      return;
     }
 
     final repeatInterval = RepeatIntervalExtension.fromInt(_repeatInterval);
 
+    Duration increment;
+
     if (repeatInterval == RepeatInterval.daily)
     {
-      return Duration(days: 1);
+      increment = Duration(days: 1);
     }
     else if (repeatInterval == RepeatInterval.weekly)
     {
-      return Duration(days: 7);
+      increment = Duration(days: 7);
     }
     else 
     {
-      return Duration(seconds: 0);
+      return;
     }
+
+    dateAndTime = dateAndTime.add(increment);
   }
 
   /// Check if the current date and time is before 5 seconds from the reminder's date and time.
