@@ -1,6 +1,3 @@
-
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 
 class TitleParser {
@@ -58,7 +55,6 @@ class TitleParser {
   }
 
   bool matchFinder(String str) {
-    debugPrint("[matchFinder] '$str'");
     final durationRegExp = RegExp(r'in\s(\d+)\s+(minutes?|seconds?|hours?|days?)');
     final match1 = durationRegExp.firstMatch(str);
     if (match1 != null)

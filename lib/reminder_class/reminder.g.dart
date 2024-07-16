@@ -20,18 +20,16 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       title: fields[0] as String,
       dateAndTime: fields[1] as DateTime,
       id: fields[2] as int?,
-      repetitionCount: fields[4] as int,
-      recurringInterval: fields[5] as Duration,
-      recurringScheduleSet: fields[7] as bool,
+      notifRepeatInterval: fields[4] as Duration,
     )
       .._reminderStatus = fields[3] as int
-      .._repeatInterval = fields[6] as int;
+      .._recurringInterval = fields[5] as int;
   }
 
   @override
   void write(BinaryWriter writer, Reminder obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -41,13 +39,9 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..writeByte(3)
       ..write(obj._reminderStatus)
       ..writeByte(4)
-      ..write(obj.repetitionCount)
+      ..write(obj.notifRepeatInterval)
       ..writeByte(5)
-      ..write(obj.recurringInterval)
-      ..writeByte(6)
-      ..write(obj._repeatInterval)
-      ..writeByte(7)
-      ..write(obj.recurringScheduleSet);
+      ..write(obj._recurringInterval);
   }
 
   @override

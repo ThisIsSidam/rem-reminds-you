@@ -148,7 +148,7 @@ class RemindersDatabaseController {
     );
 
     if ( // Handle Deletion of Non-recurring or all recurrence of recurring reminder.
-      reminder.repeatInterval == RepeatInterval.none || 
+      reminder.recurringInterval == RecurringInterval.none || 
       allRecurringVersions
     ) {
       reminders.remove(id);

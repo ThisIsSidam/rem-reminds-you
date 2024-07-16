@@ -26,7 +26,7 @@ class InputSectionWidgetSelector {
     else if (currentFieldType == FieldType.Rec_Interval) 
     {
       return RS_InputSection(
-        child: RS_RecurringIntervalInput(
+        child: RS_NotifRepeatIntervalInput(
           thisReminder: thisReminder,
           save: saveReminderOptions,
           moveFocus: changeCurrentInputField,

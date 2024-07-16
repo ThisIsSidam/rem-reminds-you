@@ -113,11 +113,11 @@ class InputFields {
     );
   }
 
-  Widget recurringIntervalField() {
+  Widget notifRepeatInterval() {
     return RS_Field(
       fieldType: FieldType.Rec_Interval,
       currentFieldType: currentFieldType,
-      label: "Recurrening Interval",
+      label: "Repeat Notification",
       fieldWidget: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,
@@ -137,14 +137,14 @@ class InputFields {
     return RS_Field(
       fieldType: FieldType.Repeat, 
       currentFieldType: currentFieldType, 
-      label: "Repeat Notification", 
+      label: "Recurring Reminder", 
       fieldWidget: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,
           vertical: 2
         ),
         child: Text(
-          thisReminder.getRepeatIntervalAsString(),
+          thisReminder.getRecurringIntervalAsString(),
           style: Theme.of(context).textTheme.bodyMedium,
         ),
       ), 

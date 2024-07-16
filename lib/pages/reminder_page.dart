@@ -112,7 +112,7 @@ class _ReminderSectionState extends State<ReminderPage> {
       Navigator.pop(context);
     }
 
-    if (widget.thisReminder.repeatInterval != RepeatInterval.none) {
+    if (widget.thisReminder.recurringInterval != RecurringInterval.none) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -150,7 +150,7 @@ class _ReminderSectionState extends State<ReminderPage> {
               ),
               TextButton(
                 onPressed: () { // Reminder won't be deleted unless RF is none.
-                  widget.thisReminder.repeatInterval = RepeatInterval.none;
+                  widget.thisReminder.recurringInterval = RecurringInterval.none;
                   finalDelete(deleteAllRecurring: true);
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -207,7 +207,6 @@ class _ReminderSectionState extends State<ReminderPage> {
   /// Used to set the appropriate input widget when 
   /// the field is tapped.
   void setCurrentInputWidget(FieldType fieldType) {
-    debugPrint("called");
     if (currentFieldType == fieldType) {
       return;
     }
@@ -290,7 +289,7 @@ class _ReminderSectionState extends State<ReminderPage> {
                   children: [
                     inputFields.titleField(),
                     inputFields.dateTimeField(),
-                    inputFields.recurringIntervalField(),
+                    inputFields.notifRepeatInterval(),
                     inputFields.repeatReminderField()
                   ],
                 ),

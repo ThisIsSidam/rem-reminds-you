@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 
-class RS_RecurringIntervalInput extends StatelessWidget {
+class RS_NotifRepeatIntervalInput extends StatelessWidget {
   final Reminder thisReminder;
   final Function(Reminder) save;
   final Function(FieldType) moveFocus;
   final fieldType = FieldType.Rec_Interval;
 
-  const RS_RecurringIntervalInput({
+  const RS_NotifRepeatIntervalInput({
     super.key,
     required this.thisReminder,
     required this.save,
@@ -40,7 +40,7 @@ class RS_RecurringIntervalInput extends StatelessWidget {
       width: 150,
       child: ElevatedButton(
         onPressed: () {
-          thisReminder.recurringInterval = duration;
+          thisReminder.notifRepeatInterval = duration;
 
           save(thisReminder);
           moveFocus(fieldType);

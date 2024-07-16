@@ -25,34 +25,34 @@ class RS_RepeatNotifInput extends StatelessWidget {
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
-        intervalButton(context, RepeatInterval.none),
-        intervalButton(context, RepeatInterval.daily),
-        intervalButton(context, RepeatInterval.weekly),
-        intervalButton(context, RepeatInterval.custom),
+        intervalButton(context, RecurringInterval.none),
+        intervalButton(context, RecurringInterval.daily),
+        intervalButton(context, RecurringInterval.weekly),
+        intervalButton(context, RecurringInterval.custom),
       ],
     );
   }
 
-  Widget intervalButton(context, RepeatInterval interval) {
+  Widget intervalButton(context, RecurringInterval interval) {
     return SizedBox(
       height: 75,
       width: 150,
       child: ElevatedButton(
         onPressed: () {
 
-          if (interval == RepeatInterval.custom)
+          if (interval == RecurringInterval.custom)
           {
             showSnackBar(context, "Coming soon!");
             return;
           }
 
-          thisReminder.repeatInterval = interval;
+          thisReminder.recurringInterval = interval;
 
           save(thisReminder);
           moveFocus(fieldType);
         }, 
         child: Text(
-          RepeatIntervalExtension.getDisplayName(interval),
+          RecurringIntervalExtension.getDisplayName(interval),
         ),
       ),
     );
