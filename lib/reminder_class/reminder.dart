@@ -44,25 +44,33 @@ class Reminder {
     this._reminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
   }
 
-  factory Reminder.fromMap(Map<String, dynamic> map) {
+  factory Reminder.fromMap(Map<String, String?> map) {
+    String _getValue(String key) {
+      final value = map[key];
+      if (value == null) {
+        throw FormatException('Missing required key: $key');
+      }
+      return value;
+    }
+
     return Reminder(
-      title: map['title'],
-      dateAndTime: DateTime.fromMillisecondsSinceEpoch(map['dateAndTime']),
-      id: map['id'],
-      reminderStatus: RemindersStatusExtension.fromInt(map['done'] ?? 0),
-      notifRepeatInterval: Duration(seconds: map['notifRepeatInterval']),
-      recurringInterval: RecurringIntervalExtension.fromInt(map['_recurringInterval']),
+      title: _getValue('title'),
+      dateAndTime: DateTime.fromMillisecondsSinceEpoch(int.parse(_getValue('dateAndTime'))),
+      id: int.parse(_getValue('id')),
+      reminderStatus: RemindersStatusExtension.fromInt(int.parse(_getValue('done'))),
+      notifRepeatInterval: Duration(seconds: int.parse(_getValue('notifRepeatInterval'))),
+      recurringInterval: RecurringIntervalExtension.fromInt(int.parse(_getValue('_recurringInterval'))),
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, String> toMap() {
     return {
       'title': title,
-      'dateAndTime': dateAndTime.millisecondsSinceEpoch,
-      'id': id,
-      'done': _reminderStatus,
-      'notifRepeatInterval': notifRepeatInterval.inSeconds,
-      '_recurringInterval': _recurringInterval,
+      'dateAndTime': dateAndTime.millisecondsSinceEpoch.toString(),
+      'id': id.toString(),
+      'done': _reminderStatus.toString(),
+      'notifRepeatInterval': notifRepeatInterval.inSeconds.toString(),
+      '_recurringInterval': _recurringInterval.toString(),
     };
   }
 
@@ -140,7 +148,9 @@ class Reminder {
   }
 
   String getIntervalString() {
-    return "${notifRepeatInterval.inMinutes} minutes";
+    final minutes = notifRepeatInterval.inMinutes;
+    if (minutes == 1) return "minute";
+    else return "${minutes} minutes";
   }
 
   /// If the time to be updated is in the past, increase it by a day.

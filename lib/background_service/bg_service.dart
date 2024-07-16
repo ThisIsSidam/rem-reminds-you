@@ -237,7 +237,7 @@ void startListners(
 
   // Listening for reminders
   receivePort.listen((dynamic message) {
-    if (message is Map<int, Map<String, dynamic>>) { // Received Reminders from Hive DB
+    if (message is Map<int, Map<String, String?>>) { // Received Reminders from Hive DB
 
       handleReceivedRemindersData(message);
       if (service is AndroidServiceInstance) updateNotification(service);
@@ -262,8 +262,8 @@ void startListners(
 }
 
 @pragma('vm:entry-point')
-void handleReceivedRemindersData(Map<int, Map<String, dynamic>> message) {
-  List<Map<String, dynamic>> messageValues = message.values.toList();
+void handleReceivedRemindersData(Map<int, Map<String, String?>> message) {
+  List<Map<String, String?>> messageValues = message.values.toList();
     List<Reminder> listOfReminders = List<Reminder>.generate(
       messageValues.length, (index) => Reminder.fromMap(messageValues[index])
     );

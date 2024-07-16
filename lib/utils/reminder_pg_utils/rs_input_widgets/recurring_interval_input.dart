@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/other_utils/snack_bar.dart';
 
-class RS_NotifRepeatIntervalInput extends StatelessWidget {
+class RS_RecurringIntervalInput extends StatelessWidget {
   final Reminder thisReminder;
   final Function(Reminder) save;
   final Function(FieldType) moveFocus;
-  final fieldType = FieldType.Rec_Interval;
+  final fieldType = FieldType.Repeat;
 
-  const RS_NotifRepeatIntervalInput({
+  const RS_RecurringIntervalInput({
     super.key,
     required this.thisReminder,
     required this.save,
@@ -20,35 +21,39 @@ class RS_NotifRepeatIntervalInput extends StatelessWidget {
     return GridView.count(
       mainAxisSpacing: 1,
       crossAxisSpacing: 1,
-      crossAxisCount: 3,
+      crossAxisCount: 4,
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
-        intervalEditButton(Duration(minutes: 1), context),
-        intervalEditButton(Duration(minutes: 5), context),
-        intervalEditButton(Duration(minutes: 10), context),
-        intervalEditButton(Duration(minutes: 15), context),
-        intervalEditButton(Duration(minutes: 30), context),
-        intervalEditButton(Duration(hours: 1), context),
+        intervalButton(context, RecurringInterval.none),
+        intervalButton(context, RecurringInterval.daily),
+        intervalButton(context, RecurringInterval.weekly),
+        intervalButton(context, RecurringInterval.custom),
       ],
     );
   }
 
-  Widget intervalEditButton(Duration duration, BuildContext context) {
+  Widget intervalButton(context, RecurringInterval interval) {
     return SizedBox(
-      height: 60,
+      height: 75,
       width: 150,
       child: ElevatedButton(
         onPressed: () {
-          thisReminder.notifRepeatInterval = duration;
+
+          if (interval == RecurringInterval.custom)
+          {
+            showSnackBar(context, "Coming soon!");
+            return;
+          }
+
+          thisReminder.recurringInterval = interval;
 
           save(thisReminder);
           moveFocus(fieldType);
         }, 
         child: Text(
-          "${duration.inMinutes} minutes",
-          style: Theme.of(context).textTheme.bodyLarge,
-        )
+          RecurringIntervalExtension.getDisplayName(interval),
+        ),
       ),
     );
   }

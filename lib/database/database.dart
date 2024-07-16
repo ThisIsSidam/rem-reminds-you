@@ -46,7 +46,7 @@ class RemindersDatabaseController {
     return reminders;
   }
 
-  static Map<int, Map<String, dynamic>> getRemindersAsMaps() {
+  static Map<int, Map<String, String?>> getRemindersAsMaps() {
     final reminders = getReminders();
     return reminders.map((key, value) => MapEntry(key, value.toMap()));  
   }
