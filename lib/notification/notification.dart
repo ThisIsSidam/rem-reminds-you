@@ -77,7 +77,7 @@ content: NotificationContent(
         groupKey: reminder.id.toString(),
         title: "Reminder: ${reminder.title}",
         payload: reminder.toMap(),
-        autoDismissible: false
+        autoDismissible: false,
       ),
       actionButtons: [
         NotificationActionButton(
@@ -96,7 +96,7 @@ content: NotificationContent(
         second: dateTime.second,
         millisecond: dateTime.millisecond,
         repeats: true
-      )
+      ),
     );
   }
 
@@ -109,6 +109,15 @@ content: NotificationContent(
 
     await AwesomeNotifications().cancelSchedulesByGroupKey(groupKey);
     debugPrint("$groupKey cancelled scheduled notification.");
+  }
+
+  static Future<void> removeNotifications(String groupKey) async {
+    if (groupKey == notificationNullGroupKey)
+    {
+      throw "[removeNotifications] Null groupkey given";
+    }
+
+    await AwesomeNotifications().cancelNotificationsByGroupKey(groupKey);
   }
 
   static Future<void> startListeningNotificationEvents() async {
@@ -134,6 +143,7 @@ content: NotificationContent(
             thisReminder: Reminder.fromMap(payload),   
           )
         ));
+        removeNotifications(receivedAction.groupKey ?? notificationNullGroupKey);
       }
     }
 

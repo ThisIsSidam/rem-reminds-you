@@ -28,7 +28,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    managerRefresh();
+    
+    refreshPage();
+    _timer = Timer.periodic(Duration(seconds: 1), (_){
+      refreshPage();
+    });
+
     WidgetsBinding.instance.addObserver(this);
 
     NotificationController.startListeningNotificationEvents();
@@ -85,21 +90,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     });
   }
 
-  /// Calls refresh for the first time and starts a timer in the next minute point which
-  /// refreshes and sets up another timer for refreshing each minute, and cancels itself. 
-  /// First timer is only to set the second timer at exactly 00 seconds.
-  void managerRefresh() {
-    refreshPage(); // Gets called once at start then after each AppLifeCycleState.resumed
-    final seconds = 60 - DateTime.now().second;
-    Timer.periodic(Duration(seconds: seconds), (timer_first){
-      refreshPage();
-      _timer = Timer.periodic(Duration(minutes: 1), (timer){
-        refreshPage();
-      });
-      timer_first.cancel();
-    });
-
-  }
 
   // Returns DateTime with 0 seconds while 5 min in the future.
   DateTime getDateTimeForNewReminder() {
