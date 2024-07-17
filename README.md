@@ -2,8 +2,8 @@
 
 This is a simple reminder app built using Flutter. But it is not so simple as it reminds user repetetively until the reminder gets marked as "Done" or "Silence".
 
-
 ## Images
+
 <img src="screenshots/flutter_01.png" width="200" /> <img src="screenshots/flutter_02.png" width="200" /> <img src="screenshots/flutter_03.png" width="200" /> <img src="screenshots/flutter_04.png" width="200" />  
 
 ## Features
@@ -15,12 +15,14 @@ This is a simple reminder app built using Flutter. But it is not so simple as it
 - Repeat reminders. This is different from the repetition of notifications, as the reminder is getting repeated, not the notification.
 - Title Parsing. Entering "Take a nap in 15 minutes" would automatically parse title "Take a nap" while reminder time would be set as 15 minutes from the time of setting the reminder.
 - Archive List
+- Quick Access to reminders through notification.
 
 ## Features to be implemented
 
-- Quick edit to reminders through notification.
 - Improvement in the Title Parsing.
 - Routine Reminders. Such as, "Drink Water" every 30 minutes. These wouldn't have repetitive notifications.
+- Settings section.
+- Update Quick Access to Quick Edit. Instead of tapping and moving to the reminder, edit it right in the notification section.
 
 ## Getting Started
 
