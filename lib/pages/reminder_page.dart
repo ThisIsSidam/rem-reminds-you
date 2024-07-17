@@ -15,11 +15,11 @@ enum FieldType {Title, ParsedTime, Time, Rec_Interval, Repeat, None}
 
 class ReminderPage extends StatefulWidget {
   final Reminder thisReminder;
-  final VoidCallback refreshHomePage;
+  final VoidCallback? refreshHomePage;
   const ReminderPage({
     super.key,
     required this.thisReminder,
-    required this.refreshHomePage,
+    this.refreshHomePage,
   });
 
   @override
@@ -97,8 +97,7 @@ class _ReminderSectionState extends State<ReminderPage> {
       return;
     }
     RemindersDatabaseController.saveReminder(widget.thisReminder);
-    widget.refreshHomePage();
-    Navigator.pop(context);
+    refreshOrExit();
   }
 
   void deleteReminder() {
@@ -108,8 +107,7 @@ class _ReminderSectionState extends State<ReminderPage> {
         widget.thisReminder.id!,
         allRecurringVersions: deleteAllRecurring
       );
-      widget.refreshHomePage();
-      Navigator.pop(context);
+      refreshOrExit();
     }
 
     if (widget.thisReminder.recurringInterval != RecurringInterval.none) {
@@ -227,6 +225,17 @@ class _ReminderSectionState extends State<ReminderPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void refreshOrExit() {
+    if (widget.refreshHomePage == null)
+    {
+      Navigator.pop(context);
+      return;
+    }
+
+    widget.refreshHomePage!();
+    Navigator.pop(context);
   }
 
   @override

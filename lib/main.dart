@@ -8,6 +8,8 @@ import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/duration.g.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();

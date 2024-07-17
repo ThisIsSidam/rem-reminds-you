@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:Rem/main.dart';
+import 'package:Rem/pages/reminder_page.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -45,9 +47,7 @@ content: NotificationContent(
         channelKey: '111',
         groupKey: reminder.id.toString(),
         title: "Reminder: ${reminder.title}",
-        payload: {
-          "App name": "Rem"
-        },
+        payload: reminder.toMap(),
         autoDismissible: false
       ),
       actionButtons: [
@@ -76,9 +76,7 @@ content: NotificationContent(
         channelKey: '111',
         groupKey: reminder.id.toString(),
         title: "Reminder: ${reminder.title}",
-        payload: {
-          "App name": "Rem"
-        },
+        payload: reminder.toMap(),
         autoDismissible: false
       ),
       actionButtons: [
@@ -121,6 +119,23 @@ content: NotificationContent(
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
+
+    if (receivedAction.actionType == ActionType.Default)
+    {
+      final payload = receivedAction.payload;
+      if (payload == null)
+      {
+        throw "[onActionReceivedMethod] Payload is null";
+      }
+      else
+      {
+        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(
+          builder: (context) => ReminderPage(
+            thisReminder: Reminder.fromMap(payload),   
+          )
+        ));
+      }
+    }
 
     final SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
 
@@ -170,7 +185,7 @@ content: NotificationContent(
     }
     else 
     {
-      debugPrint("[NotificationController] Unknown action with notification.");
+      debugPrint("[NotificationController] Action on notificatino: ${receivedAction.actionType}");
     }
   }
 

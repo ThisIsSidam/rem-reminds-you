@@ -1,3 +1,4 @@
+import 'package:Rem/main.dart';
 import 'package:Rem/notification/notif_permi_rationale.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/notification/notification.dart';
@@ -13,7 +14,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   bool _checkingPermissions = true; // Shows a loading screen until false
 
   @override
