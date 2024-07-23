@@ -50,14 +50,14 @@ class Reminder {
     if (notifRepeatInterval == null)
     {
       print("[ReminderConstructor] notifRepeat is null | Assigning.");
-      this.notifRepeatInterval = UserDB.getSetting(SettingOption.RepeatInterval);
+      this.notifRepeatInterval = UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
     }
     else this.notifRepeatInterval = notifRepeatInterval;
 
     // Lord 3 : _recurringInterval
     if (recurringInterval == null)
     {
-      final recurringIntervalString = UserDB.getSetting(SettingOption.RecurringInterval);
+      final recurringIntervalString = UserDB.getSetting(SettingOption.RecurringIntervalFieldValue);
       recurringInterval = RecurringIntervalExtension.fromString(recurringIntervalString);
     }
     this._recurringInterval = RecurringIntervalExtension.getIndex(recurringInterval);

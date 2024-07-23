@@ -1,3 +1,5 @@
+import 'package:Rem/database/UserDB.dart';
+import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
@@ -8,11 +10,20 @@ class RS_NotifRepeatIntervalInput extends StatelessWidget {
   final Function(FieldType) moveFocus;
   final fieldType = FieldType.Rec_Interval;
 
-  const RS_NotifRepeatIntervalInput({
+  RS_NotifRepeatIntervalInput({
     super.key,
     required this.thisReminder,
     required this.save,
     required this.moveFocus
+  });
+
+  final List<Duration> repeatIntervalDurations = List.generate(6, (index) {
+    final dur = UserDB.getSetting(SettingsOptionMethods.fromInt(index + 15));;
+    if (!(dur is Duration)) 
+    {
+      print("[repeatIntervals] Duration not received | $dur");
+    }
+    return dur;
   });
 
   @override
@@ -24,12 +35,8 @@ class RS_NotifRepeatIntervalInput extends StatelessWidget {
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
-        intervalEditButton(Duration(minutes: 1), context),
-        intervalEditButton(Duration(minutes: 5), context),
-        intervalEditButton(Duration(minutes: 10), context),
-        intervalEditButton(Duration(minutes: 15), context),
-        intervalEditButton(Duration(minutes: 30), context),
-        intervalEditButton(Duration(hours: 1), context),
+        for (var dur in repeatIntervalDurations)
+          intervalEditButton(dur, context),
       ],
     );
   }
