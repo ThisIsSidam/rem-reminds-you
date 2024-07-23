@@ -20,7 +20,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       title: fields[0] as String,
       dateAndTime: fields[1] as DateTime,
       id: fields[2] as int?,
-      notifRepeatInterval: fields[4] as Duration,
+      notifRepeatInterval: fields[4] as Duration?,
     )
       .._reminderStatus = fields[3] as int
       .._recurringInterval = fields[5] as int;

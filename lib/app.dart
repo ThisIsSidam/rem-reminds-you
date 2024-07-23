@@ -1,3 +1,4 @@
+import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/notification/notif_permi_rationale.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:Rem/notification/notification.dart';
 import 'package:Rem/pages/home_page.dart';
 import 'package:Rem/theme/app_theme.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -20,6 +22,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+
     _checkPermissions();
   }
 
@@ -59,13 +63,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      home: _checkingPermissions
+      home: FutureBuilder(
+        future: Hive.openBox(indiValuesBoxName),
+        builder: (context, stacktrace) {
+          return _checkingPermissions
           ? const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
             )
-          : const HomePage(),
+          : const HomePage();
+        },
+      ),
       theme: myTheme,
     );
   }

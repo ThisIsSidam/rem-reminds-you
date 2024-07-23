@@ -3,7 +3,7 @@ import 'package:Rem/reminder_class/reminder.dart';
 const appName = "Rem";
 
 final Reminder nullReminder = Reminder(dateAndTime: DateTime.now());
-final Reminder newReminder = Reminder(dateAndTime: DateTime.now().add(Duration(seconds: 5)));
+final Reminder newReminder = Reminder(dateAndTime: DateTime.now());
 
 const remindersBoxName = "reminders";
 const remindersBoxKey = "REMINDERS";

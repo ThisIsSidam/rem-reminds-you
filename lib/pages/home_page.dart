@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:Rem/database/UserDB.dart';
+import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/pages/archive_page.dart';
 import 'package:Rem/utils/home_pg_utils/list_tile.dart';
 import 'package:flutter/material.dart';
@@ -91,21 +93,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
 
-  // Returns DateTime with 0 seconds while 5 min in the future.
   DateTime getDateTimeForNewReminder() {
-    final now = DateTime.now();
-    final result = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      now.hour,
-      now.minute + 5,
-      0,
-      0
-    );
-
-    debugPrint("[HomePage] Given Time: $result");
-    return result;
+    final addDuration = UserDB.getSetting(SettingOption.DueDateAddDuration);
+    if (addDuration is Duration)
+    {
+      return DateTime.now().add(addDuration);
+    }
+    throw "[getDateTimeForNewReminder] Duration not received | $addDuration";
   }
 
   void refreshPage() {

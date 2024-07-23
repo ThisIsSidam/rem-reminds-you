@@ -166,8 +166,7 @@ Future<bool> stopBackgroundService(
 @pragma('vm:entry-point')
 void updateNotification(AndroidServiceInstance service) async{
   activeStatusReminders.clear(); // Clear for filling updated ones.
-  Reminder nextReminder = newReminder; 
-  bool nextReminderFlag = false; 
+  Reminder? nextReminder = null;  
   
   // Stop service if no reminders
   if(reminders.isNotEmpty)
@@ -192,7 +191,6 @@ void updateNotification(AndroidServiceInstance service) async{
       else // Store only first pending reminder in nextReminder.
       {
         // debugPrint("[BGS] Reminder is not in the past");
-        nextReminderFlag = true;
         nextReminder = reminder;
         break; 
       }
@@ -200,7 +198,7 @@ void updateNotification(AndroidServiceInstance service) async{
   }
 
 
-  if (activeStatusReminders.isEmpty && !nextReminderFlag) 
+  if (activeStatusReminders.isEmpty && nextReminder == null) 
   {
     service.setForegroundNotificationInfo(
       title: "On Standby",
@@ -211,7 +209,7 @@ void updateNotification(AndroidServiceInstance service) async{
     return;
   }
 
-  if (!nextReminderFlag)
+  if (nextReminder == null)
   {
     // debugPrint("[BGS] No next reminders");
     service.setForegroundNotificationInfo(

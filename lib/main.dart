@@ -10,18 +10,22 @@ import 'package:Rem/reminder_class/reminder.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void main() async {
-
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Hive Database
+Future<void> initHive() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DurationAdapter());
   Hive.registerAdapter(ReminderAdapter());
+
+  // Order of openBox statements is crucial. Do not change.
+  await Hive.openBox(indiValuesBoxName);
   await Hive.openBox(remindersBoxName);
   await Hive.openBox(archivesBoxName);
-  await Hive.openBox(indiValuesBoxName);
-  
+}
+
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await initHive();
+
   RemindersDatabaseController.clearPendingRemovals();
 
   // Awesome Notification

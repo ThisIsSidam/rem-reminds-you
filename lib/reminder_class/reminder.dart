@@ -1,3 +1,5 @@
+import 'package:Rem/database/UserDB.dart';
+import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:Rem/consts/consts.dart';
@@ -24,24 +26,41 @@ class Reminder {
   int? id;
 
   @HiveField(3)
-  int _reminderStatus = 0; // Is an enum but saved as int coz saving enums in hive is a problem.
+  late int _reminderStatus; // Is an enum but saved as int coz saving enums in hive is a problem.
 
   @HiveField(4)
-  Duration notifRepeatInterval;
+  late Duration notifRepeatInterval;
 
   @HiveField(5) 
-  int _recurringInterval = 0; // Is an enum but saved as int coz saving enums in hive is a problem.
+  late int _recurringInterval; // Is an enum but saved as int coz saving enums in hive is a problem.
 
   Reminder({
     this.title = reminderNullTitle,
     required this.dateAndTime,
     this.id = newReminderID,
     ReminderStatus reminderStatus = ReminderStatus.active, 
-    this.notifRepeatInterval = const Duration(minutes: 10),
-    RecurringInterval recurringInterval = RecurringInterval.none,
+    Duration? notifRepeatInterval,
+    RecurringInterval? recurringInterval,
   }){
-    this._recurringInterval = RecurringIntervalExtension.getIndex(recurringInterval);
+    // The three late lords
+    // Lord 1 : _reminderStatus
     this._reminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
+
+    // Lord 2 : notifRepeatInterval
+    if (notifRepeatInterval == null)
+    {
+      print("[ReminderConstructor] notifRepeat is null | Assigning.");
+      this.notifRepeatInterval = UserDB.getSetting(SettingOption.RepeatInterval);
+    }
+    else this.notifRepeatInterval = notifRepeatInterval;
+
+    // Lord 3 : _recurringInterval
+    if (recurringInterval == null)
+    {
+      final recurringIntervalString = UserDB.getSetting(SettingOption.RecurringInterval);
+      recurringInterval = RecurringIntervalExtension.fromString(recurringIntervalString);
+    }
+    this._recurringInterval = RecurringIntervalExtension.getIndex(recurringInterval);
   }
 
   factory Reminder.fromMap(Map<String, String?> map) {
@@ -183,7 +202,8 @@ class Reminder {
       title: reminder.title,
       dateAndTime: reminder.dateAndTime,
       reminderStatus: RemindersStatusExtension.fromInt(reminder._reminderStatus),
-      notifRepeatInterval: reminder.notifRepeatInterval
+      notifRepeatInterval: reminder.notifRepeatInterval,
+      recurringInterval: RecurringIntervalExtension.fromInt(reminder._recurringInterval),
     );
   }
 
