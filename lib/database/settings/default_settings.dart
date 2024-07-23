@@ -7,10 +7,10 @@ final Map<String, dynamic> defaultSettings = {
   SettingOption.RepeatInterval.toString(): Duration(minutes: 5), 
   SettingOption.RecurringInterval.toString(): RecurringIntervalExtension.getDisplayName(RecurringInterval.none), 
 
-  SettingOption.QuickTimeSetOption1.toString(): DateTime(0, 0, 0, 9, 30, 0, 0, 0),
-  SettingOption.QuickTimeSetOption2.toString(): DateTime(0, 0, 0, 12, 00, 0, 0, 0),
-  SettingOption.QuickTimeSetOption3.toString(): DateTime(0, 0, 0, 18, 30, 0, 0, 0),
-  SettingOption.QuickTimeSetOption4.toString(): DateTime(0, 0, 0, 22, 00, 0, 0, 0),
+  SettingOption.QuickTimeSetOption1.toString(): DateTime(0, 0, 0, 11, 30, 0, 0, 0),
+  SettingOption.QuickTimeSetOption2.toString(): DateTime(0, 0, 0, 13, 00, 0, 0, 0),
+  SettingOption.QuickTimeSetOption3.toString(): DateTime(0, 0, 0, 19, 30, 0, 0, 0),
+  SettingOption.QuickTimeSetOption4.toString(): DateTime(0, 0, 0, 9, 00, 0, 0, 0),
 
   SettingOption.QuickTimeEditOption1.toString(): Duration(minutes: 30),
   SettingOption.QuickTimeEditOption2.toString(): Duration(hours: 4),
