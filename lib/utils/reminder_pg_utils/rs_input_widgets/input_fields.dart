@@ -1,3 +1,4 @@
+import 'package:Rem/utils/misc_methods/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/pages/reminder_page.dart';
@@ -66,11 +67,11 @@ class InputFields {
       fieldWidget: ListTile(
         contentPadding: EdgeInsets.zero,
         title: Text(
-          titleParsedReminder.getDateTimeAsStr(),
+          getFormattedDateTime(titleParsedReminder.dateAndTime),
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         subtitle: Text(
-          titleParsedReminder.getDiffString(),
+          getFormattedDiffString(titleParsedReminder.dateAndTime),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: MaterialButton(
@@ -98,11 +99,11 @@ class InputFields {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              thisReminder.getDateTimeAsStr(),
+              getFormattedDateTime(thisReminder.dateAndTime),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             Text(
-              thisReminder.getDiffString(),
+              getFormattedDiffString(thisReminder.dateAndTime),
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],

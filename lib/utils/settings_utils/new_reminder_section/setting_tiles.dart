@@ -1,6 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/utils/other_utils/datetime_methods.dart';
+import 'package:Rem/utils/misc_methods/datetime_methods.dart';
 import 'package:Rem/utils/settings_utils/new_reminder_section/default_due_datetime.dart';
 import 'package:flutter/material.dart';
 

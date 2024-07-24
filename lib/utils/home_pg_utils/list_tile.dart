@@ -1,5 +1,6 @@
 import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/misc_methods/datetime_methods.dart';
 import 'package:flutter/material.dart';
 
 class HomePageReminderEntryListTile extends StatelessWidget {
@@ -24,7 +25,7 @@ class HomePageReminderEntryListTile extends StatelessWidget {
           style: Theme.of(context).textTheme.titleMedium
         ),
         subtitle: Text(
-          reminder.getDateTimeAsStr(),
+          getFormattedDateTime(reminder.dateAndTime),
           style: Theme.of(context).textTheme.bodyMedium
         ),
         trailing: Column(
@@ -33,7 +34,7 @@ class HomePageReminderEntryListTile extends StatelessWidget {
           children: [
             SizedBox(height: 5,),
             Text(
-              reminder.getDiffString(),
+              getFormattedDiffString(reminder.dateAndTime),
               style: Theme.of(context).textTheme.bodySmall
             ),
             if (reminder.recurringInterval != RecurringInterval.none)

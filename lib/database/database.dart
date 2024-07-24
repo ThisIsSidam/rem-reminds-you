@@ -1,7 +1,7 @@
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:Rem/database/archives_database.dart';
-import 'package:Rem/utils/other_utils/generate_id.dart';
+import 'package:Rem/utils/misc_methods/generate_id.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Rem/consts/consts.dart';

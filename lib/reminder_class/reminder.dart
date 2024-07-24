@@ -1,7 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:Rem/consts/consts.dart';
 
 part 'reminder.g.dart';
@@ -109,61 +108,15 @@ class Reminder {
     _recurringInterval = RecurringIntervalExtension.getIndex(interval);
   }
 
-  String getDateTimeAsStr() {
-    final DateFormat formatter = DateFormat('EEE, d MMM, hh:mm aaa');
-    final String formatted = formatter.format(dateAndTime);
-
-    return formatted;
-  }
-
   Duration getDiffDuration() {
     return dateAndTime.difference(DateTime.now());
   }
 
-  String getDiffString() {
-    Duration difference = dateAndTime.difference(DateTime.now());
-
-    if (difference.isNegative) 
-    {
-      difference = difference.abs();
-      return "${_formatDuration(difference)} ago";
-    } 
-    else 
-    {
-      return "in ${_formatDuration(difference)}";
-    }
-  }
 
   String getRecurringIntervalAsString() {
     return RecurringIntervalExtension.getDisplayName(
       RecurringIntervalExtension.fromInt(_recurringInterval)
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    if (duration.inSeconds < 11) 
-    {
-      return 'seconds';
-    }
-    else if (duration.inSeconds < 60)
-    {
-      return 'a minute';
-    } 
-    else if (duration.inMinutes < 60) 
-    {
-      return '${duration.inMinutes+1} minutes';
-    } 
-    else if (duration.inHours < 24) 
-    {
-      int hours = duration.inHours +1;
-
-      return '$hours hours';
-    } 
-    else 
-    {
-      int days = duration.inDays + 1;
-      return '$days days';
-    }
   }
 
   String getIntervalString() {
@@ -193,17 +146,19 @@ class Reminder {
     this.title = reminder.title;
     this.dateAndTime = reminder.dateAndTime;
     this.id = reminder.id;
+    this.reminderStatus = reminder.reminderStatus;
     this.notifRepeatInterval = reminder.notifRepeatInterval;
+    this.recurringInterval = reminder.recurringInterval;
   }
 
-  static Reminder deepCopyReminder(Reminder reminder) {
+  Reminder deepCopyReminder() {
     return Reminder(
-      id: reminder.id,
-      title: reminder.title,
-      dateAndTime: reminder.dateAndTime,
-      reminderStatus: RemindersStatusExtension.fromInt(reminder._reminderStatus),
-      notifRepeatInterval: reminder.notifRepeatInterval,
-      recurringInterval: RecurringIntervalExtension.fromInt(reminder._recurringInterval),
+      id: this.id,
+      title: this.title,
+      dateAndTime: this.dateAndTime,
+      reminderStatus: RemindersStatusExtension.fromInt(this._reminderStatus),
+      notifRepeatInterval: this.notifRepeatInterval,
+      recurringInterval: RecurringIntervalExtension.fromInt(this._recurringInterval),
     );
   }
 

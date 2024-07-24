@@ -3,11 +3,13 @@ import 'package:Rem/consts/const_colors.dart';
 
 class SaveCloseButtons extends StatelessWidget {
 
-  final Function() saveButton;
+  final Function() onTapSave;
+  final Function()? onTapClose;
 
   const SaveCloseButtons({
     super.key,
-    required this.saveButton
+    required this.onTapSave,
+    this.onTapClose 
   });
 
   @override
@@ -23,9 +25,11 @@ class SaveCloseButtons extends StatelessWidget {
             child: bottomRowButton(
               context,
               "Close",
-              () {
+              onTapClose == null
+              ? () {
                 Navigator.pop(context);
-              }, 
+              }
+              : onTapClose!, 
               ConstColors.lightGrey
             ),
           ),
@@ -35,7 +39,7 @@ class SaveCloseButtons extends StatelessWidget {
             child: bottomRowButton(
               context,
               "Save",
-              saveButton,
+              onTapSave,
               ConstColors.blue
             ),
           ),

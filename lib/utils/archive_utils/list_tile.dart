@@ -2,6 +2,7 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/pages/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/misc_methods/datetime_methods.dart';
 import 'package:flutter/material.dart';
 
 class ArchiveReminderEntryListTile extends StatelessWidget {
@@ -26,7 +27,7 @@ class ArchiveReminderEntryListTile extends StatelessWidget {
           style: Theme.of(context).textTheme.titleMedium
         ),
         subtitle: Text(
-          reminder.getDateTimeAsStr(),
+          getFormattedDateTime(reminder.dateAndTime),
           style: Theme.of(context).textTheme.bodyMedium
         ),
         trailing: IconButton(

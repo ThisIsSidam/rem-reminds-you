@@ -7,25 +7,8 @@ String getFormattedDateTime(DateTime dateTime) {
   return formatted;
 }
 
-/// [input] argument is of dynamic typing but only DateTime and Duration are acceptable.
-/// The method returns a formatted string of Duration, either drawn out from DateTime of the 
-/// received Duration. 
-/// 
-/// Example of returns: "5 minutes ago", "in 2 hours".
-String getFormattedDiffString(dynamic input) {
-  Duration difference;
-  if (input is DateTime) 
-  {
-    difference = input.difference(DateTime.now());
-  }
-  else if (input is Duration) 
-  {
-    difference = input;
-  }
-  else 
-  {
-    throw ArgumentError('Input must be DateTime or Duration');
-  }
+String getFormattedDiffString(DateTime dateTime) {
+  Duration difference = dateTime.difference(DateTime.now());
 
   if (difference.isNegative) 
   {

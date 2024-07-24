@@ -1,7 +1,7 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/utils/other_utils/datetime_methods.dart';
-import 'package:Rem/utils/reminder_pg_utils/buttons/save_close_buttons.dart';
+import 'package:Rem/utils/misc_methods/datetime_methods.dart';
+import 'package:Rem/utils/other_utils/save_close_buttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +46,7 @@ class _DefaultDueDatetimeState extends State<DefaultDueDatetime> {
           Divider(),
           dateTimeWidget(),
           durationPickerWidget(),
-          SaveCloseButtons(saveButton: () {
+          SaveCloseButtons(onTapSave: () {
             UserDB.setSetting(SettingOption.DueDateAddDuration, currentSelectedDuration);
             Navigator.pop(context);
           })

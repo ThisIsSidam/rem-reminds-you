@@ -1,9 +1,9 @@
+import 'package:Rem/utils/other_utils/save_close_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/utils/other_utils/snack_bar.dart';
-import 'package:Rem/utils/reminder_pg_utils/buttons/bottom_buttons.dart';
 import 'package:Rem/utils/other_utils/material_container.dart';
 import 'package:Rem/utils/misc_methods/misc_methods.dart';
 import 'package:Rem/utils/reminder_pg_utils/rs_input_widgets/input_fields.dart';
@@ -39,8 +39,9 @@ class _ReminderSectionState extends State<ReminderPage> {
   
   @override
   void initState() {
-    initialReminder = widget.thisReminder;
-    titleParsedReminder = Reminder.deepCopyReminder(widget.thisReminder);
+
+    initialReminder = widget.thisReminder.deepCopyReminder();
+    titleParsedReminder = widget.thisReminder.deepCopyReminder();
 
     _titleFocusNode.addListener(_onTitleFocusChange);
 
@@ -307,11 +308,12 @@ class _ReminderSectionState extends State<ReminderPage> {
               MaterialContainer(
                 padding: EdgeInsetsDirectional.all(8),
                 elevation: 5,
-                child: BottomButtons.bottomRowButtons(
-                  context,
-                  initialReminder,
-                  saveReminder,
-                  widget.thisReminder,
+                child: SaveCloseButtons(
+                  onTapSave: saveReminder,
+                  onTapClose: () {
+                    widget.thisReminder.set(initialReminder);
+                    refreshOrExit();
+                  },
                 ),
               ),
             ],
