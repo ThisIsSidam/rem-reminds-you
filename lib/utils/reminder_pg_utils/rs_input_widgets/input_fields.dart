@@ -71,7 +71,7 @@ class InputFields {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         subtitle: Text(
-          getFormattedDiffString(titleParsedReminder.dateAndTime),
+          getFormattedDiffString(dateTime: titleParsedReminder.dateAndTime),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: MaterialButton(
@@ -103,7 +103,7 @@ class InputFields {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             Text(
-              getFormattedDiffString(thisReminder.dateAndTime),
+              getFormattedDiffString(dateTime: thisReminder.dateAndTime),
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -114,7 +114,7 @@ class InputFields {
     );
   }
 
-  Widget notifRepeatInterval() {
+  Widget repeatNotifInterval() {
     return RS_Field(
       fieldType: FieldType.Rec_Interval,
       currentFieldType: currentFieldType,
@@ -125,7 +125,7 @@ class InputFields {
           vertical: 2
         ),
         child: Text(
-          "Every ${thisReminder.getIntervalString()}",
+          "Every ${formatDuration(thisReminder.notifRepeatInterval)}",
           style: Theme.of(context).textTheme.bodyMedium,
         ),
       ),
@@ -134,7 +134,7 @@ class InputFields {
     );
   }
 
-  Widget repeatReminderField() {
+  Widget recurringReminderField() {
     return RS_Field(
       fieldType: FieldType.Repeat, 
       currentFieldType: currentFieldType, 

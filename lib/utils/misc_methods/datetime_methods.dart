@@ -7,8 +7,21 @@ String getFormattedDateTime(DateTime dateTime) {
   return formatted;
 }
 
-String getFormattedDiffString(DateTime dateTime) {
-  Duration difference = dateTime.difference(DateTime.now());
+String getFormattedDiffString({DateTime? dateTime, Duration? duration}) {
+
+  Duration difference;
+  if (dateTime != null)
+  {
+    difference = dateTime.difference(DateTime.now());
+  }
+  else if (duration != null)
+  {
+    difference = duration;
+  }
+  else 
+  {
+    throw ArgumentError("[getFormattedDiffString] Both dateTime and duration are null");
+  }
 
   if (difference.isNegative) 
   {
@@ -22,27 +35,24 @@ String getFormattedDiffString(DateTime dateTime) {
 }
 
 String formatDuration(Duration duration) {
-    if (duration.inSeconds < 11) 
-    {
-      return 'seconds';
-    }
-    else if (duration.inSeconds < 60)
+
+    if (duration.inSeconds < 60)
     {
       return 'a minute';
     } 
     else if (duration.inMinutes < 60) 
     {
-      return '${duration.inMinutes+1} minutes';
+      return '${duration.inMinutes} minutes';
     } 
     else if (duration.inHours < 24) 
     {
-      int hours = duration.inHours +1;
+      int hours = duration.inHours;
 
       return '$hours hours';
     } 
     else 
     {
-      int days = duration.inDays + 1;
+      int days = duration.inDays;
       return '$days days';
     }
   }

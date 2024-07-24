@@ -169,7 +169,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         ),
         actions: [
           archiveIcon(),
-
+          settingsIcon()
         ],
       ),
       body: getListedReminderPage(),

@@ -299,8 +299,8 @@ class _ReminderSectionState extends State<ReminderPage> {
                   children: [
                     inputFields.titleField(),
                     inputFields.dateTimeField(),
-                    inputFields.notifRepeatInterval(),
-                    inputFields.repeatReminderField()
+                    inputFields.repeatNotifInterval(),
+                    inputFields.recurringReminderField()
                   ],
                 ),
               ),

@@ -223,7 +223,7 @@ void updateNotification(AndroidServiceInstance service) async{
     // Updating Notification
     service.setForegroundNotificationInfo(
       title: "Upcoming Reminder: ${nextReminder.title}",
-      content: "${getFormattedDiffString(nextReminder.dateAndTime)}"
+      content: "${getFormattedDiffString(dateTime: nextReminder.dateAndTime)}"
     );
   }
 }

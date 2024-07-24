@@ -1,21 +1,21 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/utils/misc_methods/datetime_methods.dart';
+import 'package:Rem/utils/other_utils/duration_picker.dart';
 import 'package:Rem/utils/other_utils/save_close_buttons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class DefaultDueDatetime extends StatefulWidget {
+class DefaultDueDatetimeModal extends StatefulWidget {
 
-  DefaultDueDatetime({
+  DefaultDueDatetimeModal({
     super.key
   });
 
   @override
-  State<DefaultDueDatetime> createState() => _DefaultDueDatetimeState();
+  State<DefaultDueDatetimeModal> createState() => _DefaultDueDatetimeModalState();
 }
 
-class _DefaultDueDatetimeState extends State<DefaultDueDatetime> {
+class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
   DateTime dateTime = DateTime.now();
   Duration currentSelectedDuration = UserDB.getSetting(SettingOption.DueDateAddDuration);
   String dateTimeString = "";
@@ -31,7 +31,7 @@ class _DefaultDueDatetimeState extends State<DefaultDueDatetime> {
     setState(() {
       dateTime = DateTime.now().add(currentSelectedDuration);
       dateTimeString = getFormattedDateTime(dateTime);
-      diffString = getFormattedDiffString(dateTime);
+      diffString = getFormattedDiffString(dateTime: dateTime);
     });
   }
 
@@ -57,18 +57,12 @@ class _DefaultDueDatetimeState extends State<DefaultDueDatetime> {
   }
 
   Widget durationPickerWidget() {
-    return CupertinoTheme(
-      data: CupertinoThemeData(
-        brightness: Brightness.dark
-      ),
-      child: CupertinoTimerPicker(
-          mode: CupertinoTimerPickerMode.hm,
-          initialTimerDuration: currentSelectedDuration,
-          onTimerDurationChanged: (dur) {
-            currentSelectedDuration = dur;
-            refresh();
-          }
-        ),
+    return DurationPicker(
+      initialDuration: currentSelectedDuration,
+      onChange: (dur) {
+        currentSelectedDuration = dur;
+        refresh();
+      }
     );
   }
 

@@ -119,12 +119,6 @@ class Reminder {
     );
   }
 
-  String getIntervalString() {
-    final minutes = notifRepeatInterval.inMinutes;
-    if (minutes == 1) return "minute";
-    else return "${minutes} minutes";
-  }
-
   /// If the time to be updated is in the past, increase it by a day.
   void updatedTime(DateTime updatedTime) {
     if (updatedTime.isBefore(DateTime.now()))

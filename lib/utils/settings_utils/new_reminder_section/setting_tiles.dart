@@ -1,7 +1,8 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/utils/misc_methods/datetime_methods.dart';
-import 'package:Rem/utils/settings_utils/new_reminder_section/default_due_datetime.dart';
+import 'package:Rem/utils/settings_utils/new_reminder_section/default_due_datetime_modal.dart';
+import 'package:Rem/utils/settings_utils/new_reminder_section/default_due_repeat_interval_modal.dart';
 import 'package:flutter/material.dart';
 
 class SettingTiles {
@@ -49,10 +50,30 @@ class SettingTiles {
           elevation: 5,
           context: context,
           builder: (context) {
-            return DefaultDueDatetime();
+            return DefaultDueDatetimeModal();
           }
         );
       },
+    );
+  }
+
+  Widget getDefRepeatIntervalTile() {
+    final Duration dur = UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
+    final String durString = "Every " + formatDuration(dur);
+
+    return _settingTile(
+      label: "Default Repeat Interval", 
+      trailing: durString,
+      onTap: () {
+        showModalBottomSheet(
+          backgroundColor: Colors.white10,
+          elevation: 5,
+          context: context,
+          builder: (context) {
+            return DefaultRepeatIntervalModal();
+          }
+        );
+      }
     );
   }
 

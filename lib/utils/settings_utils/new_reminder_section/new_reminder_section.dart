@@ -21,7 +21,10 @@ class NewReminderSection extends StatelessWidget {
           SizedBox(height: 5),
           Column(
             children: [
+              SizedBox(height: 10),
               settingTiles.getDefDueDateTimeTile(),
+              SizedBox(height: 10),
+              settingTiles.getDefRepeatIntervalTile(),
             ],
           )
         ],
