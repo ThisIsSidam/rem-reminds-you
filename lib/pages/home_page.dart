@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/pages/archive_page.dart';
+import 'package:Rem/pages/settings_page.dart';
 import 'package:Rem/utils/home_pg_utils/list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/consts/const_colors.dart';
@@ -151,7 +152,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           actions: [
-            archiveIcon()
+            archiveIcon(),
+            settingsIcon()
           ],
         ),
         body: getEmptyPage()
@@ -166,7 +168,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
-          archiveIcon()
+          archiveIcon(),
+
         ],
       ),
       body: getListedReminderPage(),
@@ -225,6 +228,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       },
       style: Theme.of(context).iconButtonTheme.style, 
       icon: Icon(Icons.archive)
+    );
+  }
+
+  Widget settingsIcon() {
+    return IconButton(
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+      },
+      style: Theme.of(context).iconButtonTheme.style, 
+      icon: Icon(Icons.settings)
     );
   }
 

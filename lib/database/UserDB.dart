@@ -28,4 +28,12 @@ class UserDB {
     }
     return value;
   }
+
+  static void setSetting(SettingOption option, dynamic value) {
+    if (!SettingsOptionMethods.isValidType(option, value)) {
+      throw ArgumentError("[setSetting] Value doesn't match the type of the option");
+    }
+
+    _box.put(option.toString(), value);
+  }
 }

@@ -41,6 +41,40 @@ class SettingsOptionMethods {
     }
   }
 
+  static bool isValidType(SettingOption option, dynamic value) {
+    switch (option) {
+      case SettingOption.DueDateAddDuration:
+      case SettingOption.RepeatIntervalFieldValue:
+      case SettingOption.RecurringIntervalFieldValue:
+      case SettingOption.QuickTimeEditOption1:
+      case SettingOption.QuickTimeEditOption2:
+      case SettingOption.QuickTimeEditOption3:
+      case SettingOption.QuickTimeEditOption4:
+      case SettingOption.QuickTimeEditOption5:
+      case SettingOption.QuickTimeEditOption6:
+      case SettingOption.QuickTimeEditOption7:
+      case SettingOption.QuickTimeEditOption8:
+        return value is Duration;
+      
+      case SettingOption.QuickTimeSetOption1:
+      case SettingOption.QuickTimeSetOption2:
+      case SettingOption.QuickTimeSetOption3:
+      case SettingOption.QuickTimeSetOption4:
+        return value is DateTime;
+      
+      case SettingOption.RepeatIntervalOption1:
+      case SettingOption.RepeatIntervalOption2:
+      case SettingOption.RepeatIntervalOption3:
+      case SettingOption.RepeatIntervalOption4:
+      case SettingOption.RepeatIntervalOption5:
+      case SettingOption.RepeatIntervalOption6:
+        return value is int;
+      
+      default:
+        throw ArgumentError('Unhandled SettingOption: $option');
+    }
+  }
+
   static SettingOption fromInt(int value) {
     return SettingOption.values[value];
   }
