@@ -11,7 +11,7 @@ import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/database/database.dart';
-import 'package:Rem/utils/entry_list_widget.dart';
+import 'package:Rem/utils/other_utils/entry_list_widget.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/pages/reminder_page.dart';
 

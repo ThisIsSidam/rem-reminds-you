@@ -4,7 +4,7 @@ import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/database/database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/utils/archive_utils/list_tile.dart';
-import 'package:Rem/utils/entry_list_widget.dart';
+import 'package:Rem/utils/other_utils/entry_list_widget.dart';
 import 'package:flutter/material.dart';
 
 class ArchivePage extends StatefulWidget {

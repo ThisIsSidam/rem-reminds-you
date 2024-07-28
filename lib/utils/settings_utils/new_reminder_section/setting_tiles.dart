@@ -3,6 +3,7 @@ import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/utils/misc_methods/datetime_methods.dart';
 import 'package:Rem/utils/settings_utils/new_reminder_section/default_due_datetime_modal.dart';
 import 'package:Rem/utils/settings_utils/new_reminder_section/default_due_repeat_interval_modal.dart';
+import 'package:Rem/utils/settings_utils/new_reminder_section/quick_time_table_modal.dart';
 import 'package:flutter/material.dart';
 
 class SettingTiles {
@@ -71,6 +72,24 @@ class SettingTiles {
           context: context,
           builder: (context) {
             return DefaultRepeatIntervalModal();
+          }
+        );
+      }
+    );
+  }
+
+  Widget getQuickTimeTableTile() {
+
+    return _settingTile(
+      label: "Quick Time Table", 
+      onTap: () {
+        showModalBottomSheet(
+          isScrollControlled: true,
+          backgroundColor: Colors.white10,
+          elevation: 5,
+          context: context,
+          builder: (context) {
+            return QuickTimeTableModal();
           }
         );
       }
