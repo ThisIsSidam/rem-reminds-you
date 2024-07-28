@@ -3,7 +3,7 @@ import 'package:Rem/main.dart';
 import 'package:Rem/notification/notif_permi_rationale.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/notification/notification.dart';
-import 'package:Rem/pages/home_page.dart';
+import 'package:Rem/pages/home_page/home_page.dart';
 import 'package:Rem/theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';

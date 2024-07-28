@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:Rem/reminder_class/extra_methods.dart';
-import 'package:Rem/utils/misc_methods/datetime_methods.dart';
+import 'package:Rem/utils/functions/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
