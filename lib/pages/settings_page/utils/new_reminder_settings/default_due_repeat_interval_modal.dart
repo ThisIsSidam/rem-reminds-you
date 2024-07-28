@@ -40,6 +40,7 @@ class _DefaultRepeatIntervalModalState extends State<DefaultRepeatIntervalModal>
         children: [
           Text("Default Due Datetime", style: Theme.of(context).textTheme.titleLarge),
           Divider(),
+          SizedBox(height: 10),
           dateTimeWidget(),
           durationPickerWidget(),
           SaveCloseButtons(onTapSave: () {

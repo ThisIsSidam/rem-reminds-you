@@ -2,32 +2,25 @@ import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/utils/functions/datetime_methods.dart';
 import 'package:Rem/utils/flex_picker/flex_duration_picker.dart';
-import 'package:Rem/utils/flex_picker/flex_time_picker.dart';
 import 'package:Rem/utils/other_utils/save_close_buttons.dart';
 import 'package:flutter/material.dart';
 
-class QuickTimeTableModal extends StatefulWidget {
+class RepeatDurationTableModal extends StatefulWidget {
 
-  QuickTimeTableModal({
+  RepeatDurationTableModal({
     super.key
   });
 
   @override
-  State<QuickTimeTableModal> createState() => _QuickTimeTableModalState();
+  State<RepeatDurationTableModal> createState() => _RepeatDurationTableModalState();
 }
 
-class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
-  DateTime currentValueFromTimePicker = UserDB.getSetting(SettingOption.QuickTimeSetOption1);
+class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
   Duration currentValueFromDurationPicker = UserDB.getSetting(SettingOption.QuickTimeEditOption1);
   SettingOption selectedSettingOption = SettingOption.QuickTimeSetOption1;
 
-  Map<SettingOption, DateTime> setDateTimes = {
-    for (int i = 3; i <= 6; i++) // Starting and Ending indexes of SetOptions in enum
-      SettingsOptionMethods.fromInt(i): UserDB.getSetting(SettingsOptionMethods.fromInt(i))
-  };
-
-  final Map<SettingOption, Duration>  editDurations = {
-    for (int i = 7; i <= 14; i++) // Starting and Ending indexes of editOptions in enum
+  final Map<SettingOption, Duration>  durations = {
+    for (int i = 15; i <= 20; i++) // Starting and Ending indexes of repeatDurations in enum
       SettingsOptionMethods.fromInt(i): UserDB.getSetting(SettingsOptionMethods.fromInt(i))
   };
 
@@ -48,10 +41,7 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   }
 
   void onSave() {
-    setDateTimes.forEach((option, dt) {
-      UserDB.setSetting(option, dt);
-    });
-    editDurations.forEach((option, dur) {
+    durations.forEach((option, dur) {
       UserDB.setSetting(option, dur);
     });
     Navigator.pop(context);
@@ -68,34 +58,13 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
           Divider(),
           SizedBox(height: 10),
           buttonsWidget(),
-          getEditWidget(),
+          durationPickerWidget(),
           SaveCloseButtons(
             onTapSave: onSave
           )
         ],
       )
     );
-  }
-
-  Widget getEditWidget() {
-    switch (selectedSettingOption) {
-      case SettingOption.QuickTimeSetOption1:
-      case SettingOption.QuickTimeSetOption2:
-      case SettingOption.QuickTimeSetOption3:
-      case SettingOption.QuickTimeSetOption4:
-        return dateTimePickerWidget();
-      case SettingOption.QuickTimeEditOption1:
-      case SettingOption.QuickTimeEditOption2:
-      case SettingOption.QuickTimeEditOption3:
-      case SettingOption.QuickTimeEditOption4:
-      case SettingOption.QuickTimeEditOption5:
-      case SettingOption.QuickTimeEditOption6:
-      case SettingOption.QuickTimeEditOption7:
-      case SettingOption.QuickTimeEditOption8:
-        return durationPickerWidget();
-      default:
-        return SizedBox(height: 10, child: Placeholder());
-    }
   }
 
   Widget durationPickerWidget() {
@@ -105,23 +74,9 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
         initialDuration: currentValueFromDurationPicker,
         mode: FlexDurationPickerMode.hm,
         onDurationChanged: (dur) {
-          editDurations[selectedSettingOption] = dur;
+          durations[selectedSettingOption] = dur;
           refresh();
         }
-      ),
-    );
-  }
-
-  Widget dateTimePickerWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FlexDateTimePicker(
-        initalTime: currentValueFromTimePicker,
-        mode: FlexDateTimePickerMode.hm,
-        onDateTimeChanged: (dt) {
-          setDateTimes[selectedSettingOption] = dt;
-          refresh();
-        },
       ),
     );
   }
@@ -137,13 +92,11 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
       child: GridView.count(
         mainAxisSpacing: 1,
         crossAxisSpacing: 1,
-        crossAxisCount: 4,
+        crossAxisCount: 3,
         shrinkWrap: true,
         childAspectRatio: 1.5,
         children: [
-          for (var entry in setDateTimes.entries)
-            button(getFormattedTimeForTimeSetButton(entry.value), entry.key),
-          for (var entry in editDurations.entries)
+          for (var entry in durations.entries)
             button(getFormattedDurationForTimeEditButton(entry.value), entry.key),
         ],
       )

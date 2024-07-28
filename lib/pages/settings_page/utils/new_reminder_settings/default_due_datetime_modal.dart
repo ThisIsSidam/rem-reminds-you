@@ -44,6 +44,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
         children: [
           Text("Default Due Datetime", style: Theme.of(context).textTheme.titleLarge),
           Divider(),
+          SizedBox(height: 10),
           dateTimeWidget(),
           durationPickerWidget(),
           SaveCloseButtons(onTapSave: () {
