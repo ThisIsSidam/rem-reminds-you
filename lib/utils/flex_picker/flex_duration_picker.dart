@@ -170,12 +170,17 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
       if (seconds != null) _selectedSeconds = seconds;
     });
 
-    final newDuration = Duration(
+    var newDuration = Duration(
       days: _selectedDays,
       hours: _selectedHours,
       minutes: _selectedMinutes,
       seconds: _selectedSeconds,
     );
+
+    // Add one microsecond to reach the exact end of the selected duration
+    // This exists because the widget returns a little less than what it should. 
+    // Example: It returns 0:11:59.999770 for 12 minutes.
+    newDuration += Duration(milliseconds: 1);
 
     if (newDuration <= widget.maxDuration) {
       widget.onDurationChanged(newDuration);

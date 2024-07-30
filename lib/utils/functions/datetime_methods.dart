@@ -23,7 +23,7 @@ String getFormattedDiffString({DateTime? dateTime, Duration? duration}) {
     throw ArgumentError("[getFormattedDiffString] Both dateTime and duration are null");
   }
 
-  difference += Duration(minutes: 1);
+  // difference += Duration(minutes: 1);
   if (difference.isNegative) 
   {
     difference = difference.abs();
@@ -36,7 +36,7 @@ String getFormattedDiffString({DateTime? dateTime, Duration? duration}) {
 }
 
 String formatDuration(Duration duration) {
-  if (duration.inSeconds < 60)
+  if (duration.inSeconds <= 60)
   {
     return 'a minute';
   } 

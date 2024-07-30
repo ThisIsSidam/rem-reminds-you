@@ -117,7 +117,7 @@ Future<void> bgServicePeriodicWork(ServiceInstance service) async {
           {
             if (repeatNumbers[remId] == null) // Ignore the first time and give value for future 
             {
-              repeatNumbers[remId] = 1;
+              repeatNumbers[remId] = 0;
               continue;
             } 
             repeatNumbers[remId] = (repeatNumbers[remId] ?? 0) + 1;
