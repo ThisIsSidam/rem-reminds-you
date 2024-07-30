@@ -247,36 +247,49 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       => HomePageReminderEntryListTile(reminder: rem, refreshHomePage: refreshHomePage);
 
 
-    return ListView.separated(
+    return ListView.builder(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       itemCount: 4,
-      separatorBuilder: (BuildContext context, int index) => SizedBox(height: 8.0),
+      // separatorBuilder: (BuildContext context, int index) => SizedBox(height: 8.0),
       itemBuilder: (BuildContext context, int index) {
         switch (index) {
           case 0:
             return EntryListWidget(
-              label: overdueSectionTitle,
+              label: Text(
+                "Overdue", 
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red)
+              ),
               remindersList: remindersMap[overdueSectionTitle] ?? [],
               refreshPage: refreshPage,
               listEntryWidget: getListTile,
             );
           case 1:
             return EntryListWidget(
-              label: todaySectionTitle,
+              label: Text(
+                "Today", 
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Theme.of(context).primaryColor)
+              ),
               remindersList: remindersMap[todaySectionTitle] ?? [],
               refreshPage: refreshPage,
               listEntryWidget: getListTile,
             );
           case 2:
             return EntryListWidget(
-              label: tomorrowSectionTitle,
+              label: Text(
+                "Tomorrow", 
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.green)
+              ),
               remindersList: remindersMap[tomorrowSectionTitle] ?? [],
               refreshPage: refreshPage,
               listEntryWidget: getListTile,
             );
           case 3:
             return EntryListWidget(
-              label: laterSectionTitle,
+              label: Text(
+                "Later", 
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.yellow)
+              ),
               remindersList: remindersMap[laterSectionTitle] ?? [],
               refreshPage: refreshPage,
               listEntryWidget: getListTile,

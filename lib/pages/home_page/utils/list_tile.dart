@@ -15,10 +15,8 @@ class HomePageReminderEntryListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 0, right: 0
-      ),
+    return SizedBox(
+      height: 60,
       child: ListTile(
         title: Text(
           reminder.title,
@@ -46,8 +44,10 @@ class HomePageReminderEntryListTile extends StatelessWidget {
         ),
         tileColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5)
+          borderRadius: BorderRadius.circular(15)
         ),
+        minVerticalPadding: 8,
+        minTileHeight: 60,
         onTap: () {
           Navigator.push(context, 
             MaterialPageRoute(

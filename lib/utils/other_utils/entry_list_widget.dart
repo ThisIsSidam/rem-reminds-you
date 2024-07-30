@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/utils/other_utils/material_container.dart';
 
 class EntryListWidget extends StatelessWidget {
-  final String? label;
+  final Widget? label;
   final List<Reminder> remindersList;
   final VoidCallback refreshPage;
   final Widget Function(Reminder, VoidCallback) listEntryWidget;
@@ -22,30 +21,30 @@ class EntryListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (remindersList.isEmpty)
     {
-      return const SizedBox.shrink();
+      return const SizedBox();
     }
-    return MaterialContainer(
-      elevation: 5,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (label != null)
-          MaterialContainer(
-            padding: const EdgeInsets.only(
-              left: 15, top: 15, bottom: 5
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(label ?? "No Label")
-            ),
+          SizedBox(
+            height: 24,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: label,
+            )
           ),
           SizedBox(
-            height: remindersList.length * 75,
-            child: ListView.builder(
+            height: remindersList.length * (60+5), // Tile height + separators
+            child: ListView.separated(
               physics: const NeverScrollableScrollPhysics(),
               itemCount: remindersList.length,
+              separatorBuilder: (context, index) => SizedBox(height: 4.0),
               itemBuilder: (context, index) {
                 final reminder = remindersList[index];
-
+      
                 return listEntryWidget(reminder, refreshPage);   
               }
             ),
