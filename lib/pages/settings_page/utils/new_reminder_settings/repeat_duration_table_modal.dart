@@ -16,8 +16,8 @@ class RepeatDurationTableModal extends StatefulWidget {
 }
 
 class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
-  Duration currentValueFromDurationPicker = UserDB.getSetting(SettingOption.QuickTimeEditOption1);
-  SettingOption selectedSettingOption = SettingOption.QuickTimeSetOption1;
+  Duration currentValueFromDurationPicker = UserDB.getSetting(SettingOption.RepeatIntervalOption1);
+  SettingOption selectedSettingOption = SettingOption.RepeatIntervalOption1;
 
   final Map<SettingOption, Duration>  durations = {
     for (int i = 15; i <= 20; i++) // Starting and Ending indexes of repeatDurations in enum
@@ -37,6 +37,7 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
   void setSelectedOption(SettingOption option) {
     setState(() {
       selectedSettingOption = option;
+      currentValueFromDurationPicker = durations[selectedSettingOption]!;
     });
   }
 
