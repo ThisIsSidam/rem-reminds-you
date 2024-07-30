@@ -74,11 +74,13 @@ class _ArchivePageState extends State<ArchivePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: EntryListWidget(
-          remindersList: archivedReminders,
-          refreshPage: refreshPage,
-          listEntryWidget: (Reminder rem, VoidCallback func)
-            => ArchiveReminderEntryListTile(reminder: rem, refreshPage: func),
+        child: SingleChildScrollView(
+          child: EntryListWidget(
+            remindersList: archivedReminders,
+            refreshPage: refreshPage,
+            listEntryWidget: (Reminder rem, VoidCallback func)
+              => ArchiveReminderEntryListTile(reminder: rem, refreshPage: func),
+          ),
         ),
       ),
     );
