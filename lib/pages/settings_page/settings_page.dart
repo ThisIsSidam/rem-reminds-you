@@ -1,9 +1,16 @@
+import 'package:Rem/consts/const_colors.dart';
+import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/pages/settings_page/utils/new_reminder_settings/new_reminder_section.dart';
 import 'package:flutter/material.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,8 +38,38 @@ class SettingsPage extends StatelessWidget {
     return IconButton(
       icon: Icon(Icons.refresh),
       onPressed: () {
+
+        showDialog(
+          context: context, 
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: ConstColors.darkGrey,
+              title: Text(
+                'Reset Settings to Default?',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {Navigator.pop(context);}, 
+                    child: Text("No")
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        UserDB.resetSetting();
+                      });
+                      Navigator.pop(context);
+                    }, 
+                    child: Text("Yes")
+                  )
+                ],
+              ),
+            );
+          }
+        );
       },
     );
   }
-
 }

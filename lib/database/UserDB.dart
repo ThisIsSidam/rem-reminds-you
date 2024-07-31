@@ -36,4 +36,10 @@ class UserDB {
 
     _box.put(option.toString(), value);
   }
+
+  static void resetSetting() {
+    for (var option in defaultSettings.keys) {
+      _box.put(option, defaultSettings[option]);
+    }
+  }
 }
