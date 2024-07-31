@@ -145,12 +145,25 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (noOfReminders == 0)
     {
       return Scaffold(
+        appBar: getAppBar(),
         body: getEmptyPage()
       );
     }
     return Scaffold(
+      appBar: getAppBar(),
       body: getListedReminderPage(),
       floatingActionButton: getFloatingActionButton()
+    );
+  }
+
+  AppBar getAppBar() {
+    return AppBar(
+      surfaceTintColor: null,
+      backgroundColor: Colors.transparent,
+      title: Text(
+        "Reminders",
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
     );
   }
 

@@ -30,7 +30,6 @@ class EntryListWidget extends StatelessWidget {
         children: [
           if (label != null)
           SizedBox(
-            height: 24,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: label,
