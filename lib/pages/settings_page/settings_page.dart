@@ -1,4 +1,3 @@
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/pages/settings_page/utils/new_reminder_settings/new_reminder_section.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +8,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 5,
-        shadowColor: ConstColors.darkGrey,
+        backgroundColor: Colors.transparent,
         title: Text(
           "Settings",
           style: Theme.of(context).textTheme.titleLarge,
@@ -32,7 +30,8 @@ class SettingsPage extends StatelessWidget {
   Widget resetIcon() {
     return IconButton(
       icon: Icon(Icons.refresh),
-      onPressed: () {},
+      onPressed: () {
+      },
     );
   }
 

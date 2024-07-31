@@ -1,4 +1,3 @@
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/database/database.dart';
@@ -38,51 +37,33 @@ class _ArchivePageState extends State<ArchivePage> {
     if (archivedReminders.isEmpty)
     {
       return Scaffold(
-        appBar: AppBar(
-          surfaceTintColor: null,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Text(
-            "Archive",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-            ),
-            style: Theme.of(context).iconButtonTheme.style,
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
+        appBar: getAppBar(),
         body: getEmptyPage()
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        elevation: 5,
-        shadowColor: ConstColors.darkGrey,
-        title: Text(
-          "Archive",
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.chevron_left,
-          ),
-          style: Theme.of(context).iconButtonTheme.style,
-          onPressed: () => Navigator.pop(context),
+      appBar: getAppBar(),
+      body: SingleChildScrollView(
+        child: EntryListWidget(
+          remindersList: archivedReminders,
+          refreshPage: refreshPage,
+          listEntryWidget: (Reminder rem, VoidCallback func)
+            => ArchiveReminderEntryListTile(reminder: rem, refreshPage: func),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: SingleChildScrollView(
-          child: EntryListWidget(
-            remindersList: archivedReminders,
-            refreshPage: refreshPage,
-            listEntryWidget: (Reminder rem, VoidCallback func)
-              => ArchiveReminderEntryListTile(reminder: rem, refreshPage: func),
-          ),
-        ),
+    );
+  }
+
+  AppBar getAppBar() {
+    return AppBar(
+      surfaceTintColor: null,
+      // toolbarHeight: ,
+      backgroundColor: Colors.transparent,
+      title: Text(
+        "Archive",
+        style: Theme.of(context).textTheme.titleLarge,
       ),
+      
     );
   }
 

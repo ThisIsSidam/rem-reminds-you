@@ -7,7 +7,6 @@ import 'package:Rem/pages/archive_page/archive_page.dart';
 import 'package:Rem/pages/settings_page/settings_page.dart';
 import 'package:Rem/pages/home_page/utils/list_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/database/database.dart';
@@ -104,10 +103,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void refreshPage() {
-    setState(() {
-      remindersMap = RemindersDatabaseController.getReminderLists();
-      noOfReminders = RemindersDatabaseController.getNumberOfReminders();
-    });
+    if (mounted) {
+      setState(() {
+        remindersMap = RemindersDatabaseController.getReminderLists();
+        noOfReminders = RemindersDatabaseController.getNumberOfReminders();
+      });
+    }
   }
 
   void deleteAndRefresh(int id) {
@@ -144,34 +145,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (noOfReminders == 0)
     {
       return Scaffold(
-        appBar: AppBar(
-          surfaceTintColor: null,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Text(
-            "Rem",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          actions: [
-            archiveIcon(),
-            settingsIcon()
-          ],
-        ),
         body: getEmptyPage()
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        elevation: 5,
-        shadowColor: ConstColors.darkGrey,
-        title: Text(
-          "Rem",
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        actions: [
-          archiveIcon(),
-          settingsIcon()
-        ],
-      ),
       body: getListedReminderPage(),
       floatingActionButton: getFloatingActionButton()
     );

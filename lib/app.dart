@@ -1,6 +1,7 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/notification/notif_permi_rationale.dart';
+import 'package:Rem/utils/bottom_nav/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/pages/home_page/home_page.dart';
@@ -72,7 +73,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 child: CircularProgressIndicator(),
               ),
             )
-          : const HomePage();
+          : const NavigationSection();
         },
       ),
       theme: myTheme,
