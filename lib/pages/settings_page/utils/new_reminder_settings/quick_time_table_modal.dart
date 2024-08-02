@@ -1,5 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/utils/flex_picker/flex_picker.dart';
 import 'package:Rem/utils/functions/datetime_methods.dart';
 import 'package:Rem/utils/flex_picker/flex_duration_picker.dart';
 import 'package:Rem/utils/flex_picker/flex_time_picker.dart';
@@ -20,6 +21,7 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   DateTime currentValueFromTimePicker = UserDB.getSetting(SettingOption.QuickTimeSetOption1);
   Duration currentValueFromDurationPicker = UserDB.getSetting(SettingOption.QuickTimeEditOption1);
   SettingOption selectedSettingOption = SettingOption.QuickTimeSetOption1;
+  final isNegativeDurationScrollController = FixedExtentScrollController();
 
   final durationController = FlexDurationPickerController();
 
@@ -35,6 +37,7 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
 
   @override
   void initState() {
+    durationController.updateDuration(currentValueFromDurationPicker.abs());
     refresh();
     super.initState();
   }
@@ -64,7 +67,9 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
         case SettingOption.QuickTimeEditOption8:
           currentValueFromDurationPicker = editDurations[selectedSettingOption]!;
           durationController.updateDuration(currentValueFromDurationPicker.abs());
-          break;
+          if (currentValueFromDurationPicker.isNegative) 
+            isNegativeDurationScrollController.jumpToItem(1);
+          else isNegativeDurationScrollController.jumpToItem(0);
         default:
           break;
       }
@@ -123,10 +128,31 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   }
 
   Widget durationPickerWidget() {
+    Text getText(String str) {
+      return Text(
+        str,
+        style: Theme.of(context).textTheme.titleLarge,
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          FlexPicker(
+            initialItem: 0,
+            loop: false,
+            children: [
+              getText("+"), getText("-")
+            ],
+            onSelectedItemChanged: (index) {
+              final dur = index == 1 ?
+                -editDurations[selectedSettingOption]! : editDurations[selectedSettingOption]!.abs();
+              editDurations[selectedSettingOption] = dur;
+              refresh();
+            },
+          ),
           FlexDurationPicker(
             controller: durationController,
             maxDuration: Duration(days: 7),
