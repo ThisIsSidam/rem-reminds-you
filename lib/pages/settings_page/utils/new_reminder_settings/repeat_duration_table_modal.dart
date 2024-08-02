@@ -72,7 +72,7 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: FlexDurationPicker(
-        initialDuration: currentValueFromDurationPicker,
+        // initialDuration: currentValueFromDurationPicker,
         mode: FlexDurationPickerMode.hm,
         onDurationChanged: (dur) {
           durations[selectedSettingOption] = dur;

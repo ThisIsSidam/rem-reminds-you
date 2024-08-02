@@ -14,6 +14,7 @@ class FlexPicker extends StatefulWidget {
   final double fontSize;
   final TextStyle? labelStyle;
   final PickerOrientation orientation;
+  final FixedExtentScrollController? controller;
 
   const FlexPicker({
     Key? key,
@@ -28,6 +29,7 @@ class FlexPicker extends StatefulWidget {
     this.fontSize = 20,
     this.labelStyle,
     this.orientation = PickerOrientation.vertical,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -35,16 +37,16 @@ class FlexPicker extends StatefulWidget {
 }
 
 class _FlexPickerState extends State<FlexPicker> {
-  late int _selectedItem;
-  late FixedExtentScrollController _verticalScrollController;
+  late FixedExtentScrollController _scrollController;
   late PageController _horizontalPageController;
   late int _currentHorizontalPage;
+  int _selectedItem = 0;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = widget.controller ?? FixedExtentScrollController(initialItem: widget.initialItem);
     _selectedItem = widget.initialItem;
-    _verticalScrollController = FixedExtentScrollController(initialItem: widget.initialItem);
     _currentHorizontalPage = widget.initialItem + 10000 * widget.itemCount;
     _horizontalPageController = PageController(
       initialPage: _currentHorizontalPage,
@@ -54,7 +56,9 @@ class _FlexPickerState extends State<FlexPicker> {
 
   @override
   void dispose() {
-    _verticalScrollController.dispose();
+    if (widget.controller == null) {
+      _scrollController.dispose();
+    }
     _horizontalPageController.dispose();
     super.dispose();
   }
@@ -94,27 +98,37 @@ class _FlexPickerState extends State<FlexPicker> {
   }
 
   Widget _buildVerticalPicker() {
-    return ListWheelScrollView.useDelegate(
-      controller: _verticalScrollController,
-      itemExtent: widget.itemExtent,
-      perspective: 0.005,
-      diameterRatio: 1.2,
-      physics: const FixedExtentScrollPhysics(),
-      onSelectedItemChanged: (index) {
-        setState(() {
-          _selectedItem = index;
-        });
-        widget.onSelectedItemChanged(index);
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification notification) {
+        if (notification is ScrollUpdateNotification) {
+          setState(() {
+            _selectedItem = _scrollController.selectedItem;
+          });
+        }
+        return true;
       },
-      childDelegate: ListWheelChildLoopingListDelegate(
-        children: List<Widget>.generate(
-          widget.itemCount,
-          (index) => Center(
-            child: Text(
-              ((widget.startValue ?? 0) + index % widget.itemCount).toString().padLeft(2, '0'),
-              style: TextStyle(
-                fontSize: widget.fontSize,
-                color: _selectedItem == index ? Colors.blue : null,
+      child: ListWheelScrollView.useDelegate(
+        controller: _scrollController,
+        itemExtent: widget.itemExtent,
+        perspective: 0.005,
+        diameterRatio: 1.2,
+        physics: const FixedExtentScrollPhysics(),
+        onSelectedItemChanged: (index) {
+          setState(() {
+            _selectedItem = index;
+          });
+          widget.onSelectedItemChanged(index);
+        },
+        childDelegate: ListWheelChildLoopingListDelegate(
+          children: List<Widget>.generate(
+            widget.itemCount,
+            (index) => Center(
+              child: Text(
+                ((widget.startValue ?? 0) + index % widget.itemCount).toString().padLeft(2, '0'),
+                style: TextStyle(
+                  fontSize: widget.fontSize,
+                  color: _selectedItem == index ? Colors.blue : null,
+                ),
               ),
             ),
           ),
@@ -132,8 +146,8 @@ class _FlexPickerState extends State<FlexPicker> {
             setState(() {
               _currentHorizontalPage = currentPage;
               _selectedItem = _currentHorizontalPage % widget.itemCount;
+              widget.onSelectedItemChanged(_selectedItem);
             });
-            widget.onSelectedItemChanged(_selectedItem);
           }
         }
         return true;
@@ -148,7 +162,7 @@ class _FlexPickerState extends State<FlexPicker> {
               ((widget.startValue ?? 0) + itemIndex).toString().padLeft(2, '0'),
               style: TextStyle(
                 fontSize: widget.fontSize,
-                color: _currentHorizontalPage % widget.itemCount == itemIndex ? Colors.blue : null,
+                color: _selectedItem == itemIndex ? Colors.blue : null,
               ),
             ),
           );

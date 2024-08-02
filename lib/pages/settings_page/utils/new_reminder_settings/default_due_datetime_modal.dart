@@ -61,7 +61,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: FlexDurationPicker(
-        initialDuration: currentSelectedDuration,
+        // initialDuration: currentSelectedDuration,
         mode: FlexDurationPickerMode.hm,
         onDurationChanged: (dur) {
           currentSelectedDuration = dur;

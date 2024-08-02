@@ -21,6 +21,8 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   Duration currentValueFromDurationPicker = UserDB.getSetting(SettingOption.QuickTimeEditOption1);
   SettingOption selectedSettingOption = SettingOption.QuickTimeSetOption1;
 
+  final durationController = FlexDurationPickerController();
+
   Map<SettingOption, DateTime> setDateTimes = {
     for (int i = 3; i <= 6; i++) // Starting and Ending indexes of SetOptions in enum
       SettingsOptionMethods.fromInt(i): UserDB.getSetting(SettingsOptionMethods.fromInt(i))
@@ -44,6 +46,28 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   void setSelectedOption(SettingOption option) {
     setState(() {
       selectedSettingOption = option;
+
+      switch (selectedSettingOption) {
+        case SettingOption.QuickTimeSetOption1:
+        case SettingOption.QuickTimeSetOption2:
+        case SettingOption.QuickTimeSetOption3:
+        case SettingOption.QuickTimeSetOption4:
+          currentValueFromTimePicker = setDateTimes[selectedSettingOption]!;
+          break;
+        case SettingOption.QuickTimeEditOption1:
+        case SettingOption.QuickTimeEditOption2:
+        case SettingOption.QuickTimeEditOption3:
+        case SettingOption.QuickTimeEditOption4:
+        case SettingOption.QuickTimeEditOption5:
+        case SettingOption.QuickTimeEditOption6:
+        case SettingOption.QuickTimeEditOption7:
+        case SettingOption.QuickTimeEditOption8:
+          currentValueFromDurationPicker = editDurations[selectedSettingOption]!;
+          durationController.updateDuration(currentValueFromDurationPicker.abs());
+          break;
+        default:
+          break;
+      }
     });
   }
 
@@ -101,13 +125,18 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   Widget durationPickerWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FlexDurationPicker(
-        initialDuration: currentValueFromDurationPicker,
-        mode: FlexDurationPickerMode.hm,
-        onDurationChanged: (dur) {
-          editDurations[selectedSettingOption] = dur;
-          refresh();
-        }
+      child: Row(
+        children: [
+          FlexDurationPicker(
+            controller: durationController,
+            maxDuration: Duration(days: 7),
+            mode: FlexDurationPickerMode.dhm,
+            onDurationChanged: (dur) {
+              editDurations[selectedSettingOption] = dur;
+              refresh();
+            }
+          ),
+        ],
       ),
     );
   }
