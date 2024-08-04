@@ -1,6 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/pages/settings_page/utils/new_reminder_settings/duration_picker.dart';
+import 'package:Rem/pages/settings_page/utils/new_reminder_settings/quick_time_table/duration_picker.dart';
 import 'package:Rem/utils/functions/datetime_methods.dart';
 import 'package:Rem/utils/flex_picker/flex_duration_picker.dart';
 import 'package:Rem/utils/flex_picker/flex_time_picker.dart';
