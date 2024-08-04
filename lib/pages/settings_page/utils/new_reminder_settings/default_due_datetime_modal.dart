@@ -21,8 +21,11 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
   String dateTimeString = "";
   String diffString = "";
 
+  final durationController = FlexDurationPickerController();
+
   @override
   void initState() {
+    durationController.updateDuration(currentSelectedDuration);
     refresh();
     super.initState();
   }
@@ -51,7 +54,6 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
             UserDB.setSetting(SettingOption.DueDateAddDuration, currentSelectedDuration);
             Navigator.pop(context);
           })
-          
         ],
       )
     );
@@ -61,7 +63,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: FlexDurationPicker(
-        // initialDuration: currentSelectedDuration,
+        controller: durationController,
         mode: FlexDurationPickerMode.hm,
         onDurationChanged: (dur) {
           currentSelectedDuration = dur;

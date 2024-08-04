@@ -19,8 +19,11 @@ class _DefaultRepeatIntervalModalState extends State<DefaultRepeatIntervalModal>
   Duration currentSelectedDuration = UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
   String durString = "";
 
+  final durationController = FlexDurationPickerController();
+
   @override
   void initState() {
+    durationController.updateDuration(currentSelectedDuration);
     refresh();
     super.initState();
   }
@@ -57,7 +60,7 @@ class _DefaultRepeatIntervalModalState extends State<DefaultRepeatIntervalModal>
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: FlexDurationPicker(
-        // initialDuration: currentSelectedDuration,
+        controller: durationController,
         mode: FlexDurationPickerMode.hm,
         onDurationChanged: (dur) {
           currentSelectedDuration = dur;

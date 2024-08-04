@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:Rem/utils/flex_picker/flex_picker.dart';
+import 'package:flutter/material.dart';
 
 enum FlexDurationPickerMode {
   s, m, h, d, ms, hm, dh, hms, dhm
@@ -7,21 +7,31 @@ enum FlexDurationPickerMode {
 
 class FlexDurationPickerController extends ChangeNotifier {
   Duration _duration;
+  bool _isNegative;
 
   FlexDurationPickerController({Duration initialDuration = Duration.zero})
-      : _duration = initialDuration;
+      : _duration = initialDuration.abs(),
+        _isNegative = initialDuration.isNegative;
 
-  Duration get duration => _duration;
+  Duration get duration => _isNegative ? -_duration : _duration;
 
   set duration(Duration newDuration) {
-    if (_duration != newDuration) {
-      _duration = newDuration;
+    if (_duration != newDuration.abs() || _isNegative != newDuration.isNegative) {
+      _duration = newDuration.abs();
+      _isNegative = newDuration.isNegative;
       notifyListeners();
     }
   }
 
   void updateDuration(Duration newDuration) {
     duration = newDuration;
+  }
+
+  void setSign(bool isNegative) {
+    if (_isNegative != isNegative) {
+      _isNegative = isNegative;
+      notifyListeners();
+    }
   }
 }
 
@@ -36,7 +46,8 @@ class FlexDurationPicker extends StatefulWidget {
   final double fontSize;
   final TextStyle? labelStyle;
   final Widget? separator;
-  final PickerOrientation orientation;
+  final Color color;
+  final bool allowNegative;
 
   const FlexDurationPicker({
     super.key,
@@ -50,9 +61,10 @@ class FlexDurationPicker extends StatefulWidget {
     this.fontSize = 20,
     this.labelStyle,
     this.separator,
-    this.orientation = PickerOrientation.vertical,
+    this.color = Colors.blue,
+    this.allowNegative = false,
   }) : assert(controller != null || onDurationChanged != null,
-             "Either controller or onDurationChanged must be provided");
+        "Either controller or onDurationChanged must be provided");
 
   @override
   State<FlexDurationPicker> createState() => _FlexDurationPickerState();
@@ -71,16 +83,17 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
   }
 
   void _initializeScrollControllers() {
-    _scrollControllers = List.generate(4, (_) => FixedExtentScrollController());
+    _scrollControllers = List.generate(5, (_) => FixedExtentScrollController());
     _updateScrollControllers();
   }
 
   void _updateScrollControllers() {
-    final duration = _controller.duration;
-    _scrollControllers[0].jumpToItem(duration.inDays);
-    _scrollControllers[1].jumpToItem(duration.inHours % 24);
-    _scrollControllers[2].jumpToItem(duration.inMinutes % 60);
-    _scrollControllers[3].jumpToItem(duration.inSeconds % 60);
+    final duration = _controller.duration.abs();
+    _scrollControllers[0].jumpToItem(_controller.duration.isNegative ? 1 : 0);
+    _scrollControllers[1].jumpToItem(duration.inDays);
+    _scrollControllers[2].jumpToItem(duration.inHours % 24);
+    _scrollControllers[3].jumpToItem(duration.inMinutes % 60);
+    _scrollControllers[4].jumpToItem(duration.inSeconds % 60);
   }
 
   @override
@@ -103,7 +116,16 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateScrollControllers();
+    });
+
     List<Widget> pickers = [];
+
+    if (widget.allowNegative) {
+      pickers.add(_buildSignPicker());
+      pickers.add(_addSeparator());
+    }
 
     switch (widget.mode) {
       case FlexDurationPickerMode.s:
@@ -147,21 +169,71 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
         break;
     }
 
-    return widget.orientation == PickerOrientation.vertical
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: pickers,
-          )
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: pickers,
-          );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: pickers,
+    );
   }
 
   Widget _addSeparator() {
-    return widget.orientation == PickerOrientation.vertical
-        ? (widget.separator ?? const SizedBox(width: 20))
-        : (widget.separator ?? const SizedBox(height: 20));
+    return (widget.separator ?? const SizedBox(width: 20));
+  }
+
+  Widget _buildSignPicker() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: widget.itemExtent,
+          width: widget.itemExtent,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5)
+              )),
+              backgroundColor: WidgetStatePropertyAll(
+                !_controller.duration.isNegative ? widget.color : Colors.grey
+              ),
+            ),
+            onPressed: () {
+              _controller.setSign(!_controller.duration.isNegative);
+            },
+            child: const Text(
+              '+',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 8,),
+        SizedBox(
+          height: widget.itemExtent,
+          width: widget.itemExtent,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5)
+              )),
+              backgroundColor: WidgetStatePropertyAll(
+                _controller.duration.isNegative ? widget.color : Colors.grey
+              ),
+            ),
+            onPressed: () {
+              _controller.setSign(!_controller.duration.isNegative);
+            },
+            child: const Text(
+              '-',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildSecondPicker() => FlexPicker(
@@ -174,8 +246,8 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
         itemExtent: widget.itemExtent,
         fontSize: widget.fontSize,
         labelStyle: widget.labelStyle,
-        orientation: widget.orientation,
-        controller: _scrollControllers[3],
+        controller: _scrollControllers[4],
+        color: widget.color,
       );
 
   Widget _buildMinutePicker() => FlexPicker(
@@ -188,8 +260,8 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
         itemExtent: widget.itemExtent,
         fontSize: widget.fontSize,
         labelStyle: widget.labelStyle,
-        orientation: widget.orientation,
-        controller: _scrollControllers[2],
+        controller: _scrollControllers[3],
+        color: widget.color,
       );
 
   Widget _buildHourPicker() => FlexPicker(
@@ -202,8 +274,8 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
         itemExtent: widget.itemExtent,
         fontSize: widget.fontSize,
         labelStyle: widget.labelStyle,
-        orientation: widget.orientation,
-        controller: _scrollControllers[1],
+        controller: _scrollControllers[2],
+        color: widget.color,
       );
 
   Widget _buildDayPicker() => FlexPicker(
@@ -216,12 +288,12 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
         itemExtent: widget.itemExtent,
         fontSize: widget.fontSize,
         labelStyle: widget.labelStyle,
-        orientation: widget.orientation,
-        controller: _scrollControllers[0],
+        controller: _scrollControllers[1],
+        color: widget.color,
       );
 
   void _updateDuration({int? days, int? hours, int? minutes, int? seconds}) {
-    var currentDuration = _controller.duration;
+    var currentDuration = _controller.duration.abs();
     var newDuration = Duration(
       days: days ?? currentDuration.inDays,
       hours: hours ?? currentDuration.inHours % 24,
@@ -229,14 +301,14 @@ class _FlexDurationPickerState extends State<FlexDurationPicker> {
       seconds: seconds ?? currentDuration.inSeconds % 60,
     );
 
-    // Add one microsecond to reach the exact end of the selected duration
-    newDuration += Duration(milliseconds: 1);
+    // Add one millisecond to reach the exact end of the selected duration
+    newDuration += const Duration(milliseconds: 1);
 
     if (newDuration <= widget.maxDuration) {
-      _controller.updateDuration(newDuration);
+      _controller.updateDuration(_controller.duration.isNegative ? -newDuration : newDuration);
     } else {
       // If the new duration exceeds the max duration, reset to max duration
-      _controller.updateDuration(widget.maxDuration);
+      _controller.updateDuration(_controller.duration.isNegative ? -widget.maxDuration : widget.maxDuration);
       _updateScrollControllers();
     }
   }

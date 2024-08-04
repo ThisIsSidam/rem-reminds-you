@@ -19,6 +19,8 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
   Duration currentValueFromDurationPicker = UserDB.getSetting(SettingOption.RepeatIntervalOption1);
   SettingOption selectedSettingOption = SettingOption.RepeatIntervalOption1;
 
+  final durationController = FlexDurationPickerController();
+
   final Map<SettingOption, Duration>  durations = {
     for (int i = 15; i <= 20; i++) // Starting and Ending indexes of repeatDurations in enum
       SettingsOptionMethods.fromInt(i): UserDB.getSetting(SettingsOptionMethods.fromInt(i))
@@ -26,18 +28,21 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
 
   @override
   void initState() {
+    durationController.updateDuration(currentValueFromDurationPicker);
     refresh();
     super.initState();
   }
 
   void refresh() {
-    setState(() {});
+    setState(() {
+    });
   }
 
   void setSelectedOption(SettingOption option) {
     setState(() {
       selectedSettingOption = option;
       currentValueFromDurationPicker = durations[selectedSettingOption]!;
+      durationController.updateDuration(currentValueFromDurationPicker);
     });
   }
 
@@ -72,7 +77,7 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: FlexDurationPicker(
-        // initialDuration: currentValueFromDurationPicker,
+        controller: durationController,
         mode: FlexDurationPickerMode.hm,
         onDurationChanged: (dur) {
           durations[selectedSettingOption] = dur;

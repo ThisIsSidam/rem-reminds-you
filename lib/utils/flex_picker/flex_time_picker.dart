@@ -15,7 +15,6 @@ class FlexDateTimePicker extends StatefulWidget {
   final double fontSize;
   final TextStyle? labelStyle;
   final Widget? separator;
-  final PickerOrientation orientation;
 
   const FlexDateTimePicker({
     super.key,
@@ -28,7 +27,6 @@ class FlexDateTimePicker extends StatefulWidget {
     this.fontSize = 20,
     this.labelStyle,
     this.separator,
-    this.orientation = PickerOrientation.vertical,
   });
 
   @override
@@ -83,21 +81,14 @@ class _FlexDateTimePickerState extends State<FlexDateTimePicker> {
         break;
     }
 
-    return widget.orientation == PickerOrientation.vertical
-      ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: pickers,
-        )
-      : Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: pickers,
-        );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: pickers,
+    );
   }
 
   Widget _addSeparator() {
-    return widget.orientation == PickerOrientation.vertical
-        ? (widget.separator ?? const SizedBox(width: 20))
-        : (widget.separator ?? const SizedBox(height: 20));
+    return (widget.separator ?? const SizedBox(width: 20));
   }
 
   Widget _buildSecondPicker() => FlexPicker(
@@ -110,7 +101,6 @@ class _FlexDateTimePickerState extends State<FlexDateTimePicker> {
     itemExtent: widget.itemExtent,
     fontSize: widget.fontSize,
     labelStyle: widget.labelStyle,
-    orientation: widget.orientation,
   );
 
   Widget _buildMinutePicker() => FlexPicker(
@@ -123,7 +113,6 @@ class _FlexDateTimePickerState extends State<FlexDateTimePicker> {
     itemExtent: widget.itemExtent,
     fontSize: widget.fontSize,
     labelStyle: widget.labelStyle,
-    orientation: widget.orientation,
   );
 
   Widget _buildHourPicker() => FlexPicker(
@@ -136,7 +125,6 @@ class _FlexDateTimePickerState extends State<FlexDateTimePicker> {
     itemExtent: widget.itemExtent,
     fontSize: widget.fontSize,
     labelStyle: widget.labelStyle,
-    orientation: widget.orientation,
   );
 
   void _updateDuration({

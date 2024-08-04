@@ -1,6 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/utils/flex_picker/flex_picker.dart';
+import 'package:Rem/pages/settings_page/utils/new_reminder_settings/duration_picker.dart';
 import 'package:Rem/utils/functions/datetime_methods.dart';
 import 'package:Rem/utils/flex_picker/flex_duration_picker.dart';
 import 'package:Rem/utils/flex_picker/flex_time_picker.dart';
@@ -23,7 +23,8 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   SettingOption selectedSettingOption = SettingOption.QuickTimeSetOption1;
   final isNegativeDurationScrollController = FixedExtentScrollController();
 
-  final durationController = FlexDurationPickerController();
+  late FlexDurationPickerController durationController;
+  bool showDurationWarning = false;
 
   Map<SettingOption, DateTime> setDateTimes = {
     for (int i = 3; i <= 6; i++) // Starting and Ending indexes of SetOptions in enum
@@ -37,7 +38,7 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
 
   @override
   void initState() {
-    durationController.updateDuration(currentValueFromDurationPicker.abs());
+    durationController = FlexDurationPickerController(initialDuration: currentValueFromDurationPicker);
     refresh();
     super.initState();
   }
@@ -66,14 +67,25 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
         case SettingOption.QuickTimeEditOption7:
         case SettingOption.QuickTimeEditOption8:
           currentValueFromDurationPicker = editDurations[selectedSettingOption]!;
-          durationController.updateDuration(currentValueFromDurationPicker.abs());
-          if (currentValueFromDurationPicker.isNegative) 
-            isNegativeDurationScrollController.jumpToItem(1);
-          else isNegativeDurationScrollController.jumpToItem(0);
+          updatePickerPositionsOnButtonChange();
+          break;
         default:
           break;
       }
     });
+  }
+
+  void updatePickerPositionsOnButtonChange() {
+    final bool neg = currentValueFromDurationPicker.isNegative;
+    durationController.updateDuration(
+      neg ? -currentValueFromDurationPicker : currentValueFromDurationPicker
+    );
+
+    if (currentValueFromDurationPicker.isNegative) {
+      isNegativeDurationScrollController.jumpToItem(1);
+    } else {
+      isNegativeDurationScrollController.jumpToItem(0);
+    }
   }
 
   void onSave() {
@@ -121,50 +133,21 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
       case SettingOption.QuickTimeEditOption6:
       case SettingOption.QuickTimeEditOption7:
       case SettingOption.QuickTimeEditOption8:
-        return durationPickerWidget();
+        return QuickTimeTableDurationPicker(
+          duration: editDurations[selectedSettingOption]!,
+          onDurationChanged: (dur) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  editDurations[selectedSettingOption] = dur;
+                });
+              }
+            });
+          },
+        );
       default:
         return SizedBox(height: 10, child: Placeholder());
     }
-  }
-
-  Widget durationPickerWidget() {
-    Text getText(String str) {
-      return Text(
-        str,
-        style: Theme.of(context).textTheme.titleLarge,
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FlexPicker(
-            initialItem: 0,
-            loop: false,
-            children: [
-              getText("+"), getText("-")
-            ],
-            onSelectedItemChanged: (index) {
-              final dur = index == 1 ?
-                -editDurations[selectedSettingOption]! : editDurations[selectedSettingOption]!.abs();
-              editDurations[selectedSettingOption] = dur;
-              refresh();
-            },
-          ),
-          FlexDurationPicker(
-            controller: durationController,
-            maxDuration: Duration(days: 7),
-            mode: FlexDurationPickerMode.dhm,
-            onDurationChanged: (dur) {
-              editDurations[selectedSettingOption] = dur;
-              refresh();
-            }
-          ),
-        ],
-      ),
-    );
   }
 
   Widget dateTimePickerWidget() {
@@ -183,6 +166,7 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
 
   Widget buttonsWidget() {
     return Container(
+      
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         border: Border.all(

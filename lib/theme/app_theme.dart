@@ -66,14 +66,6 @@ final ThemeData myTheme = ThemeData(
     )
   ),
 
-  switchTheme: SwitchThemeData(
-    trackColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-    if (states.contains(MaterialState.selected)) {
-      return ConstColors.blue.withOpacity(.48);
-    }
-    return ConstColors.blue.withOpacity(.48);
-  })
-  ),
 
   inputDecorationTheme: const InputDecorationTheme(
     filled: true,
