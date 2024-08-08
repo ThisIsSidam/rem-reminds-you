@@ -293,7 +293,7 @@ void handleNotificationButtonClickUpdate(Map<String, String> message) {
     if (action == 'done')
     {
       thisReminder.reminderStatus = RemindersStatusExtension.fromString(action!);
-      thisReminder.incrementRepeatDuration();
+      thisReminder.incrementRecurDuration();
       reminders[id] = thisReminder;
     } 
     else throw "[BGS] unknown action given";

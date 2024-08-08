@@ -1,4 +1,4 @@
-part of 'reminder.dart';
+part of '../../reminder.dart';
 
 // Used mainly by the background service to check if the notifciations
 // should be send or not.

@@ -97,6 +97,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     final addDuration = UserDB.getSetting(SettingOption.DueDateAddDuration);
     if (addDuration is Duration)
     {
+      
       return DateTime.now().add(addDuration);
     }
     throw "[getDateTimeForNewReminder] Duration not received | $addDuration";

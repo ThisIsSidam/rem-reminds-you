@@ -161,7 +161,7 @@ class RemindersDatabaseController {
     }
 
     // Handle moving-up recurring reminder to next recurring date-time and saving it in db..
-    reminder.incrementRepeatDuration();
+    reminder.incrementRecurDuration();
     NotificationController.scheduleNotification(reminder); // Schedule with updated time.
     reminders[id] = reminder;
     updateReminders();

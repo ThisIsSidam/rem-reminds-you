@@ -1,9 +1,4 @@
-import 'package:Rem/reminder_class/reminder.dart';
-
 const appName = "Rem";
-
-final Reminder nullReminder = Reminder(dateAndTime: DateTime.now());
-final Reminder newReminder = Reminder(dateAndTime: DateTime.now());
 
 const remindersBoxName = "reminders";
 const remindersBoxKey = "REMINDERS";
@@ -29,11 +24,6 @@ const overdueSectionTitle = "Overdue";
 const todaySectionTitle = "Today";
 const tomorrowSectionTitle = "Tomorrow";
 const laterSectionTitle = "Later";
-
-const timeSetButton0930AM = "9:30 AM";
-const timeSetButton12PM = "12:00 PM";
-const timeSetButton0630PM = "6:30 AM";
-const timeSetButton10PM = "10:00 PM";
 
 const newReminderID = -100;
 const reminderNullTitle = "No Title";

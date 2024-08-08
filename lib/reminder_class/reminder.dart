@@ -1,65 +1,41 @@
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/reminder_class/field_mixins/date_and_time.dart';
+import 'package:Rem/reminder_class/field_mixins/recurring_interval/recurring.dart';
+import 'package:Rem/reminder_class/field_mixins/repeat.dart';
+import 'package:Rem/reminder_class/field_mixins/reminder_status/status.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Rem/consts/consts.dart';
 
 part 'reminder.g.dart';
-part 'recurring_interval.dart';
-part 'reminder_status.dart';
+part 'field_mixins/recurring_interval/recurring_interval.dart';
+part 'field_mixins/reminder_status/reminder_status.dart';
 
 @HiveType(typeId: 1)
-/// Holds data for reminders. All attributes are easy to understand.
-/// But the terms [Repetitive] and [Recurring] may cuase some confusion.
-/// The term [Repetition] is used for repetition of notification and not the reminder
-/// itself. It is for the nagging effect the notifications may have.
-/// The term [Recurring] is used for recurrence of reminder, on daily basis or any other.
-class Reminder {
+class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
 
   @HiveField(0)
   String title;
 
   @HiveField(1)
-  DateTime dateAndTime;
-
-  @HiveField(2)
   int? id;
 
-  @HiveField(3)
-  late int _reminderStatus; // Is an enum but saved as int coz saving enums in hive is a problem.
-
-  @HiveField(4)
-  late Duration notifRepeatInterval;
-
-  @HiveField(5) 
-  late int _recurringInterval; // Is an enum but saved as int coz saving enums in hive is a problem.
+  // HiveField 2: DateAndTime
+  // HiveField 3: reminderStatus
+  // HiveField 4: notifRepeatDuration
+  // HiveField 5: recurringInterval
 
   Reminder({
     this.title = reminderNullTitle,
-    required this.dateAndTime,
     this.id = newReminderID,
+    required DateTime dateAndTime,
     ReminderStatus reminderStatus = ReminderStatus.active, 
-    Duration? notifRepeatInterval,
-    RecurringInterval? recurringInterval,
+    Duration? notifInterval,
+    RecurringInterval? recurInterval,
   }){
-    // The three late lords
-    // Lord 1 : _reminderStatus
-    this._reminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
 
-    // Lord 2 : notifRepeatInterval
-    if (notifRepeatInterval == null)
-    {
-      print("[ReminderConstructor] notifRepeat is null | Assigning.");
-      this.notifRepeatInterval = UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
-    }
-    else this.notifRepeatInterval = notifRepeatInterval;
-
-    // Lord 3 : _recurringInterval
-    if (recurringInterval == null)
-    {
-      final recurringIntervalString = UserDB.getSetting(SettingOption.RecurringIntervalFieldValue);
-      recurringInterval = RecurringIntervalExtension.fromString(recurringIntervalString);
-    }
-    this._recurringInterval = RecurringIntervalExtension.getIndex(recurringInterval);
+    this.dateAndTime = dateAndTime;
+    this.mixinReminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
+    super.initRepeatInterval(notifInterval);
+    super.initRecurringInterval(recurInterval);
   }
 
   factory Reminder.fromMap(Map<String, String?> map) {
@@ -76,8 +52,8 @@ class Reminder {
       dateAndTime: DateTime.fromMillisecondsSinceEpoch(int.parse(_getValue('dateAndTime'))),
       id: int.parse(_getValue('id')),
       reminderStatus: RemindersStatusExtension.fromInt(int.parse(_getValue('done'))),
-      notifRepeatInterval: Duration(seconds: int.parse(_getValue('notifRepeatInterval'))),
-      recurringInterval: RecurringIntervalExtension.fromInt(int.parse(_getValue('_recurringInterval'))),
+      notifInterval: Duration(seconds: int.parse(_getValue('notifRepeatInterval'))),
+      recurInterval: RecurringIntervalExtension.fromInt(int.parse(_getValue('_recurringInterval'))),
     );
   }
 
@@ -86,54 +62,14 @@ class Reminder {
       'title': title,
       'dateAndTime': dateAndTime.millisecondsSinceEpoch.toString(),
       'id': id.toString(),
-      'done': _reminderStatus.toString(),
+      'done': mixinReminderStatus.toString(),
       'notifRepeatInterval': notifRepeatInterval.inSeconds.toString(),
-      '_recurringInterval': _recurringInterval.toString(),
+      '_recurringInterval': mixinRecurringInterval.toString(),
     };
-  }
-
-  ReminderStatus get reminderStatus {
-    return RemindersStatusExtension.fromInt(_reminderStatus);
-  }
-
-  void set reminderStatus(ReminderStatus status) {
-    _reminderStatus = RemindersStatusExtension.getIndex(status);
-  }
-
-  RecurringInterval get recurringInterval {
-    return RecurringIntervalExtension.fromInt(_recurringInterval);
-  }
-
-  void set recurringInterval(RecurringInterval interval) {
-    _recurringInterval = RecurringIntervalExtension.getIndex(interval);
   }
 
   Duration getDiffDuration() {
     return dateAndTime.difference(DateTime.now());
-  }
-
-
-  String getRecurringIntervalAsString() {
-    return RecurringIntervalExtension.getDisplayName(
-      RecurringIntervalExtension.fromInt(_recurringInterval)
-    );
-  }
-
-  /// If the time to be updated is in the past, increase it by a day.
-  void updatedTime(DateTime updatedTime) {
-    if (updatedTime.isBefore(DateTime.now()))
-    {
-      updatedTime = updatedTime.add(Duration(days: 1));
-    }
-    updatedTime = DateTime( // Seconds should be 0
-      updatedTime.year,
-      updatedTime.month,
-      updatedTime.day,
-      updatedTime.hour,
-      updatedTime.minute,
-      0
-    );
-    dateAndTime = updatedTime;
   }
 
   void set(Reminder reminder) {
@@ -150,43 +86,18 @@ class Reminder {
       id: this.id,
       title: this.title,
       dateAndTime: this.dateAndTime,
-      reminderStatus: RemindersStatusExtension.fromInt(this._reminderStatus),
-      notifRepeatInterval: this.notifRepeatInterval,
-      recurringInterval: RecurringIntervalExtension.fromInt(this._recurringInterval),
+      reminderStatus: RemindersStatusExtension.fromInt(this.mixinReminderStatus),
+      notifInterval: this.notifRepeatInterval,
+      recurInterval: RecurringIntervalExtension.fromInt(this.mixinRecurringInterval),
     );
   }
 
   /// Increment the date and time by 1 day or 1 week depending on the repeat interval.
-  void incrementRepeatDuration() {
+  void incrementRecurDuration() {
+    final increment = getRecurIncrementDuration();
 
-    if (_recurringInterval == RecurringInterval.none)
-    {
-      return;
+    if (increment != null) {
+      dateAndTime = dateAndTime.add(increment);
     }
-
-    final recurringInterval = RecurringIntervalExtension.fromInt(_recurringInterval);
-
-    Duration increment;
-
-    if (recurringInterval == RecurringInterval.daily)
-    {
-      increment = Duration(days: 1);
-    }
-    else if (recurringInterval == RecurringInterval.weekly)
-    {
-      increment = Duration(days: 7);
-    }
-    else 
-    {
-      return;
-    }
-
-    dateAndTime = dateAndTime.add(increment);
-  }
-
-  /// Check if the current date and time is before 5 seconds from the reminder's date and time.
-  bool isTimesUp() {
-    return dateAndTime.isBefore(DateTime.now().add(Duration(seconds: 5)));
   }
 }
-

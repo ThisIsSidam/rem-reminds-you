@@ -1,4 +1,4 @@
-part of 'reminder.dart';
+part of '../../reminder.dart';
 
 enum RecurringInterval {
   none,

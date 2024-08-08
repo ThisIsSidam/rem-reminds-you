@@ -18,12 +18,12 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
     };
     return Reminder(
       title: fields[0] as String,
-      dateAndTime: fields[1] as DateTime,
-      id: fields[2] as int?,
-      notifRepeatInterval: fields[4] as Duration?,
+      id: fields[1] as int?,
+      dateAndTime: fields[2] as dynamic,
+      notifInterval: fields[4] as Duration?,
     )
-      .._reminderStatus = fields[3] as int
-      .._recurringInterval = fields[5] as int;
+      ..mixinRecurringInterval = fields[5] as int
+      ..mixinReminderStatus = fields[3] as int;
   }
 
   @override
@@ -33,15 +33,15 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
-      ..write(obj.dateAndTime)
-      ..writeByte(2)
       ..write(obj.id)
-      ..writeByte(3)
-      ..write(obj._reminderStatus)
       ..writeByte(4)
       ..write(obj.notifRepeatInterval)
       ..writeByte(5)
-      ..write(obj._recurringInterval);
+      ..write(obj.mixinRecurringInterval)
+      ..writeByte(3)
+      ..write(obj.mixinReminderStatus)
+      ..writeByte(2)
+      ..write(obj.dateAndTime);
   }
 
   @override
