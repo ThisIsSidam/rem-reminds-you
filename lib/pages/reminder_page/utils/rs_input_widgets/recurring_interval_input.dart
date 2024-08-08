@@ -19,9 +19,9 @@ class RS_RecurringIntervalInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      mainAxisSpacing: 1,
-      crossAxisSpacing: 1,
-      crossAxisCount: 4,
+      mainAxisSpacing: 5,
+      crossAxisSpacing: 5,
+      crossAxisCount: 2,
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
@@ -45,14 +45,15 @@ class RS_RecurringIntervalInput extends StatelessWidget {
             showSnackBar(context, "Coming soon!");
             return;
           }
-
           thisReminder.recurringInterval = interval;
 
           save(thisReminder);
           moveFocus(fieldType);
         }, 
+        style: Theme.of(context).elevatedButtonTheme.style, 
         child: Text(
           RecurringIntervalExtension.getDisplayName(interval),
+          style: Theme.of(context).textTheme.bodyLarge
         ),
       ),
     );

@@ -23,13 +23,13 @@ final ThemeData myTheme = ThemeData(
   ),
 
   elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(0),
-      backgroundColor: ConstColors.darkGrey,
-      foregroundColor: ConstColors.white,
-      surfaceTintColor: Colors.transparent,
-      shape: BeveledRectangleBorder(),
-    )
+    style: ButtonStyle(
+      backgroundColor: WidgetStatePropertyAll(ConstColors.darkGrey),
+      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15)
+      )),
+      surfaceTintColor: WidgetStatePropertyAll(Colors.transparent)
+    ), 
   ),
 
   textTheme: const TextTheme(

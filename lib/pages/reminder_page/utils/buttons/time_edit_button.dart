@@ -21,7 +21,7 @@ class TimeEditButton extends StatelessWidget {
         getFormattedDurationForTimeEditButton(editDuration),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
-      style: Theme.of(context).elevatedButtonTheme.style,
+      style: Theme.of(context).elevatedButtonTheme.style, 
     );
   }
 

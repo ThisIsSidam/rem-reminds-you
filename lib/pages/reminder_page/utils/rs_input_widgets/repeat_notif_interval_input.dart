@@ -29,8 +29,8 @@ class RS_NotifRepeatIntervalInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      mainAxisSpacing: 1,
-      crossAxisSpacing: 1,
+      mainAxisSpacing: 5,
+      crossAxisSpacing: 5,
       crossAxisCount: 3,
       shrinkWrap: true,
       childAspectRatio: 1.5,
@@ -51,7 +51,8 @@ class RS_NotifRepeatIntervalInput extends StatelessWidget {
 
           save(thisReminder);
           moveFocus(fieldType);
-        }, 
+        },
+        style: Theme.of(context).elevatedButtonTheme.style, 
         child: Text(
           "${duration.inMinutes} minute${duration.inMinutes == 1 ? "" : "s"}",
           style: Theme.of(context).textTheme.bodyLarge,

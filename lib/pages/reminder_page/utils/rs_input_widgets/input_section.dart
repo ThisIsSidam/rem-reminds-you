@@ -14,14 +14,11 @@ class RS_InputSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return FractionallySizedBox(
       heightFactor: 0.5,
-      child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Column(
-          children: [
-            SizedBox(height: 10,),
-            Expanded(child: child),
-          ],
-        )
+      child: Column(
+        children: [
+          SizedBox(height: 10,),
+          Expanded(child: child),
+        ],
       ),
     );
   }

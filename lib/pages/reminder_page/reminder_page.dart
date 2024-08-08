@@ -4,11 +4,9 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/utils/other_utils/snack_bar.dart';
-import 'package:Rem/utils/other_utils/material_container.dart';
 import 'package:Rem/utils/functions/misc_methods.dart';
 import 'package:Rem/pages/reminder_page/utils/rs_input_widgets/input_fields.dart';
 import 'package:Rem/pages/reminder_page/utils/rs_input_widgets/input_section_widget_selecter.dart';
-import 'package:Rem/pages/reminder_page/utils/buttons/section_buttons.dart';
 import 'package:Rem/pages/reminder_page/utils/title_parser/title_parser.dart';
 
 enum FieldType {Title, ParsedTime, Time, Rec_Interval, Repeat, None}
@@ -258,16 +256,12 @@ class _ReminderSectionState extends State<ReminderPage> {
     ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
+        // toolbarHeight: 100,
         scrolledUnderElevation: 5,
         automaticallyImplyLeading: false,
         title: Text(
           "Reminder",
           style: theme.textTheme.titleMedium
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(40),
-          child: SectionButtons()
         ),
         actions: [
           // Don't show delete button for reminders which haven't yet been saved even once
@@ -291,41 +285,37 @@ class _ReminderSectionState extends State<ReminderPage> {
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
             children: [
-              MaterialContainer(
+              Container(
                 padding: EdgeInsetsDirectional.all(8),
-                elevation: 5,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+                  boxShadow: [
+                    BoxShadow(blurRadius: 2, blurStyle: BlurStyle.normal)
+                  ]
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     inputFields.titleField(),
                     inputFields.dateTimeField(),
                     inputFields.repeatNotifInterval(),
-                    inputFields.recurringReminderField()
+                    inputFields.recurringReminderField(),
+                    SizedBox(height: 20,),
+                    if (titleParsedDateTimeFound)
+                        inputFields.titleParsedDateTimeField(),
+                    SaveCloseButtons(
+                      onTapSave: saveReminder,
+                      onTapClose: () {
+                        widget.thisReminder.set(initialReminder);
+                        refreshOrExit();
+                      },
+                    ),
                   ],
-                ),
-              ),
-              SizedBox(height: 20,),
-              MaterialContainer(
-                padding: EdgeInsetsDirectional.all(8),
-                elevation: 5,
-                child: SaveCloseButtons(
-                  onTapSave: saveReminder,
-                  onTapClose: () {
-                    widget.thisReminder.set(initialReminder);
-                    refreshOrExit();
-                  },
                 ),
               ),
             ],
           ),
-          if (titleParsedDateTimeFound)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: MaterialContainer(
-                elevation: 5,
-                child: inputFields.titleParsedDateTimeField()
-              )
-            ),
 
           if 
           (
@@ -335,8 +325,15 @@ class _ReminderSectionState extends State<ReminderPage> {
           )
             Align(
               alignment: Alignment.bottomCenter,
-              child: MaterialContainer(
-                elevation: 100,
+              child: Container(
+                padding: EdgeInsetsDirectional.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: [
+                    BoxShadow(blurRadius: 2, blurStyle: BlurStyle.normal)
+                  ]
+                ),
                 child: InputSectionWidgetSelector.showInputSection(
                   currentFieldType,
                   widget.thisReminder,

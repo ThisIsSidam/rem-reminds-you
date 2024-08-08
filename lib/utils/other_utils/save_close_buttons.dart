@@ -58,11 +58,8 @@ class SaveCloseButtons extends StatelessWidget {
       height: 50,
       width: 100,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5)
-          )
+        style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+          backgroundColor: WidgetStatePropertyAll(color)
         ),
         child: Text(
           label,

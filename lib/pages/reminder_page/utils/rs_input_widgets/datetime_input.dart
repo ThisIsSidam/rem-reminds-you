@@ -61,28 +61,34 @@ class RS_DatetimeInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: GridView.count(
-            mainAxisSpacing: 1,
-            crossAxisSpacing: 1,
-            crossAxisCount: 4,
-            shrinkWrap: true,
-            childAspectRatio: 1.5,
-            children: [
-              TimeSetButton(time: setDateTimes[0], setTime: setTime,),
-              TimeSetButton(time: setDateTimes[1], setTime: setTime,),
-              TimeSetButton(time: setDateTimes[2], setTime: setTime,),
-              TimeSetButton(time: setDateTimes[3], setTime: setTime,),
-              TimeEditButton(editDuration: editDurations[0], editTime: editTime,),
-              TimeEditButton(editDuration: editDurations[1], editTime: editTime,),
-              TimeEditButton(editDuration: editDurations[2], editTime: editTime,),
-              TimeEditButton(editDuration: editDurations[3], editTime: editTime,),
-              TimeEditButton(editDuration: editDurations[4], editTime: editTime,),
-              TimeEditButton(editDuration: editDurations[5], editTime: editTime,),
-              TimeEditButton(editDuration: editDurations[6], editTime: editTime,),
-              TimeEditButton(editDuration: editDurations[7], editTime: editTime,),
-              ElevatedButton(
+        GridView.count(
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
+          crossAxisCount: 4,
+          shrinkWrap: true,
+          childAspectRatio: 1.5,
+          children: [
+            TimeSetButton(time: setDateTimes[0], setTime: setTime,),
+            TimeSetButton(time: setDateTimes[1], setTime: setTime,),
+            TimeSetButton(time: setDateTimes[2], setTime: setTime,),
+            TimeSetButton(time: setDateTimes[3], setTime: setTime,),
+            TimeEditButton(editDuration: editDurations[0], editTime: editTime,),
+            TimeEditButton(editDuration: editDurations[1], editTime: editTime,),
+            TimeEditButton(editDuration: editDurations[2], editTime: editTime,),
+            TimeEditButton(editDuration: editDurations[3], editTime: editTime,),
+            TimeEditButton(editDuration: editDurations[4], editTime: editTime,),
+            TimeEditButton(editDuration: editDurations[5], editTime: editTime,),
+            TimeEditButton(editDuration: editDurations[6], editTime: editTime,),
+            TimeEditButton(editDuration: editDurations[7], editTime: editTime,),
+          ],
+        ),
+        Row(
+          children:[
+            Expanded(
+              child: ElevatedButton(
                 onPressed: () {
                   moveFocus(fieldType);
                 }, 
@@ -90,13 +96,13 @@ class RS_DatetimeInput extends StatelessWidget {
                   "Next",
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor
+                style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
                 ),
-              )
-            ],
-          ),
-        ),
+              ),
+            )
+          ] 
+        )
       ],
     );
   }
