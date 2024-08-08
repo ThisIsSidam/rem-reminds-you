@@ -12,14 +12,6 @@ class RS_InputSection extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      heightFactor: 0.5,
-      child: Column(
-        children: [
-          SizedBox(height: 10,),
-          Expanded(child: child),
-        ],
-      ),
-    );
+    return child;
   }
 }
