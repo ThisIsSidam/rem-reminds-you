@@ -254,9 +254,10 @@ class _ReminderSectionState extends State<ReminderPage> {
     );
 
     ThemeData theme = Theme.of(context);
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Column(
+    return Container(
+      constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(context).height * 0.9),
+      height: MediaQuery.sizeOf(context).height * 0.9,
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           pseudoAppBar(),

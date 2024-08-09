@@ -183,13 +183,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             width: 200,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(context, 
-                  MaterialPageRoute(
-                    builder: (context) => ReminderPage(
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context, 
+                  builder: (context) {
+                    return ReminderPage(
                       thisReminder: Reminder(dateAndTime: getDateTimeForNewReminder()), 
                       refreshHomePage: refreshPage
-                    )
-                  )
+                    );
+                  }
                 ); 
               },
               child: Padding(
@@ -296,13 +298,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Widget getFloatingActionButton() {
     return FloatingActionButton(
       onPressed: () {
-        Navigator.push(context, 
-          MaterialPageRoute(
-            builder: (context) => ReminderPage(
+
+        showModalBottomSheet(
+          isScrollControlled: true,
+          context: context, 
+          builder: (context) {
+            return ReminderPage(
               thisReminder: Reminder(dateAndTime: getDateTimeForNewReminder()), 
               refreshHomePage: refreshPage
-            )
-          )
+            );
+          }
         ); 
       },
       child: const Icon(
