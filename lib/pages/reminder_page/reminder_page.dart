@@ -1,17 +1,17 @@
-import 'package:Rem/utils/other_utils/save_close_buttons.dart';
+import 'package:Rem/pages/reminder_page/utils/date_time_field.dart';
+import 'package:Rem/pages/reminder_page/utils/key_buttons_row.dart';
+import 'package:Rem/pages/reminder_page/utils/time_edit_grid.dart';
+import 'package:Rem/pages/reminder_page/utils/title_field.dart';
+import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:Rem/consts/consts.dart';
-import 'package:Rem/database/database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/utils/other_utils/snack_bar.dart';
 import 'package:Rem/utils/functions/misc_methods.dart';
-import 'package:Rem/pages/reminder_page/utils/rs_input_widgets/input_fields.dart';
-import 'package:Rem/pages/reminder_page/utils/rs_input_widgets/input_section_widget_selecter.dart';
 import 'package:Rem/pages/reminder_page/utils/title_parser/title_parser.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum FieldType {Title, ParsedTime, Time, Rec_Interval, Repeat, None}
 
-class ReminderPage extends StatefulWidget {
+class ReminderPage extends ConsumerStatefulWidget {
   final Reminder thisReminder;
   final VoidCallback? refreshHomePage;
   const ReminderPage({
@@ -21,10 +21,10 @@ class ReminderPage extends StatefulWidget {
   });
 
   @override
-  State<ReminderPage> createState() => _ReminderSectionState();
+  ConsumerState<ReminderPage> createState() => _ReminderSectionState();
 }
 
-class _ReminderSectionState extends State<ReminderPage> {
+class _ReminderSectionState extends ConsumerState<ReminderPage> {
   late Reminder initialReminder;
   FieldType currentFieldType = FieldType.Title;
   // bool _isKeyboardVisible = true;
@@ -40,6 +40,12 @@ class _ReminderSectionState extends State<ReminderPage> {
 
     initialReminder = widget.thisReminder.deepCopyReminder();
     titleParsedReminder = widget.thisReminder.deepCopyReminder();
+
+    final reminderProvider = ref.read(reminderNotifierProvider.notifier);
+
+    Future(() {
+      reminderProvider.updateReminder(initialReminder);
+    });
 
     _titleFocusNode.addListener(_onTitleFocusChange);
 
@@ -84,88 +90,7 @@ class _ReminderSectionState extends State<ReminderPage> {
     });
   }
 
-  void saveReminder() {
-    if (widget.thisReminder.title == "No Title")
-    {
-      showSnackBar(context, "Enter a title!");
-      return;
-    }
-    if (widget.thisReminder.dateAndTime.isBefore(DateTime.now()))
-    {
-      showSnackBar(context, "Time machine is broke. Can't remind you in the past!");
-      return;
-    }
-    RemindersDatabaseController.saveReminder(widget.thisReminder);
-    refreshOrExit();
-  }
-
-  void deleteReminder() {
-
-    void finalDelete({deleteAllRecurring = false}) {
-      RemindersDatabaseController.deleteReminder(
-        widget.thisReminder.id!,
-        allRecurringVersions: deleteAllRecurring
-      );
-      refreshOrExit();
-    }
-
-    if (widget.thisReminder.recurringInterval != RecurringInterval.none) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            elevation: 5,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Theme.of(context).cardColor,
-            title: Text(
-              'Recurring Reminder',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            content: Text(
-              'This is a recurring reminder.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: Text(
-                  'Cancel',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  finalDelete(deleteAllRecurring: false);
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: Text(
-                  'Delete This Only',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
-              TextButton(
-                onPressed: () { // Reminder won't be deleted unless RF is none.
-                  widget.thisReminder.recurringInterval = RecurringInterval.none;
-                  finalDelete(deleteAllRecurring: true);
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: Text(
-                  'Delete All',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
-            ],
-          );
-        },
-      );
-    } 
-    else 
-    {
-      finalDelete();
-    }
-  }
+  
 
   /// Moves the currentInputField to the one after it.
   /// Used after the value is selected and there is no more
@@ -226,131 +151,23 @@ class _ReminderSectionState extends State<ReminderPage> {
     super.dispose();
   }
 
-  void refreshOrExit() {
-    if (widget.refreshHomePage == null)
-    {
-      Navigator.pop(context);
-      return;
-    }
-
-    widget.refreshHomePage!();
-    Navigator.pop(context);
-  }
-
   @override
   Widget build(BuildContext context) {
 
-    InputFields inputFields = InputFields(
-      context: context, 
-      thisReminder: widget.thisReminder, 
-      currentFieldType: currentFieldType, 
-      titleFocusNode: _titleFocusNode, 
-      titleParser: titleParser, 
-      titleParsedDateTimeFound: titleParsedDateTimeFound, 
-      titleParsedReminder: titleParsedReminder, 
-      changeCurrentInputWidget: changeCurrentInputWidget, 
-      saveReminderOptions: saveReminderOptions, 
-      setCurrentInputWidget: setCurrentInputWidget
-    );
-
     ThemeData theme = Theme.of(context);
     return Container(
-      constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(context).height * 0.9),
-      height: MediaQuery.sizeOf(context).height * 0.9,
+      color: theme.scaffoldBackgroundColor,
+      constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(context).height * 0.95),
+      height: MediaQuery.sizeOf(context).height * 0.95,
+      padding: EdgeInsets.all(8),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          pseudoAppBar(),
-          Container(
-            padding: EdgeInsetsDirectional.all(8),
-            decoration: BoxDecoration(
-              color: theme.scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(blurRadius: 2, blurStyle: BlurStyle.normal)
-              ]
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                inputFields.titleField(),
-                inputFields.dateTimeField(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    inputFields.repeatNotifInterval(),
-                    inputFields.recurringReminderField(),
-                  ],
-                ),
-                SizedBox(height: 20,),
-                if (titleParsedDateTimeFound)
-                    inputFields.titleParsedDateTimeField(),
-              ],
-            ),
-          ),
-          SizedBox(height: 20,),
-          Container(
-            height: MediaQuery.sizeOf(context).height * 0.5,
-            alignment: Alignment.topCenter,
-            padding: EdgeInsetsDirectional.all(8),
-            decoration: BoxDecoration(
-              color: theme.scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(blurRadius: 2, blurStyle: BlurStyle.normal)
-              ]
-            ),
-            child: currentFieldType != FieldType.None 
-            ? InputSectionWidgetSelector.showInputSection(
-              currentFieldType,
-              widget.thisReminder,
-              saveReminderOptions,
-              changeCurrentInputWidget,
-            )
-            : SaveCloseButtons(
-                onTapSave: saveReminder,
-                onTapClose: () {
-                  widget.thisReminder.set(initialReminder);
-                  refreshOrExit();
-                },
-              ),
-          )
+          TitleField(),
+          DateTimeField(),
+          QuickAccessTimeTable(),
+          KeyButtonsRow(refreshHomePage: widget.refreshHomePage)
         ],
-      ),
-    );
-  }
-
-  Widget pseudoAppBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Reminder",
-            style: Theme.of(context).textTheme.titleMedium
-          ),
-          Row( // Actions Row
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              // Don't show delete button for reminders which haven't yet been saved even once
-              // Or for archived reminders coz their delete button is outside.
-              if ( 
-                widget.thisReminder.id != newReminderID && 
-                widget.thisReminder.reminderStatus != ReminderStatus.archived
-              )
-                MaterialButton(
-                  child: IconTheme(
-                    data: Theme.of(context).iconTheme,
-                    child: const Icon(Icons.delete),
-                  ),
-                  onPressed: () => deleteReminder(),
-                ),
-            ]
-          )
-        ],
-      ),
+      )
     );
   }
 }

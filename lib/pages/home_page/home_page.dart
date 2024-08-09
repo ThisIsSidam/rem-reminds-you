@@ -13,15 +13,16 @@ import 'package:Rem/database/database.dart';
 import 'package:Rem/utils/other_utils/entry_list_widget.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/pages/reminder_page/reminder_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver {
   int noOfReminders = 0;
   late Timer _timer; // ignore: unused_field  
   Map<String, List<Reminder>> remindersMap = {};

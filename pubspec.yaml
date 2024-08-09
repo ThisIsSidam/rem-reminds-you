@@ -42,6 +42,7 @@ dependencies:
   flutter_background_service_android: ^6.2.2
   google_nav_bar: ^5.0.6
   double_back_to_close_app: ^2.1.0
+  flutter_riverpod: ^2.5.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

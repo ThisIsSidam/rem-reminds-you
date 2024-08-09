@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Rem/app.dart';
 import 'package:Rem/background_service/bg_service.dart';
@@ -33,5 +34,7 @@ void main() async {
 
   initializeService();
 
-  runApp(const MyApp());
+  runApp(ProviderScope(
+    child: MyApp()
+  ));
 }
