@@ -35,7 +35,6 @@ class InputFields {
     return RS_Field(
       fieldType: FieldType.Title,
       currentFieldType: currentFieldType,
-      label: "Title",
       thisReminder: thisReminder,
       fieldWidget: TextFormField(
         autofocus: thisReminder.id == newReminderID,
@@ -43,6 +42,12 @@ class InputFields {
         initialValue: thisReminder.id == newReminderID ? null : thisReminder.title,
         textCapitalization: TextCapitalization.sentences,
         style: Theme.of(context).textTheme.bodyMedium,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 1),
+            borderRadius: BorderRadius.circular(7)
+          ),
+        ),
         onChanged: (String str) {
           thisReminder.title = str;
           titleParser.parse(str);
@@ -100,11 +105,11 @@ class InputFields {
           children: [
             Text(
               getFormattedDateTime(thisReminder.dateAndTime),
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             Text(
               getFormattedDiffString(dateTime: thisReminder.dateAndTime),
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),
@@ -126,7 +131,7 @@ class InputFields {
         ),
         child: Text(
           "Every ${formatDuration(thisReminder.notifRepeatInterval)}",
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
       thisReminder: thisReminder,
@@ -146,7 +151,7 @@ class InputFields {
         ),
         child: Text(
           thisReminder.getRecurringIntervalAsString(),
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       ), 
       thisReminder: thisReminder,

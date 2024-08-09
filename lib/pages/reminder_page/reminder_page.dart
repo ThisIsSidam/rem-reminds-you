@@ -271,11 +271,17 @@ class _ReminderSectionState extends State<ReminderPage> {
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 inputFields.titleField(),
                 inputFields.dateTimeField(),
-                inputFields.repeatNotifInterval(),
-                inputFields.recurringReminderField(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    inputFields.repeatNotifInterval(),
+                    inputFields.recurringReminderField(),
+                  ],
+                ),
                 SizedBox(height: 20,),
                 if (titleParsedDateTimeFound)
                     inputFields.titleParsedDateTimeField(),
