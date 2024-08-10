@@ -20,22 +20,19 @@ class SettingTiles {
     required Function() onTap,
     String? trailing
   }) {
-    return ListTile(
-      title: Text(
-        label,
-        style: Theme.of(context).textTheme.titleSmall,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-        side: BorderSide(
-          color: Colors.white
-        )
-      ),
-      minTileHeight: 20,
-      onTap: onTap,
-      trailing: trailing == null ? null : Text(
-        trailing,
-        style: Theme.of(context).textTheme.bodySmall,
+    return ListTileTheme(
+      data: Theme.of(context).listTileTheme,
+      child: ListTile(
+        title: Text(
+          label,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        minTileHeight: 20,
+        onTap: onTap,
+        trailing: trailing == null ? null : Text(
+          trailing,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       ),
     );
   }

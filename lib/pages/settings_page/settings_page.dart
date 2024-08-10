@@ -1,6 +1,7 @@
 import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/pages/settings_page/utils/new_reminder_settings/new_reminder_section.dart';
+import 'package:Rem/pages/settings_page/utils/user_preferences_section/user_pref_settings.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -28,7 +29,8 @@ class _SettingsPageState extends State<SettingsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          NewReminderSection()
+          UserPreferenceSection(),
+          NewReminderSection(),
         ],
       ),
     );

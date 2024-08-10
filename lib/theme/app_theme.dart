@@ -32,6 +32,13 @@ final ThemeData myTheme = ThemeData(
     ), 
   ),
 
+  listTileTheme: ListTileThemeData(
+    tileColor: ConstColors.darkGrey,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),
+  ),
+
   textTheme: const TextTheme(
     titleLarge: TextStyle(
       fontSize: 18,
