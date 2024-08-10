@@ -1,3 +1,4 @@
+import 'package:Rem/pages/reminder_page/utils/title_parser/title_parser.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,7 @@ class _TitleFieldState extends ConsumerState<TitleField> {
 
   @override
   Widget build(BuildContext context) {
+    final titleParser = TitleParseHandler(ref: ref);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
@@ -30,6 +32,9 @@ class _TitleFieldState extends ConsumerState<TitleField> {
         ),
         controller: titleController,
         autofocus: true,
+        onChanged: (str) {
+          titleParser.parse(str);
+        }
       ),
     );
   }

@@ -1,39 +1,32 @@
+import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TitleParser {
-  String originalTitle = ""; 
-  Reminder thisReminder;
-  final Function(bool) toggleParsedDateTimeField;
-  final Function(Reminder) save;
+class TitleParseHandler {
+  WidgetRef ref;
+  late Reminder thisReminder;
 
-  TitleParser({
-    required this.thisReminder,
-    required this.toggleParsedDateTimeField,
-    required this.save 
-  });
+  TitleParseHandler({
+    required this.ref,
+  }){
+    this.thisReminder = ref.read(reminderNotifierProvider);
+  }
   
   void parse(String str) {
-    originalTitle = str;
-    final parseString = extractTitle(str);
+    final parsedString = extractDateTimeString(str);
 
-    if(parseString != null)
+    if(parsedString != null)
     {
-      if (!matchFinder(parseString))
+      final parsedDateTime = getParsedDateTime(parsedString);
+      if (parsedDateTime != null)
       {
-        originalTitle = originalTitle + parseString;
-      }
-      else
-      {
-        save(thisReminder); 
-        toggleParsedDateTimeField(true);
-        return;
+        thisReminder.updatedTime(parsedDateTime);
+        ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
       }
     }
-    toggleParsedDateTimeField(false);
-
   }
 
-  String? extractTitle(String str) {
+  String? extractDateTimeString(String str) {
     final inIndex = str.lastIndexOf(' in ');
     final atIndex = str.lastIndexOf(' at ');
 
@@ -54,8 +47,8 @@ class TitleParser {
     return parseString;
   }
 
-  bool matchFinder(String str) {
-    final durationRegExp = RegExp(r'in\s(\d+)\s+(minutes?|seconds?|hours?|days?)');
+  DateTime? getParsedDateTime(String str) {
+    final durationRegExp = RegExp(r'in\s(\d+)\s+(minutes?|hours?|days?)');
     final match1 = durationRegExp.firstMatch(str);
     if (match1 != null)
     {
@@ -70,10 +63,10 @@ class TitleParser {
       return parseDateTimeInput(match2);
     }
     
-    return false;
+    return null;
   }
 
-  bool parseDurationInput(RegExpMatch match) {
+  DateTime parseDurationInput(RegExpMatch match) {
     Duration toAdd = Duration();
 
     final value = int.parse(match.group(1)!);
@@ -84,11 +77,6 @@ class TitleParser {
       case 'minute':
       {
         toAdd += Duration(minutes: value);
-      }
-      case 'seconds':
-      case 'second':
-      {
-        toAdd += Duration(seconds: value);
       }
       case 'hours':
       case 'hour':
@@ -101,11 +89,11 @@ class TitleParser {
         toAdd += Duration(days: value);
       }
     }
-    thisReminder.updatedTime(DateTime.now().add(toAdd));
-    return true;
+
+    return DateTime.now().add(toAdd);
   }
 
-  bool parseDateTimeInput(RegExpMatch match) {
+  DateTime parseDateTimeInput(RegExpMatch match) {
     
 
     final timeString = match.group(1) ?? "0:0";
@@ -123,15 +111,14 @@ class TitleParser {
       }
     }
 
-    thisReminder.updatedTime(DateTime(
+    return DateTime(
       thisReminder.dateAndTime.year,
       thisReminder.dateAndTime.month,
       thisReminder.dateAndTime.day,
       hour,
       minute
-    ));
+    );
 
-    return true;
   }
 
 }

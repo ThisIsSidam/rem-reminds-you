@@ -5,7 +5,6 @@ import 'package:Rem/pages/reminder_page/utils/title_field.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/utils/functions/misc_methods.dart';
 import 'package:Rem/pages/reminder_page/utils/title_parser/title_parser.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,13 +26,10 @@ class ReminderPage extends ConsumerStatefulWidget {
 class _ReminderSectionState extends ConsumerState<ReminderPage> {
   late Reminder initialReminder;
   FieldType currentFieldType = FieldType.Title;
-  // bool _isKeyboardVisible = true;
 
-  late TitleParser titleParser;
+  late TitleParseHandler titleParser;
   bool titleParsedDateTimeFound = false;
   late Reminder titleParsedReminder;
-  // Handling the closing upon appearance of another input widget.
-  final _titleFocusNode = FocusNode();
   
   @override
   void initState() {
@@ -47,104 +43,10 @@ class _ReminderSectionState extends ConsumerState<ReminderPage> {
       reminderProvider.updateReminder(initialReminder);
     });
 
-    _titleFocusNode.addListener(_onTitleFocusChange);
 
-    titleParser = TitleParser(
-      thisReminder: titleParsedReminder,
-      toggleParsedDateTimeField: toggleParsedDateTimeField,
-      save: saveTitleParsedReminderOptions,
-    );
 
     super.initState();
   }
-
-  void _onTitleFocusChange() {
-    if (_titleFocusNode.hasFocus) {
-      currentFieldType = FieldType.Title;
-    }
-  }
-
-  /// Save the edits done by the widgets to the reminder
-  void saveReminderOptions(Reminder reminder) {
-    setState(() {
-      widget.thisReminder.set(reminder);
-
-      if (titleParsedDateTimeFound)
-      {
-        titleParsedDateTimeFound = false;
-      }
-    });
-  }
-
-
-  /// Save the version of reminder parser uses
-  void saveTitleParsedReminderOptions(Reminder reminder) {
-    setState(() {
-      titleParsedReminder = reminder;
-    });
-  }
-
-  void toggleParsedDateTimeField(bool flag) {
-    setState(() {
-      titleParsedDateTimeFound = flag;
-    });
-  }
-
-  
-
-  /// Moves the currentInputField to the one after it.
-  /// Used after the value is selected and there is no more
-  /// need of the inputWidget.
-  void changeCurrentInputWidget(FieldType fieldType) {
-    FieldType toChange;
-
-    if (fieldType == FieldType.Title) 
-    {
-      toChange = FieldType.Time;
-      MiscMethods.removeKeyboard(context);
-      // _isKeyboardVisible = false;
-    } 
-    else if (fieldType == FieldType.Time) 
-    {
-      toChange = FieldType.Rec_Interval;
-    } 
-    else if (fieldType == FieldType.Rec_Interval) 
-    {
-      toChange = FieldType.Repeat;
-    } 
-    else if (fieldType == FieldType.Repeat)
-    {
-      toChange = FieldType.None;
-    }
-    else 
-    {
-      toChange = FieldType.None;
-    }
-
-    setState(() {
-      currentFieldType = toChange;
-    });
-  }
-
-  /// Used to set the appropriate input widget when 
-  /// the field is tapped.
-  void setCurrentInputWidget(FieldType fieldType) {
-    if (currentFieldType == fieldType) {
-      return;
-    }
-
-    setState(() {
-      currentFieldType = fieldType;
-    });
-
-    // if (currentFieldType != FieldType.Title) {
-    //   MiscMethods.removeKeyboard(context);
-    //   _isKeyboardVisible = false;
-    // } else {
-    //   _isKeyboardVisible = true;
-    // }
-  }
-
 
   @override
   void dispose() {
