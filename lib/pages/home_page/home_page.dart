@@ -138,7 +138,9 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
     receivePort.close();
     IsolateNameServer.removePortNameMapping('main');
 
-    super.dispose();
+    if (mounted) {
+      super.dispose();
+    } 
   }
 
   @override
@@ -202,12 +204,9 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                backgroundColor: Theme.of(context).primaryColor
-              ),
+              style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
+              )
             ),
           )
         ],
