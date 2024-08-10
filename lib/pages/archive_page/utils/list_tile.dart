@@ -40,13 +40,15 @@ class ArchiveReminderEntryListTile extends StatelessWidget {
         minVerticalPadding: 8,
         minTileHeight: 60,
         onTap: () {
-          Navigator.push(context, 
-            MaterialPageRoute(
-              builder: (context) => ReminderPage(
+          showModalBottomSheet(
+            isScrollControlled: true,
+            context: context, 
+            builder: (context) {
+              return ReminderPage(
                 thisReminder: reminder, 
                 refreshHomePage: refreshPage
-              )
-            )
+              );  
+            }
           ); 
         },
       ),

@@ -45,7 +45,7 @@ class _ArchivePageState extends State<ArchivePage> {
       appBar: getAppBar(),
       body: SingleChildScrollView(
         child: EntryListWidget(
-          remindersList: archivedReminders,
+          remindersList: archivedReminders.reversed.toList(),
           refreshPage: refreshPage,
           listEntryWidget: (Reminder rem, VoidCallback func)
             => ArchiveReminderEntryListTile(reminder: rem, refreshPage: func),
