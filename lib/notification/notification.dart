@@ -138,11 +138,17 @@ content: NotificationContent(
       }
       else
       {
-        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(
-          builder: (context) => ReminderPage(
-            thisReminder: Reminder.fromMap(payload),   
-          )
-        ));
+        final context = navigatorKey.currentContext!;
+        
+        showModalBottomSheet(
+          isScrollControlled: true,
+          context: context, 
+          builder: (context) {
+            return ReminderPage(
+              thisReminder: Reminder.fromMap(payload), 
+            );  
+          }
+        );
         removeNotifications(receivedAction.groupKey ?? notificationNullGroupKey);
       }
     }
