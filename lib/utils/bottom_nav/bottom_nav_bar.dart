@@ -15,18 +15,18 @@ class NavigationSection extends StatefulWidget {
 class _NavigationSectionState extends State<NavigationSection> {
 
   final List<GButton> _tabs = [
-    GButton(icon: Icons.home, text: "Home"),
     GButton(icon: Icons.archive, text: "Archive"),
+    GButton(icon: Icons.home, text: "Home"),
     GButton(icon: Icons.settings, text: "Settings"),
   ];
 
   final List<Widget> _pages = [
-    HomePage(),
     ArchivePage(),
+    HomePage(),
     SettingsPage(),
   ];
 
-  int _selectedTab = 0; // Homepage by default.
+  int _selectedTab = 1; // Homepage by default.
 
   @override
   Widget build(BuildContext context) {
