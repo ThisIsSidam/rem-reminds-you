@@ -24,6 +24,12 @@ class TitleParseHandler {
         ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
       }
     }
+    else
+    {
+      thisReminder.title = str;
+      
+      ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
+    }
   }
 
   String? extractDateTimeString(String str) {
@@ -38,7 +44,6 @@ class TitleParseHandler {
 
     if (separatorIndex == -1) {
       return null;
-    
     }
     
     thisReminder.title = str.substring(0, separatorIndex).trim();

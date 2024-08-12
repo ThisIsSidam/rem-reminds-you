@@ -5,10 +5,7 @@ import 'package:Rem/pages/reminder_page/utils/title_field.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/pages/reminder_page/utils/title_parser/title_parser.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-enum FieldType {Title, ParsedTime, Time, Rec_Interval, Repeat, None}
 
 class ReminderPage extends ConsumerStatefulWidget {
   final Reminder thisReminder;
@@ -25,32 +22,20 @@ class ReminderPage extends ConsumerStatefulWidget {
 
 class _ReminderSectionState extends ConsumerState<ReminderPage> {
   late Reminder initialReminder;
-  FieldType currentFieldType = FieldType.Title;
-
-  late TitleParseHandler titleParser;
-  bool titleParsedDateTimeFound = false;
-  late Reminder titleParsedReminder;
   
   @override
   void initState() {
 
     initialReminder = widget.thisReminder.deepCopyReminder();
-    titleParsedReminder = widget.thisReminder.deepCopyReminder();
 
     final reminderProvider = ref.read(reminderNotifierProvider.notifier);
 
     Future(() {
       reminderProvider.updateReminder(initialReminder);
+      
     });
 
-
-
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
