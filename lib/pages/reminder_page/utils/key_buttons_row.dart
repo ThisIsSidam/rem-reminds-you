@@ -1,5 +1,7 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/database.dart';
+import 'package:Rem/pages/reminder_page/utils/alert_dialogs/reminder_recurrence.dart';
+import 'package:Rem/pages/reminder_page/utils/alert_dialogs/repeat_notif.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/utils/other_utils/snack_bar.dart';
@@ -120,12 +122,20 @@ class KeyButtonsRow extends ConsumerWidget {
             reminder.id != newReminderID && 
             reminder.reminderStatus != ReminderStatus.archived
           )
-          MaterialButton(
-            child: IconTheme(
-              data: Theme.of(context).iconTheme,
-              child: const Icon(Icons.delete),
+            MaterialButton(
+              child: IconTheme(
+                data: Theme.of(context).iconTheme,
+                child: const Icon(Icons.delete),
+              ),
+              onPressed: () => deleteReminder(reminder, context),
             ),
-            onPressed: () => deleteReminder(reminder, context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              getRepeatNotifButton(context),
+              SizedBox(width: 4,),
+              getRecurringButton(context),
+            ],
           ),
           Align( // Because in some cases, delete button won't be shown, forcing this to get in the center.
             alignment: Alignment.centerRight,
@@ -143,6 +153,36 @@ class KeyButtonsRow extends ConsumerWidget {
           
         ],
       ),
+    );
+  }
+
+  Widget getRepeatNotifButton(BuildContext context) {
+    return ElevatedButton(
+      child: Icon(Icons.snooze),
+      style: Theme.of(context).elevatedButtonTheme.style,
+      onPressed: () {
+        showDialog(
+          context: context, 
+          builder: (context) {
+            return RepeatNotifDialog();
+          }
+        );
+      },
+    );
+  }
+
+  Widget getRecurringButton(BuildContext context) {
+    return ElevatedButton(
+      child: Icon(Icons.event_repeat_outlined),
+      style: Theme.of(context).elevatedButtonTheme.style,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return ReminderRecurrenceDialog();
+          }
+        );
+      }
     );
   }
 }
