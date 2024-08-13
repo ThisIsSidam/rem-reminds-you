@@ -1,4 +1,3 @@
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/pages/settings_page/utils/new_reminder_settings/quick_time_table/quick_time_table_modal.dart';
@@ -40,7 +39,7 @@ class SettingTiles {
   void _showModal(Widget child) {
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: ConstColors.darkGrey,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 5,
       context: context,
       builder: (context) {

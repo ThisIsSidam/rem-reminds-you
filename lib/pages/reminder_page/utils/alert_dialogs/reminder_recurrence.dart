@@ -3,7 +3,7 @@ import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/pages/reminder_page/utils/base_versions/alert_dialog_base.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/utils/other_utils/snack_bar.dart';
+import 'package:Rem/utils/other_utils/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -62,7 +62,7 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
         onPressed: () {
           if (interval == RecurringInterval.custom)
           {
-            showSnackBar(context, "Coming soon!");
+            showFlutterToast("Coming soon!");
             return;
           }
           reminder.recurringInterval = interval;

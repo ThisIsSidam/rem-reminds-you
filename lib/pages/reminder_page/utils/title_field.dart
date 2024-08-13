@@ -3,13 +3,29 @@ import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-class TitleField extends ConsumerWidget {
-
-  final titleController = TextEditingController();
+class TitleField extends ConsumerStatefulWidget {
+  TitleField({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TitleField> createState() => _TitleFieldState();
+}
+
+class _TitleFieldState extends ConsumerState<TitleField> {
+
+  final titleController = TextEditingController();
+  final _focusNode = FocusNode();
+
+  @override
+  void initState() {
+
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     final reminder = ref.read(reminderNotifierProvider);
     titleController.text = reminder.title;
@@ -22,6 +38,7 @@ class TitleField extends ConsumerWidget {
           border: OutlineInputBorder(),
         ),
         controller: titleController,
+        focusNode: _focusNode,
         autofocus: true,
         onChanged: (str) {
           titleParser.parse(str);

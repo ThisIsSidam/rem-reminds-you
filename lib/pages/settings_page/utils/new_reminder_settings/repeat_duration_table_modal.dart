@@ -88,24 +88,16 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
   }
 
   Widget buttonsWidget() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: Colors.white
-        )
-      ),
-      child: GridView.count(
-        mainAxisSpacing: 1,
-        crossAxisSpacing: 1,
-        crossAxisCount: 3,
-        shrinkWrap: true,
-        childAspectRatio: 1.5,
-        children: [
-          for (var entry in durations.entries)
-            button(getFormattedDurationForTimeEditButton(entry.value), entry.key),
-        ],
-      )
+    return GridView.count(
+      mainAxisSpacing: 5,
+      crossAxisSpacing: 5,
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      childAspectRatio: 1.5,
+      children: [
+        for (var entry in durations.entries)
+          button(getFormattedDurationForTimeEditButton(entry.value), entry.key),
+      ],
     );
   }
 

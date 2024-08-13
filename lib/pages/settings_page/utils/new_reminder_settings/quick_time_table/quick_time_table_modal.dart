@@ -165,27 +165,18 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   }
 
   Widget buttonsWidget() {
-    return Container(
-      
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: Colors.white
-        )
-      ),
-      child: GridView.count(
-        mainAxisSpacing: 1,
-        crossAxisSpacing: 1,
-        crossAxisCount: 4,
-        shrinkWrap: true,
-        childAspectRatio: 1.5,
-        children: [
-          for (var entry in setDateTimes.entries)
-            button(getFormattedTimeForTimeSetButton(entry.value), entry.key),
-          for (var entry in editDurations.entries)
-            button(getFormattedDurationForTimeEditButton(entry.value), entry.key),
-        ],
-      )
+    return GridView.count(
+      mainAxisSpacing: 5,
+      crossAxisSpacing: 5,
+      crossAxisCount: 4,
+      shrinkWrap: true,
+      childAspectRatio: 1.5,
+      children: [
+        for (var entry in setDateTimes.entries)
+          button(getFormattedTimeForTimeSetButton(entry.value), entry.key),
+        for (var entry in editDurations.entries)
+          button(getFormattedDurationForTimeEditButton(entry.value), entry.key),
+      ],
     );
   }
 

@@ -45,7 +45,7 @@ class _ReminderSectionState extends ConsumerState<ReminderPage> {
     return Container(
       color: theme.scaffoldBackgroundColor,
       constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(context).height * 0.95),
-      height: MediaQuery.sizeOf(context).height * 0.95,
+      height: MediaQuery.sizeOf(context).height * 0.6,
       padding: EdgeInsets.all(8),
       child: Column(
         children: [

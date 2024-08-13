@@ -4,7 +4,7 @@ import 'package:Rem/pages/reminder_page/utils/alert_dialogs/reminder_recurrence.
 import 'package:Rem/pages/reminder_page/utils/alert_dialogs/repeat_notif.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/utils/other_utils/snack_bar.dart';
+import 'package:Rem/utils/other_utils/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,18 +23,19 @@ class KeyButtonsRow extends ConsumerWidget {
     }
 
     refreshHomePage!();
+
     Navigator.pop(context);
   }
 
   void saveReminder(Reminder reminder, BuildContext context) {
     if (reminder.title == "No Title")
     {
-      showSnackBar(context, "Enter a title!");
+      showFlutterToast("Enter a title!");
       return;
     }
     if (reminder.dateAndTime.isBefore(DateTime.now()))
     {
-      showSnackBar(context, "Time machine is broke. Can't remind you in the past!");
+      showFlutterToast("Time machine is broke. Can't remind you in the past!");
       return;
     }
     RemindersDatabaseController.saveReminder(reminder);
@@ -64,7 +65,7 @@ class KeyButtonsRow extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             content: Text(
-              'This is a recurring reminder.',
+              'This is a recurring reminder. Do you want to remove all instances of this reminder? Or only the next instance?',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
@@ -83,7 +84,7 @@ class KeyButtonsRow extends ConsumerWidget {
                   Navigator.of(context).pop(); // Close the dialog
                 },
                 child: Text(
-                  'Delete This Only',
+                  'Remove This Only',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
@@ -94,7 +95,7 @@ class KeyButtonsRow extends ConsumerWidget {
                   Navigator.of(context).pop(); // Close the dialog
                 },
                 child: Text(
-                  'Delete All',
+                  'Remove All',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
@@ -118,39 +119,37 @@ class KeyButtonsRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          if ( 
+          ( 
             reminder.id != newReminderID && 
             reminder.reminderStatus != ReminderStatus.archived
           )
-            MaterialButton(
-              child: IconTheme(
-                data: Theme.of(context).iconTheme,
-                child: const Icon(Icons.delete),
-              ),
-              onPressed: () => deleteReminder(reminder, context),
+          ? MaterialButton(
+            child: IconTheme(
+              data: Theme.of(context).iconTheme,
+              child: const Icon(Icons.check),
             ),
+            onPressed: () => deleteReminder(reminder, context),
+          )
+          : SizedBox(), // So it shows presence in the Row. And the positions of others do not alter based on presence of done button.
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               getRepeatNotifButton(context),
               SizedBox(width: 4,),
               getRecurringButton(context),
+              SizedBox(width: 4,),
+              ElevatedButton(
+                onPressed: () => saveReminder(reminder, context),
+                child: Text(
+                  "Save", 
+                  style: Theme.of(context).textTheme.titleMedium
+                ),
+                style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
+                ),
+              )
             ],
           ),
-          Align( // Because in some cases, delete button won't be shown, forcing this to get in the center.
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: () => saveReminder(reminder, context),
-              child: Text(
-                "Save", 
-                style: Theme.of(context).textTheme.titleMedium
-              ),
-              style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
-              ),
-            )
-          )
-          
         ],
       ),
     );
