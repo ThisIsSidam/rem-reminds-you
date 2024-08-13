@@ -5,11 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class TitleParseHandler {
   WidgetRef ref;
   late Reminder thisReminder;
+  late DateTime originalDT;
 
   TitleParseHandler({
     required this.ref,
   }){
     this.thisReminder = ref.read(reminderNotifierProvider);
+    this.originalDT = thisReminder.dateAndTime;
   }
   
   void parse(String str) {
@@ -21,15 +23,17 @@ class TitleParseHandler {
       if (parsedDateTime != null)
       {
         thisReminder.updatedTime(parsedDateTime);
-        ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
+      }
+      else 
+      {
+        thisReminder.dateAndTime = originalDT;
       }
     }
     else
     {
       thisReminder.title = str;
-      
-      ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
     }
+      ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
   }
 
   String? extractDateTimeString(String str) {

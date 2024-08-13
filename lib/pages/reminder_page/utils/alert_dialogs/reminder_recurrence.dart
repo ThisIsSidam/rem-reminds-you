@@ -36,7 +36,8 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
   Widget getButtonsGrid(BuildContext context, WidgetRef ref) {
     return GridView.count(
       mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
+      crossAxisSpacing: 8
+      ,
       crossAxisCount: 2,
       shrinkWrap: true,
       childAspectRatio: 1.5,
@@ -66,6 +67,7 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
           }
           reminder.recurringInterval = interval;
           ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
+          Navigator.pop(context);
         }, 
         style: isPickedOption
         ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
