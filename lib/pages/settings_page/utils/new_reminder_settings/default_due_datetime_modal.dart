@@ -1,6 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/utils/flex_picker/flex_duration_picker.dart';
+import 'package:Rem/utils/other_utils/duration_picker.dart';
 import 'package:Rem/utils/functions/datetime_methods.dart';
 import 'package:Rem/utils/other_utils/save_close_buttons.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +21,9 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
   String dateTimeString = "";
   String diffString = "";
 
-  final durationController = FlexDurationPickerController();
 
   @override
   void initState() {
-    durationController.updateDuration(currentSelectedDuration);
     refresh();
     super.initState();
   }
@@ -49,27 +47,18 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
           Divider(),
           SizedBox(height: 10),
           dateTimeWidget(),
-          durationPickerWidget(),
+          DurationPickerBase(
+            onDurationChange: (dur) {
+              currentSelectedDuration = dur;
+              refresh();
+            }
+          ),
           SaveCloseButtons(onTapSave: () {
             UserDB.setSetting(SettingOption.DueDateAddDuration, currentSelectedDuration);
             Navigator.pop(context);
           })
         ],
       )
-    );
-  }
-
-  Widget durationPickerWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FlexDurationPicker(
-        controller: durationController,
-        mode: FlexDurationPickerMode.hm,
-        onDurationChanged: (dur) {
-          currentSelectedDuration = dur;
-          refresh();
-        }
-      ),
     );
   }
 

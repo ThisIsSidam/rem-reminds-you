@@ -1,10 +1,9 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/pages/settings_page/utils/new_reminder_settings/quick_time_table/duration_picker.dart';
+import 'package:Rem/utils/other_utils/grid_duration_picker.dart';
 import 'package:Rem/utils/functions/datetime_methods.dart';
-import 'package:Rem/utils/flex_picker/flex_duration_picker.dart';
-import 'package:Rem/utils/flex_picker/flex_time_picker.dart';
 import 'package:Rem/utils/other_utils/save_close_buttons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class QuickTimeTableModal extends StatefulWidget {
@@ -23,7 +22,6 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   SettingOption selectedSettingOption = SettingOption.QuickTimeSetOption1;
   final isNegativeDurationScrollController = FixedExtentScrollController();
 
-  late FlexDurationPickerController durationController;
   bool showDurationWarning = false;
 
   Map<SettingOption, DateTime> setDateTimes = {
@@ -38,7 +36,6 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
 
   @override
   void initState() {
-    durationController = FlexDurationPickerController(initialDuration: currentValueFromDurationPicker);
     refresh();
     super.initState();
   }
@@ -76,11 +73,6 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   }
 
   void updatePickerPositionsOnButtonChange() {
-    final bool neg = currentValueFromDurationPicker.isNegative;
-    durationController.updateDuration(
-      neg ? -currentValueFromDurationPicker : currentValueFromDurationPicker
-    );
-
     if (currentValueFromDurationPicker.isNegative) {
       isNegativeDurationScrollController.jumpToItem(1);
     } else {
@@ -133,8 +125,8 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
       case SettingOption.QuickTimeEditOption6:
       case SettingOption.QuickTimeEditOption7:
       case SettingOption.QuickTimeEditOption8:
-        return QuickTimeTableDurationPicker(
-          duration: editDurations[selectedSettingOption]!,
+        return CustomDurationPicker(
+          allowNegative: true,
           onDurationChanged: (dur) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
@@ -151,15 +143,22 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
   }
 
   Widget dateTimePickerWidget() {
-    return Padding(
+    return Container(
+      width: 400,
+      height: 200,
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FlexDateTimePicker(
-        initalTime: currentValueFromTimePicker,
-        mode: FlexDateTimePickerMode.hm,
-        onDateTimeChanged: (dt) {
-          setDateTimes[selectedSettingOption] = dt;
-          refresh();
-        },
+      child: CupertinoTheme(
+        data: CupertinoThemeData(
+          brightness: Brightness.dark
+        ),
+        child: CupertinoDatePicker(
+          mode: CupertinoDatePickerMode.time,
+          onDateTimeChanged: (dt) {
+            setState(() {
+              setDateTimes[selectedSettingOption] = dt;
+            });
+          }
+        ),
       ),
     );
   }

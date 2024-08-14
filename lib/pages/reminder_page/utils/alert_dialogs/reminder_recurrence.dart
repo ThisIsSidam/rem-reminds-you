@@ -52,7 +52,6 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
 
   Widget intervalButton(RecurringInterval interval, BuildContext context, WidgetRef ref) {
     final reminder = ref.read(reminderNotifierProvider);
-    print("interval: ${reminder.mixinRecurringInterval}");
     bool isPickedOption = interval == reminder.recurringInterval;
 
     return SizedBox(

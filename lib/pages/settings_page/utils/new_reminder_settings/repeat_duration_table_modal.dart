@@ -1,7 +1,7 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/utils/other_utils/duration_picker.dart';
 import 'package:Rem/utils/functions/datetime_methods.dart';
-import 'package:Rem/utils/flex_picker/flex_duration_picker.dart';
 import 'package:Rem/utils/other_utils/save_close_buttons.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,6 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
   Duration currentValueFromDurationPicker = UserDB.getSetting(SettingOption.RepeatIntervalOption1);
   SettingOption selectedSettingOption = SettingOption.RepeatIntervalOption1;
 
-  final durationController = FlexDurationPickerController();
 
   final Map<SettingOption, Duration>  durations = {
     for (int i = 15; i <= 20; i++) // Starting and Ending indexes of repeatDurations in enum
@@ -28,21 +27,12 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
 
   @override
   void initState() {
-    durationController.updateDuration(currentValueFromDurationPicker);
-    refresh();
     super.initState();
   }
-
-  void refresh() {
-    setState(() {
-    });
-  }
-
   void setSelectedOption(SettingOption option) {
     setState(() {
       selectedSettingOption = option;
       currentValueFromDurationPicker = durations[selectedSettingOption]!;
-      durationController.updateDuration(currentValueFromDurationPicker);
     });
   }
 
@@ -60,30 +50,22 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
         children: [
-          Text("Default Due Datetime", style: Theme.of(context).textTheme.titleLarge),
+          Text("Repeat Duration Table", style: Theme.of(context).textTheme.titleLarge),
           Divider(),
           SizedBox(height: 10),
           buttonsWidget(),
-          durationPickerWidget(),
+          DurationPickerBase(
+            onDurationChange: (dur) {
+              setState(() {
+                durations[selectedSettingOption] = dur;
+              });
+            }
+          ),
           SaveCloseButtons(
             onTapSave: onSave
           )
         ],
       )
-    );
-  }
-
-  Widget durationPickerWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FlexDurationPicker(
-        controller: durationController,
-        mode: FlexDurationPickerMode.hm,
-        onDurationChanged: (dur) {
-          durations[selectedSettingOption] = dur;
-          refresh();
-        }
-      ),
     );
   }
 
