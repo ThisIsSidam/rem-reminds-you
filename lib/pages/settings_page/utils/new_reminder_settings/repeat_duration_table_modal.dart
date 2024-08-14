@@ -88,7 +88,9 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
       onPressed: () => setSelectedOption(option),
       child: Text(
         label,
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+          fontSize: 14
+        ),
       ),
       style: selectedSettingOption == option 
       ? Theme.of(context).elevatedButtonTheme.style!.copyWith(

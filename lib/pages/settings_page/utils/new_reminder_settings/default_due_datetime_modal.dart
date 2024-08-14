@@ -1,3 +1,4 @@
+import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/utils/other_utils/duration_picker.dart';
@@ -39,7 +40,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 500,
+      height: 450,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
         children: [
@@ -66,9 +67,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: Colors.white
-        )
+        color: ConstColors.darkGrey,
       ),
       padding: EdgeInsets.all(10),
       child: Row(
@@ -76,9 +75,11 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
         children: [
           Text(
             dateTimeString,
+            style: Theme.of(context).textTheme.titleMedium
           ),
           Text(
-            diffString
+            diffString,
+            style: Theme.of(context).textTheme.titleSmall
           )
         ],
       )

@@ -1,6 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/pages/settings_page/utils/new_reminder_settings/quick_time_table/quick_time_table_modal.dart';
+import 'package:Rem/pages/settings_page/utils/new_reminder_settings/quick_time_table_modal.dart';
 import 'package:Rem/pages/settings_page/utils/new_reminder_settings/repeat_duration_table_modal.dart';
 import 'package:Rem/utils/functions/datetime_methods.dart';
 import 'package:Rem/pages/settings_page/utils/new_reminder_settings/default_due_datetime_modal.dart';
