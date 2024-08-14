@@ -42,19 +42,30 @@ class _ReminderSectionState extends ConsumerState<ReminderPage> {
   Widget build(BuildContext context) {
 
     ThemeData theme = Theme.of(context);
-    return Container(
-      color: theme.scaffoldBackgroundColor,
-      constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(context).height * 0.95),
-      height: MediaQuery.sizeOf(context).height * 0.6,
-      padding: EdgeInsets.all(8),
-      child: Column(
-        children: [
-          TitleField(),
-          DateTimeField(),
-          QuickAccessTimeTable(),
-          KeyButtonsRow(refreshHomePage: widget.refreshHomePage)
-        ],
-      )
+
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+        final screenHeight = MediaQuery.of(context).size.height;
+        
+        return AnimatedContainer(
+          padding: EdgeInsets.only(bottom: keyboardHeight),
+          duration: const Duration(milliseconds: 100),
+          height: screenHeight * 0.55 + keyboardHeight,
+          color: theme.scaffoldBackgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                TitleField(),
+                DateTimeField(),
+                QuickAccessTimeTable(),
+                KeyButtonsRow(refreshHomePage: widget.refreshHomePage)
+              ],
+            ),
+          ),
+        );
+      }  
     );
   }
 }
