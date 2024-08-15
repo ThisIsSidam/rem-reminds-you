@@ -21,7 +21,7 @@ final Map<String, dynamic> defaultSettings = {
   SettingOption.QuickTimeEditOption7.toString(): Duration(hours: -3),
   SettingOption.QuickTimeEditOption8.toString(): Duration(days: -1),
 
-  SettingOption.RepeatIntervalOption1.toString(): Duration(minutes: 0),
+  SettingOption.RepeatIntervalOption1.toString(): Duration(minutes: 1),
   SettingOption.RepeatIntervalOption2.toString(): Duration(minutes: 5),
   SettingOption.RepeatIntervalOption3.toString(): Duration(minutes: 10),
   SettingOption.RepeatIntervalOption4.toString(): Duration(minutes: 15),

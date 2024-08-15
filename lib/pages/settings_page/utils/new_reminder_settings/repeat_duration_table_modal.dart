@@ -78,7 +78,7 @@ class _RepeatDurationTableModalState extends State<RepeatDurationTableModal> {
       childAspectRatio: 1.5,
       children: [
         for (var entry in durations.entries)
-          button(getFormattedDurationForTimeEditButton(entry.value), entry.key),
+          button(getFormattedDurationForTimeEditButton(entry.value, addPlusSymbol: false), entry.key),
       ],
     );
   }

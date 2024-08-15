@@ -215,7 +215,7 @@ void updateNotification(AndroidServiceInstance service) async{
     // debugPrint("[BGS] No next reminders");
     service.setForegroundNotificationInfo(
       title: "One reminder left",
-      content: "Finish due reminders, this notifications will disappear."
+      content: "Finish due reminders, this notification will disappear."
     );
   }
   else

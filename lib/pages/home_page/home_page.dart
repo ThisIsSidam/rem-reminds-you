@@ -114,7 +114,6 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
   }
 
   void deleteAndRefresh(int id) {
-    debugPrint("REFRESHING PAGE-------");
     RemindersDatabaseController.deleteReminder(id);
     refreshPage();
   }
@@ -127,9 +126,6 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
     }
     if (state == AppLifecycleState.resumed) {
       refreshPage();
-    }
-    else {
-      debugPrint("[HomePage] Not disposing");
     }
   }
 

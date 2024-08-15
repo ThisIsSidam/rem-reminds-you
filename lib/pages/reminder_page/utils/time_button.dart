@@ -60,7 +60,7 @@ class TimeButton extends ConsumerWidget {
     } else if
      (duration != null) {
       return Text(
-        getFormattedDurationForTimeEditButton(duration!),
+        getFormattedDurationForTimeEditButton(duration!, addPlusSymbol: true),
         style: Theme.of(context).textTheme.bodyMedium,
       );
     } else {

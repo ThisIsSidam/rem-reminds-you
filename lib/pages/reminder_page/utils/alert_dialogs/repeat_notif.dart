@@ -2,6 +2,7 @@ import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/pages/reminder_page/utils/base_versions/alert_dialog_base.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/utils/functions/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -64,7 +65,7 @@ class RepeatNotifDialog extends ConsumerWidget {
         )
         : Theme.of(context).elevatedButtonTheme.style, 
         child: Text(
-          "${duration.inMinutes} minute${duration.inMinutes == 1 ? "" : "s"}",
+          getFormattedDurationForTimeEditButton(duration),
           style: Theme.of(context).textTheme.bodyLarge,
         )
       ),

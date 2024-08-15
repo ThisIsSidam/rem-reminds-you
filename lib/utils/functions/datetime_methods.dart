@@ -65,26 +65,29 @@ String getFormattedTimeForTimeSetButton(DateTime time) {
   return formattedTime;
 }
 
-String getFormattedDurationForTimeEditButton(Duration dur) {
+String getFormattedDurationForTimeEditButton(Duration dur, {bool addPlusSymbol = false}) {
   final minutes = dur.inMinutes;
   String strDuration = "";
 
-  if (minutes > 0)
+  if (addPlusSymbol) 
   {
-    strDuration += "+";
+    if (minutes > 0)
+    {
+      strDuration += "+";
+    }
   }
 
   if ((minutes < 59) && (minutes > -59))
   {
-    strDuration += "${minutes.toString()} min";
+    strDuration += "${minutes.toString()} Min";
   }
   else if ( (minutes < 1439) && (minutes > -1439))
   {
-    strDuration += "${(minutes~/60).toString()} hr";
+    strDuration += "${(minutes~/60).toString()} Hr";
   }
   else 
   {
-    strDuration += "${((minutes~/60)~/24).toString()} day";
+    strDuration += "${((minutes~/60)~/24).toString()} Day";
   }
 
   return strDuration;
