@@ -1,3 +1,4 @@
+import 'package:Rem/consts/consts.dart';
 import 'package:Rem/pages/reminder_page/utils/title_parser/title_parser.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,10 @@ class _TitleFieldState extends ConsumerState<TitleField> {
 
     final reminder = ref.read(reminderNotifierProvider);
     titleController.text = reminder.title;
+    if (titleController.text == reminderNullTitle) 
+    {
+      titleController.text = "";
+    }
 
     final titleParser = TitleParseHandler(ref: ref);
     return Padding(

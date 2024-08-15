@@ -49,10 +49,13 @@ class _ReminderSectionState extends ConsumerState<ReminderPage> {
         final screenHeight = MediaQuery.of(context).size.height;
         
         return AnimatedContainer(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+            color: theme.scaffoldBackgroundColor,
+          ),
           padding: EdgeInsets.only(bottom: keyboardHeight),
           duration: const Duration(milliseconds: 100),
           height: screenHeight * 0.55 + keyboardHeight,
-          color: theme.scaffoldBackgroundColor,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
