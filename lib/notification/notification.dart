@@ -2,33 +2,34 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/pages/reminder_page/reminder_page.dart';
+import 'package:Rem/reminder_class/reminder.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:Rem/consts/consts.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 
 class NotificationController {
-
   static ReceivedAction? initialAction;
 
   static Future<void> initializeLocalNotifications() async {
+    await AndroidAlarmManager.initialize();
+
     await AwesomeNotifications().initialize(
       null,
       [
         NotificationChannel(
-          channelKey: '111', 
+          channelKey: '111',
           channelName: 'rem_channel',
           channelDescription: 'Shows Reminder Notification',
         )
       ],
-    ); 
+    );
 
     initialAction = await AwesomeNotifications()
-      .getInitialNotificationAction(removeFromActionEvents: false);
-
+        .getInitialNotificationAction(removeFromActionEvents: false);
   }
 
   static Future<bool> checkNotificationPermissions() async {
@@ -37,97 +38,95 @@ class NotificationController {
     return isAllowed;
   }
 
-  static Future<void> showNotification(
-    Reminder reminder,
-    {int repeatNumber = 0}
-  ) async {
-    await AwesomeNotifications().createNotification(
-content: NotificationContent(
-        id: (reminder.id ?? reminderNullID) + repeatNumber, 
-        channelKey: '111',
-        groupKey: reminder.id.toString(),
-        title: "Reminder: ${reminder.title}",
-        payload: reminder.toMap(),
-        autoDismissible: false
-      ),
-      actionButtons: [
-        NotificationActionButton(
-          key: 'done', 
-          label: 'Done',
-          actionType: ActionType.SilentBackgroundAction
-        ),
-      ],
-    );
-  }
-
   static Future<bool> scheduleNotification(
     Reminder reminder,
-    {
-    int repeatNumber = 0
-    }
   ) async {
+    final int id = reminder.id ?? reminderNullID;
 
-    final recurringInterval = reminder.recurringInterval;
-    final dateTime = reminder.dateAndTime;
+    final DateTime scheduledTime = reminder.dateAndTime;
 
-    return await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: (reminder.id ?? reminderNullID) + repeatNumber, 
-        channelKey: '111',
-        groupKey: reminder.id.toString(),
-        title: "Reminder: ${reminder.title}",
-        payload: reminder.toMap(),
-        autoDismissible: false,
-      ),
-      actionButtons: [
-        NotificationActionButton(
-          key: 'done', 
-          label: 'Done',
-          actionType: ActionType.SilentBackgroundAction
-        ),
-      ],
-      schedule: NotificationCalendar(
-        weekday: recurringInterval == RecurringInterval.weekly
-        ? dateTime.weekday
-        : null,
-        day: dateTime.day,
-        hour: dateTime.hour,
-        minute: dateTime.minute,
-        second: dateTime.second,
-        millisecond: dateTime.millisecond,
-        repeats: true
-      ),
+    await AndroidAlarmManager.oneShotAt(
+      scheduledTime,
+      id,
+      showNotificationCallback,
+      exact: true,
+      wakeup: true,
+      rescheduleOnReboot: true,
+      params: reminder.toMap(),
+    );
+
+    return true;
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> showNotificationCallback(
+      int id, Map<String, dynamic> params) async {
+    final Map<String, String> strParams = params.cast<String, String>();
+
+    final Reminder reminder = Reminder.fromMap(strParams);
+
+    int notificationShown = int.parse(strParams['notification_shown'] ?? "0");
+
+    notificationShown += 1;
+
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: notificationShown,
+            channelKey: '111',
+            title: "Reminder: ${reminder.title}",
+            groupKey: reminder.id.toString(),
+            wakeUpScreen: true,
+            payload: reminder.toMap()),
+        actionButtons: <NotificationActionButton>[
+          NotificationActionButton(
+            key: 'done',
+            label: 'Done',
+            actionType: ActionType.SilentBackgroundAction,
+          )
+        ]);
+
+    // Handle recurring notifications
+    DateTime nextScheduledTime =
+        reminder.dateAndTime.add(reminder.notifRepeatInterval);
+
+    reminder.dateAndTime = nextScheduledTime;
+
+    final newParams = reminder.toMap();
+
+    newParams['notification_shown'] = notificationShown.toString();
+
+    await AndroidAlarmManager.oneShotAt(
+      nextScheduledTime,
+      id,
+      showNotificationCallback,
+      exact: true,
+      wakeup: true,
+      rescheduleOnReboot: true,
+      params: newParams,
     );
   }
 
   static Future<void> cancelScheduledNotification(String groupKey) async {
-    if (groupKey == notificationNullGroupKey)
-    {
+    if (groupKey == notificationNullGroupKey) {
       debugPrint("[NotificationController] Null groupkey given to cancel.");
       return;
     }
 
-    await AwesomeNotifications().cancelSchedulesByGroupKey(groupKey);
+    await AndroidAlarmManager.cancel(int.parse(groupKey));
     debugPrint("$groupKey cancelled scheduled notification.");
   }
 
-  static Future<void> removeNotifications(String groupKey) async {
-    if (groupKey == notificationNullGroupKey)
-    {
-      throw "[removeNotifications] Null groupkey given";
-    }
-
-    await AwesomeNotifications().cancelNotificationsByGroupKey(groupKey);
-  }
-
   static Future<void> startListeningNotificationEvents() async {
-    AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceivedMethod);
+    AwesomeNotifications()
+        .setListeners(onActionReceivedMethod: onActionReceivedMethod);
   }
 
   @pragma('vm:entry-point')
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
+
+    debugPrint('[onActionReceivedMethod] Received action: ${receivedAction.actionType}');
 
     if (receivedAction.actionType == ActionType.Default)
     {
@@ -139,34 +138,20 @@ content: NotificationContent(
       else
       {
         final context = navigatorKey.currentContext!;
-        
+
+        debugPrint('[onActionReceivedMethod] Showing bottom sheet with reminder: $payload');
+
         showModalBottomSheet(
           isScrollControlled: true,
-          context: context, 
+          context: context,
           builder: (context) {
             return ReminderPage(
-              thisReminder: Reminder.fromMap(payload), 
-            );  
+              thisReminder: Reminder.fromMap(payload),
+            );
           }
         );
-        removeNotifications(receivedAction.groupKey ?? notificationNullGroupKey);
-      }
-    }
-
-    final SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
-
-    void sendToBgIsolate() { // Only called when main is not active.
-      if (bgIsolate != null) 
-      {
-        final message = {
-          'action': receivedAction.buttonKeyPressed,
-          'id': receivedAction.groupKey ?? notificationNullGroupKey
-        };
-        bgIsolate.send(message);
-      }
-      else 
-      {
-        debugPrint("[NotificationController] background Isolate is null");
+        debugPrint('[onActionReceivedMethod] Removing notifications with group key: ${receivedAction.groupKey ?? notificationNullGroupKey}');
+        cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
       }
     }
 
@@ -174,18 +159,19 @@ content: NotificationContent(
 
     bool isMainActive = await isMainIsolateActive();
 
-    if (receivedAction.buttonKeyPressed == 'done') 
+    if (receivedAction.buttonKeyPressed == 'done')
     {
-      if (isMainActive == true) 
+      if (isMainActive == true)
       {
         final message = {
           'action': 'done',
           'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
         };
         mainIsolate!.send(message);
+        debugPrint('[onActionReceivedMethod] Sent message to main isolate: $message');
       }
-      else 
-      { 
+      else
+      {
         await Hive.initFlutter();
 
         final db = await Hive.openBox(pendingRemovalsBoxName);
@@ -195,29 +181,28 @@ content: NotificationContent(
         listo.add(int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
 
         db.put(pendingRemovalsBoxKey, listo);
+        debugPrint('[onActionReceivedMethod] Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}');
         sendToBgIsolate();
-        
-      } 
+      }
     }
-    else 
+    else
     {
-      debugPrint("[NotificationController] Action on notificatino: ${receivedAction.actionType}");
+      debugPrint("[onActionReceivedMethod] Action on notificatino: ${receivedAction.actionType}");
     }
   }
 
   @pragma('vm:entry-point')
   static Future<bool> isMainIsolateActive() async {
     final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-    if (mainIsolate != null) 
-    {
+    if (mainIsolate != null) {
       final receivePort = ReceivePort();
-      IsolateNameServer.registerPortWithName(receivePort.sendPort, 'NotificationIsolate');
+      IsolateNameServer.registerPortWithName(
+          receivePort.sendPort, 'NotificationIsolate');
       mainIsolate.send('ping');
       final timeout = Duration(seconds: 3);
       try {
         final pong = await receivePort.first.timeout(timeout);
-        if (pong == 'pong') 
-        {
+        if (pong == 'pong') {
           return true;
         }
       } catch (e) {
@@ -231,7 +216,6 @@ content: NotificationContent(
     }
     return false;
   }
-
-
-
+  
+  static void sendToBgIsolate() {}
 }

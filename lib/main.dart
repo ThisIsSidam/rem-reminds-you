@@ -1,13 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Rem/app.dart';
-import 'package:Rem/background_service/bg_service.dart';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/database.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/duration.g.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -31,8 +30,6 @@ void main() async {
 
   // Awesome Notification
   await NotificationController.initializeLocalNotifications();
-
-  initializeService();
 
   runApp(ProviderScope(
     child: MyApp()

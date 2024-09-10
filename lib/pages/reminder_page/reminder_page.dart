@@ -3,8 +3,8 @@ import 'package:Rem/pages/reminder_page/utils/key_buttons_row.dart';
 import 'package:Rem/pages/reminder_page/utils/time_edit_grid.dart';
 import 'package:Rem/pages/reminder_page/utils/title_field.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ReminderPage extends ConsumerStatefulWidget {
@@ -58,13 +58,15 @@ class _ReminderSectionState extends ConsumerState<ReminderPage> {
           height: screenHeight * 0.55 + keyboardHeight,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                TitleField(),
-                DateTimeField(),
-                QuickAccessTimeTable(),
-                KeyButtonsRow(refreshHomePage: widget.refreshHomePage)
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TitleField(),
+                  DateTimeField(),
+                  QuickAccessTimeTable(),
+                  KeyButtonsRow(refreshHomePage: widget.refreshHomePage)
+                ],
+              ),
             ),
           ),
         );

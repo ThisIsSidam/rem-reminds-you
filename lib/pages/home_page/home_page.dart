@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/pages/archive_page/archive_page.dart';
-import 'package:Rem/pages/settings_page/settings_page.dart';
-import 'package:Rem/pages/home_page/utils/list_tile.dart';
-import 'package:flutter/material.dart';
+
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/notification/notification.dart';
+import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/database.dart';
-import 'package:Rem/utils/other_utils/entry_list_widget.dart';
-import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/notification/notification.dart';
+import 'package:Rem/pages/archive_page/archive_page.dart';
+import 'package:Rem/pages/home_page/utils/list_tile.dart';
 import 'package:Rem/pages/reminder_page/reminder_page.dart';
+import 'package:Rem/pages/settings_page/settings_page.dart';
+import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/other_utils/entry_list_widget.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -58,32 +59,6 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
         else 
         {
           debugPrint("Port message is not refreshHomePage");
-        }
-      }
-      else if (message is String)
-      {
-        if (message == "ping")
-        {
-          final notifPingPort = IsolateNameServer.lookupPortByName('NotificationIsolate');
-          if (notifPingPort != null) notifPingPort.send("pong");
-          else debugPrint("[homePageListener] notifPingPort is null");
-        }
-        else if (message == 'ping_from_bgIsolate')
-        {
-          if (bgIsolate != null) // Initialized on top
-          {
-            bgIsolate!.send("pong");
-          }
-          else // Reloading the isolate
-          {
-            bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
-            if (bgIsolate != null) bgIsolate!.send("pong");
-            else debugPrint("[homePageListener] bgIsolate is null");
-          }
-        }
-        else 
-        {
-          debugPrint("[homepageListener] Unknown string received");
         }
       }
       else 

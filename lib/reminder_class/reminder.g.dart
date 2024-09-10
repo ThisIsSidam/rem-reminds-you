@@ -19,9 +19,9 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
     return Reminder(
       title: fields[0] as String,
       id: fields[1] as int?,
-      dateAndTime: fields[2] as dynamic,
-      notifInterval: fields[4] as Duration?,
+      dateAndTime: fields[2] as DateTime,
     )
+      ..notifRepeatInterval = fields[4] as Duration
       ..mixinRecurringInterval = fields[5] as int
       ..mixinReminderStatus = fields[3] as int;
   }
