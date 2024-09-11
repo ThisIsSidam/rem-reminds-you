@@ -61,6 +61,18 @@ class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver
           debugPrint("Port message is not refreshHomePage");
         }
       }
+      else if (message is String)
+      {
+        if (message == "ping")
+        {
+          final notifPingPort = IsolateNameServer.lookupPortByName('NotificationIsolate');
+          if (notifPingPort != null) notifPingPort.send("pong");
+          else debugPrint("[homePageListener] notifPingPort is null");
+        }
+        else {
+          debugPrint("[homepageListener] Unknown string message received $message");
+        }
+      }
       else 
       {
         debugPrint("[homepageListener] Unknown message received $message");
