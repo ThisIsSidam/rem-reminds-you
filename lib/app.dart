@@ -1,10 +1,10 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/notification/notif_permi_rationale.dart';
-import 'package:Rem/utils/bottom_nav/bottom_nav_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/theme/app_theme.dart';
+import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 

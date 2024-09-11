@@ -4,7 +4,7 @@ import 'dart:ui';
 
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
-import 'package:Rem/pages/reminder_page/reminder_page.dart';
+import 'package:Rem/pages/reminder_sheet/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -145,7 +145,7 @@ class NotificationController {
           isScrollControlled: true,
           context: context,
           builder: (context) {
-            return ReminderPage(
+            return ReminderSheet(
               thisReminder: Reminder.fromMap(payload),
             );
           }
@@ -182,7 +182,6 @@ class NotificationController {
 
         db.put(pendingRemovalsBoxKey, listo);
         debugPrint('[onActionReceivedMethod] Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}');
-        sendToBgIsolate();
       }
     }
     else
@@ -216,6 +215,5 @@ class NotificationController {
     }
     return false;
   }
-  
-  static void sendToBgIsolate() {}
+
 }

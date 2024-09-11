@@ -1,12 +1,13 @@
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:Rem/database/archives_database.dart';
-import 'package:Rem/utils/functions/generate_id.dart';
-import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+
 import 'package:Rem/consts/consts.dart';
+import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/generate_id.dart';
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class RemindersDatabaseController {
   static Map<int, Reminder> reminders = {};
