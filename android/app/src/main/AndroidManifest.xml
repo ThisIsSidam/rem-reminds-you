@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
     <application
-        android:label="rem.reminds.you"
+        android:label="Rem"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/icon">
 
         <service
             android:name="dev.fluttercommunity.plus.androidalarmmanager.AlarmService"
