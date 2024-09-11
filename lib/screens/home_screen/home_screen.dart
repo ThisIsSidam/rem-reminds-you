@@ -9,7 +9,7 @@ import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/archive_screen/archive_screen.dart';
-import 'package:Rem/screens/home_screen/utils/list_tile.dart';
+import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_page.dart';
 import 'package:Rem/screens/settings_screen/settings_screen.dart';
 import 'package:Rem/widgets/entry_list_widget.dart';

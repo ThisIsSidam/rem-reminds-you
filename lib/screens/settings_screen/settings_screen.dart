@@ -1,7 +1,7 @@
 import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/screens/settings_screen/utils/new_reminder_settings/new_reminder_section.dart';
-import 'package:Rem/screens/settings_screen/utils/user_preferences_section/user_pref_settings.dart';
+import 'package:Rem/screens/settings_screen/widgets/new_reminder_settings/new_reminder_section.dart';
+import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/user_pref_settings.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {

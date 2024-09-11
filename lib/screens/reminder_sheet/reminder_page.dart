@@ -1,9 +1,9 @@
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/reminder_sheet/utils/date_time_field.dart';
-import 'package:Rem/screens/reminder_sheet/utils/key_buttons_row.dart';
-import 'package:Rem/screens/reminder_sheet/utils/time_edit_grid.dart';
-import 'package:Rem/screens/reminder_sheet/utils/title_field.dart';
+import 'package:Rem/screens/reminder_sheet/widgets/date_time_field.dart';
+import 'package:Rem/screens/reminder_sheet/widgets/key_buttons_row.dart';
+import 'package:Rem/screens/reminder_sheet/widgets/time_edit_grid.dart';
+import 'package:Rem/screens/reminder_sheet/widgets/title_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
