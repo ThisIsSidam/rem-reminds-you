@@ -1,4 +1,4 @@
-import 'package:Rem/pages/settings_screen/utils/new_reminder_settings/setting_tiles.dart';
+import 'package:Rem/screens/settings_screen/utils/new_reminder_settings/setting_tiles.dart';
 import 'package:flutter/material.dart';
 
 class NewReminderSection extends StatelessWidget {

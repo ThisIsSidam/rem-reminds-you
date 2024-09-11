@@ -1,9 +1,9 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/database.dart';
-import 'package:Rem/pages/reminder_sheet/utils/alert_dialogs/reminder_recurrence.dart';
-import 'package:Rem/pages/reminder_sheet/utils/alert_dialogs/repeat_notif.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/screens/reminder_sheet/utils/alert_dialogs/reminder_recurrence.dart';
+import 'package:Rem/screens/reminder_sheet/utils/alert_dialogs/repeat_notif.dart';
 import 'package:Rem/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

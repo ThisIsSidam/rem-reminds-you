@@ -1,6 +1,6 @@
-import 'package:Rem/pages/archive_screen/archive_screen.dart';
-import 'package:Rem/pages/home_screen/home_screen.dart';
-import 'package:Rem/pages/settings_screen/settings_screen.dart';
+import 'package:Rem/screens/archive_screen/archive_screen.dart';
+import 'package:Rem/screens/home_screen/home_screen.dart';
+import 'package:Rem/screens/settings_screen/settings_screen.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';

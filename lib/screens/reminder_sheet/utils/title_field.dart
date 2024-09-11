@@ -1,6 +1,6 @@
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/pages/reminder_sheet/utils/title_parser/title_parser.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/screens/reminder_sheet/utils/title_parser/title_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

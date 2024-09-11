@@ -1,9 +1,9 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/pages/settings_screen/utils/new_reminder_settings/default_due_datetime_modal.dart';
-import 'package:Rem/pages/settings_screen/utils/new_reminder_settings/default_due_repeat_interval_modal.dart';
-import 'package:Rem/pages/settings_screen/utils/new_reminder_settings/quick_time_table_modal.dart';
-import 'package:Rem/pages/settings_screen/utils/new_reminder_settings/repeat_duration_table_modal.dart';
+import 'package:Rem/screens/settings_screen/utils/new_reminder_settings/default_due_datetime_modal.dart';
+import 'package:Rem/screens/settings_screen/utils/new_reminder_settings/default_due_repeat_interval_modal.dart';
+import 'package:Rem/screens/settings_screen/utils/new_reminder_settings/quick_time_table_modal.dart';
+import 'package:Rem/screens/settings_screen/utils/new_reminder_settings/repeat_duration_table_modal.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 

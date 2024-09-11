@@ -4,8 +4,8 @@ import 'dart:ui';
 
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
-import 'package:Rem/pages/reminder_sheet/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/screens/reminder_sheet/reminder_page.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';

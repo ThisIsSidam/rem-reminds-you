@@ -1,6 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/pages/reminder_sheet/utils/time_button.dart';
+import 'package:Rem/screens/reminder_sheet/utils/time_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

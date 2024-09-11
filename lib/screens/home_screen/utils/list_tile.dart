@@ -1,5 +1,5 @@
-import 'package:Rem/pages/reminder_sheet/reminder_page.dart';
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/screens/reminder_sheet/reminder_page.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 

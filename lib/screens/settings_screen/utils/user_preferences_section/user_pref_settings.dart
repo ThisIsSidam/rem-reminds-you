@@ -1,4 +1,4 @@
-import 'package:Rem/pages/settings_screen/utils/user_preferences_section/setting_tiles.dart';
+import 'package:Rem/screens/settings_screen/utils/user_preferences_section/setting_tiles.dart';
 import 'package:flutter/material.dart';
 
 class UserPreferenceSection extends StatelessWidget {
