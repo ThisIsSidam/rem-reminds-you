@@ -67,8 +67,9 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: ConstColors.darkGrey,
+        color: ConstColors.lightGreyLessOpacity,
       ),
+      margin: EdgeInsets.symmetric(horizontal: 16),
       padding: EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,7 +80,10 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
           ),
           Text(
             diffString,
-            style: Theme.of(context).textTheme.titleSmall
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: Colors.white,
+              fontSize: 12
+            )
           )
         ],
       )

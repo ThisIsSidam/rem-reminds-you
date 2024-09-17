@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
+
+/// [DurationPickerBase] is a widget being used at multiple
+/// places in the app. It uses a [CupertinoTimerPicker] widget.
 class DurationPickerBase extends StatelessWidget {
   final void Function(Duration) onDurationChange;
   const DurationPickerBase({
@@ -17,7 +21,8 @@ class DurationPickerBase extends StatelessWidget {
         ),
         child: CupertinoTimerPicker(
           mode: CupertinoTimerPickerMode.hm,
-          onTimerDurationChanged: onDurationChange
+          onTimerDurationChanged: onDurationChange,
+          backgroundColor: Colors.transparent,
         ),
       ),
     );

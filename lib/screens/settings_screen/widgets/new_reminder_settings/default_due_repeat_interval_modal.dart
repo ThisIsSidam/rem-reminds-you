@@ -65,7 +65,7 @@ class _DefaultRepeatIntervalModalState extends State<DefaultRepeatIntervalModal>
       width: MediaQuery.sizeOf(context).width * 0.5,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: ConstColors.darkGrey
+        color: ConstColors.lightGreyLessOpacity
       ),
       padding: EdgeInsets.all(10),
       child: Center(
