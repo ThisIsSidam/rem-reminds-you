@@ -106,7 +106,7 @@ class RemindersDatabaseController {
 
     if (reminder.reminderStatus == ReminderStatus.archived) // Moving from archives to main reminder database.
     {
-      ArchivesDatabase.deleteArchivedReminder(reminder.id!);
+      Archives.deleteArchivedReminder(reminder.id!);
       reminder.reminderStatus = ReminderStatus.active;
       reminders[reminder.id!] = reminder;
       updateReminders();
@@ -154,7 +154,7 @@ class RemindersDatabaseController {
     ) {
       reminders.remove(id);
 
-      ArchivesDatabase.addReminderToArchives(reminder);
+      Archives.addReminderToArchives(reminder);
       
       updateReminders();
       printAll("After Deleting");

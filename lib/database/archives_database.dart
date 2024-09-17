@@ -2,7 +2,7 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class ArchivesDatabase {
+class Archives {
 
   static final _box = Hive.box(archivesBoxName);
 

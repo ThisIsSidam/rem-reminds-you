@@ -1,6 +1,5 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/archives_database.dart';
-import 'package:Rem/database/database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/archive_screen/widgets/list_tile.dart';
 import 'package:Rem/widgets/entry_list_widget.dart';
@@ -19,7 +18,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
   @override
   void initState() {
     
-    final Map<int, Reminder> archivedReminderMap = ArchivesDatabase.getArchivedReminders();
+    final Map<int, Reminder> archivedReminderMap = Archives.getArchivedReminders();
     archivedReminders = archivedReminderMap.values.toList();
 
     super.initState();
@@ -27,7 +26,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
 
   void refreshPage() {
     setState(() {
-      archivedReminders = RemindersDatabaseController.getReminders(key: archivesKey).values.toList();
+      archivedReminders = Archives.getArchivedReminders(key: archivesKey).values.toList();
     });
   }
 

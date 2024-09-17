@@ -59,7 +59,7 @@ class ArchiveReminderEntryListTile extends StatelessWidget {
     if (reminder.id == null) {
       throw "Couldn't fetch reminder id";
     }
-    ArchivesDatabase.deleteArchivedReminder(reminder.id ?? reminderNullID);
+    Archives.deleteArchivedReminder(reminder.id ?? reminderNullID);
     refreshPage();
   }
 }
