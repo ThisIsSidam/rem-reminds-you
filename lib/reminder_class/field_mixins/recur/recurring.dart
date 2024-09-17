@@ -4,8 +4,14 @@ import 'package:Rem/reminder_class/reminder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 mixin Recur {
+  /// The time in-between the reminder notifications.
   @HiveField(5)
   int mixinRecurringInterval = 0;
+
+
+  /// The time for the next recurring reminder
+  @HiveField(6)
+  DateTime baseDateTime = DateTime.new(DateTime.now().year);
 
   void initRecurringInterval(RecurringInterval? interval) {
     if (interval == null)

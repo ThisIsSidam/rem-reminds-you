@@ -1,11 +1,11 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/reminder_class/field_mixins/date_and_time.dart';
-import 'package:Rem/reminder_class/field_mixins/recurring_interval/recurring.dart';
+import 'package:Rem/reminder_class/field_mixins/recur/recurring.dart';
 import 'package:Rem/reminder_class/field_mixins/reminder_status/status.dart';
 import 'package:Rem/reminder_class/field_mixins/repeat.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-part 'field_mixins/recurring_interval/recurring_interval.dart';
+part 'field_mixins/recur/recurring_interval.dart';
 part 'field_mixins/reminder_status/reminder_status.dart';
 part 'reminder.g.dart';
 
@@ -22,6 +22,7 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
   // HiveField 3: reminderStatus
   // HiveField 4: notifRepeatDuration
   // HiveField 5: recurringInterval
+  // HiveField 6: baseDateTime
 
   Reminder({
     this.title = reminderNullTitle,
