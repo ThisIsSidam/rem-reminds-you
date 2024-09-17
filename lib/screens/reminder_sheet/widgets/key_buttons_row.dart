@@ -126,7 +126,10 @@ class KeyButtonsRow extends ConsumerWidget {
           ? MaterialButton(
             child: IconTheme(
               data: Theme.of(context).iconTheme,
-              child: const Icon(Icons.check),
+              child: const Icon(
+                Icons.archive,
+                color: Colors.red
+              ),
             ),
             onPressed: () => deleteReminder(reminder, context),
           )
