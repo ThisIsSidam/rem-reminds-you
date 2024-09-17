@@ -4,9 +4,9 @@ import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/reminder_recurrence.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/repeat_notif.dart';
-import 'package:Rem/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class KeyButtonsRow extends ConsumerWidget {
   final void Function()? refreshHomePage;
@@ -30,12 +30,12 @@ class KeyButtonsRow extends ConsumerWidget {
   void saveReminder(Reminder reminder, BuildContext context) {
     if (reminder.title == "No Title")
     {
-      showFlutterToast("Enter a title!");
+      Fluttertoast.showToast(msg: "Enter a title!");
       return;
     }
     if (reminder.dateAndTime.isBefore(DateTime.now()))
     {
-      showFlutterToast("Time machine is broke. Can't remind you in the past!");
+      Fluttertoast.showToast(msg: "Time machine is broke. Can't remind you in the past!");
       return;
     }
     RemindersDatabaseController.saveReminder(reminder);

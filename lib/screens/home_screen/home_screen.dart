@@ -80,7 +80,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     });
   }
 
-
   DateTime getDateTimeForNewReminder() {
     final addDuration = UserDB.getSetting(SettingOption.DueDateAddDuration);
     if (addDuration is Duration)
