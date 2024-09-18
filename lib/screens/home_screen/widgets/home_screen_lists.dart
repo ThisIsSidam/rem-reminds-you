@@ -1,8 +1,10 @@
 import 'package:Rem/consts/consts.dart';
+import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/database.dart';
+import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/database/settings/silde_actions.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/reminder_sheet/reminder_page.dart';
-import 'package:Rem/utils/datetime_methods.dart';
+import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -18,58 +20,6 @@ class HomeScreenReminderListSection extends StatelessWidget {
     required this.refreshPage,
   });
 
-  void _slideAndRemoveReminder(BuildContext context, Reminder reminder) {
-    RemindersDatabaseController.deleteReminder(
-      reminder.id ?? reminderNullID,
-      // To delete all recurring reminders, user has to open the reminder sheet.
-      allRecurringVersions: false 
-    );
-    refreshPage();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Text("'${reminder.title}' archived"),
-            Spacer(),
-            TextButton(
-              child: Text("Undo"),
-              onPressed: () {
-                RemindersDatabaseController.saveReminder(reminder);
-                refreshPage();
-              },
-            )
-          ],
-        )
-      )
-    );
-  }
-
-  void _slideAndPostponeReminder(BuildContext context, Reminder reminder) {
-    reminder.dateAndTime = reminder.dateAndTime.add(Duration(minutes: 10));
-    RemindersDatabaseController.saveReminder(reminder);
-
-    final ValueKey snackBarKey = ValueKey<String>('postponed-${reminder.id}');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 2),
-        key: snackBarKey,
-        content: Row(
-          children: [
-            Text("'${reminder.title}' postponed."),
-            Spacer(),
-            TextButton(
-              child: Text("Undo"),
-              onPressed: () {
-                reminder.dateAndTime = reminder.dateAndTime.subtract(Duration(minutes: 10));
-                RemindersDatabaseController.saveReminder(reminder);
-              },
-            )
-          ],
-        )
-      )
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,37 +50,9 @@ class HomeScreenReminderListSection extends StatelessWidget {
       
                 return Slidable(
                   key: ValueKey(reminder.id),
-                  startActionPane: ActionPane(
-                    motion: StretchMotion(),
-                    dragDismissible: true,
-                    dismissible: DismissiblePane(
-                      onDismissed: () {
-                        remindersList.removeAt(index);
-                        _slideAndRemoveReminder(context, reminder);
-                      }
-                    ), 
-                    children: [
-                      SlidableAction(
-                        backgroundColor: Colors.red,
-                        icon: Icons.archive,
-                        onPressed: (context) {
-                          remindersList.removeAt(index);
-                          _slideAndRemoveReminder(context, reminder);
-                        }
-                      )
-                    ]
-                  ),
-                  endActionPane: ActionPane(
-                    motion: StretchMotion(),
-                    children:[
-                      SlidableAction(
-                        icon: Icons.add,
-                        onPressed: (context) 
-                          => _slideAndPostponeReminder(context, reminder),
-                      )
-                    ]
-                  ),
-                  child: _HomePageReminderEntryListTile(
+                  startActionPane: ActionPaneManager.getActionToRight(remindersList, index, context, refreshPage),
+                  endActionPane: ActionPaneManager.getActionToLeft(remindersList, index, context, refreshPage),
+                  child: HomePageReminderEntryListTile(
                     reminder: reminder, 
                     refreshHomePage:  refreshPage
                   )
@@ -144,65 +66,142 @@ class HomeScreenReminderListSection extends StatelessWidget {
   } 
 }
 
+mixin ActionPaneManager {
+  
+  static ActionPane getActionToLeft(
+    List<Reminder> remindersList,
+    int index, 
+    BuildContext context,
+    void Function() refreshPage
+  ) {
+    final SlideAction action = UserDB.getSetting(SettingOption.HomeTileSlideAction_ToLeft);
+    
+    switch (action) {
+      case SlideAction.delete: return deleteActionPane(
+        remindersList,
+        index,
+        context,
+        refreshPage
+      ); 
+      case SlideAction.postpone: return postponeActionPane(context, remindersList[index]);
+    }
+  }
 
-class _HomePageReminderEntryListTile extends StatelessWidget {
-  final Reminder reminder;
-  final VoidCallback refreshHomePage;
+  static ActionPane getActionToRight(
+    List<Reminder> remindersList,
+    int index, 
+    BuildContext context,
+    void Function() refreshPage
+  ) {
+    final SlideAction action = UserDB.getSetting(SettingOption.HomeTileSlideAction_ToRight);
+    
+    switch (action) {
+      case SlideAction.delete: return deleteActionPane(
+        remindersList,
+        index,
+        context,
+        refreshPage
+      ); 
+      case SlideAction.postpone: return postponeActionPane(context, remindersList[index]);
+    }
+  }
 
-  const _HomePageReminderEntryListTile({
-    super.key,
-    required this.reminder,
-    required this.refreshHomePage
-  });
+  static ActionPane deleteActionPane(
+    List<Reminder> remindersList,
+    int index, 
+    BuildContext context,
+    void Function() refreshPage
+  ) {
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60,
-      child: ListTile(
-        title: Text(
-          reminder.title,
-          style: Theme.of(context).textTheme.titleMedium
-        ),
-        subtitle: Text(
-          getFormattedDateTime(reminder.dateAndTime),
-          style: Theme.of(context).textTheme.bodyMedium
-        ),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 5,),
-            Text(
-              getFormattedDiffString(dateTime: reminder.dateAndTime),
-              style: Theme.of(context).textTheme.bodySmall
-            ),
-            if (reminder.recurringInterval != RecurringInterval.none)
-            Text(
-              "⟳ ${reminder.recurringInterval.name}",
-              style: Theme.of(context).textTheme.bodySmall,
-            )
-          ],
-        ),
-        tileColor: Theme.of(context).cardColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15)
-        ),
-        minVerticalPadding: 8,
-        minTileHeight: 60,
-        onTap: () {
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context, 
-            builder: (context) {
-              return ReminderSheet(
-                thisReminder: reminder, 
-                refreshHomePage: refreshHomePage
-              );  
-            }
-          ); 
-        },
-      ),
+    final Reminder reminder = remindersList[index];
+
+    void _slideAndRemoveReminder(BuildContext context, Reminder reminder) {
+      RemindersDatabaseController.deleteReminder(
+        reminder.id ?? reminderNullID,
+        // To delete all recurring reminders, user has to open the reminder sheet.
+        allRecurringVersions: false 
+      );
+      refreshPage();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Text("'${reminder.title}' archived"),
+              Spacer(),
+              TextButton(
+                child: Text("Undo"),
+                onPressed: () {
+                  RemindersDatabaseController.saveReminder(reminder);
+                  refreshPage();
+                },
+              )
+            ],
+          )
+        )
+      );
+    }
+
+    return ActionPane(
+      motion: StretchMotion(),
+      dragDismissible: true,
+      dismissible: DismissiblePane(
+        onDismissed: () {
+          remindersList.removeAt(index);
+          _slideAndRemoveReminder(context, reminder);
+        }
+      ), 
+      children: [
+        SlidableAction(
+          backgroundColor: Colors.red,
+          icon: Icons.archive,
+          onPressed: (context) {
+            remindersList.removeAt(index);
+            _slideAndRemoveReminder(context, reminder);
+          }
+        )
+      ]
+    );
+  }
+
+  static ActionPane postponeActionPane(
+    BuildContext context,
+    Reminder reminder
+  ) {
+    return ActionPane(
+      motion: StretchMotion(),
+      children:[
+        SlidableAction(
+          icon: Icons.add,
+          onPressed: (context) {
+            reminder.dateAndTime = reminder.dateAndTime.add(
+              UserDB.getSetting(SettingOption.SlideActionPostponeDuration)
+            );
+            RemindersDatabaseController.saveReminder(reminder);
+
+            final ValueKey snackBarKey = ValueKey<String>('postponed-${reminder.id}');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: Duration(seconds: 2),
+                key: snackBarKey,
+                content: Row(
+                  children: [
+                    Text("'${reminder.title}' postponed."),
+                    Spacer(),
+                    TextButton(
+                      child: Text("Undo"),
+                      onPressed: () {
+                        reminder.dateAndTime = reminder.dateAndTime.subtract(Duration(minutes: 10));
+                        RemindersDatabaseController.saveReminder(reminder);
+                      },
+                    )
+                  ],
+                )
+              )
+            );
+          },
+        )
+      ]
     );
   }
 }
