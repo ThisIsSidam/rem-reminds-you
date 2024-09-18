@@ -1,8 +1,7 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/archive_screen/widgets/list_tile.dart';
-import 'package:Rem/widgets/entry_list_widget.dart';
+import 'package:Rem/screens/archive_screen/widgets/archived_reminder_list.dart';
 import 'package:flutter/material.dart';
 
 class ArchiveScreen extends StatefulWidget {
@@ -43,11 +42,9 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
     return Scaffold(
       appBar: getAppBar(),
       body: SingleChildScrollView(
-        child: EntryListWidget(
+        child: ArchiveEntryLists.ArchivedReminderList(
           remindersList: archivedReminders.reversed.toList(),
           refreshPage: refreshPage,
-          listEntryWidget: (Reminder rem, VoidCallback func)
-            => ArchiveReminderEntryListTile(reminder: rem, refreshPage: func),
         ),
       ),
     );
