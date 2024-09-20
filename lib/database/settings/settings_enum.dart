@@ -1,6 +1,6 @@
 // Do not change the order of the enums. Buttons access 
 // their respective values using the indexes.
-import 'package:Rem/database/settings/silde_actions.dart';
+import 'package:Rem/database/settings/swipe_actions.dart';
 
 enum SettingOption {
   DueDateAddDuration, 
@@ -83,7 +83,7 @@ class SettingsOptionMethods {
 
       case SettingOption.HomeTileSlideAction_ToLeft:
       case SettingOption.HomeTileSlideAction_ToRight:
-        return value is SlideAction;
+        return value is SwipeAction;
       
       default:
         throw ArgumentError('Unhandled SettingOption: $option');

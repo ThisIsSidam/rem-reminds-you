@@ -12,6 +12,11 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+
+  void refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +34,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          UserPreferenceSection(),
+          UserPreferenceSection(
+            refreshPage: refresh,
+          ),
           NewReminderSection(),
         ],
       ),

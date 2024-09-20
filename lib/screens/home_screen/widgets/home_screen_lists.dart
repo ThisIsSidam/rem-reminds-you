@@ -2,7 +2,7 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/database.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/database/settings/silde_actions.dart';
+import 'package:Rem/database/settings/swipe_actions.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
 import 'package:flutter/material.dart';
@@ -68,41 +68,43 @@ class HomeScreenReminderListSection extends StatelessWidget {
 
 mixin ActionPaneManager {
   
-  static ActionPane getActionToLeft(
+  static ActionPane? getActionToLeft(
     List<Reminder> remindersList,
     int index, 
     BuildContext context,
     void Function() refreshPage
   ) {
-    final SlideAction action = UserDB.getSetting(SettingOption.HomeTileSlideAction_ToLeft);
+    final SwipeAction action = UserDB.getSetting(SettingOption.HomeTileSlideAction_ToLeft);
     
     switch (action) {
-      case SlideAction.delete: return deleteActionPane(
+      case SwipeAction.none: return null;
+      case SwipeAction.delete: return deleteActionPane(
         remindersList,
         index,
         context,
         refreshPage
       ); 
-      case SlideAction.postpone: return postponeActionPane(context, remindersList[index]);
+      case SwipeAction.postpone: return postponeActionPane(context, remindersList[index]);
     }
   }
 
-  static ActionPane getActionToRight(
+  static ActionPane? getActionToRight(
     List<Reminder> remindersList,
     int index, 
     BuildContext context,
     void Function() refreshPage
   ) {
-    final SlideAction action = UserDB.getSetting(SettingOption.HomeTileSlideAction_ToRight);
+    final SwipeAction action = UserDB.getSetting(SettingOption.HomeTileSlideAction_ToRight);
     
     switch (action) {
-      case SlideAction.delete: return deleteActionPane(
+      case SwipeAction.none: return null;
+      case SwipeAction.delete: return deleteActionPane(
         remindersList,
         index,
         context,
         refreshPage
       ); 
-      case SlideAction.postpone: return postponeActionPane(context, remindersList[index]);
+      case SwipeAction.postpone: return postponeActionPane(context, remindersList[index]);
     }
   }
 
