@@ -52,7 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
 
         if (message["action"] == 'done')
         {
-          RemindersDatabaseController.moveToArchive(id);
+          RemindersDatabaseController.markAsDone(id);
           refreshPage();
         }
         else 
