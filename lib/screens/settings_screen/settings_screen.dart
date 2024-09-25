@@ -21,10 +21,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 70,
         backgroundColor: Colors.transparent,
-        title: Text(
-          "Settings",
-          style: Theme.of(context).textTheme.titleLarge,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight), 
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: Text(
+                "Settings",
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+            ),
+          )
         ),
         actions: [
           resetIcon()
@@ -34,8 +44,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          const SizedBox(height: 20),
           UserPreferenceSection(
             refreshPage: refresh,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Divider(),
           ),
           NewReminderSection(),
         ],

@@ -19,14 +19,19 @@ class UserPreferenceSection extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 20
+        horizontal: 10
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "User Preferences",
-            style: Theme.of(context).textTheme.titleSmall
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text(
+              "User Preferences",
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: Theme.of(context).colorScheme.primary
+              )
+            ),
           ),
           SizedBox(height: 5),
           Column(
@@ -37,7 +42,6 @@ class UserPreferenceSection extends StatelessWidget {
               settingTiles.getSlideToLeftActionsSetting(),
               SizedBox(height: 10,),
               settingTiles.getSlideToRightActionsSetting(),
-              SizedBox(height: 20,),
             ],
           )
         ],

@@ -16,7 +16,7 @@ class SettingTiles {
 
   Widget _settingTile({
     required String label,
-    Widget? trailing,
+    Widget? subtitle,
     void Function()? onTap,
   }) {
     return ListTileTheme(
@@ -27,7 +27,7 @@ class SettingTiles {
           style: Theme.of(context).textTheme.titleSmall,
         ),
         minTileHeight: 20,
-        trailing: trailing,
+        subtitle: subtitle,
         onTap: onTap,
       ),
     );
@@ -52,8 +52,8 @@ class SettingTiles {
         //   children: ,
         //   isSelected: isSelected
         // )
-        trailing:
-            Text("Coming Soon", style: Theme.of(context).textTheme.bodyMedium));
+        subtitle:
+            Text("Coming Soon", style: Theme.of(context).textTheme.bodySmall));
   }
 
   Widget getSlideToLeftActionsSetting() {
@@ -62,8 +62,8 @@ class SettingTiles {
 
     return _settingTile(
         label: "Swipe to Left Actions",
-        trailing:
-            Text(action.toString(), style: Theme.of(context).textTheme.bodyMedium),
+        subtitle:
+            Text(action.toString(), style: Theme.of(context).textTheme.bodySmall),
         onTap: () => _showModal(SwipeToLeftActionSheet()));
   }
 
@@ -73,8 +73,8 @@ class SettingTiles {
 
     return _settingTile(
         label: "Swipe to Right Actions",
-        trailing:
-            Text(action.toString(), style: Theme.of(context).textTheme.bodyMedium),
+        subtitle:
+            Text(action.toString(), style: Theme.of(context).textTheme.bodySmall),
         onTap: () => _showModal(SwipeToRightActionSheet()));
   }
 }

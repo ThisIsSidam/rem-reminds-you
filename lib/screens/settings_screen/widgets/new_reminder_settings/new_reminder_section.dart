@@ -11,14 +11,19 @@ class NewReminderSection extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 20
+        horizontal: 10
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "New Reminder",
-            style: Theme.of(context).textTheme.titleSmall
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text(
+              "New Reminder",
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: Theme.of(context).colorScheme.primary
+              )
+            ),
           ),
           SizedBox(height: 5),
           Column(

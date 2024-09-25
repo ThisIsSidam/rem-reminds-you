@@ -17,7 +17,7 @@ class SettingTiles {
   Widget _settingTile({
     required String label,
     required Function() onTap,
-    String? trailing
+    String? subtitle
   }) {
     return ListTileTheme(
       data: Theme.of(context).listTileTheme,
@@ -28,8 +28,8 @@ class SettingTiles {
         ),
         minTileHeight: 20,
         onTap: onTap,
-        trailing: trailing == null ? null : Text(
-          trailing,
+        subtitle: subtitle == null ? null : Text(
+          subtitle,
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ),
@@ -54,7 +54,7 @@ class SettingTiles {
 
     return _settingTile(
       label: "Default Due Date Time",
-      trailing: durString,
+      subtitle: durString,
       onTap: () => _showModal(DefaultDueDatetimeModal()),
     );
   }
@@ -65,7 +65,7 @@ class SettingTiles {
 
     return _settingTile(
       label: "Default Repeat Interval", 
-      trailing: durString,
+      subtitle: durString,
       onTap: () => _showModal(DefaultRepeatIntervalModal())
     );
   }
