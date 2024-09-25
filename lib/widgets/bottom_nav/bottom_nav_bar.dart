@@ -14,11 +14,7 @@ class NavigationSection extends StatefulWidget {
 
 class _NavigationSectionState extends State<NavigationSection> {
 
-  final List<GButton> _tabs = [
-    GButton(icon: Icons.archive, text: "Archive"),
-    GButton(icon: Icons.home, text: "Home"),
-    GButton(icon: Icons.settings, text: "Settings"),
-  ];
+  
 
   final List<Widget> _pages = [
     ArchiveScreen(),
@@ -30,6 +26,17 @@ class _NavigationSectionState extends State<NavigationSection> {
 
   @override
   Widget build(BuildContext context) {
+
+    final Color iconColor = Theme.of(context).textTheme.bodyLarge!.color!;
+    final List<GButton> _tabs = [
+      GButton(icon: Icons.archive, text: "Archive", iconColor: iconColor,
+      iconActiveColor: iconColor,),
+      GButton(icon: Icons.home, text: "Home", iconColor: iconColor,
+      iconActiveColor: iconColor,),
+      GButton(icon: Icons.settings, text: "Settings", iconColor: iconColor,
+      iconActiveColor: iconColor,),
+    ];
+
     return Scaffold(
       body: DoubleBackToCloseApp(
         child: _pages[_selectedTab],
@@ -41,7 +48,14 @@ class _NavigationSectionState extends State<NavigationSection> {
         tabs: _tabs,
         gap: 8,
         selectedIndex: _selectedTab,
+        padding: EdgeInsets.all(20),
+        tabMargin: EdgeInsets.only(top: 8, bottom: 8),
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        rippleColor: Theme.of(context).colorScheme.onPrimary,
+        activeColor: Theme.of(context).colorScheme.onPrimary,
+        hoverColor: Theme.of(context).colorScheme.onPrimary,
+        tabBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        textStyle: Theme.of(context).textTheme.labelLarge,
         onTabChange: (index) {
           setState(() {
             _selectedTab = index;

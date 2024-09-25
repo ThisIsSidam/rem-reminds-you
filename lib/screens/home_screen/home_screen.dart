@@ -127,21 +127,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   @override
   Widget build(BuildContext context) {
 
-    if (noOfReminders == 0)
-    {
-      return Scaffold(
-        appBar: getAppBar(),
-        body: getEmptyPage()
-      );
-    }
     return Scaffold(
-      appBar: getAppBar(),
-      body: getListedReminderPage(),
-      floatingActionButton: getFloatingActionButton()
+      appBar: _getAppBar(),
+      body: noOfReminders == 0 
+      ? _getEmptyPage()
+      : _getListedReminderPage(),
+      floatingActionButton: _getFloatingActionButton(),
     );
+
   }
 
-  AppBar getAppBar() {
+  AppBar _getAppBar() {
     return AppBar(
       surfaceTintColor: null,
       backgroundColor: Colors.transparent,
@@ -152,42 +148,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     );
   }
 
-  Widget getEmptyPage() {
+  Widget _getEmptyPage() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            noRemindersPageText,
-            style: Theme.of(context).textTheme.bodyMedium,
+          Icon(
+            Icons.alarm_off_outlined,
+            size: 100,
           ),
           SizedBox(height: 20,),
-          SizedBox(
-            height: 75,
-            width: 200,
-            child: ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context, 
-                  builder: (context) {
-                    return ReminderSheet(
-                      thisReminder: Reminder(dateAndTime: getDateTimeForNewReminder()), 
-                      refreshHomePage: refreshPage
-                    );
-                  }
-                ); 
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Set a reminder",
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ),
-              style: Theme.of(context).elevatedButtonTheme.style
-            )
-          )
+          Text(
+            "No Reminders",
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
         ],
       ),
     );
@@ -213,7 +187,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     );
   }
 
-  Widget getListedReminderPage() {
+  Widget _getListedReminderPage() {
 
     return ListView.builder(
       padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -265,10 +239,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   }
 
 
-  Widget getFloatingActionButton() {
-    return FloatingActionButton(
+  Widget _getFloatingActionButton() {
+    return FloatingActionButton.large(
       onPressed: () {
-
         showModalBottomSheet(
           isScrollControlled: true,
           context: context, 
