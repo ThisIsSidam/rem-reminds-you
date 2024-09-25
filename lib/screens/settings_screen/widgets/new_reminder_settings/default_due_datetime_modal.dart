@@ -80,10 +80,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
           ),
           Text(
             diffString,
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Colors.white,
-              fontSize: 12
-            )
+            style: Theme.of(context).textTheme.titleSmall
           )
         ],
       )

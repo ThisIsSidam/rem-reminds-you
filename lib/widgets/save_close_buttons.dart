@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:Rem/consts/const_colors.dart';
+import 'package:flutter/material.dart';
 
 class SaveCloseButtons extends StatelessWidget {
 
@@ -58,9 +58,7 @@ class SaveCloseButtons extends StatelessWidget {
       height: 50,
       width: 100,
       child: ElevatedButton(
-        style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-          backgroundColor: WidgetStatePropertyAll(color)
-        ),
+        style: Theme.of(context).elevatedButtonTheme.style,
         child: Text(
           label,
           style: Theme.of(context).textTheme.bodyLarge,

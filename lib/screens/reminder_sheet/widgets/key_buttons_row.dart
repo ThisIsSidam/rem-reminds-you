@@ -146,9 +146,7 @@ class KeyButtonsRow extends ConsumerWidget {
                   "Save", 
                   style: Theme.of(context).textTheme.titleMedium
                 ),
-                style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
-                ),
+                style: Theme.of(context).elevatedButtonTheme.style
               )
             ],
           ),

@@ -69,9 +69,7 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
           Navigator.pop(context);
         }, 
         style: isPickedOption
-        ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
-          backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
-        )
+        ? Theme.of(context).elevatedButtonTheme.style
         : Theme.of(context).elevatedButtonTheme.style, 
         child: Text(
           RecurringIntervalExtension.getDisplayName(interval),

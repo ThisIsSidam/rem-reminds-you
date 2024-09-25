@@ -18,9 +18,7 @@ class NewReminderSection extends StatelessWidget {
         children: [
           Text(
             "New Reminder",
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Colors.white
-            ),
+            style: Theme.of(context).textTheme.titleSmall
           ),
           SizedBox(height: 5),
           Column(

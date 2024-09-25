@@ -185,10 +185,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
-              style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
-              )
-            ),
+              style: Theme.of(context).elevatedButtonTheme.style
+            )
           )
         ],
       ),
@@ -227,7 +225,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             return HomeScreenReminderListSection(
               label: Text(
                 "Overdue", 
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red)
+                style: Theme.of(context).textTheme.titleMedium
               ),
               remindersList: remindersMap[overdueSectionTitle] ?? [],
               refreshPage: refreshPage,
@@ -236,8 +234,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             return HomeScreenReminderListSection(
               label: Text(
                 "Today", 
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Theme.of(context).primaryColor)
+                style: Theme.of(context).textTheme.titleMedium
               ),
               remindersList: remindersMap[todaySectionTitle] ?? [],
               refreshPage: refreshPage,
@@ -246,7 +243,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             return HomeScreenReminderListSection(
               label: Text(
                 "Tomorrow", 
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.green)
+                style: Theme.of(context).textTheme.titleMedium
               ),
               remindersList: remindersMap[tomorrowSectionTitle] ?? [],
               refreshPage: refreshPage,
@@ -255,7 +252,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             return HomeScreenReminderListSection(
               label: Text(
                 "Later", 
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.yellow)
+                style: Theme.of(context).textTheme.titleMedium
               ),
               remindersList: remindersMap[laterSectionTitle] ?? [],
               refreshPage: refreshPage,

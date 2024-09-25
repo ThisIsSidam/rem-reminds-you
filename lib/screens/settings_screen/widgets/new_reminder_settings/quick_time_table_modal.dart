@@ -1,4 +1,3 @@
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/utils/datetime_methods.dart';
@@ -185,17 +184,11 @@ class _QuickTimeTableModalState extends State<QuickTimeTableModal> {
       onPressed: () => setSelectedOption(option),
       child: Text(
         label,
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-          fontSize: 12
-        ),
+        style: Theme.of(context).textTheme.titleMedium
       ),
       style: selectedSettingOption == option 
-      ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
-        backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
-      )
-      : Theme.of(context).elevatedButtonTheme.style!.copyWith(
-        backgroundColor: WidgetStatePropertyAll(ConstColors.lightGreyLessOpacity)
-      ),
+      ? Theme.of(context).elevatedButtonTheme.style
+      : Theme.of(context).elevatedButtonTheme.style
     );
   }
 }

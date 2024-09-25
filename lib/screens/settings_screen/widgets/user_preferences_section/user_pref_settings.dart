@@ -26,9 +26,7 @@ class UserPreferenceSection extends StatelessWidget {
         children: [
           Text(
             "User Preferences",
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Colors.white
-            ),
+            style: Theme.of(context).textTheme.titleSmall
           ),
           SizedBox(height: 5),
           Column(

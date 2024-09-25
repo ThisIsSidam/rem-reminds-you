@@ -2,8 +2,8 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/notification/notif_permi_rationale.dart';
 import 'package:Rem/notification/notification.dart';
-import 'package:Rem/theme/app_theme.dart';
 import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -61,21 +61,49 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      home: FutureBuilder(
-        future: Hive.openBox(indiValuesBoxName),
-        builder: (context, stacktrace) {
-          return _checkingPermissions
-          ? const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : const NavigationSection();
-        },
-      ),
-      theme: myTheme,
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+
+        ColorScheme lightColorScheme;
+        ColorScheme darkColorScheme;
+
+        if (lightDynamic != null && darkDynamic != null) {
+          lightColorScheme = lightDynamic.harmonized();
+          darkColorScheme = darkDynamic.harmonized();
+        } else {
+          lightColorScheme = ColorScheme.fromSwatch(
+            primarySwatch: Colors.blue
+          );
+          darkColorScheme = ColorScheme.fromSwatch(
+            brightness: Brightness.dark,
+          );
+        }
+
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          home: FutureBuilder(
+            future: Hive.openBox(indiValuesBoxName),
+            builder: (context, stacktrace) {
+              return _checkingPermissions
+              ? const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : const NavigationSection();
+            },
+          ),
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: lightColorScheme,
+          ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: darkColorScheme,
+          ),
+          themeMode: ThemeMode.system,
+        );
+      }
     );
   }
 }
