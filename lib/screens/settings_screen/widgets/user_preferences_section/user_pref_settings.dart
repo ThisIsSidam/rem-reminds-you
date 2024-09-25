@@ -39,6 +39,7 @@ class UserPreferenceSection extends StatelessWidget {
               settingTiles.getSlideToLeftActionsSetting(),
               SizedBox(height: 10,),
               settingTiles.getSlideToRightActionsSetting(),
+              SizedBox(height: 20,),
             ],
           )
         ],
