@@ -1,6 +1,3 @@
-import 'dart:isolate';
-import 'dart:ui';
-
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/notification/notification.dart';
@@ -27,7 +24,7 @@ class RemindersDatabaseController {
     for (final id in removals) 
     {
       // debugPrint("[clearPendingRemovals] Removing $id");
-      deleteReminder(id);
+      moveToArchive(id);
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
     // debugPrint("[clearPendingRemovals] Removing Done");
@@ -60,18 +57,6 @@ class RemindersDatabaseController {
   /// Update reminders to the database.
   static void updateReminders() async {
     _remindersBox.put(remindersBoxKey, reminders);
-
-    final SendPort? backgroundIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
-    if (backgroundIsolate != null) 
-    {
-      final message = RemindersDatabaseController.getRemindersAsMaps();
-
-      backgroundIsolate.send(message);
-    }
-    else
-    {
-      debugPrint("[updateReminders] background Isolate is null");
-    }
   }
 
   /// Number of reminders present in the database.
@@ -106,11 +91,7 @@ class RemindersDatabaseController {
 
     if (reminder.reminderStatus == ReminderStatus.archived) // Moving from archives to main reminder database.
     {
-      Archives.deleteArchivedReminder(reminder.id!);
-      reminder.reminderStatus = ReminderStatus.active;
-      reminders[reminder.id!] = reminder;
-      updateReminders();
-      printAll("After Saving");
+      retrieveFromArchives(reminder);
       return;
     }
 
@@ -129,47 +110,110 @@ class RemindersDatabaseController {
     printAll("After Adding");
   }
 
-  /// Does not actually delete. Moves the reminder to Archives.
-  static void deleteReminder(int id, {bool allRecurringVersions = false}) {  
-
+  static Reminder? _getReminder(int id) {
     getReminders();
-    
-    printAll("Before Deleting");
+    if (reminders.containsKey(id)){
+      return reminders[id]!;
+    } else {
+      return null;
+    }
+  }
 
-    if (!reminders.containsKey(id)) { // Reminder not found in database
-      printAll("After Deleting");
-      throw "[homepageDeleteReminder] Reminder not found in database";
-    } 
+  static void retrieveFromArchives(Reminder reminder) {
+    Archives.deleteArchivedReminder(reminder.id!);
+    NotificationController.scheduleNotification(reminder);
+    reminder.reminderStatus = ReminderStatus.active;
+    reminders[reminder.id!] = reminder;
+    updateReminders();
+    printAll("After Saving");
+  }
 
-    Reminder reminder = reminders[id]!;
+  static void markAsDone(int id) {
+    final Reminder? reminder = _getReminder(id);
+    if (reminder == null) {
+      throw "[markAsDone] Reminder not found in database";
+    }
+
+    if (reminder.recurringInterval == RecurringInterval.none) {
+      moveToArchive(id);
+    } else {
+      moveToNextReminderOccurence(id);
+    }
+  }
+
+  /// Does not actually delete. Moves the reminder to Archives.
+  static void moveToArchive(int id) {  
+    final Reminder? reminder = _getReminder(id);
+    if (reminder == null) {
+      throw "[moveToArchives] Reminder not found in database";
+    }    
 
     // Have to cancel scheduled notification in all cases.
     NotificationController.cancelScheduledNotification(
       id.toString()
     );
 
-    if ( // Handle Deletion of Non-recurring or all recurrence of recurring reminder.
-      reminder.recurringInterval == RecurringInterval.none || 
-      allRecurringVersions
-    ) {
-      reminders.remove(id);
-
-      Archives.addReminderToArchives(reminder);
-      
-      updateReminders();
-      printAll("After Deleting");
-      return;
-    }
-
-    // Handle moving-up recurring reminder to next recurring date-time and saving it in db..
-    reminder.incrementRecurDuration();
-    NotificationController.scheduleNotification(reminder); // Schedule with updated time.
-    reminders[id] = reminder;
+    reminders.remove(id);
+    Archives.addReminderToArchives(reminder);
     updateReminders();
-    printAll("After Deleting");
+    printAll("After Archiving");
   }
 
-  
+  static void moveToNextReminderOccurence(int id) {
+    final Reminder? reminder = _getReminder(id);
+    if (reminder == null) {
+      throw "[moveToNextReminderIteration] Reminder not found in database";
+    }
+
+    // Have to cancel scheduled notification in all cases.
+    NotificationController.cancelScheduledNotification(
+      id.toString()
+    );
+
+    reminder.incrementRecurDuration();
+    NotificationController.scheduleNotification(reminder);
+    reminders[id] = reminder;
+    updateReminders();
+    printAll('After Skipping');
+  }
+
+  static void moveToPreviousReminderOccurence(int id) {
+    final Reminder? reminder = _getReminder(id);
+    if (reminder == null) {
+      throw "[moveToNextReminderIteration] Reminder not found in database";
+    }
+
+    // Have to cancel scheduled notification in all cases.
+    NotificationController.cancelScheduledNotification(
+      id.toString()
+    );
+
+    reminder.decrementRecurDuration();
+    NotificationController.scheduleNotification(reminder);
+    reminders[id] = reminder;
+    updateReminders();
+    printAll('After Skipping');
+  }
+
+  static void deleteReminder(int id, {bool allRecurringVersions = false}) {
+    final Reminder? reminder = _getReminder(id);
+    if (reminder == null) {
+      throw "[deleteReminder] Reminder not found in database";
+    }
+
+    if (
+      reminder.recurringInterval == RecurringInterval.none ||
+      allRecurringVersions == true
+    ) {
+      NotificationController.cancelScheduledNotification(id.toString());
+      reminders.remove(id);
+      updateReminders();
+      printAll('After Deleting');
+      return;
+    } 
+
+    moveToArchive(id);
+  }
 
   /// Print id of all the reminders which are present in the database.
   static void printAll(String str) {

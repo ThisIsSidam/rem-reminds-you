@@ -2,17 +2,23 @@ import 'dart:core';
 
 enum SwipeAction {
   none, 
+  done,
   delete,
-  postpone;
+  postpone,
+  doneAndDelete;
 
   @override
   String toString() {
     if (this == none) {
       return 'None';
+    } else if (this == done) {
+      return 'Done';
     } else if (this == delete) {
       return 'Delete';
     } else if (this == postpone) {
       return 'Postpone';
+    } else if (this == doneAndDelete) {
+      return 'Done/Delete';
     } else {
       return 'Unknown';
     }

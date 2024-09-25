@@ -100,4 +100,12 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
       dateAndTime = dateAndTime.add(increment);
     }
   }
+
+  void decrementRecurDuration() {
+    final decrement = getRecurIncrementDuration();
+
+    if (decrement != null) {
+      dateAndTime = dateAndTime.subtract(decrement);
+    }
+  }
 }

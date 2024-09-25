@@ -65,7 +65,7 @@ class KeyButtonsRow extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             content: Text(
-              'This is a recurring reminder. Do you want to remove all instances of this reminder? Or only the next instance?',
+              'This is a recurring reminder. Do you really want to delete it? You can also archive it.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
@@ -84,18 +84,17 @@ class KeyButtonsRow extends ConsumerWidget {
                   Navigator.of(context).pop(); // Close the dialog
                 },
                 child: Text(
-                  'Remove This Only',
+                  'Archive',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
               TextButton(
-                onPressed: () { // Reminder won't be deleted unless RF is none.
-                  reminder.recurringInterval = RecurringInterval.none;
+                onPressed: () { 
                   finalDelete(deleteAllRecurring: true);
                   Navigator.of(context).pop(); // Close the dialog
                 },
                 child: Text(
-                  'Remove All',
+                  'Delete',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
@@ -127,7 +126,7 @@ class KeyButtonsRow extends ConsumerWidget {
             child: IconTheme(
               data: Theme.of(context).iconTheme,
               child: const Icon(
-                Icons.archive,
+                Icons.delete,
                 color: Colors.red
               ),
             ),

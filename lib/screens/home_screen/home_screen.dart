@@ -52,7 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
 
         if (message["action"] == 'done')
         {
-          RemindersDatabaseController.deleteReminder(id);
+          RemindersDatabaseController.moveToArchive(id);
           refreshPage();
         }
         else 
@@ -99,7 +99,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   }
 
   void deleteAndRefresh(int id) {
-    RemindersDatabaseController.deleteReminder(id);
+    RemindersDatabaseController.moveToArchive(id);
     refreshPage();
   }
 
