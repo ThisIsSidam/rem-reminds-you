@@ -5,16 +5,16 @@ import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-class NavigationSection extends StatefulWidget {
-  const NavigationSection({super.key});
+
+// [BaseScreen] holds the bottom nav bar.
+class BaseScreen extends StatefulWidget {
+  const BaseScreen({super.key});
 
   @override
-  State<NavigationSection> createState() => _NavigationSectionState();
+  State<BaseScreen> createState() => _BaseScreenState();
 }
 
-class _NavigationSectionState extends State<NavigationSection> {
-
-  
+class _BaseScreenState extends State<BaseScreen> {
 
   final List<Widget> _pages = [
     ArchiveScreen(),

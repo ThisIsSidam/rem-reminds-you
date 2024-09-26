@@ -64,7 +64,7 @@ class TimeButton extends ConsumerWidget {
      (duration != null) {
       return Text(
         getFormattedDurationForTimeEditButton(duration!, addPlusSymbol: true),
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: Theme.of(context).textTheme.labelMedium,
       );
     } else {
       throw "Both dateTime and duration can't be null";

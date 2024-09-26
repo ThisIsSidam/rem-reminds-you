@@ -71,9 +71,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           lightColorScheme = lightDynamic.harmonized();
           darkColorScheme = darkDynamic.harmonized();
         } else {
-          lightColorScheme = ColorScheme.fromSwatch(
-            primarySwatch: Colors.blue
-          );
+          lightColorScheme = ColorScheme.fromSwatch(primarySwatch:  Colors.blue);
           darkColorScheme = ColorScheme.fromSwatch(
             brightness: Brightness.dark,
           );
@@ -90,7 +88,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     child: CircularProgressIndicator(),
                   ),
                 )
-              : const NavigationSection();
+              : const BaseScreen();
             },
           ),
           theme: ThemeData(
