@@ -106,12 +106,21 @@ class NotificationController {
     );
   }
 
+  /// Used to remove notifications present in user's notification space.
+  static Future<void> _removeNotifications(String groupKey) async {
+    await AwesomeNotifications().cancelNotificationsByGroupKey(groupKey);
+  }
+
+
+  /// Cancels the scheduled notification. 
   static Future<void> cancelScheduledNotification(String groupKey) async {
     if (groupKey == notificationNullGroupKey) {
       debugPrint("[NotificationController] Null groupkey given to cancel.");
       return;
     }
 
+    // Cancelling through ALM coz AwesomeN is used to only send notification.
+    // It has no hands in scheduling notifications.
     await AndroidAlarmManager.cancel(int.parse(groupKey));
     debugPrint("$groupKey cancelled scheduled notification.");
   }
@@ -151,7 +160,7 @@ class NotificationController {
           }
         );
         debugPrint('[onActionReceivedMethod] Removing notifications with group key: ${receivedAction.groupKey ?? notificationNullGroupKey}');
-        cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
+        _removeNotifications(receivedAction.groupKey ?? notificationNullGroupKey);
       }
     }
 
@@ -161,6 +170,7 @@ class NotificationController {
 
     if (receivedAction.buttonKeyPressed == 'done')
     {
+      cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
       if (isMainActive == true)
       {
         final message = {
@@ -186,7 +196,7 @@ class NotificationController {
     }
     else
     {
-      debugPrint("[onActionReceivedMethod] Action on notificatino: ${receivedAction.actionType}");
+      debugPrint("[onActionReceivedMethod] Action on notification: ${receivedAction.actionType}");
     }
   }
 

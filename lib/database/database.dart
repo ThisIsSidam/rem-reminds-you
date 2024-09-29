@@ -146,7 +146,8 @@ class RemindersDatabaseController {
   static void moveToArchive(int id) {  
     final Reminder? reminder = _getReminder(id);
     if (reminder == null) {
-      throw "[moveToArchives] Reminder not found in database";
+      debugPrint("[moveToArchives] Reminder not found in database");
+      return;
     }    
 
     // Have to cancel scheduled notification in all cases.
@@ -199,7 +200,8 @@ class RemindersDatabaseController {
   static void deleteReminder(int id, {bool allRecurringVersions = false}) {
     final Reminder? reminder = _getReminder(id);
     if (reminder == null) {
-      throw "[deleteReminder] Reminder not found in database";
+      debugPrint("[deleteReminder] Reminder not found in database");
+      return;
     }
 
     if (
