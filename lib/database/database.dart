@@ -131,7 +131,8 @@ class RemindersDatabaseController {
   static void markAsDone(int id) {
     final Reminder? reminder = _getReminder(id);
     if (reminder == null) {
-      throw "[markAsDone] Reminder not found in database";
+      debugPrint("[markAsDone] Reminder not found in database");
+      return;
     }
 
     if (reminder.recurringInterval == RecurringInterval.none) {

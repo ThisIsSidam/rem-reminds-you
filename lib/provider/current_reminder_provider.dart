@@ -6,7 +6,6 @@ class ReminderNotifier extends StateNotifier<Reminder> {
   ReminderNotifier() : super(Reminder(dateAndTime: DateTime.now()));
 
   void updateReminder(Reminder newReminder) {
-    print("Value Updated");
     state = newReminder.deepCopyReminder();
   }
 

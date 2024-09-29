@@ -1,0 +1,8 @@
+-dontwarn com.google.j2objc.annotations.ReflectionSupport$Level
+-dontwarn com.google.j2objc.annotations.ReflectionSupport
+-keep class com.google.j2objc.annotations.ReflectionSupport { *; }
+-keep class com.google.gson.reflect.TypeToken
+-keep class * extends com.google.gson.reflect.TypeToken
+-keep class com.google.common.reflect.TypeToken
+-keep class * extends com.google.common.reflect.TypeToken
+-keep public class * implements java.lang.reflect.Type
