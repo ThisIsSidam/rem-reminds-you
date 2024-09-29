@@ -1,4 +1,5 @@
 import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/database/settings/swipe_actions.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 
 final Map<String, dynamic> defaultSettings = {
@@ -27,4 +28,8 @@ final Map<String, dynamic> defaultSettings = {
   SettingOption.RepeatIntervalOption4.toString(): Duration(minutes: 15),
   SettingOption.RepeatIntervalOption5.toString(): Duration(minutes: 30),
   SettingOption.RepeatIntervalOption6.toString(): Duration(hours: 1),
+
+  SettingOption.HomeTileSlideAction_ToLeft.toString(): SwipeAction.postpone.index,
+  SettingOption.HomeTileSlideAction_ToRight.toString(): SwipeAction.delete.index,
+  SettingOption.SlideActionPostponeDuration.toString(): Duration(minutes: 30)
 };

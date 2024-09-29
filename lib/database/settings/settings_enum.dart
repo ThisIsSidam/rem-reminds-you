@@ -1,9 +1,12 @@
 // Do not change the order of the enums. Buttons access 
 // their respective values using the indexes.
+import 'package:Rem/database/settings/swipe_actions.dart';
+
 enum SettingOption {
   DueDateAddDuration, 
   RepeatIntervalFieldValue,
-  RecurringIntervalFieldValue, // I think I should remove this, but would also have to make changes to wherever the enum's index is used. So..
+  RecurringIntervalFieldValue, // I think I should remove this, but would 
+  // also have to make changes to wherever the enum's index is used. So..
 
   QuickTimeSetOption1, // Index 3 to 6
   QuickTimeSetOption2,
@@ -25,6 +28,10 @@ enum SettingOption {
   RepeatIntervalOption4,
   RepeatIntervalOption5,
   RepeatIntervalOption6,
+
+  HomeTileSlideAction_ToRight, // Index 21 to 24
+  HomeTileSlideAction_ToLeft,
+  SlideActionPostponeDuration,
 }
 
 class SettingsOptionMethods {
@@ -70,7 +77,13 @@ class SettingsOptionMethods {
       case SettingOption.RepeatIntervalOption4:
       case SettingOption.RepeatIntervalOption5:
       case SettingOption.RepeatIntervalOption6:
+
+      case SettingOption.SlideActionPostponeDuration:
         return value is Duration;
+
+      case SettingOption.HomeTileSlideAction_ToLeft:
+      case SettingOption.HomeTileSlideAction_ToRight:
+        return value is SwipeAction;
       
       default:
         throw ArgumentError('Unhandled SettingOption: $option');

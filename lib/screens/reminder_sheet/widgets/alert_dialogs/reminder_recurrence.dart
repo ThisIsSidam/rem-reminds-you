@@ -3,9 +3,9 @@ import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/base_versions/alert_dialog_base.dart';
-import 'package:Rem/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ReminderRecurrenceDialog extends ConsumerWidget {
   ReminderRecurrenceDialog({super.key});
@@ -61,7 +61,7 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
         onPressed: () {
           if (interval == RecurringInterval.custom)
           {
-            showFlutterToast("Coming soon!");
+            Fluttertoast.showToast(msg: "Coming soon!");
             return;
           }
           reminder.recurringInterval = interval;

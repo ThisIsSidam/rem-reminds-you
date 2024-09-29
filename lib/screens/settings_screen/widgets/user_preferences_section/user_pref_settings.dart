@@ -2,12 +2,20 @@ import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/set
 import 'package:flutter/material.dart';
 
 class UserPreferenceSection extends StatelessWidget {
-  const UserPreferenceSection({super.key});
+  const UserPreferenceSection({
+    super.key,
+    required this.refreshPage
+  });
+
+  final void Function() refreshPage;
 
   @override
   Widget build(BuildContext context) {
 
-    final settingTiles = SettingTiles(context: context);
+    final settingTiles = SettingTiles(
+      context: context,
+      refreshPage: refreshPage
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -28,8 +36,10 @@ class UserPreferenceSection extends StatelessWidget {
               SizedBox(height: 10),
               settingTiles.getTitleParsingOption(),
               SizedBox(height: 10),
-              settingTiles.getSlideActionsSetting(),
-              SizedBox(height: 10,)
+              settingTiles.getSlideToLeftActionsSetting(),
+              SizedBox(height: 10,),
+              settingTiles.getSlideToRightActionsSetting(),
+              SizedBox(height: 20,),
             ],
           )
         ],

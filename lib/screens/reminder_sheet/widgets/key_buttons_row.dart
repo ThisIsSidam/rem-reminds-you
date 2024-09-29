@@ -4,9 +4,9 @@ import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/reminder_recurrence.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/repeat_notif.dart';
-import 'package:Rem/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class KeyButtonsRow extends ConsumerWidget {
   final void Function()? refreshHomePage;
@@ -30,12 +30,12 @@ class KeyButtonsRow extends ConsumerWidget {
   void saveReminder(Reminder reminder, BuildContext context) {
     if (reminder.title == "No Title")
     {
-      showFlutterToast("Enter a title!");
+      Fluttertoast.showToast(msg: "Enter a title!");
       return;
     }
     if (reminder.dateAndTime.isBefore(DateTime.now()))
     {
-      showFlutterToast("Time machine is broke. Can't remind you in the past!");
+      Fluttertoast.showToast(msg: "Time machine is broke. Can't remind you in the past!");
       return;
     }
     RemindersDatabaseController.saveReminder(reminder);
@@ -65,7 +65,7 @@ class KeyButtonsRow extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             content: Text(
-              'This is a recurring reminder. Do you want to remove all instances of this reminder? Or only the next instance?',
+              'This is a recurring reminder. Do you really want to delete it? You can also archive it.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
@@ -84,18 +84,17 @@ class KeyButtonsRow extends ConsumerWidget {
                   Navigator.of(context).pop(); // Close the dialog
                 },
                 child: Text(
-                  'Remove This Only',
+                  'Archive',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
               TextButton(
-                onPressed: () { // Reminder won't be deleted unless RF is none.
-                  reminder.recurringInterval = RecurringInterval.none;
+                onPressed: () { 
                   finalDelete(deleteAllRecurring: true);
                   Navigator.of(context).pop(); // Close the dialog
                 },
                 child: Text(
-                  'Remove All',
+                  'Delete',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
@@ -127,7 +126,7 @@ class KeyButtonsRow extends ConsumerWidget {
             child: IconTheme(
               data: Theme.of(context).iconTheme,
               child: const Icon(
-                Icons.archive,
+                Icons.delete,
                 color: Colors.red
               ),
             ),

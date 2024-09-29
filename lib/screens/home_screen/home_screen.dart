@@ -9,10 +9,9 @@ import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/archive_screen/archive_screen.dart';
-import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
+import 'package:Rem/screens/home_screen/widgets/home_screen_lists.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_page.dart';
 import 'package:Rem/screens/settings_screen/settings_screen.dart';
-import 'package:Rem/widgets/entry_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -53,7 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
 
         if (message["action"] == 'done')
         {
-          RemindersDatabaseController.deleteReminder(id);
+          RemindersDatabaseController.markAsDone(id);
           refreshPage();
         }
         else 
@@ -80,7 +79,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     });
   }
 
-
   DateTime getDateTimeForNewReminder() {
     final addDuration = UserDB.getSetting(SettingOption.DueDateAddDuration);
     if (addDuration is Duration)
@@ -101,7 +99,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   }
 
   void deleteAndRefresh(int id) {
-    RemindersDatabaseController.deleteReminder(id);
+    RemindersDatabaseController.moveToArchive(id);
     refreshPage();
   }
 
@@ -219,10 +217,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
 
   Widget getListedReminderPage() {
 
-    Widget getListTile(Reminder rem, VoidCallback refreshHomePage) 
-      => HomePageReminderEntryListTile(reminder: rem, refreshHomePage: refreshHomePage);
-
-
     return ListView.builder(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       itemCount: 4,
@@ -230,17 +224,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
       itemBuilder: (BuildContext context, int index) {
         switch (index) {
           case 0:
-            return EntryListWidget(
+            return HomeScreenReminderListSection(
               label: Text(
                 "Overdue", 
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red)
               ),
               remindersList: remindersMap[overdueSectionTitle] ?? [],
               refreshPage: refreshPage,
-              listEntryWidget: getListTile,
             );
           case 1:
-            return EntryListWidget(
+            return HomeScreenReminderListSection(
               label: Text(
                 "Today", 
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -248,27 +241,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
               ),
               remindersList: remindersMap[todaySectionTitle] ?? [],
               refreshPage: refreshPage,
-              listEntryWidget: getListTile,
             );
           case 2:
-            return EntryListWidget(
+            return HomeScreenReminderListSection(
               label: Text(
                 "Tomorrow", 
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.green)
               ),
               remindersList: remindersMap[tomorrowSectionTitle] ?? [],
               refreshPage: refreshPage,
-              listEntryWidget: getListTile,
             );
           case 3:
-            return EntryListWidget(
+            return HomeScreenReminderListSection(
               label: Text(
                 "Later", 
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.yellow)
               ),
               remindersList: remindersMap[laterSectionTitle] ?? [],
               refreshPage: refreshPage,
-              listEntryWidget: getListTile,
             );
           default:
             return SizedBox.shrink();
