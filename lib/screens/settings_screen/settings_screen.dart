@@ -30,15 +30,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           resetIcon()
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          UserPreferenceSection(
-            refreshPage: refresh,
-          ),
-          NewReminderSection(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            UserPreferenceSection(
+              refreshPage: refresh,
+            ),
+            NewReminderSection(),
+          ],
+        ),
       ),
     );
   }

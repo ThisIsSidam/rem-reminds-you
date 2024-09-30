@@ -31,5 +31,7 @@ final Map<String, dynamic> defaultSettings = {
 
   SettingOption.HomeTileSlideAction_ToLeft.toString(): SwipeAction.postpone.index,
   SettingOption.HomeTileSlideAction_ToRight.toString(): SwipeAction.delete.index,
-  SettingOption.SlideActionPostponeDuration.toString(): Duration(minutes: 30)
+  SettingOption.SlideActionPostponeDuration.toString(): Duration(minutes: 30),
+
+  SettingOption.TextScale.toString(): 1.0
 };

@@ -32,6 +32,9 @@ enum SettingOption {
   HomeTileSlideAction_ToRight, // Index 21 to 24
   HomeTileSlideAction_ToLeft,
   SlideActionPostponeDuration,
+
+  TextScale // Index 25
+  // Don't forget to add new settings to [isValidtype] method.
 }
 
 class SettingsOptionMethods {
@@ -84,6 +87,9 @@ class SettingsOptionMethods {
       case SettingOption.HomeTileSlideAction_ToLeft:
       case SettingOption.HomeTileSlideAction_ToRight:
         return value is SwipeAction;
+
+      case SettingOption.TextScale:
+        return value is double;
       
       default:
         throw ArgumentError('Unhandled SettingOption: $option');
