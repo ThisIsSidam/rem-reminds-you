@@ -1,4 +1,5 @@
 import 'package:Rem/consts/consts.dart';
+import 'package:Rem/reminder_class/field_mixins/reminder_status/status.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 

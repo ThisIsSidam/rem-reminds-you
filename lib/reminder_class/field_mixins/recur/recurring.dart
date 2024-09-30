@@ -8,15 +8,14 @@ mixin Recur {
   @HiveField(5)
   int mixinRecurringInterval = 0;
 
-
   /// The time for the next recurring reminder
   @HiveField(6)
-  DateTime baseDateTime = DateTime.new(DateTime.now().year);
+  DateTime baseDateTime = DateTime.now();
 
   void initRecurringInterval(RecurringInterval? interval) {
-    if (interval == null)
-    {
-      final recurringIntervalString = UserDB.getSetting(SettingOption.RecurringIntervalFieldValue);
+    if (interval == null) {
+      final recurringIntervalString =
+          UserDB.getSetting(SettingOption.RecurringIntervalFieldValue);
       interval = RecurringIntervalExtension.fromString(recurringIntervalString);
     }
     mixinRecurringInterval = RecurringIntervalExtension.getIndex(interval);
@@ -32,28 +31,22 @@ mixin Recur {
 
   String getRecurringIntervalAsString() {
     return RecurringIntervalExtension.getDisplayName(
-      RecurringIntervalExtension.fromInt(mixinRecurringInterval)
-    );
+        RecurringIntervalExtension.fromInt(mixinRecurringInterval));
   }
 
   Duration? getRecurIncrementDuration() {
-    if (mixinRecurringInterval == RecurringInterval.none)
-    {
+    if (mixinRecurringInterval == RecurringInterval.none) {
       return null;
     }
 
-    final recurringInterval = RecurringIntervalExtension.fromInt(mixinRecurringInterval);
+    final recurringInterval =
+        RecurringIntervalExtension.fromInt(mixinRecurringInterval);
 
-    if (recurringInterval == RecurringInterval.daily)
-    {
+    if (recurringInterval == RecurringInterval.daily) {
       return Duration(days: 1);
-    }
-    else if (recurringInterval == RecurringInterval.weekly)
-    {
+    } else if (recurringInterval == RecurringInterval.weekly) {
       return Duration(days: 7);
-    }
-    else 
-    {
+    } else {
       return null;
     }
   }

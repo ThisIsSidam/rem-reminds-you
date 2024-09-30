@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../../reminder_class/field_mixins/reminder_status/status.dart';
+
 class KeyButtonsRow extends ConsumerWidget {
   final void Function()? refreshHomePage;
   const KeyButtonsRow({
@@ -38,6 +40,7 @@ class KeyButtonsRow extends ConsumerWidget {
       Fluttertoast.showToast(msg: "Time machine is broke. Can't remind you in the past!");
       return;
     }
+
     RemindersDatabaseController.saveReminder(reminder);
     refreshOrExit(context);
   }
@@ -116,23 +119,24 @@ class KeyButtonsRow extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          ( 
+          if ( 
             reminder.id != newReminderID && 
             reminder.reminderStatus != ReminderStatus.archived
-          )
-          ? MaterialButton(
-            child: IconTheme(
-              data: Theme.of(context).iconTheme,
-              child: const Icon(
-                Icons.delete,
-                color: Colors.red
+          ) ...<Widget>[
+            IconButton(
+              icon: IconTheme(
+                data: Theme.of(context).iconTheme,
+                child: const Icon(
+                  Icons.delete,
+                  color: Colors.red
+                ),
               ),
+              onPressed: () => deleteReminder(reminder, context),
             ),
-            onPressed: () => deleteReminder(reminder, context),
-          )
-          : SizedBox(), // So it shows presence in the Row. And the positions of others do not alter based on presence of done button.
+            Spacer(),
+          ],
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -140,20 +144,62 @@ class KeyButtonsRow extends ConsumerWidget {
               SizedBox(width: 4,),
               getRecurringButton(context),
               SizedBox(width: 4,),
-              ElevatedButton(
-                onPressed: () => saveReminder(reminder, context),
-                child: Text(
-                  "Save", 
-                  style: Theme.of(context).textTheme.titleMedium
-                ),
-                style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
-                ),
-              )
+              _buildSaveButton(context, reminder)
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSaveButton(
+    BuildContext context,
+    Reminder reminder,
+  ) {
+
+    bool forAllCondition = reminder.id != newReminderID &&
+      reminder.recurringInterval != RecurringInterval.none &&
+      !reminder.dateAndTime.isAtSameMomentAs(reminder.baseDateTime);
+
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: () => saveReminder(reminder, context),
+          child: Text(
+            "Save", 
+            style: Theme.of(context).textTheme.titleMedium
+          ),
+          style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+            backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor),
+            shape: forAllCondition
+            ? WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.horizontal(left: Radius.circular(12))
+              )
+            )
+            : null
+          ),
+        ),
+        if (forAllCondition) 
+          ElevatedButton(
+            onPressed: () {
+              reminder.baseDateTime = reminder.dateAndTime;
+              saveReminder(reminder, context);
+            },
+            child: Text(
+              "For All", 
+              style: Theme.of(context).textTheme.titleMedium
+            ),
+            style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+              backgroundColor: WidgetStatePropertyAll(Colors.red),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.horizontal(right: Radius.circular(12))
+                )
+              )
+            ),
+          ) 
+      ],
     );
   }
 

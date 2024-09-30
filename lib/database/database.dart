@@ -6,6 +6,8 @@ import 'package:Rem/utils/generate_id.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../reminder_class/field_mixins/reminder_status/status.dart';
+
 class RemindersDatabaseController {
   static Map<int, Reminder> reminders = {};
   static final _remindersBox = Hive.box(remindersBoxName);
@@ -96,10 +98,11 @@ class RemindersDatabaseController {
     }
 
 
-    // Manage id. Get new only if current is null or new.
+    // Setup for new reminder
     int? id = reminder.id;
     if (id == null || id == reminderNullID || id == newReminderID) {
       id = generateId(reminder);
+      reminder.baseDateTime = reminder.dateAndTime;
     }
 
     reminder.id = id;
@@ -172,7 +175,7 @@ class RemindersDatabaseController {
       id.toString()
     );
 
-    reminder.incrementRecurDuration();
+    reminder.moveToNextOccurence();
     NotificationController.scheduleNotification(reminder);
     reminders[id] = reminder;
     updateReminders();
@@ -190,7 +193,7 @@ class RemindersDatabaseController {
       id.toString()
     );
 
-    reminder.decrementRecurDuration();
+    reminder.moveToPreviousOccurence();
     NotificationController.scheduleNotification(reminder);
     reminders[id] = reminder;
     updateReminders();

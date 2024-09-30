@@ -6,7 +6,6 @@ import 'package:Rem/reminder_class/field_mixins/repeat.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'field_mixins/recur/recurring_interval.dart';
-part 'field_mixins/reminder_status/reminder_status.dart';
 part 'reminder.g.dart';
 
 @HiveType(typeId: 1)
@@ -18,6 +17,7 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
   @HiveField(1)
   int? id;
 
+  // These are all in their individual files in field_mixins folder
   // HiveField 2: DateAndTime
   // HiveField 3: reminderStatus
   // HiveField 4: notifRepeatDuration
@@ -28,13 +28,14 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
     this.title = reminderNullTitle,
     this.id = newReminderID,
     required DateTime dateAndTime,
+    DateTime? baseDateTime,
     ReminderStatus reminderStatus = ReminderStatus.active, 
     Duration? notifInterval,
     RecurringInterval? recurInterval,
   }){
-
     this.dateAndTime = dateAndTime;
     this.mixinReminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
+    this.baseDateTime = baseDateTime ?? this.dateAndTime; // Same in the beginning
     super.initRepeatInterval(notifInterval);
     super.initRecurringInterval(recurInterval);
   }
@@ -50,8 +51,9 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
 
     return Reminder(
       title: _getValue('title'),
-      dateAndTime: DateTime.fromMillisecondsSinceEpoch(int.parse(_getValue('dateAndTime'))),
       id: int.parse(_getValue('id')),
+      dateAndTime: DateTime.fromMillisecondsSinceEpoch(int.parse(_getValue('dateAndTime'))),
+      baseDateTime: DateTime.fromMillisecondsSinceEpoch(int.parse(_getValue('baseDateTime'))),
       reminderStatus: RemindersStatusExtension.fromInt(int.parse(_getValue('done'))),
       notifInterval: Duration(seconds: int.parse(_getValue('notifRepeatInterval'))),
       recurInterval: RecurringIntervalExtension.fromInt(int.parse(_getValue('_recurringInterval'))),
@@ -61,8 +63,9 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
   Map<String, String> toMap() {
     return {
       'title': title,
-      'dateAndTime': dateAndTime.millisecondsSinceEpoch.toString(),
       'id': id.toString(),
+      'dateAndTime': dateAndTime.millisecondsSinceEpoch.toString(),
+      'baseDateTime': baseDateTime.millisecondsSinceEpoch.toString(),
       'done': mixinReminderStatus.toString(),
       'notifRepeatInterval': notifRepeatInterval.inSeconds.toString(),
       '_recurringInterval': mixinRecurringInterval.toString(),
@@ -75,8 +78,9 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
 
   void set(Reminder reminder) {
     this.title = reminder.title;
-    this.dateAndTime = reminder.dateAndTime;
+    this.dateAndTime = this.dateAndTime.copyWith();
     this.id = reminder.id;
+    this.baseDateTime = reminder.baseDateTime;
     this.reminderStatus = reminder.reminderStatus;
     this.notifRepeatInterval = reminder.notifRepeatInterval;
     this.recurringInterval = reminder.recurringInterval;
@@ -87,26 +91,37 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
       id: this.id,
       title: this.title,
       dateAndTime: this.dateAndTime,
+      baseDateTime: this.baseDateTime,
       reminderStatus: RemindersStatusExtension.fromInt(this.mixinReminderStatus),
       notifInterval: this.notifRepeatInterval,
       recurInterval: RecurringIntervalExtension.fromInt(this.mixinRecurringInterval),
     );
   }
 
+  void moveToNextOccurence() {
+    _incrementRecurDuration();
+    dateAndTime = baseDateTime;
+  }
+
+  void moveToPreviousOccurence() {
+    _decrementRecurDuration();
+    dateAndTime = baseDateTime;
+  }
+
   /// Increment the date and time by 1 day or 1 week depending on the repeat interval.
-  void incrementRecurDuration() {
+  void _incrementRecurDuration() {
     final increment = getRecurIncrementDuration();
 
     if (increment != null) {
-      dateAndTime = dateAndTime.add(increment);
+      baseDateTime = baseDateTime.add(increment);
     }
   }
 
-  void decrementRecurDuration() {
+  void _decrementRecurDuration() {
     final decrement = getRecurIncrementDuration();
 
     if (decrement != null) {
-      dateAndTime = dateAndTime.subtract(decrement);
+      baseDateTime = baseDateTime.subtract(decrement);
     }
   }
 }

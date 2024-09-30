@@ -1,5 +1,6 @@
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:hive/hive.dart';
+
+part 'reminder_status.dart';
 
 mixin ReminderStatusMixin {
 
