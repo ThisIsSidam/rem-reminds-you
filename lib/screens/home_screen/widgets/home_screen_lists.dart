@@ -5,6 +5,7 @@ import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/database/settings/swipe_actions.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
+import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -150,8 +151,8 @@ mixin ActionPaneManager {
 
           final ValueKey snackBarKey =
               ValueKey<String>('postponed-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(seconds: 2),
+          ScaffoldMessenger.of(context).showSnackBar(
+            buildCustomSnackBar(
               key: snackBarKey,
               content: Row(
                 children: [
@@ -215,8 +216,8 @@ mixin ActionPaneManager {
         if (reminder.recurringInterval == RecurringInterval.none) {
           final ValueKey snackBarKey =
               ValueKey<String>('archived-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(seconds: 2),
+          ScaffoldMessenger.of(context).showSnackBar(
+            buildCustomSnackBar(
               key: snackBarKey,
               content: Row(
                 children: [
@@ -236,8 +237,8 @@ mixin ActionPaneManager {
         } else {
           final ValueKey snackBarKey = 
             ValueKey<String>('moved-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(seconds: 2),
+          ScaffoldMessenger.of(context).showSnackBar(
+            buildCustomSnackBar(
               key: snackBarKey,
               content: Row(
                 children: [
@@ -268,7 +269,8 @@ mixin ActionPaneManager {
         allRecurringVersions: false);
     refreshPage();
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
+      buildCustomSnackBar(
         content: Row(
           children: [
             Text("'${reminder.title}' deleted"),

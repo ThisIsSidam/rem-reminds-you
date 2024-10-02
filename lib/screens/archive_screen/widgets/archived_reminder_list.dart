@@ -3,6 +3,7 @@ import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/utils/datetime_methods.dart';
+import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -25,7 +26,7 @@ class ArchiveEntryLists extends StatelessWidget {
     refreshPage();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      buildCustomSnackBar(
         content: Row(
           children: [
             Text("'${reminder.title}' deleted"),
