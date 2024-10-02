@@ -1,3 +1,5 @@
+import 'package:Rem/database/UserDB.dart';
+import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/provider/text_scale_notifier.dart';
 import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/setting_tiles.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +45,8 @@ class UserPreferenceSection extends StatelessWidget {
               settingTiles.getSlideToRightActionsSetting(),
               SizedBox(height: 10),
               _buildTextScaleSetting(context),
+              SizedBox(height: 10),
+              _buildQuickPostponeDurationSetting(context),
               SizedBox(height: 20,),
             ],
           )
@@ -105,6 +109,57 @@ class UserPreferenceSection extends StatelessWidget {
           const SizedBox(width: 10),
           Text('A', style: TextStyle(color: Colors.white, fontSize: 24)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildQuickPostponeDurationSetting(BuildContext context) {
+    Duration currentDuration = UserDB.getSetting(SettingOption.SlideActionPostponeDuration);
+    return ListTile(
+      title: Text(
+        'Postpone Duration',
+        style: Theme.of(context).textTheme.titleSmall
+      ),
+      trailing: StatefulBuilder(
+        builder: (context, setState) {
+          return DropdownButton<Duration>(
+            dropdownColor: Theme.of(context).scaffoldBackgroundColor,
+            underline: SizedBox(),
+            padding: EdgeInsets.only(left: 8, right: 4),
+            iconSize: 20,
+            borderRadius: BorderRadius.circular(12),
+            value: currentDuration,
+            items: <DropdownMenuItem<Duration>>[
+              DropdownMenuItem<Duration>(
+                value: const Duration(minutes: 15),
+                child: Text('15 min')
+              ),
+              DropdownMenuItem<Duration>(
+                value: const Duration(minutes: 30),
+                child: Text('30 min')
+              ),
+              DropdownMenuItem<Duration>(
+                value: const Duration(minutes: 45),
+                child: Text('45 min')
+              ),
+              DropdownMenuItem<Duration>(
+                value: const Duration(hours: 1),
+                child: Text('1 hour')
+              ),
+              DropdownMenuItem<Duration>(
+                value: const Duration(hours: 2),
+                child: Text('2 hours')
+              ),
+            ], 
+            onChanged: (value) {
+              if (value == null) value = currentDuration;
+              setState(() {
+                currentDuration = value!;
+              });
+              UserDB.setSetting(SettingOption.SlideActionPostponeDuration, value);
+            }
+          );
+        }
       ),
     );
   }
