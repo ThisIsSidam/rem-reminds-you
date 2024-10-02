@@ -15,6 +15,7 @@ class TitleParseHandler {
   }
   
   void parse(String str) {
+    thisReminder.preParsedTitle = str;
     final parsedString = extractDateTimeString(str);
 
     if(parsedString != null)
@@ -33,9 +34,11 @@ class TitleParseHandler {
     {
       thisReminder.title = str;
     }
-      ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
+    ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
   }
 
+
+  /// Extracts the [DateTime] or [Duration] string.
   String? extractDateTimeString(String str) {
     final inIndex = str.lastIndexOf(' in ');
     final atIndex = str.lastIndexOf(' at ');
@@ -56,6 +59,8 @@ class TitleParseHandler {
     return parseString;
   }
 
+
+  /// Extracts the [DateTime] object from the [DateTime] string.
   DateTime? getParsedDateTime(String str) {
     final durationRegExp = RegExp(r'in\s(\d+)\s+(minutes?|hours?|days?)');
     final match1 = durationRegExp.firstMatch(str);
@@ -75,6 +80,8 @@ class TitleParseHandler {
     return null;
   }
 
+  /// Extracts [Duration] object from string, adds it to [DateTime.now()] and
+  /// returns the [DateTime].
   DateTime parseDurationInput(RegExpMatch match) {
     Duration toAdd = Duration();
 
@@ -102,8 +109,8 @@ class TitleParseHandler {
     return DateTime.now().add(toAdd);
   }
 
+  /// Extracts and returns [DateTime] object from string.
   DateTime parseDateTimeInput(RegExpMatch match) {
-    
 
     final timeString = match.group(1) ?? "0:0";
     final amPm = match.group(2);
@@ -127,7 +134,6 @@ class TitleParseHandler {
       hour,
       minute
     );
-
   }
 
 }

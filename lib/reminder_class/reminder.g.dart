@@ -21,6 +21,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       id: fields[1] as int?,
       dateAndTime: fields[2] as DateTime,
       baseDateTime: fields[6] as DateTime?,
+      preParsedTitle: fields[7] as String?,
     )
       ..notifRepeatInterval = fields[4] as Duration
       ..mixinRecurringInterval = fields[5] as int
@@ -30,7 +31,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
   @override
   void write(BinaryWriter writer, Reminder obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..writeByte(3)
       ..write(obj.mixinReminderStatus)
       ..writeByte(2)
-      ..write(obj.dateAndTime);
+      ..write(obj.dateAndTime)
+      ..writeByte(7)
+      ..write(obj.preParsedTitle);
   }
 
   @override

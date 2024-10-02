@@ -1,5 +1,6 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/reminder_class/field_mixins/date_and_time.dart';
+import 'package:Rem/reminder_class/field_mixins/pre_parsed_title.dart';
 import 'package:Rem/reminder_class/field_mixins/recur/recurring.dart';
 import 'package:Rem/reminder_class/field_mixins/reminder_status/status.dart';
 import 'package:Rem/reminder_class/field_mixins/repeat.dart';
@@ -9,7 +10,7 @@ part 'field_mixins/recur/recurring_interval.dart';
 part 'reminder.g.dart';
 
 @HiveType(typeId: 1)
-class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
+class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime, PreParsedTitle{
 
   @HiveField(0)
   String title;
@@ -23,6 +24,7 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
   // HiveField 4: notifRepeatDuration
   // HiveField 5: recurringInterval
   // HiveField 6: baseDateTime
+  // HiveField 7: preParsedTitle
 
   Reminder({
     this.title = reminderNullTitle,
@@ -32,12 +34,14 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
     ReminderStatus reminderStatus = ReminderStatus.active, 
     Duration? notifInterval,
     RecurringInterval? recurInterval,
+    String? preParsedTitle,
   }){
     this.dateAndTime = dateAndTime;
     this.mixinReminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
     this.baseDateTime = baseDateTime ?? this.dateAndTime; // Same in the beginning
     super.initRepeatInterval(notifInterval);
     super.initRecurringInterval(recurInterval);
+    this.preParsedTitle = preParsedTitle ?? this.title;
   }
 
   factory Reminder.fromMap(Map<String, String?> map) {
@@ -84,6 +88,7 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
     this.reminderStatus = reminder.reminderStatus;
     this.notifRepeatInterval = reminder.notifRepeatInterval;
     this.recurringInterval = reminder.recurringInterval;
+    this.preParsedTitle = reminder.preParsedTitle;
   }
 
   Reminder deepCopyReminder() {
@@ -95,6 +100,7 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime{
       reminderStatus: RemindersStatusExtension.fromInt(this.mixinReminderStatus),
       notifInterval: this.notifRepeatInterval,
       recurInterval: RecurringIntervalExtension.fromInt(this.mixinRecurringInterval),
+      preParsedTitle: this.preParsedTitle
     );
   }
 

@@ -29,13 +29,20 @@ class _TitleFieldState extends ConsumerState<TitleField> {
   Widget build(BuildContext context) {
 
     final reminder = ref.read(reminderNotifierProvider);
-    titleController.text = reminder.title;
+    titleController.text = reminder.preParsedTitle;
     if (titleController.text == reminderNullTitle) 
     {
       titleController.text = "";
-    }
+    } 
 
     final titleParser = TitleParseHandler(ref: ref);
+
+    // .parse calls the ref.read in the end which then rebuilds. 
+    // Shouldn't be done in build method. Hence the callback.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      titleParser.parse(titleController.text);
+    });
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
