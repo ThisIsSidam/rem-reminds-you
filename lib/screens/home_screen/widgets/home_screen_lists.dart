@@ -5,6 +5,7 @@ import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/database/settings/swipe_actions.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
+import 'package:Rem/widgets/one_time_undo_button/one_time_undo_button.dart';
 import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -158,8 +159,7 @@ mixin ActionPaneManager {
                 children: [
                   Text("'${reminder.title}' postponed."),
                   Spacer(),
-                  TextButton(
-                    child: Text("Undo"),
+                  OneTimeUndoButton(
                     onPressed: () {
                       reminder.dateAndTime =
                           reminder.dateAndTime.subtract(postponeDuration);
@@ -223,8 +223,7 @@ mixin ActionPaneManager {
                 children: [
                   Text("'${reminder.title}' Archived."),
                   Spacer(),
-                  TextButton(
-                    child: Text("Undo"),
+                  OneTimeUndoButton(
                     onPressed: () {
                       RemindersDatabaseController.retrieveFromArchives(reminder);
                       refreshPage();
@@ -244,8 +243,7 @@ mixin ActionPaneManager {
                 children: [
                   Text("'${reminder.title}' moved to next occurrence."),
                   Spacer(),
-                  TextButton(
-                    child: Text("Undo"),
+                  OneTimeUndoButton(
                     onPressed: () {
                       RemindersDatabaseController.moveToPreviousReminderOccurence(reminder.id ?? reminderNullID);
                       refreshPage();
@@ -304,8 +302,7 @@ mixin ActionPaneManager {
                         children: [
                           Text("'${reminder.title}' Archived."),
                           Spacer(),
-                          TextButton(
-                            child: Text("Undo"),
+                          OneTimeUndoButton(
                             onPressed: () {
                               RemindersDatabaseController.retrieveFromArchives(reminder);
                               refreshPage();
@@ -332,8 +329,7 @@ mixin ActionPaneManager {
                         children: [
                           Text("'${reminder.title}' deleted"),
                           Spacer(),
-                          TextButton(
-                            child: Text("Undo"),
+                          OneTimeUndoButton(
                             onPressed: () {
                               RemindersDatabaseController.saveReminder(reminder);
                               refreshPage();
@@ -365,8 +361,7 @@ mixin ActionPaneManager {
             children: [
               Text("'${reminder.title}' deleted"),
               Spacer(),
-              TextButton(
-                child: Text("Undo"),
+              OneTimeUndoButton(
                 onPressed: () {
                   RemindersDatabaseController.saveReminder(reminder);
                   refreshPage();
