@@ -127,6 +127,7 @@ class UserPreferenceSection extends StatelessWidget {
             underline: SizedBox(),
             padding: EdgeInsets.only(left: 8, right: 4),
             iconSize: 20,
+            style: Theme.of(context).textTheme.bodyMedium,
             borderRadius: BorderRadius.circular(12),
             value: currentDuration,
             items: <DropdownMenuItem<Duration>>[

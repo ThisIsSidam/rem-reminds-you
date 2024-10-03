@@ -73,7 +73,27 @@ class ArchiveEntryLists extends StatelessWidget {
       
                 return Slidable(
                   key: ValueKey(reminder.id),
-                  startActionPane: ActionPane(
+                  startActionPane: ActionPane( // Same as endActionPane
+                    motion: StretchMotion(),
+                    dragDismissible: true,
+                    dismissible: DismissiblePane(
+                      onDismissed: () {
+                        remindersList.removeAt(index);
+                        _slideAndRemoveReminder(context, reminder);
+                      }
+                    ), 
+                    children: [
+                      SlidableAction(
+                        icon: Icons.delete,
+                        backgroundColor: Colors.red,
+                        onPressed: (context) {
+                          remindersList.removeAt(index);
+                          _slideAndRemoveReminder(context, reminder);
+                        }
+                      )
+                    ]
+                  ),
+                  endActionPane: ActionPane( // Same as startActionPane
                     motion: StretchMotion(),
                     dragDismissible: true,
                     dismissible: DismissiblePane(
@@ -114,7 +134,6 @@ class _ArchiveReminderEntryListTile extends StatelessWidget {
   final VoidCallback refreshPage;
 
   const _ArchiveReminderEntryListTile({
-    super.key,
     required this.reminder,
     required this.refreshPage
   });
@@ -131,11 +150,6 @@ class _ArchiveReminderEntryListTile extends StatelessWidget {
         subtitle: Text(
           getFormattedDateTime(reminder.dateAndTime),
           style: Theme.of(context).textTheme.bodyMedium
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.delete),
-          style: Theme.of(context).iconButtonTheme.style,
-          onPressed: onTapDelete,
         ),
         tileColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(
