@@ -18,18 +18,14 @@ class RemindersDatabaseController {
   /// Removes the reminders from the database which were set as 'done' in their 
   /// notifications when the app was terminated.
   static Future<void> clearPendingRemovals() async {
-    // debugPrint("[clearPendingRemovals] Running");
     final pendingRemovals = await Hive.openBox(pendingRemovalsBoxName);
 
-    // debugPrint("[clearPendingRemovals] Box opened");
     final removals = pendingRemovals.get(pendingRemovalsBoxKey) ?? [];
     for (final id in removals) 
     {
-      // debugPrint("[clearPendingRemovals] Removing $id");
-      moveToArchive(id);
+      markAsDone(id);
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
-    // debugPrint("[clearPendingRemovals] Removing Done");
   }
 
   /// Get reminders from the database.
@@ -145,7 +141,7 @@ class RemindersDatabaseController {
     }
   }
 
-  /// Does not actually delete. Moves the reminder to Archives.
+  /// Moves the reminder to Archives.
   static void moveToArchive(int id) {  
     final Reminder? reminder = _getReminder(id);
     if (reminder == null) {
