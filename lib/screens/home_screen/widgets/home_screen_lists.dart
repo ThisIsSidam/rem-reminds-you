@@ -264,27 +264,120 @@ mixin ActionPaneManager {
     Reminder reminder,
     void Function() refreshPage
   ) {
-    RemindersDatabaseController.deleteReminder(reminder.id ?? reminderNullID,
-        // To delete all recurring reminders, user has to open the reminder sheet.
-        allRecurringVersions: false);
-    refreshPage();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      buildCustomSnackBar(
-        content: Row(
-          children: [
-            Text("'${reminder.title}' deleted"),
-            Spacer(),
-            TextButton(
-              child: Text("Undo"),
-              onPressed: () {
-                RemindersDatabaseController.saveReminder(reminder);
-                refreshPage();
-              },
-            )
-          ],
+    if (reminder.recurringInterval != RecurringInterval.none) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            elevation: 5,
+            surfaceTintColor: Colors.transparent,
+            backgroundColor: Theme.of(context).cardColor,
+            title: Text(
+              'Recurring Reminder',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            content: Text(
+              'This is a recurring reminder. Do you really want to delete it? You can also archive it.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text(
+                  'Cancel',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  RemindersDatabaseController.moveToArchive(reminder.id!);
+
+                  final ValueKey snackBarKey =
+                    ValueKey<String>('archived-${reminder.id}');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    buildCustomSnackBar(
+                      key: snackBarKey,
+                      content: Row(
+                        children: [
+                          Text("'${reminder.title}' Archived."),
+                          Spacer(),
+                          TextButton(
+                            child: Text("Undo"),
+                            onPressed: () {
+                              RemindersDatabaseController.retrieveFromArchives(reminder);
+                              refreshPage();
+                            },
+                          )
+                        ],
+                      )
+                    )
+                  );
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text(
+                  'Archive',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              TextButton(
+                onPressed: () { 
+                  RemindersDatabaseController.deleteReminder(reminder.id!);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    buildCustomSnackBar(
+                      content: Row(
+                        children: [
+                          Text("'${reminder.title}' deleted"),
+                          Spacer(),
+                          TextButton(
+                            child: Text("Undo"),
+                            onPressed: () {
+                              RemindersDatabaseController.saveReminder(reminder);
+                              refreshPage();
+                            },
+                          )
+                        ],
+                      )
+                    )
+                  );
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text(
+                  'Delete',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    } 
+    else 
+    {
+      RemindersDatabaseController.deleteReminder(reminder.id!);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        buildCustomSnackBar(
+          content: Row(
+            children: [
+              Text("'${reminder.title}' deleted"),
+              Spacer(),
+              TextButton(
+                child: Text("Undo"),
+                onPressed: () {
+                  RemindersDatabaseController.saveReminder(reminder);
+                  refreshPage();
+                },
+              )
+            ],
+          )
         )
-      )
-    );
+      );
+    }
+
+    
   }
 }

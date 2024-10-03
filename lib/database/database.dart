@@ -202,19 +202,11 @@ class RemindersDatabaseController {
       debugPrint("[deleteReminder] Reminder not found in database");
       return;
     }
-
-    if (
-      reminder.recurringInterval == RecurringInterval.none ||
-      allRecurringVersions == true
-    ) {
-      NotificationController.cancelScheduledNotification(id.toString());
-      reminders.remove(id);
-      updateReminders();
-      printAll('After Deleting');
-      return;
-    } 
-
-    moveToArchive(id);
+    
+    NotificationController.cancelScheduledNotification(id.toString());
+    reminders.remove(id);
+    updateReminders();
+    printAll('After Deleting');
   }
 
   /// Print id of all the reminders which are present in the database.
