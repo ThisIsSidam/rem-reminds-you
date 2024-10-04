@@ -7,7 +7,7 @@
     <application
         android:label="Rem"
         android:name="${applicationName}"
-        android:icon="@mipmap/icon">
+        android:icon="@mipmap/ic_launcher">
 
         <service
             android:name="dev.fluttercommunity.plus.androidalarmmanager.AlarmService"
