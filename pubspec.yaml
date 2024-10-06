@@ -50,6 +50,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   android_alarm_manager_plus: ^4.0.4
+  permission_handler: ^11.3.1
+  path_provider: ^2.1.4
+  archive: ^3.6.1
+  file_picker: ^8.1.2
 
 dev_dependencies:
   flutter_test:
