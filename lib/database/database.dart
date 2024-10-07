@@ -145,6 +145,10 @@ class RemindersDatabaseController {
     } else {
       moveToNextReminderOccurence(id);
     }
+
+    NotificationController.removeNotifications(
+      id.toString()
+    );
   }
 
   /// Moves the reminder to Archives.
@@ -210,6 +214,7 @@ class RemindersDatabaseController {
     }
     
     NotificationController.cancelScheduledNotification(id.toString());
+    NotificationController.removeNotifications(id.toString());
     reminders.remove(id);
     updateReminders();
     printAll('After Deleting');
