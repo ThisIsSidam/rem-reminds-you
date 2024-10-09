@@ -1,11 +1,10 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
-import 'package:Rem/notification/notification.dart';
 import 'package:Rem/provider/text_scale_notifier.dart';
 import 'package:Rem/screens/permissions_screen/permissions_screen.dart';
+import 'package:Rem/screens/permissions_screen/utils/app_permi_handler.dart';
 import 'package:Rem/theme/app_theme.dart';
 import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -23,7 +22,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _checkPermissions();
+    AppPermissionHandler.checkAlarmPermission();
   }
 
   @override
@@ -35,14 +34,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _checkPermissions();
+      AppPermissionHandler.checkAlarmPermission();
     }
-  }
-
-  /// Checks for permission. And shows the notificationsRationale if permission not allowed.
-  Future<bool> _checkPermissions() async { 
-    if (kDebugMode) debugPrint('Checking permissions');
-    return NotificationController.checkNotificationPermissions();
   }
 
   @override
@@ -60,7 +53,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
        );
       },
       home: FutureBuilder<bool>(
-        future: _checkPermissions(),
+        future: AppPermissionHandler.checkAlarmPermission(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _loadingScreen();
