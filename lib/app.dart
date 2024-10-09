@@ -32,13 +32,6 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      AppPermissionHandler.checkAlarmPermission();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     TextScaleNotifier textScaleNotifier = ref.watch(textScaleProvider);
 
@@ -53,7 +46,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
        );
       },
       home: FutureBuilder<bool>(
-        future: AppPermissionHandler.checkAlarmPermission(),
+        future: AppPermissionHandler.checkPermissions(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _loadingScreen();

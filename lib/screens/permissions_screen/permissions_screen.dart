@@ -1,9 +1,34 @@
 import 'package:Rem/screens/permissions_screen/utils/app_permi_handler.dart';
+import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
-class PermissionScreen extends StatelessWidget {
+class PermissionScreen extends StatefulWidget {
   const PermissionScreen({super.key});
+
+  @override
+  State<PermissionScreen> createState() => _PermissionScreenState();
+}
+
+class _PermissionScreenState extends State<PermissionScreen> with WidgetsBindingObserver{
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState((){});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +39,53 @@ class PermissionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildNotificationSection(context),
-            _buildAlarmPermissionSection(context)
+            _buildAlarmPermissionSection(context),
+            _buildReturnButton(context)
           ],
         ),
       )
+    );
+  }
+
+  Widget _buildReturnButton(BuildContext context) {
+    return FutureBuilder(
+      future: AppPermissionHandler.checkPermissions(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ElevatedButton(
+            onPressed: snapshot.data!
+            ? () {
+              Navigator.pushReplacement(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => NavigationSection()
+                )
+              );
+            }
+            : null,
+            child: Text(
+              "Let's Go!",
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: snapshot.data!
+                ? null
+                : Colors.grey
+              )
+            )
+          );
+        } else {
+          return ElevatedButton(
+            onPressed: null,
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+            ),
+          );
+        }
+      }
     );
   }
 
@@ -69,9 +137,7 @@ class PermissionScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium
               ), 
             style: ElevatedButton.styleFrom(
-              backgroundColor: snapshot.connectionState == ConnectionState.waiting
-              ? Colors.red
-              : snapshot.hasError
+              backgroundColor: snapshot.hasError
                 ? Colors.red
                 : Theme.of(context).primaryColor,
             )
@@ -130,9 +196,7 @@ class PermissionScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium
               ), 
             style: ElevatedButton.styleFrom(
-              backgroundColor: snapshot.connectionState == ConnectionState.waiting
-              ? Colors.red
-              : snapshot.hasError
+              backgroundColor: snapshot.hasError
                 ? Colors.red
                 : Theme.of(context).primaryColor,
             )

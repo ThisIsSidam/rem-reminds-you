@@ -81,7 +81,6 @@ class UserPreferenceSection extends StatelessWidget {
                           child: TextButton(
                             onPressed: () {
                               setState(() {
-                                debugPrint("setStaet Called");
                                 textScaleNotifier.changeTextScale(_scaleValues[index]);
                               });
                             },
