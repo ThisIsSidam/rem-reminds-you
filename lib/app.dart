@@ -1,12 +1,12 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
-import 'package:Rem/notification/notif_permi_rationale.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/provider/text_scale_notifier.dart';
+import 'package:Rem/screens/permissions_screen/permissions_screen.dart';
 import 'package:Rem/theme/app_theme.dart';
 import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -18,14 +18,11 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
-  bool _checkingPermissions = true; // Shows a loading screen until false
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
-
     _checkPermissions();
   }
 
@@ -42,23 +39,10 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     }
   }
 
-
   /// Checks for permission. And shows the notificationsRationale if permission not allowed.
-  Future<void> _checkPermissions() async { 
-    setState(() { _checkingPermissions = true;});
-
-    bool isAllowed = await NotificationController.checkNotificationPermissions();
-    if (!isAllowed) {
-      if (mounted) {
-        isAllowed = await displayNotificationRationale(navigatorKey.currentContext!);
-      }
-    }
-
-    if (mounted) {
-      setState(() { _checkingPermissions = false; });
-    }
-
-    if (!isAllowed) { SystemNavigator.pop(); }
+  Future<bool> _checkPermissions() async { 
+    if (kDebugMode) debugPrint('Checking permissions');
+    return NotificationController.checkNotificationPermissions();
   }
 
   @override
@@ -75,19 +59,46 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
          )),
        );
       },
-      home: FutureBuilder(
-        future: Hive.openBox(indiValuesBoxName),
-        builder: (context, stacktrace) {
-          return _checkingPermissions
-          ? const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : const NavigationSection();
-        },
+      home: FutureBuilder<bool>(
+        future: _checkPermissions(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return _loadingScreen();
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error while checking permissions'));
+          } else if (snapshot.hasData) {
+            if (snapshot.data!) {
+              return FutureBuilder(
+                future: Hive.openBox(indiValuesBoxName),
+                builder: (context, stacktrace) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return _loadingScreen();
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text('Error while loading reminders'));
+                  } else if (snapshot.hasData) {
+                    return NavigationSection();
+                  } else {
+                    return const Center(child: Text('Something went wrong'));
+                  }
+                }
+              );
+            } else {
+              return PermissionScreen();
+            }
+          } else {
+            return const Center(child: Text('Something went wrong'));
+          }
+        }
       ),
       theme: myTheme,
     );
+  }
+
+  Widget _loadingScreen() {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    ); 
   }
 }
