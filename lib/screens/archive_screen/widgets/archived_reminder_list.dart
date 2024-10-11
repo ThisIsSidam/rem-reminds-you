@@ -1,8 +1,9 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/reminder_sheet/reminder_page.dart';
+import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/utils/datetime_methods.dart';
+import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -25,7 +26,7 @@ class ArchiveEntryLists extends StatelessWidget {
     refreshPage();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      buildCustomSnackBar(
         content: Row(
           children: [
             Text("'${reminder.title}' deleted"),
@@ -72,7 +73,27 @@ class ArchiveEntryLists extends StatelessWidget {
       
                 return Slidable(
                   key: ValueKey(reminder.id),
-                  startActionPane: ActionPane(
+                  startActionPane: ActionPane( // Same as endActionPane
+                    motion: StretchMotion(),
+                    dragDismissible: true,
+                    dismissible: DismissiblePane(
+                      onDismissed: () {
+                        remindersList.removeAt(index);
+                        _slideAndRemoveReminder(context, reminder);
+                      }
+                    ), 
+                    children: [
+                      SlidableAction(
+                        icon: Icons.delete,
+                        backgroundColor: Colors.red,
+                        onPressed: (context) {
+                          remindersList.removeAt(index);
+                          _slideAndRemoveReminder(context, reminder);
+                        }
+                      )
+                    ]
+                  ),
+                  endActionPane: ActionPane( // Same as startActionPane
                     motion: StretchMotion(),
                     dragDismissible: true,
                     dismissible: DismissiblePane(
@@ -113,7 +134,6 @@ class _ArchiveReminderEntryListTile extends StatelessWidget {
   final VoidCallback refreshPage;
 
   const _ArchiveReminderEntryListTile({
-    super.key,
     required this.reminder,
     required this.refreshPage
   });
@@ -130,11 +150,6 @@ class _ArchiveReminderEntryListTile extends StatelessWidget {
         subtitle: Text(
           getFormattedDateTime(reminder.dateAndTime),
           style: Theme.of(context).textTheme.bodyMedium
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.delete),
-          style: Theme.of(context).iconButtonTheme.style,
-          onPressed: onTapDelete,
         ),
         tileColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(

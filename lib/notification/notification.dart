@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/reminder_sheet/reminder_page.dart';
+import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
@@ -45,10 +45,15 @@ class NotificationController {
 
     final DateTime scheduledTime = reminder.dateAndTime;
 
-    await AndroidAlarmManager.oneShotAt(
-      scheduledTime,
+    debugPrint('[NotificationController] Scheduled at: $scheduledTime');
+    debugPrint('[NotificationController] duration: ${reminder.notifRepeatInterval}');
+
+    await AndroidAlarmManager.periodic(
+      reminder.notifRepeatInterval,
       id,
       showNotificationCallback,
+      startAt:  scheduledTime,
+      allowWhileIdle: true,
       exact: true,
       wakeup: true,
       rescheduleOnReboot: true,
@@ -61,56 +66,39 @@ class NotificationController {
   @pragma('vm:entry-point')
   static Future<void> showNotificationCallback(
       int id, Map<String, dynamic> params) async {
+
+    debugPrint('[showNotificationCallback] running');
+
     final Map<String, String> strParams = params.cast<String, String>();
 
     final Reminder reminder = Reminder.fromMap(strParams);
 
-    int notificationShown = int.parse(strParams['notification_shown'] ?? "0");
-
-    notificationShown += 1;
+    // Should be different each time so that different notifications are shown. 
+    int notificationId = DateTime.now()
+      .difference(reminder.dateAndTime).inMinutes;
 
     await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: notificationShown,
-            channelKey: '111',
-            title: "Reminder: ${reminder.title}",
-            groupKey: reminder.id.toString(),
-            wakeUpScreen: true,
-            payload: reminder.toMap()),
-        actionButtons: <NotificationActionButton>[
-          NotificationActionButton(
-            key: 'done',
-            label: 'Done',
-            actionType: ActionType.SilentBackgroundAction,
-          )
-        ]);
-
-    // Handle recurring notifications
-    DateTime nextScheduledTime =
-        reminder.dateAndTime.add(reminder.notifRepeatInterval);
-
-    reminder.dateAndTime = nextScheduledTime;
-
-    final newParams = reminder.toMap();
-
-    newParams['notification_shown'] = notificationShown.toString();
-
-    await AndroidAlarmManager.oneShotAt(
-      nextScheduledTime,
-      id,
-      showNotificationCallback,
-      exact: true,
-      wakeup: true,
-      rescheduleOnReboot: true,
-      params: newParams,
+      content: NotificationContent(
+          id: notificationId,
+          channelKey: '111',
+          title: "Reminder: ${reminder.title}",
+          groupKey: reminder.id.toString(),
+          wakeUpScreen: true,
+          payload: reminder.toMap()),
+      actionButtons: <NotificationActionButton>[
+        NotificationActionButton(
+          key: 'done',
+          label: 'Done',
+          actionType: ActionType.SilentBackgroundAction,
+        )
+      ]
     );
   }
 
   /// Used to remove notifications present in user's notification space.
-  static Future<void> _removeNotifications(String groupKey) async {
+  static Future<void> removeNotifications(String groupKey) async {
     await AwesomeNotifications().cancelNotificationsByGroupKey(groupKey);
   }
-
 
   /// Cancels the scheduled notification. 
   static Future<void> cancelScheduledNotification(String groupKey) async {
@@ -160,7 +148,7 @@ class NotificationController {
           }
         );
         debugPrint('[onActionReceivedMethod] Removing notifications with group key: ${receivedAction.groupKey ?? notificationNullGroupKey}');
-        _removeNotifications(receivedAction.groupKey ?? notificationNullGroupKey);
+        removeNotifications(receivedAction.groupKey ?? notificationNullGroupKey);
       }
     }
 

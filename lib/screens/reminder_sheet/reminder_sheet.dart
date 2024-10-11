@@ -42,33 +42,29 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
 
     ThemeData theme = Theme.of(context);
 
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-        final screenHeight = MediaQuery.of(context).size.height;
-        
-        return AnimatedContainer(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-            color: theme.scaffoldBackgroundColor,
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return AnimatedContainer(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+        color: theme.scaffoldBackgroundColor,
+      ),
+      padding: EdgeInsets.only(bottom: keyboardHeight),
+      duration: const Duration(milliseconds: 100),
+      height: screenHeight * 0.50 + keyboardHeight,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TitleField(),
+              DateTimeSection(),
+              KeyButtonsRow(refreshHomePage: widget.refreshHomePage)
+            ],
           ),
-          padding: EdgeInsets.only(bottom: keyboardHeight),
-          duration: const Duration(milliseconds: 100),
-          height: screenHeight * 0.55 + keyboardHeight,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TitleField(),
-                  DateTimeSection(),
-                  KeyButtonsRow(refreshHomePage: widget.refreshHomePage)
-                ],
-              ),
-            ),
-          ),
-        );
-      }  
+        ),
+      ),
     );
   }
 }

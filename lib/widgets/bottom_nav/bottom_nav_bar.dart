@@ -1,6 +1,7 @@
 import 'package:Rem/screens/archive_screen/archive_screen.dart';
 import 'package:Rem/screens/home_screen/home_screen.dart';
 import 'package:Rem/screens/settings_screen/settings_screen.dart';
+import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -33,8 +34,14 @@ class _NavigationSectionState extends State<NavigationSection> {
     return Scaffold(
       body: DoubleBackToCloseApp(
         child: _pages[_selectedTab],
-        snackBar: const SnackBar(
-          content: Text("Tap back again to leave")
+        snackBar: buildCustomSnackBar(
+          content: Align(
+            alignment: Alignment.center,
+            child: Text(
+              "Tap back again to leave",
+              style: Theme.of(context).textTheme.bodyLarge
+            ),
+          )
         ),
       ),
       bottomNavigationBar: GNav(

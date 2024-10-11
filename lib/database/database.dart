@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/notification/notification.dart';
@@ -18,18 +20,18 @@ class RemindersDatabaseController {
   /// Removes the reminders from the database which were set as 'done' in their 
   /// notifications when the app was terminated.
   static Future<void> clearPendingRemovals() async {
-    // debugPrint("[clearPendingRemovals] Running");
     final pendingRemovals = await Hive.openBox(pendingRemovalsBoxName);
 
-    // debugPrint("[clearPendingRemovals] Box opened");
     final removals = pendingRemovals.get(pendingRemovalsBoxKey) ?? [];
     for (final id in removals) 
     {
-      // debugPrint("[clearPendingRemovals] Removing $id");
-      moveToArchive(id);
+      markAsDone(id);
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
-    // debugPrint("[clearPendingRemovals] Removing Done");
+  }
+
+  static void removeAllReminders() {
+    _remindersBox.put(remindersBoxKey, {});
   }
 
   /// Get reminders from the database.
@@ -143,9 +145,13 @@ class RemindersDatabaseController {
     } else {
       moveToNextReminderOccurence(id);
     }
+
+    NotificationController.removeNotifications(
+      id.toString()
+    );
   }
 
-  /// Does not actually delete. Moves the reminder to Archives.
+  /// Moves the reminder to Archives.
   static void moveToArchive(int id) {  
     final Reminder? reminder = _getReminder(id);
     if (reminder == null) {
@@ -206,19 +212,12 @@ class RemindersDatabaseController {
       debugPrint("[deleteReminder] Reminder not found in database");
       return;
     }
-
-    if (
-      reminder.recurringInterval == RecurringInterval.none ||
-      allRecurringVersions == true
-    ) {
-      NotificationController.cancelScheduledNotification(id.toString());
-      reminders.remove(id);
-      updateReminders();
-      printAll('After Deleting');
-      return;
-    } 
-
-    moveToArchive(id);
+    
+    NotificationController.cancelScheduledNotification(id.toString());
+    NotificationController.removeNotifications(id.toString());
+    reminders.remove(id);
+    updateReminders();
+    printAll('After Deleting');
   }
 
   /// Print id of all the reminders which are present in the database.
@@ -276,5 +275,56 @@ class RemindersDatabaseController {
       tomorrowSectionTitle : tomorrowList,
       laterSectionTitle : laterList
     };
+  }
+
+  static Future<String> getBackup() async {
+    // Get the map of reminders
+    Map<int, Reminder> reminders = await getReminders();
+
+    // Convert the reminders to a format suitable for JSON
+    Map<String, dynamic> backupData = {
+      'reminders': reminders.map((id, reminder) => MapEntry(id.toString(), reminder.toMap())),
+      'timestamp': DateTime.now().toIso8601String(),
+      'version': '1.0', // You might want to include an app or backup version
+    };
+
+    // Convert the backup data to JSON
+    String jsonData = jsonEncode(backupData);
+
+    return jsonData;
+  }
+
+  static void restoreBackup(String jsonData) {
+    try {
+      // Parse the JSON data
+      Map<String, dynamic> backupData = jsonDecode(jsonData);
+
+      // Extract the reminders data
+      Map<String, dynamic> remindersData = backupData['reminders'];
+
+      // Convert the reminders data back to a Map<int, Reminder>
+      Map<int, Reminder> reminders = {};
+      remindersData.forEach((key, value) {
+        int id = int.parse(key);
+        value = value.cast<String, String?>();
+        reminders[id] = Reminder.fromMap(value);
+      });
+
+      // Clear existing reminders (if needed)
+      removeAllReminders();
+
+      // Save the restored reminders
+      for (var reminder in reminders.values) {
+        saveReminder(reminder);
+      }
+
+      print('Backup restored successfully');
+      print('Restored ${reminders.length} reminders');
+      print('Backup timestamp: ${backupData['timestamp']}');
+      print('Backup version: ${backupData['version']}');
+    } catch (e) {
+      print('Error restoring backup: $e');
+      throw Exception('Failed to restore backup: $e');
+    }
   }
 }
