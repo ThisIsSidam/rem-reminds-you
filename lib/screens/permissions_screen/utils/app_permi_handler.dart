@@ -14,8 +14,11 @@ class AppPermissionHandler {
   }
 
   static Future<bool> checkAlarmPermission() async {
+    if (kDebugMode) debugPrint('Checking Alarm permission');
+
     try {
       final bool isGranted = await platform.invokeMethod('checkAlarmPermission');
+      if (kDebugMode) debugPrint('Alarm permission: ${isGranted ? 'granted' : 'denied'}');
       return isGranted;
     } on PlatformException catch(e) {
       if (kDebugMode) debugPrint('[checkAlarmPermission] Failed to check Alarm permission: ${e.message}');
