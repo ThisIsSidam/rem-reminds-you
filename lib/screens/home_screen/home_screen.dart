@@ -8,10 +8,8 @@ import 'package:Rem/database/database.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/archive_screen/archive_screen.dart';
 import 'package:Rem/screens/home_screen/widgets/home_screen_lists.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
-import 'package:Rem/screens/settings_screen/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,19 +29,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
 
   @override
   void initState() {
+    super.initState();
     
-    refreshPage();
-    _timer = Timer.periodic(Duration(seconds: 1), (_){
-      refreshPage();
-    });
+    // Page refreshes every second
+    // I think I shouldn't be doing this. 
+    //TODO: Check if I need to reload every second
+    // refreshPage();
+    // _timer = Timer.periodic(Duration(seconds: 1), (_){
+    //   refreshPage();
+    // });
 
     WidgetsBinding.instance.addObserver(this);
 
+    // Starts the listener for notification button click
     NotificationController.startListeningNotificationEvents();
 
-    super.initState();
-    
-    // Listening for reloading orderers
+    // Listening for an app side task request sent upon click on 
+    // notification button.
     IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
     receivePort.listen((dynamic message) {
       if (message is Map<String, dynamic>)
@@ -77,8 +79,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
         debugPrint("[homepageListener] Unknown message received $message");
       }
     });
+
+    // Show the what's new dialog
+    // WidgetsBinding.instance.addPersistentFrameCallback(
+    //   (_) {
+    //     WhatsNewDialog.checkAndShowWhatsNewDialog(context);
+    //   }
+    // );
   }
 
+  // Get the dateTime for the new reminder
   DateTime getDateTimeForNewReminder() {
     final addDuration = UserDB.getSetting(SettingOption.DueDateAddDuration);
     if (addDuration is Duration)
@@ -89,6 +99,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     throw "[getDateTimeForNewReminder] Duration not received | $addDuration";
   }
 
+  // Refreshes the page
+  // Update the list of reminders
   void refreshPage() {
     if (mounted) {
       setState(() {
@@ -98,11 +110,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     }
   }
 
-  void deleteAndRefresh(int id) {
-    RemindersDatabaseController.moveToArchive(id);
-    refreshPage();
-  }
-
+  // Reloading when the user comes back after switching apps
+  // or something. 
+  // I don't know if I still need it. Will check later.
+  //TODO: Check if I still need it
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -127,6 +138,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   @override
   Widget build(BuildContext context) {
 
+    // Empty scaffold when no reminders.
     if (noOfReminders == 0)
     {
       return Scaffold(
@@ -134,6 +146,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
         body: getEmptyPage()
       );
     }
+
+    // Proper scaffold when reminders are present
     return Scaffold(
       appBar: getAppBar(),
       body: getListedReminderPage(),
@@ -141,6 +155,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     );
   }
 
+  // The appbar for the home page.
   AppBar getAppBar() {
     return AppBar(
       surfaceTintColor: null,
@@ -152,6 +167,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     );
   }
 
+  // The empty page widget used in empty scaffold body.
   Widget getEmptyPage() {
     return Center(
       child: Column(
@@ -195,26 +211,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     );
   }
 
-  Widget archiveIcon() {
-    return IconButton(
-      onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ArchiveScreen()));
-      },
-      style: Theme.of(context).iconButtonTheme.style, 
-      icon: Icon(Icons.archive)
-    );
-  }
-
-  Widget settingsIcon() {
-    return IconButton(
-      onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen.SettingsScreen()));
-      },
-      style: Theme.of(context).iconButtonTheme.style, 
-      icon: Icon(Icons.settings)
-    );
-  }
-
+  // The list of reminders widget used in scaffold body.
   Widget getListedReminderPage() {
 
     return ListView.builder(
@@ -267,7 +264,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     );
   }
 
-
+  // The floating Action button for adding new reminders.
   Widget getFloatingActionButton() {
     return FloatingActionButton(
       onPressed: () {

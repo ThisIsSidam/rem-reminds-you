@@ -6,7 +6,6 @@ class AppPermissionHandler {
   static const platform = MethodChannel('app_permission_channel');
   
   static Future<bool> checkPermissions() async { 
-    if (kDebugMode) debugPrint('Checking permissions');
 
     bool notifPermission = await NotificationController.checkNotificationPermissions(); 
     bool alarmPermission = await checkAlarmPermission();
@@ -14,11 +13,9 @@ class AppPermissionHandler {
   }
 
   static Future<bool> checkAlarmPermission() async {
-    if (kDebugMode) debugPrint('Checking Alarm permission');
 
     try {
       final bool isGranted = await platform.invokeMethod('checkAlarmPermission');
-      if (kDebugMode) debugPrint('Alarm permission: ${isGranted ? 'granted' : 'denied'}');
       return isGranted;
     } on PlatformException catch(e) {
       if (kDebugMode) debugPrint('[checkAlarmPermission] Failed to check Alarm permission: ${e.message}');

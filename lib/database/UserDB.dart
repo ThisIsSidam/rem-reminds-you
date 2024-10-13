@@ -11,12 +11,21 @@ import 'package:hive_flutter/hive_flutter.dart';
 class UserDB {
   static final _box = Hive.box(indiValuesBoxName);
 
-  static int? getIndiValue(String key) {
-    return _box.get(key);
+  static int? getNextId() {
+    //TODO: Do something about keys
+    return _box.get(reminderIDGeneratorCurrentCountKey);
   }
 
-  static void setIndiValue(String key, int value) {
-    _box.put(key, value);
+  static void setID(int value) {
+    _box.put(reminderIDGeneratorCurrentCountKey, value);
+  }
+
+  static String? getStoredAppVersion() {
+    return _box.get('app_version');
+  }
+
+  static void storeAppVersion(String version) {
+    _box.put('app_version', version);
   }
 
   // Settings Section ----------------------------------------------------------------------------
