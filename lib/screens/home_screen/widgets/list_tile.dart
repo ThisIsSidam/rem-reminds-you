@@ -32,7 +32,7 @@ class HomePageReminderEntryListTile extends StatelessWidget {
           children: [
             SizedBox(height: 5,),
             Text(
-              getFormattedDiffString(dateTime: reminder.dateAndTime),
+              getPrettyDurationFromDateTime(reminder.dateAndTime),
               style: Theme.of(context).textTheme.bodySmall
             ),
             if (reminder.recurringInterval != RecurringInterval.none)

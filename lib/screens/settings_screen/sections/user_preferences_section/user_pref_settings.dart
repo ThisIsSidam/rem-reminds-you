@@ -2,8 +2,8 @@ import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/database/settings/swipe_actions.dart';
 import 'package:Rem/provider/text_scale_notifier.dart';
-import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/swipe_to_left_action_sheet.dart';
-import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/swipe_to_right_action_sheet.dart';
+import 'package:Rem/screens/settings_screen/sections/user_preferences_section/swipe_to_left_action_sheet.dart';
+import 'package:Rem/screens/settings_screen/sections/user_preferences_section/swipe_to_right_action_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

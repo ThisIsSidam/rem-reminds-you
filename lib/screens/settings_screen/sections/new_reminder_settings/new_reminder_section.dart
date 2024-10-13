@@ -1,10 +1,10 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/screens/settings_screen/widgets/new_reminder_settings/default_due_datetime_modal.dart';
-import 'package:Rem/screens/settings_screen/widgets/new_reminder_settings/default_due_repeat_interval_modal.dart';
-import 'package:Rem/screens/settings_screen/widgets/new_reminder_settings/quick_time_table_modal.dart';
-import 'package:Rem/screens/settings_screen/widgets/new_reminder_settings/repeat_duration_table_modal.dart';
-import 'package:Rem/utils/datetime_methods.dart';
+import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/default_due_datetime_modal.dart';
+import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/default_due_repeat_interval_modal.dart';
+import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/quick_time_table_modal.dart';
+import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/repeat_duration_table_modal.dart';
+import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
 class NewReminderSection extends StatelessWidget {
@@ -49,7 +49,7 @@ class NewReminderSection extends StatelessWidget {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         final Duration dur = UserDB.getSetting(SettingOption.DueDateAddDuration);
-        final String durString = formatDuration(dur);
+        final String durString = dur.pretty(tersity: DurationTersity.minute);
 
         return ListTileTheme(
           data: Theme.of(context).listTileTheme,
@@ -83,7 +83,7 @@ class NewReminderSection extends StatelessWidget {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         final Duration dur = UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
-        final String durString = "Every " + formatDuration(dur);
+        final String durString = "Every " + dur.pretty(tersity: DurationTersity.minute);
 
         return ListTileTheme(
           data: Theme.of(context).listTileTheme,

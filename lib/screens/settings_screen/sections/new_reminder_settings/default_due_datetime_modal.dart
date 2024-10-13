@@ -33,7 +33,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
     setState(() {
       dateTime = DateTime.now().add(currentSelectedDuration);
       dateTimeString = getFormattedDateTime(dateTime);
-      diffString = getFormattedDiffString(dateTime: dateTime);
+      diffString = getPrettyDurationFromDateTime(dateTime);
     });
   }
 
@@ -44,7 +44,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
         children: [
-          Text("Default Due Datetime", style: Theme.of(context).textTheme.titleLarge),
+          Text("Default Due Date Time", style: Theme.of(context).textTheme.titleLarge),
           Divider(),
           SizedBox(height: 10),
           dateTimeWidget(),

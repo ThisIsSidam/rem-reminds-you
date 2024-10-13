@@ -1,9 +1,9 @@
 import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/utils/datetime_methods.dart';
 import 'package:Rem/widgets/duration_picker.dart';
 import 'package:Rem/widgets/save_close_buttons.dart';
+import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
 class DefaultRepeatIntervalModal extends StatefulWidget {
@@ -29,7 +29,7 @@ class _DefaultRepeatIntervalModalState extends State<DefaultRepeatIntervalModal>
 
   void refresh() {
     setState(() {
-      durString = "Every " + formatDuration(currentSelectedDuration);
+      durString = "Every " + currentSelectedDuration.pretty(tersity: DurationTersity.minute);
     });
   }
 
