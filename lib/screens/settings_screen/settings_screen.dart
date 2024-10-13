@@ -38,9 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            UserPreferenceSection(
-              refreshPage: refresh,
-            ),
+            UserPreferenceSection(),
             NewReminderSection(),
             BackupRestoreSection(),
             OtherSection(), 

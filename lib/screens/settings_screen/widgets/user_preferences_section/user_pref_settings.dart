@@ -1,25 +1,18 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/database/settings/swipe_actions.dart';
 import 'package:Rem/provider/text_scale_notifier.dart';
-import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/setting_tiles.dart';
+import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/swipe_to_left_action_sheet.dart';
+import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/swipe_to_right_action_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UserPreferenceSection extends StatelessWidget {
   const UserPreferenceSection({
-    super.key,
-    required this.refreshPage
-  });
-
-  final void Function() refreshPage;
+    super.key,});
 
   @override
   Widget build(BuildContext context) {
-
-    final settingTiles = SettingTiles(
-      context: context,
-      refreshPage: refreshPage
-    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -38,11 +31,9 @@ class UserPreferenceSection extends StatelessWidget {
           Column(
             children: [
               SizedBox(height: 10),
-              settingTiles.getTitleParsingOption(),
-              SizedBox(height: 10),
-              settingTiles.getSlideToLeftActionsSetting(),
+              _buildSlideToLeftActionsSetting(context),
               SizedBox(height: 10,),
-              settingTiles.getSlideToRightActionsSetting(),
+              _buildSlideToRightActionsSetting(context),
               SizedBox(height: 10),
               _buildTextScaleSetting(context),
               SizedBox(height: 10),
@@ -163,4 +154,70 @@ class UserPreferenceSection extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildSlideToLeftActionsSetting(BuildContext context, ) {
+  return StatefulBuilder(
+    builder: (BuildContext context, StateSetter setState) {
+      SwipeAction action = UserDB.getSetting(SettingOption.HomeTileSlideAction_ToLeft);
+
+      return ListTileTheme(
+        data: Theme.of(context).listTileTheme,
+        child: ListTile(
+          title: Text(
+            "Swipe to Left Actions",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          minVerticalPadding: 20,
+          trailing: Text(
+            action.toString(),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          onTap: () async {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 5,
+              context: context,
+              builder: (context) => SwipeToLeftActionSheet(),
+            );
+            setState(() {}); // Refresh the tile after modal is closed
+          },
+        ),
+      );
+    },
+  );
+}
+
+Widget _buildSlideToRightActionsSetting(BuildContext context) {
+  return StatefulBuilder(
+    builder: (BuildContext context, StateSetter setState) {
+      SwipeAction action = UserDB.getSetting(SettingOption.HomeTileSlideAction_ToRight);
+
+      return ListTileTheme(
+        data: Theme.of(context).listTileTheme,
+        child: ListTile(
+          title: Text(
+            "Swipe to Right Actions",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          minVerticalPadding: 20,
+          trailing: Text(
+            action.toString(),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          onTap: () async {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 5,
+              context: context,
+              builder: (context) => SwipeToRightActionSheet(),
+            );
+            setState(() {}); // Refresh the tile after modal is closed
+          },
+        ),
+      );
+    },
+  );
+}
 }
