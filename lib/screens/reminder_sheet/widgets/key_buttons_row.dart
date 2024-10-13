@@ -82,9 +82,10 @@ class KeyButtonsRow extends ConsumerWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {
-                  finalDelete(deleteAllRecurring: false);
+              onPressed: () {
+                  RemindersDatabaseController.moveToArchive(reminder.id ?? reminderNullID);
                   Navigator.of(context).pop(); // Close the dialog
+                  refreshOrExit(context);
                 },
                 child: Text(
                   'Archive',
