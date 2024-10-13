@@ -66,9 +66,15 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
                   getFormattedDateTime(reminder.dateAndTime),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                Text(
-                  'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                SizedBox(width: 24,),
+                Flexible(
+                  child: Text(
+                    reminder.dateAndTime.isBefore(DateTime.now())
+                    ? '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'.replaceFirst('-', '')
+                    : 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             )
