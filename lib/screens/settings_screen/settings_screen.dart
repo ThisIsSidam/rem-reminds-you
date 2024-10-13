@@ -5,6 +5,7 @@ import 'package:Rem/screens/settings_screen/widgets/new_reminder_settings/new_re
 import 'package:Rem/screens/settings_screen/widgets/other_section/other_section.dart';
 import 'package:Rem/screens/settings_screen/widgets/user_preferences_section/user_pref_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen.SettingsScreen({super.key});
@@ -42,7 +43,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             NewReminderSection(),
             BackupRestoreSection(),
-            OtherSection()
+            OtherSection(), 
+            _buildVersionWidget()
           ],
         ),
       ),
@@ -85,6 +87,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
           }
         );
       },
+    );
+  }
+
+  Widget _buildVersionWidget() {
+    final packageInfo = PackageInfo.fromPlatform();
+    return Center(
+      child: FutureBuilder(
+        future: packageInfo,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SizedBox(
+              height: 24, width: 24,
+              child: const Center(child: CircularProgressIndicator())
+            );
+          } 
+      
+          if (snapshot.hasData) {
+            return Text(
+              "v${snapshot.data!.version}",
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                color: Colors.grey
+              )
+            );
+          } 
+      
+          return SizedBox.shrink();
+        }
+      ),
     );
   }
 }
