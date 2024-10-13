@@ -33,7 +33,7 @@ class _DefaultDueDatetimeModalState extends State<DefaultDueDatetimeModal> {
     setState(() {
       dateTime = DateTime.now().add(currentSelectedDuration);
       dateTimeString = getFormattedDateTime(dateTime);
-      diffString = getPrettyDurationFromDateTime(dateTime);
+      diffString = 'in ${getPrettyDurationFromDateTime(dateTime)}';
     });
   }
 

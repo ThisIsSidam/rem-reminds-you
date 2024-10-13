@@ -67,7 +67,7 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
-                  getPrettyDurationFromDateTime(reminder.dateAndTime),
+                  'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],

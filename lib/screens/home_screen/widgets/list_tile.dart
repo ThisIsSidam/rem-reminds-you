@@ -32,7 +32,7 @@ class HomePageReminderEntryListTile extends StatelessWidget {
           children: [
             SizedBox(height: 5,),
             Text(
-              getPrettyDurationFromDateTime(reminder.dateAndTime),
+              getFormattedDuration(),
               style: Theme.of(context).textTheme.bodySmall
             ),
             if (reminder.recurringInterval != RecurringInterval.none)
@@ -62,5 +62,13 @@ class HomePageReminderEntryListTile extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String getFormattedDuration() {
+    if (reminder.dateAndTime.isBefore(DateTime.now())) {
+      return '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'.replaceFirst('-', '');
+    } else {
+      return 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}';
+    }
   }
 }
