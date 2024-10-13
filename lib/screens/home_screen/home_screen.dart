@@ -6,10 +6,12 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/database.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/main.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/home_screen_lists.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
+import 'package:Rem/widgets/whats_new_dialog/whats_new_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,10 +36,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     // Page refreshes every second
     // I think I shouldn't be doing this. 
     //TODO: Check if I need to reload every second
-    // refreshPage();
-    // _timer = Timer.periodic(Duration(seconds: 1), (_){
-    //   refreshPage();
-    // });
+    refreshPage();
+    _timer = Timer.periodic(Duration(seconds: 1), (_){
+      refreshPage();
+    });
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -81,11 +83,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     });
 
     // Show the what's new dialog
-    // WidgetsBinding.instance.addPersistentFrameCallback(
-    //   (_) {
-    //     WhatsNewDialog.checkAndShowWhatsNewDialog(context);
-    //   }
-    // );
+    WidgetsBinding.instance.addPersistentFrameCallback(
+      (_) {
+        WhatsNewDialog.checkAndShowWhatsNewDialog(navigatorKey.currentContext!);
+      }
+    );
   }
 
   // Get the dateTime for the new reminder

@@ -7,15 +7,30 @@ class WhatsNewDialog {
   /// Check if app version stored in UsedDB match with current 
   /// version or not. If not, show the dialog and save the 
   /// current version. 
-  static Future<List<Widget>?> checkAndShowWhatsNewDialog(BuildContext context) async {
+  static void checkAndShowWhatsNewDialog(BuildContext context) async {
     final packageInfo = await PackageInfo.fromPlatform();
     final String currentVersion = packageInfo.version;
     final String storedVersion = UserDB.getStoredAppVersion() ?? '0.0.0';
     if (currentVersion != storedVersion) {
       UserDB.storeAppVersion(currentVersion);
-      return getWhatsNewTileContent(context);
-    } else {
-      return null;
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Theme.of(context).cardColor,
+            title: Text(
+              'What\'s New',
+              style: Theme.of(context).textTheme.titleLarge
+            ),
+            insetPadding: null,
+            contentPadding: null,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: getWhatsNewTileContent(context),
+            ),
+          );
+        }
+      );
     }
   }
 

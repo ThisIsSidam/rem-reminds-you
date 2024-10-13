@@ -1,4 +1,4 @@
-import 'package:Rem/screens/home_screen/widgets/whats_new_dialog/whats_new_dialog.dart';
+import 'package:Rem/widgets/whats_new_dialog/whats_new_dialog.dart';
 import 'package:flutter/material.dart';
 
 class OtherSection extends StatelessWidget {
