@@ -12,14 +12,10 @@ import '../../../reminder_class/field_mixins/reminder_status/status.dart';
 
 class KeyButtonsRow extends ConsumerWidget {
   final void Function()? refreshHomePage;
-  const KeyButtonsRow({
-    super.key,
-    required this.refreshHomePage
-  });
+  const KeyButtonsRow({super.key, required this.refreshHomePage});
 
   void refreshOrExit(BuildContext context) {
-    if (refreshHomePage == null)
-    {
+    if (refreshHomePage == null) {
       Navigator.pop(context);
       return;
     }
@@ -30,14 +26,13 @@ class KeyButtonsRow extends ConsumerWidget {
   }
 
   void saveReminder(Reminder reminder, BuildContext context) {
-    if (reminder.title == "No Title")
-    {
+    if (reminder.title == "No Title") {
       Fluttertoast.showToast(msg: "Enter a title!");
       return;
     }
-    if (reminder.dateAndTime.isBefore(DateTime.now()))
-    {
-      Fluttertoast.showToast(msg: "Time machine is broke. Can't remind you in the past!");
+    if (reminder.dateAndTime.isBefore(DateTime.now())) {
+      Fluttertoast.showToast(
+          msg: "Time machine is broke. Can't remind you in the past!");
       return;
     }
 
@@ -46,12 +41,9 @@ class KeyButtonsRow extends ConsumerWidget {
   }
 
   void deleteReminder(Reminder reminder, BuildContext context) {
-
     void finalDelete({deleteAllRecurring = false}) {
-      RemindersDatabaseController.deleteReminder(
-        reminder.id!,
-        allRecurringVersions: deleteAllRecurring
-      );
+      RemindersDatabaseController.deleteReminder(reminder.id!,
+          allRecurringVersions: deleteAllRecurring);
       refreshOrExit(context);
     }
 
@@ -82,8 +74,9 @@ class KeyButtonsRow extends ConsumerWidget {
                 ),
               ),
               TextButton(
-              onPressed: () {
-                  RemindersDatabaseController.moveToArchive(reminder.id ?? reminderNullID);
+                onPressed: () {
+                  RemindersDatabaseController.moveToArchive(
+                      reminder.id ?? reminderNullID);
                   Navigator.of(context).pop(); // Close the dialog
                   refreshOrExit(context);
                 },
@@ -93,7 +86,7 @@ class KeyButtonsRow extends ConsumerWidget {
                 ),
               ),
               TextButton(
-                onPressed: () { 
+                onPressed: () {
                   finalDelete(deleteAllRecurring: true);
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -106,9 +99,7 @@ class KeyButtonsRow extends ConsumerWidget {
           );
         },
       );
-    } 
-    else 
-    {
+    } else {
       finalDelete();
     }
   }
@@ -122,17 +113,12 @@ class KeyButtonsRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if ( 
-            reminder.id != newReminderID && 
-            reminder.reminderStatus != ReminderStatus.archived
-          ) ...<Widget>[
+          if (reminder.id != newReminderID &&
+              reminder.reminderStatus != ReminderStatus.archived) ...<Widget>[
             IconButton(
               icon: IconTheme(
                 data: Theme.of(context).iconTheme,
-                child: const Icon(
-                  Icons.delete,
-                  color: Colors.red
-                ),
+                child: const Icon(Icons.delete, color: Colors.red),
               ),
               onPressed: () => deleteReminder(reminder, context),
             ),
@@ -142,9 +128,13 @@ class KeyButtonsRow extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               getRepeatNotifButton(context),
-              SizedBox(width: 4,),
+              SizedBox(
+                width: 4,
+              ),
               getRecurringButton(context),
-              SizedBox(width: 4,),
+              SizedBox(
+                width: 4,
+              ),
               _buildSaveButton(context, reminder)
             ],
           ),
@@ -157,49 +147,38 @@ class KeyButtonsRow extends ConsumerWidget {
     BuildContext context,
     Reminder reminder,
   ) {
-
     bool forAllCondition = reminder.id != newReminderID &&
-      reminder.recurringInterval != RecurringInterval.none &&
-      !reminder.dateAndTime.isAtSameMomentAs(reminder.baseDateTime);
+        reminder.recurringInterval != RecurringInterval.none &&
+        !reminder.dateAndTime.isAtSameMomentAs(reminder.baseDateTime);
 
     return Row(
       children: [
         ElevatedButton(
           onPressed: () => saveReminder(reminder, context),
-          child: Text(
-            "Save", 
-            style: Theme.of(context).textTheme.titleMedium
-          ),
+          child: Text("Save", style: Theme.of(context).textTheme.titleMedium),
           style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-            backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor),
-            shape: forAllCondition
-            ? WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.horizontal(left: Radius.circular(12))
-              )
-            )
-            : null
-          ),
+              backgroundColor:
+                  WidgetStatePropertyAll(Theme.of(context).primaryColor),
+              shape: forAllCondition
+                  ? WidgetStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.horizontal(left: Radius.circular(12))))
+                  : null),
         ),
-        if (forAllCondition) 
+        if (forAllCondition)
           ElevatedButton(
             onPressed: () {
               reminder.baseDateTime = reminder.dateAndTime;
               saveReminder(reminder, context);
             },
-            child: Text(
-              "For All", 
-              style: Theme.of(context).textTheme.titleMedium
-            ),
+            child:
+                Text("For All", style: Theme.of(context).textTheme.titleMedium),
             style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-              backgroundColor: WidgetStatePropertyAll(Colors.red),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.horizontal(right: Radius.circular(12))
-                )
-              )
-            ),
-          ) 
+                backgroundColor: WidgetStatePropertyAll(Colors.red),
+                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.horizontal(right: Radius.circular(12))))),
+          )
       ],
     );
   }
@@ -210,27 +189,24 @@ class KeyButtonsRow extends ConsumerWidget {
       style: Theme.of(context).elevatedButtonTheme.style,
       onPressed: () {
         showDialog(
-          context: context, 
-          builder: (context) {
-            return RepeatNotifDialog();
-          }
-        );
+            context: context,
+            builder: (context) {
+              return SnoozeOptionsDialog();
+            });
       },
     );
   }
 
   Widget getRecurringButton(BuildContext context) {
     return ElevatedButton(
-      child: Icon(Icons.event_repeat_outlined),
-      style: Theme.of(context).elevatedButtonTheme.style,
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return ReminderRecurrenceDialog();
-          }
-        );
-      }
-    );
+        child: Icon(Icons.event_repeat_outlined),
+        style: Theme.of(context).elevatedButtonTheme.style,
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return ReminderRecurrenceDialog();
+              });
+        });
   }
 }

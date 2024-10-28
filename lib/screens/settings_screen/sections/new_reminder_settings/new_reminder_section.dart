@@ -1,9 +1,9 @@
 import 'package:Rem/database/UserDB.dart';
 import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/default_due_datetime_modal.dart';
-import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/default_due_repeat_interval_modal.dart';
+import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/default_auto_snooze_duration_modal.dart';
+import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/default_lead_duration_modal.dart';
 import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/quick_time_table_modal.dart';
-import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/repeat_duration_table_modal.dart';
+import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/snooze_options_modal.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
@@ -12,50 +12,53 @@ class NewReminderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "New Reminder",
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Colors.white
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall!
+                .copyWith(color: Colors.white),
           ),
           SizedBox(height: 5),
           Column(
             children: [
               SizedBox(height: 10),
-              _buildDefDueDateTimeTile(context),
+              _buildDefaultLeadDurationTile(context),
               SizedBox(height: 10),
-              _buildDefRepeatIntervalTile(context),
-              SizedBox(height: 10,),
+              _buildDefaultAutoSnoozeDurationTile(context),
+              SizedBox(
+                height: 10,
+              ),
               _buildQuickTimeTableTile(context),
-              SizedBox(height: 10,),
-              _buildRepeatDurationTableTile(context),
-              SizedBox(height:20),
+              SizedBox(
+                height: 10,
+              ),
+              _buildSnoozeOptionsTile(context),
+              SizedBox(height: 20),
             ],
           )
         ],
-      ), 
+      ),
     );
   }
 
-  Widget _buildDefDueDateTimeTile(BuildContext context) {
+  Widget _buildDefaultLeadDurationTile(BuildContext context) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        final Duration dur = UserDB.getSetting(SettingOption.DueDateAddDuration);
+        final Duration dur =
+            UserDB.getSetting(SettingOption.DueDateAddDuration);
         final String durString = dur.pretty(tersity: DurationTersity.minute);
 
         return ListTileTheme(
           data: Theme.of(context).listTileTheme,
           child: ListTile(
             title: Text(
-              "Default Due Date Time",
+              "Default lead duration",
               style: Theme.of(context).textTheme.titleSmall,
             ),
             minVerticalPadding: 20,
@@ -65,7 +68,7 @@ class NewReminderSection extends StatelessWidget {
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 elevation: 5,
                 context: context,
-                builder: (context) => DefaultDueDatetimeModal(),
+                builder: (context) => DefaultLeadDurationModal(),
               );
               setState(() {}); // Refresh the tile after modal is closed
             },
@@ -79,17 +82,19 @@ class NewReminderSection extends StatelessWidget {
     );
   }
 
-  Widget _buildDefRepeatIntervalTile(BuildContext context) {
+  Widget _buildDefaultAutoSnoozeDurationTile(BuildContext context) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        final Duration dur = UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
-        final String durString = "Every " + dur.pretty(tersity: DurationTersity.minute);
+        final Duration dur =
+            UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
+        final String durString =
+            "Every " + dur.pretty(tersity: DurationTersity.minute);
 
         return ListTileTheme(
           data: Theme.of(context).listTileTheme,
           child: ListTile(
             title: Text(
-              "Default Repeat Interval",
+              "Default auto snooze duration",
               style: Theme.of(context).textTheme.titleSmall,
             ),
             minVerticalPadding: 20,
@@ -99,7 +104,7 @@ class NewReminderSection extends StatelessWidget {
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 elevation: 5,
                 context: context,
-                builder: (context) => DefaultRepeatIntervalModal(),
+                builder: (context) => DefaultAutoSnoozeDurationModal(),
               );
               setState(() {}); // Refresh the tile after modal is closed
             },
@@ -118,7 +123,7 @@ class NewReminderSection extends StatelessWidget {
       data: Theme.of(context).listTileTheme,
       child: ListTile(
         title: Text(
-          "Quick Time Table",
+          "Quick time table",
           style: Theme.of(context).textTheme.titleSmall,
         ),
         minVerticalPadding: 20,
@@ -135,12 +140,12 @@ class NewReminderSection extends StatelessWidget {
     );
   }
 
-  Widget _buildRepeatDurationTableTile(BuildContext context) {
+  Widget _buildSnoozeOptionsTile(BuildContext context) {
     return ListTileTheme(
       data: Theme.of(context).listTileTheme,
       child: ListTile(
         title: Text(
-          "Repeat Duration Table",
+          "Snooze options",
           style: Theme.of(context).textTheme.titleSmall,
         ),
         minVerticalPadding: 20,
@@ -150,11 +155,10 @@ class NewReminderSection extends StatelessWidget {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             elevation: 5,
             context: context,
-            builder: (context) => RepeatDurationTableModal(),
+            builder: (context) => SnoozeOptionsModal(),
           );
         },
       ),
     );
   }
-
 }

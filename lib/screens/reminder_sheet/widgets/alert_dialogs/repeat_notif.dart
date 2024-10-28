@@ -6,13 +6,13 @@ import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RepeatNotifDialog extends ConsumerWidget {
-  RepeatNotifDialog({super.key});
+class SnoozeOptionsDialog extends ConsumerWidget {
+  SnoozeOptionsDialog({super.key});
 
   final List<Duration> repeatIntervalDurations = List.generate(6, (index) {
-    final dur = UserDB.getSetting(SettingsOptionMethods.fromInt(index + 15));;
-    if (!(dur is Duration)) 
-    {
+    final dur = UserDB.getSetting(SettingsOptionMethods.fromInt(index + 15));
+    ;
+    if (!(dur is Duration)) {
       print("[repeatIntervals] Duration not received | $dur");
     }
     return dur;
@@ -20,15 +20,12 @@ class RepeatNotifDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return AlertDialogBase(
-      title: "Repeat Notification",
-      tooltipMsg: "A reminder's notification are repeated at a certain interval until you mark the reminder as done.",
+      title: "Snooze options",
+      tooltipMsg:
+          "A reminder's notification are repeated at a certain interval until you mark the reminder as done.",
       content: SizedBox(
-        height: 175,
-        width: 375,
-        child: getButtonsGrid(context, ref)
-      ),
+          height: 175, width: 375, child: getButtonsGrid(context, ref)),
     );
   }
 
@@ -46,29 +43,30 @@ class RepeatNotifDialog extends ConsumerWidget {
     );
   }
 
-  Widget intervalEditButton(Duration duration, BuildContext context, WidgetRef ref) {
-
+  Widget intervalEditButton(
+      Duration duration, BuildContext context, WidgetRef ref) {
     final reminder = ref.read(reminderNotifierProvider);
     bool isPickedDuration = duration == reminder.notifRepeatInterval;
     return SizedBox(
       height: 60,
       width: 150,
       child: ElevatedButton(
-        onPressed: () {
-          reminder.notifRepeatInterval = duration;
-          ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
-          Navigator.pop(context);
-        },
-        style: isPickedDuration
-        ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
-          backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
-        )
-        : Theme.of(context).elevatedButtonTheme.style, 
-        child: Text(
-          getFormattedDurationForTimeEditButton(duration),
-          style: Theme.of(context).textTheme.bodyLarge,
-        )
-      ),
+          onPressed: () {
+            reminder.notifRepeatInterval = duration;
+            ref
+                .read(reminderNotifierProvider.notifier)
+                .updateReminder(reminder);
+            Navigator.pop(context);
+          },
+          style: isPickedDuration
+              ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                  backgroundColor:
+                      WidgetStatePropertyAll(Theme.of(context).primaryColor))
+              : Theme.of(context).elevatedButtonTheme.style,
+          child: Text(
+            getFormattedDurationForTimeEditButton(duration),
+            style: Theme.of(context).textTheme.bodyLarge,
+          )),
     );
   }
 }
