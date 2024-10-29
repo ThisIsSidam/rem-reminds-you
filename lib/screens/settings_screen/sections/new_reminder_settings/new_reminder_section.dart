@@ -1,17 +1,17 @@
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/default_auto_snooze_duration_modal.dart';
 import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/default_lead_duration_modal.dart';
 import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/quick_time_table_modal.dart';
 import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/snooze_options_modal.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewReminderSection extends StatelessWidget {
+class NewReminderSection extends ConsumerWidget {
   const NewReminderSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -28,9 +28,9 @@ class NewReminderSection extends StatelessWidget {
           Column(
             children: [
               SizedBox(height: 10),
-              _buildDefaultLeadDurationTile(context),
+              _buildDefaultLeadDurationTile(context, ref),
               SizedBox(height: 10),
-              _buildDefaultAutoSnoozeDurationTile(context),
+              _buildDefaultAutoSnoozeDurationTile(context, ref),
               SizedBox(
                 height: 10,
               ),
@@ -47,11 +47,11 @@ class NewReminderSection extends StatelessWidget {
     );
   }
 
-  Widget _buildDefaultLeadDurationTile(BuildContext context) {
+  Widget _buildDefaultLeadDurationTile(BuildContext context, WidgetRef ref) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         final Duration dur =
-            UserDB.getSetting(SettingOption.DueDateAddDuration);
+            ref.watch(userSettingsProvider).defaultLeadDuration;
         final String durString = dur.pretty(tersity: DurationTersity.minute);
 
         return ListTileTheme(
@@ -82,11 +82,12 @@ class NewReminderSection extends StatelessWidget {
     );
   }
 
-  Widget _buildDefaultAutoSnoozeDurationTile(BuildContext context) {
+  Widget _buildDefaultAutoSnoozeDurationTile(
+      BuildContext context, WidgetRef ref) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         final Duration dur =
-            UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
+            ref.watch(userSettingsProvider).defaultAutoSnoozeDuration;
         final String durString =
             "Every " + dur.pretty(tersity: DurationTersity.minute);
 

@@ -4,27 +4,25 @@ enum RecurringInterval {
   none,
   daily,
   weekly,
-  custom
-}
+  custom;
 
-class RecurringIntervalExtension{
-  static String getDisplayName(RecurringInterval interval) {
-    switch (interval) {
-      case RecurringInterval.none:
+  @override
+  String toString() {
+    switch (this) {
+      case none:
         return 'None';
-      case RecurringInterval.daily:
+      case daily:
         return 'Daily';
-      case RecurringInterval.weekly:
+      case weekly:
         return 'Weekly';
-      case RecurringInterval.custom:
+      case custom:
         return 'Custom';
     }
   }
 
   static RecurringInterval fromString(String value) {
     return RecurringInterval.values.firstWhere(
-      (interval) =>
-          getDisplayName(interval).toLowerCase() == value.toLowerCase(),
+      (interval) => interval.toString().toLowerCase() == value.toLowerCase(),
       orElse: () => RecurringInterval.none,
     );
   }

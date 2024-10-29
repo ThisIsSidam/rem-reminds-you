@@ -1,42 +1,17 @@
 import 'package:Rem/consts/const_colors.dart';
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
+import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/widgets/duration_picker.dart';
-import 'package:Rem/widgets/save_close_buttons.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DefaultAutoSnoozeDurationModal extends StatefulWidget {
-  DefaultAutoSnoozeDurationModal({super.key});
-
+class DefaultAutoSnoozeDurationModal extends ConsumerWidget {
   @override
-  State<DefaultAutoSnoozeDurationModal> createState() =>
-      _DefaultAutoSnoozeDurationModalState();
-}
-
-class _DefaultAutoSnoozeDurationModalState
-    extends State<DefaultAutoSnoozeDurationModal> {
-  Duration currentSelectedDuration =
-      UserDB.getSetting(SettingOption.RepeatIntervalFieldValue);
-  String durString = "";
-
-  @override
-  void initState() {
-    refresh();
-    super.initState();
-  }
-
-  void refresh() {
-    setState(() {
-      durString = "Every " +
-          currentSelectedDuration.pretty(tersity: DurationTersity.minute);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentSelectedDuration =
+        ref.watch(userSettingsProvider).defaultAutoSnoozeDuration;
     return Container(
-        height: 450,
+        height: 350,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
@@ -44,21 +19,15 @@ class _DefaultAutoSnoozeDurationModalState
                 style: Theme.of(context).textTheme.titleLarge),
             Divider(),
             SizedBox(height: 10),
-            dateTimeWidget(),
+            dateTimeWidget(context, currentSelectedDuration),
             DurationPickerBase(onDurationChange: (dur) {
-              currentSelectedDuration = dur;
-              refresh();
+              ref.read(userSettingsProvider).defaultAutoSnoozeDuration = dur;
             }),
-            SaveCloseButtons(onTapSave: () {
-              UserDB.setSetting(SettingOption.RepeatIntervalFieldValue,
-                  currentSelectedDuration);
-              Navigator.pop(context);
-            })
           ],
         ));
   }
 
-  Widget dateTimeWidget() {
+  Widget dateTimeWidget(BuildContext context, Duration dur) {
     return Container(
         width: MediaQuery.sizeOf(context).width * 0.5,
         decoration: BoxDecoration(
@@ -66,7 +35,7 @@ class _DefaultAutoSnoozeDurationModalState
             color: ConstColors.lightGreyLessOpacity),
         padding: EdgeInsets.all(10),
         child: Center(
-            child: Text(durString,
+            child: Text('Every ${dur.pretty(tersity: DurationTersity.minute)}',
                 style: Theme.of(context).textTheme.titleMedium)));
   }
 }

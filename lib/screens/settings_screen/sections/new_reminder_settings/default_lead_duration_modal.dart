@@ -1,44 +1,22 @@
 import 'package:Rem/consts/const_colors.dart';
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:Rem/widgets/duration_picker.dart';
-import 'package:Rem/widgets/save_close_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DefaultLeadDurationModal extends StatefulWidget {
-  DefaultLeadDurationModal({super.key});
+import '../../../../provider/settings_provider.dart';
 
+class DefaultLeadDurationModal extends ConsumerWidget {
   @override
-  State<DefaultLeadDurationModal> createState() =>
-      _DefaultLeadDurationModalState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    Duration currentSelectedDuration =
+        ref.watch(userSettingsProvider).defaultLeadDuration;
+    DateTime dateTime = DateTime.now().add(currentSelectedDuration);
+    String dateTimeString = getFormattedDateTime(dateTime);
+    String diffString = getPrettyDurationFromDateTime(dateTime);
 
-class _DefaultLeadDurationModalState extends State<DefaultLeadDurationModal> {
-  DateTime dateTime = DateTime.now();
-  Duration currentSelectedDuration =
-      UserDB.getSetting(SettingOption.DueDateAddDuration);
-  String dateTimeString = "";
-  String diffString = "";
-
-  @override
-  void initState() {
-    refresh();
-    super.initState();
-  }
-
-  void refresh() {
-    setState(() {
-      dateTime = DateTime.now().add(currentSelectedDuration);
-      dateTimeString = getFormattedDateTime(dateTime);
-      diffString = 'in ${getPrettyDurationFromDateTime(dateTime)}';
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
-        height: 450,
+        height: 350,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
@@ -46,21 +24,16 @@ class _DefaultLeadDurationModalState extends State<DefaultLeadDurationModal> {
                 style: Theme.of(context).textTheme.titleLarge),
             Divider(),
             SizedBox(height: 10),
-            dateTimeWidget(),
+            dateTimeWidget(context, dateTimeString, diffString),
             DurationPickerBase(onDurationChange: (dur) {
-              currentSelectedDuration = dur;
-              refresh();
+              ref.read(userSettingsProvider).defaultLeadDuration = dur;
             }),
-            SaveCloseButtons(onTapSave: () {
-              UserDB.setSetting(
-                  SettingOption.DueDateAddDuration, currentSelectedDuration);
-              Navigator.pop(context);
-            })
           ],
         ));
   }
 
-  Widget dateTimeWidget() {
+  Widget dateTimeWidget(
+      BuildContext context, String dateTimeString, String diffString) {
     return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),

@@ -1,35 +1,39 @@
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/base_versions/alert_dialog_base.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SnoozeOptionsDialog extends ConsumerWidget {
-  SnoozeOptionsDialog({super.key});
-
-  final List<Duration> repeatIntervalDurations = List.generate(6, (index) {
-    final dur = UserDB.getSetting(SettingsOptionMethods.fromInt(index + 15));
-    ;
-    if (!(dur is Duration)) {
-      print("[repeatIntervals] Duration not received | $dur");
-    }
-    return dur;
-  });
+  const SnoozeOptionsDialog({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(userSettingsProvider.notifier);
+
+    final List<Duration> repeatIntervalDurations = <Duration>[
+      settings.autoSnoozeOption1,
+      settings.autoSnoozeOption2,
+      settings.autoSnoozeOption3,
+      settings.autoSnoozeOption4,
+      settings.autoSnoozeOption5,
+      settings.autoSnoozeOption6,
+    ];
+
     return AlertDialogBase(
       title: "Snooze options",
       tooltipMsg:
           "A reminder's notification are repeated at a certain interval until you mark the reminder as done.",
       content: SizedBox(
-          height: 175, width: 375, child: getButtonsGrid(context, ref)),
+          height: 175,
+          width: 375,
+          child: getButtonsGrid(context, repeatIntervalDurations, ref)),
     );
   }
 
-  Widget getButtonsGrid(BuildContext context, WidgetRef ref) {
+  Widget getButtonsGrid(
+      BuildContext context, List<Duration> intervalDurations, WidgetRef ref) {
     return GridView.count(
       mainAxisSpacing: 5,
       crossAxisSpacing: 5,
@@ -37,7 +41,7 @@ class SnoozeOptionsDialog extends ConsumerWidget {
       shrinkWrap: true,
       childAspectRatio: 1.5,
       children: [
-        for (var dur in repeatIntervalDurations)
+        for (var dur in intervalDurations)
           intervalEditButton(dur, context, ref),
       ],
     );

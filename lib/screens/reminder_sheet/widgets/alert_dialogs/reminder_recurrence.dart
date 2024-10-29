@@ -1,5 +1,3 @@
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/base_versions/alert_dialog_base.dart';
@@ -10,34 +8,21 @@ import 'package:fluttertoast/fluttertoast.dart';
 class ReminderRecurrenceDialog extends ConsumerWidget {
   ReminderRecurrenceDialog({super.key});
 
-  final List<Duration> repeatIntervalDurations = List.generate(6, (index) {
-    final dur = UserDB.getSetting(SettingsOptionMethods.fromInt(index + 15));;
-    if (!(dur is Duration)) 
-    {
-      print("[repeatIntervals] Duration not received | $dur");
-    }
-    return dur;
-  });
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return AlertDialogBase(
       title: "Recurrence Interval",
-      tooltipMsg: "Reminder is repeat on either daily or weekly basis. Monthly and More are coming soon.",
+      tooltipMsg:
+          "Reminder is repeat on either daily or weekly basis. Monthly and More are coming soon.",
       content: SizedBox(
-        height: 250,
-        width: 375,
-        child: getButtonsGrid(context, ref)
-      ),
+          height: 250, width: 375, child: getButtonsGrid(context, ref)),
     );
   }
 
   Widget getButtonsGrid(BuildContext context, WidgetRef ref) {
     return GridView.count(
       mainAxisSpacing: 8,
-      crossAxisSpacing: 8
-      ,
+      crossAxisSpacing: 8,
       crossAxisCount: 2,
       shrinkWrap: true,
       childAspectRatio: 1.5,
@@ -50,7 +35,8 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
     );
   }
 
-  Widget intervalButton(RecurringInterval interval, BuildContext context, WidgetRef ref) {
+  Widget intervalButton(
+      RecurringInterval interval, BuildContext context, WidgetRef ref) {
     final reminder = ref.read(reminderNotifierProvider);
     bool isPickedOption = interval == reminder.recurringInterval;
 
@@ -59,24 +45,21 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
       width: 150,
       child: ElevatedButton(
         onPressed: () {
-          if (interval == RecurringInterval.custom)
-          {
+          if (interval == RecurringInterval.custom) {
             Fluttertoast.showToast(msg: "Coming soon!");
             return;
           }
           reminder.recurringInterval = interval;
           ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
           Navigator.pop(context);
-        }, 
+        },
         style: isPickedOption
-        ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
-          backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)
-        )
-        : Theme.of(context).elevatedButtonTheme.style, 
-        child: Text(
-          RecurringIntervalExtension.getDisplayName(interval),
-          style: Theme.of(context).textTheme.bodyLarge
-        ),
+            ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                backgroundColor:
+                    WidgetStatePropertyAll(Theme.of(context).primaryColor))
+            : Theme.of(context).elevatedButtonTheme.style,
+        child: Text(interval.toString(),
+            style: Theme.of(context).textTheme.bodyLarge),
       ),
     );
   }

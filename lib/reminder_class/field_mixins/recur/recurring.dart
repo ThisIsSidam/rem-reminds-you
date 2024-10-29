@@ -1,5 +1,3 @@
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -13,25 +11,19 @@ mixin Recur {
   DateTime baseDateTime = DateTime.now();
 
   void initRecurringInterval(RecurringInterval? interval) {
-    if (interval == null) {
-      final recurringIntervalString =
-          UserDB.getSetting(SettingOption.RecurringIntervalFieldValue);
-      interval = RecurringIntervalExtension.fromString(recurringIntervalString);
-    }
-    mixinRecurringInterval = RecurringIntervalExtension.getIndex(interval);
+    mixinRecurringInterval = (interval ?? RecurringInterval.none).index;
   }
 
   RecurringInterval get recurringInterval {
-    return RecurringIntervalExtension.fromInt(mixinRecurringInterval);
+    return RecurringInterval.fromInt(mixinRecurringInterval);
   }
 
   void set recurringInterval(RecurringInterval interval) {
-    mixinRecurringInterval = RecurringIntervalExtension.getIndex(interval);
+    mixinRecurringInterval = RecurringInterval.getIndex(interval);
   }
 
   String getRecurringIntervalAsString() {
-    return RecurringIntervalExtension.getDisplayName(
-        RecurringIntervalExtension.fromInt(mixinRecurringInterval));
+    return RecurringInterval.fromInt(mixinRecurringInterval).toString();
   }
 
   Duration? getRecurIncrementDuration() {
@@ -39,8 +31,7 @@ mixin Recur {
       return null;
     }
 
-    final recurringInterval =
-        RecurringIntervalExtension.fromInt(mixinRecurringInterval);
+    final recurringInterval = RecurringInterval.fromInt(mixinRecurringInterval);
 
     if (recurringInterval == RecurringInterval.daily) {
       return Duration(days: 1);

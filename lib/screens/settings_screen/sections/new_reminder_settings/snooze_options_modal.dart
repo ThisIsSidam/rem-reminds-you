@@ -1,47 +1,56 @@
-import 'package:Rem/consts/const_colors.dart';
-import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/database/settings/settings_enum.dart';
-import 'package:Rem/utils/datetime_methods.dart';
-import 'package:Rem/widgets/duration_picker.dart';
-import 'package:Rem/widgets/save_close_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SnoozeOptionsModal extends StatefulWidget {
+import '../../../../consts/const_colors.dart';
+import '../../../../provider/settings_provider.dart';
+import '../../../../utils/datetime_methods.dart';
+import '../../../../widgets/duration_picker.dart';
+import '../../../../widgets/save_close_buttons.dart';
+
+class SnoozeOptionsModal extends ConsumerStatefulWidget {
   SnoozeOptionsModal({super.key});
 
   @override
-  State<SnoozeOptionsModal> createState() => _SnoozeOptionsModalState();
+  ConsumerState<SnoozeOptionsModal> createState() => _SnoozeOptionsModalState();
 }
 
-class _SnoozeOptionsModalState extends State<SnoozeOptionsModal> {
-  Duration currentValueFromDurationPicker =
-      UserDB.getSetting(SettingOption.RepeatIntervalOption1);
-  SettingOption selectedSettingOption = SettingOption.RepeatIntervalOption1;
-
-  final Map<SettingOption, Duration> durations = {
-    for (int i = 15;
-        i <= 20;
-        i++) // Starting and Ending indexes of repeatDurations in enum
-      SettingsOptionMethods.fromInt(i):
-          UserDB.getSetting(SettingsOptionMethods.fromInt(i))
-  };
+class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
+  int selectedSettingOption = 0; // 0-5 for autoSnoozeOption1 to 6
+  late Map<int, Duration> durations;
 
   @override
   void initState() {
     super.initState();
+    initializeDurations();
   }
 
-  void setSelectedOption(SettingOption option) {
+  void initializeDurations() {
+    final settings = ref.read(userSettingsProvider);
+    durations = {
+      0: settings.autoSnoozeOption1,
+      1: settings.autoSnoozeOption2,
+      2: settings.autoSnoozeOption3,
+      3: settings.autoSnoozeOption4,
+      4: settings.autoSnoozeOption5,
+      5: settings.autoSnoozeOption6,
+    };
+  }
+
+  void setSelectedOption(int option) {
     setState(() {
       selectedSettingOption = option;
-      currentValueFromDurationPicker = durations[selectedSettingOption]!;
     });
   }
 
   void onSave() {
-    durations.forEach((option, dur) {
-      UserDB.setSetting(option, dur);
-    });
+    final notifier = ref.read(userSettingsProvider);
+    // Using direct setter assignment
+    notifier.autoSnoozeOption1 = durations[0]!;
+    notifier.autoSnoozeOption2 = durations[1]!;
+    notifier.autoSnoozeOption3 = durations[2]!;
+    notifier.autoSnoozeOption4 = durations[3]!;
+    notifier.autoSnoozeOption5 = durations[4]!;
+    notifier.autoSnoozeOption6 = durations[5]!;
     Navigator.pop(context);
   }
 
@@ -56,7 +65,7 @@ class _SnoozeOptionsModalState extends State<SnoozeOptionsModal> {
                 style: Theme.of(context).textTheme.titleLarge),
             Divider(),
             SizedBox(height: 10),
-            buttonsWidget(),
+            _buildButtonsGrid(),
             DurationPickerBase(onDurationChange: (dur) {
               setState(() {
                 durations[selectedSettingOption] = dur;
@@ -67,7 +76,7 @@ class _SnoozeOptionsModalState extends State<SnoozeOptionsModal> {
         ));
   }
 
-  Widget buttonsWidget() {
+  Widget _buildButtonsGrid() {
     return GridView.count(
       mainAxisSpacing: 5,
       crossAxisSpacing: 5,
@@ -76,7 +85,7 @@ class _SnoozeOptionsModalState extends State<SnoozeOptionsModal> {
       childAspectRatio: 1.5,
       children: [
         for (var entry in durations.entries)
-          button(
+          _buildButton(
               getFormattedDurationForTimeEditButton(entry.value,
                   addPlusSymbol: false),
               entry.key),
@@ -84,7 +93,7 @@ class _SnoozeOptionsModalState extends State<SnoozeOptionsModal> {
     );
   }
 
-  Widget button(String label, SettingOption option) {
+  Widget _buildButton(String label, int option) {
     return ElevatedButton(
       onPressed: () => setSelectedOption(option),
       child: Text(

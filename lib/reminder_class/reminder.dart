@@ -10,8 +10,8 @@ part 'field_mixins/recur/recurring_interval.dart';
 part 'reminder.g.dart';
 
 @HiveType(typeId: 1)
-class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime, PreParsedTitle{
-
+class Reminder
+    with Repeat, Recur, ReminderStatusMixin, ReminderDateTime, PreParsedTitle {
   @HiveField(0)
   String title;
 
@@ -31,14 +31,16 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime, PrePar
     this.id = newReminderID,
     required DateTime dateAndTime,
     DateTime? baseDateTime,
-    ReminderStatus reminderStatus = ReminderStatus.active, 
-    Duration? notifInterval,
+    ReminderStatus reminderStatus = ReminderStatus.active,
+    Duration notifInterval = const Duration(minutes: 7),
     RecurringInterval? recurInterval,
     String? preParsedTitle,
-  }){
+  }) {
     this.dateAndTime = dateAndTime;
-    this.mixinReminderStatus = RemindersStatusExtension.getIndex(reminderStatus);
-    this.baseDateTime = baseDateTime ?? this.dateAndTime; // Same in the beginning
+    this.mixinReminderStatus =
+        RemindersStatusExtension.getIndex(reminderStatus);
+    this.baseDateTime =
+        baseDateTime ?? this.dateAndTime; // Same in the beginning
     super.initRepeatInterval(notifInterval);
     super.initRecurringInterval(recurInterval);
     this.preParsedTitle = preParsedTitle ?? this.title;
@@ -56,11 +58,16 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime, PrePar
     return Reminder(
       title: _getValue('title'),
       id: int.parse(_getValue('id')),
-      dateAndTime: DateTime.fromMillisecondsSinceEpoch(int.parse(_getValue('dateAndTime'))),
-      baseDateTime: DateTime.fromMillisecondsSinceEpoch(int.parse(_getValue('baseDateTime'))),
-      reminderStatus: RemindersStatusExtension.fromInt(int.parse(_getValue('done'))),
-      notifInterval: Duration(seconds: int.parse(_getValue('notifRepeatInterval'))),
-      recurInterval: RecurringIntervalExtension.fromInt(int.parse(_getValue('_recurringInterval'))),
+      dateAndTime: DateTime.fromMillisecondsSinceEpoch(
+          int.parse(_getValue('dateAndTime'))),
+      baseDateTime: DateTime.fromMillisecondsSinceEpoch(
+          int.parse(_getValue('baseDateTime'))),
+      reminderStatus:
+          RemindersStatusExtension.fromInt(int.parse(_getValue('done'))),
+      notifInterval:
+          Duration(seconds: int.parse(_getValue('notifRepeatInterval'))),
+      recurInterval:
+          RecurringInterval.fromInt(int.parse(_getValue('_recurringInterval'))),
     );
   }
 
@@ -93,15 +100,15 @@ class Reminder with Repeat, Recur, ReminderStatusMixin, ReminderDateTime, PrePar
 
   Reminder deepCopyReminder() {
     return Reminder(
-      id: this.id,
-      title: this.title,
-      dateAndTime: this.dateAndTime,
-      baseDateTime: this.baseDateTime,
-      reminderStatus: RemindersStatusExtension.fromInt(this.mixinReminderStatus),
-      notifInterval: this.notifRepeatInterval,
-      recurInterval: RecurringIntervalExtension.fromInt(this.mixinRecurringInterval),
-      preParsedTitle: this.preParsedTitle
-    );
+        id: this.id,
+        title: this.title,
+        dateAndTime: this.dateAndTime,
+        baseDateTime: this.baseDateTime,
+        reminderStatus:
+            RemindersStatusExtension.fromInt(this.mixinReminderStatus),
+        notifInterval: this.notifRepeatInterval,
+        recurInterval: RecurringInterval.fromInt(this.mixinRecurringInterval),
+        preParsedTitle: this.preParsedTitle);
   }
 
   void moveToNextOccurence() {
