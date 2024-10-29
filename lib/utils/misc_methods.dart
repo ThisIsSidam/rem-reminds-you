@@ -6,7 +6,7 @@ class MiscMethods {
     bool isKeyboardVisible = true;
     // Schedule a callback to be executed after the current frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-     isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom != 0;
+      isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom != 0;
     });
     // Keep checking for keyboard visibility in a loop
     while (isKeyboardVisible) {

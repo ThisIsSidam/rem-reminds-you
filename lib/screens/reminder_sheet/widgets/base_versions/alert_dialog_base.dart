@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AlertDialogBase extends ConsumerWidget {
-
   final String title;
   final String tooltipMsg;
   final Widget content;
-  const AlertDialogBase({
-    super.key,
-    required this.title,
-    required this.tooltipMsg,
-    required this.content
-  });
+  const AlertDialogBase(
+      {super.key,
+      required this.title,
+      required this.tooltipMsg,
+      required this.content});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

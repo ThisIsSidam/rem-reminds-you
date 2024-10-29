@@ -1,6 +1,6 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/consts/enums/swipe_actions.dart';
-import 'package:Rem/database/database.dart';
+import 'package:Rem/database/reminder_database/database.dart';
 import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
@@ -245,7 +245,7 @@ mixin ActionPaneManager {
                   OneTimeUndoButton(
                     onPressed: () {
                       RemindersDatabaseController
-                          .moveToPreviousReminderOccurence(
+                          .moveToPreviousReminderOccurrence(
                               reminder.id ?? reminderNullID);
                       refreshPage();
                     },

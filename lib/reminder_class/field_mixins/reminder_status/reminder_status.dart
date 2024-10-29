@@ -9,7 +9,7 @@ enum ReminderStatus {
   archived
 }
 
-class RemindersStatusExtension{
+class RemindersStatusExtension {
   static String getDisplayName(ReminderStatus interval) {
     switch (interval) {
       case ReminderStatus.active:

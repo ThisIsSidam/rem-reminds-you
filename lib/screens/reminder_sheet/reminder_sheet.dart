@@ -21,17 +21,15 @@ class ReminderSheet extends ConsumerStatefulWidget {
 
 class _ReminderSheetState extends ConsumerState<ReminderSheet> {
   late Reminder initialReminder;
-  
+
   @override
   void initState() {
-
     initialReminder = widget.thisReminder.deepCopyReminder();
 
     final reminderProvider = ref.read(reminderNotifierProvider.notifier);
 
     Future(() {
       reminderProvider.updateReminder(initialReminder);
-      
     });
 
     super.initState();
@@ -39,7 +37,6 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
 
   @override
   Widget build(BuildContext context) {
-
     ThemeData theme = Theme.of(context);
 
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;

@@ -10,18 +10,10 @@ String getFormattedDateTime(DateTime dateTime) {
 
 String getPrettyDurationFromDateTime(DateTime dateTime) {
   DateTime now = DateTime.now();
-  Duration dur = dateTime.difference(DateTime(
-    now.year,
-    now.month,
-    now.day,
-    now.hour,
-    now.minute
-  )); 
-  return dur.pretty(
-    tersity: DurationTersity.minute
-  );
+  Duration dur = dateTime
+      .difference(DateTime(now.year, now.month, now.day, now.hour, now.minute));
+  return dur.pretty(tersity: DurationTersity.minute);
 }
-
 
 String getFormattedTimeForTimeSetButton(DateTime time) {
   String suffix = time.hour >= 12 ? "PM" : "AM";

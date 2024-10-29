@@ -7,17 +7,16 @@ class OtherSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "Other",
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Colors.white
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall!
+                .copyWith(color: Colors.white),
           ),
           SizedBox(height: 5),
           Column(
@@ -28,20 +27,18 @@ class OtherSection extends StatelessWidget {
             ],
           )
         ],
-      ), 
+      ),
     );
   }
 
   Widget _buildWhatsNewTile(BuildContext context) {
     return ExpansionTile(
-      backgroundColor: Theme.of(context).cardColor,
-      title: Text(
-        "What's New?",
-        style: Theme.of(context).textTheme.titleSmall, 
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12)
-      ),
-      children: WhatsNewDialog.getWhatsNewTileContent(context)
-    );}
+        backgroundColor: Theme.of(context).cardColor,
+        title: Text(
+          "What's New?",
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        children: WhatsNewDialog.getWhatsNewTileContent(context));
+  }
 }

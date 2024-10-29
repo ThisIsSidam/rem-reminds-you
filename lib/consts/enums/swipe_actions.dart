@@ -1,7 +1,7 @@
 import 'dart:core';
 
 enum SwipeAction {
-  none, 
+  none,
   done,
   delete,
   postpone,
@@ -33,7 +33,7 @@ enum SwipeAction {
       throw ArgumentError('Invalid setting option: $value');
     }
   }
-  
+
   static SwipeAction fromIndex(int value) {
     return SwipeAction.values[value];
   }

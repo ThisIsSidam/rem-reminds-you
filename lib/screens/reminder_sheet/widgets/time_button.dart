@@ -13,11 +13,11 @@ class TimeButton extends ConsumerWidget {
     super.key,
     this.dateTime,
     this.duration,
-  }) : assert(dateTime != null || duration != null, "Both dateTime and duration can't be null");
+  }) : assert(dateTime != null || duration != null,
+            "Both dateTime and duration can't be null");
 
   void editTime(Reminder rem) {
-    rem.dateAndTime = rem
-      .dateAndTime.add(duration!);      
+    rem.dateAndTime = rem.dateAndTime.add(duration!);
   }
 
   /// Sets the value of the dateTime attribute of the Reminder to the
@@ -39,19 +39,18 @@ class TimeButton extends ConsumerWidget {
     final reminder = ref.read(reminderNotifierProvider);
     final reminderNotifier = ref.read(reminderNotifierProvider.notifier);
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.all(4),
-      ),
-      onPressed: () {
-        if (dateTime != null) {
-          setTime(reminder);
-        } else if (duration != null) {
-          editTime(reminder);
-        }
-        reminderNotifier.updateReminder(reminder);
-      },
-      child: getChild(context)
-    );
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(4),
+        ),
+        onPressed: () {
+          if (dateTime != null) {
+            setTime(reminder);
+          } else if (duration != null) {
+            editTime(reminder);
+          }
+          reminderNotifier.updateReminder(reminder);
+        },
+        child: getChild(context));
   }
 
   Widget getChild(BuildContext context) {
@@ -60,8 +59,7 @@ class TimeButton extends ConsumerWidget {
         getFormattedTimeForTimeSetButton(dateTime!),
         style: Theme.of(context).textTheme.bodyMedium,
       );
-    } else if
-     (duration != null) {
+    } else if (duration != null) {
       return Text(
         getFormattedDurationForTimeEditButton(duration!, addPlusSymbol: true),
         style: Theme.of(context).textTheme.bodyMedium,

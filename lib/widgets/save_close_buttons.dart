@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:Rem/consts/const_colors.dart';
 
 class SaveCloseButtons extends StatelessWidget {
-
   final Function() onTapSave;
   final Function()? onTapClose;
 
-  const SaveCloseButtons({
-    super.key,
-    required this.onTapSave,
-    this.onTapClose 
-  });
+  const SaveCloseButtons({super.key, required this.onTapSave, this.onTapClose});
 
   @override
   Widget build(
@@ -23,25 +18,22 @@ class SaveCloseButtons extends StatelessWidget {
         children: [
           Expanded(
             child: bottomRowButton(
-              context,
-              "Close",
-              onTapClose == null
-              ? () {
-                Navigator.pop(context);
-              }
-              : onTapClose!, 
-              ConstColors.lightGrey
-            ),
+                context,
+                "Close",
+                onTapClose == null
+                    ? () {
+                        Navigator.pop(context);
+                      }
+                    : onTapClose!,
+                ConstColors.lightGrey),
           ),
-          SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
           Expanded(
             flex: 3,
-            child: bottomRowButton(
-              context,
-              "Save",
-              onTapSave,
-              ConstColors.blue
-            ),
+            child:
+                bottomRowButton(context, "Save", onTapSave, ConstColors.blue),
           ),
         ],
       ),
@@ -50,17 +42,18 @@ class SaveCloseButtons extends StatelessWidget {
 
   Widget bottomRowButton(
     BuildContext context,
-    String label, 
-    void Function() onTap, 
+    String label,
+    void Function() onTap,
     Color color,
   ) {
     return SizedBox(
       height: 50,
       width: 100,
       child: ElevatedButton(
-        style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-          backgroundColor: WidgetStatePropertyAll(color)
-        ),
+        style: Theme.of(context)
+            .elevatedButtonTheme
+            .style!
+            .copyWith(backgroundColor: WidgetStatePropertyAll(color)),
         child: Text(
           label,
           style: Theme.of(context).textTheme.bodyLarge,

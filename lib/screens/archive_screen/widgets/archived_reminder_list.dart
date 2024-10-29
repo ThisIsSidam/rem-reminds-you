@@ -13,7 +13,7 @@ class ArchiveEntryLists extends StatelessWidget {
   final VoidCallback refreshPage;
 
   const ArchiveEntryLists.ArchivedReminderList({
-    super.key, 
+    super.key,
     this.label,
     required this.remindersList,
     required this.refreshPage,
@@ -25,29 +25,25 @@ class ArchiveEntryLists extends StatelessWidget {
     );
     refreshPage();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      buildCustomSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
         content: Row(
-          children: [
-            Text("'${reminder.title}' deleted"),
-            Spacer(),
-            TextButton(
-              child: Text("Undo"),
-              onPressed: () {
-                Archives.addReminderToArchives(reminder);
-                refreshPage();
-              },
-            )
-          ],
+      children: [
+        Text("'${reminder.title}' deleted"),
+        Spacer(),
+        TextButton(
+          child: Text("Undo"),
+          onPressed: () {
+            Archives.addReminderToArchives(reminder);
+            refreshPage();
+          },
         )
-      )
-    );
+      ],
+    )));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (remindersList.isEmpty)
-    {
+    if (remindersList.isEmpty) {
       return const SizedBox();
     }
     return Padding(
@@ -56,118 +52,94 @@ class ArchiveEntryLists extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (label != null)
-          SizedBox(
-            child: Padding(
+            SizedBox(
+                child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: label,
-            )
-          ),
+            )),
           SizedBox(
-            height: remindersList.length * (60+5), // Tile height + separators
+            height: remindersList.length * (60 + 5), // Tile height + separators
             child: ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: remindersList.length,
-              separatorBuilder: (context, index) => SizedBox(height: 4.0),
-              itemBuilder: (context, index) {
-                final reminder = remindersList[index];
-      
-                return Slidable(
-                  key: ValueKey(reminder.id),
-                  startActionPane: ActionPane( // Same as endActionPane
-                    motion: StretchMotion(),
-                    dragDismissible: true,
-                    dismissible: DismissiblePane(
-                      onDismissed: () {
-                        remindersList.removeAt(index);
-                        _slideAndRemoveReminder(context, reminder);
-                      }
-                    ), 
-                    children: [
-                      SlidableAction(
-                        icon: Icons.delete,
-                        backgroundColor: Colors.red,
-                        onPressed: (context) {
-                          remindersList.removeAt(index);
-                          _slideAndRemoveReminder(context, reminder);
-                        }
-                      )
-                    ]
-                  ),
-                  endActionPane: ActionPane( // Same as startActionPane
-                    motion: StretchMotion(),
-                    dragDismissible: true,
-                    dismissible: DismissiblePane(
-                      onDismissed: () {
-                        remindersList.removeAt(index);
-                        _slideAndRemoveReminder(context, reminder);
-                      }
-                    ), 
-                    children: [
-                      SlidableAction(
-                        icon: Icons.delete,
-                        backgroundColor: Colors.red,
-                        onPressed: (context) {
-                          remindersList.removeAt(index);
-                          _slideAndRemoveReminder(context, reminder);
-                        }
-                      )
-                    ]
-                  ),
-                  child: _ArchiveReminderEntryListTile(
-                    reminder: reminder,
-                    refreshPage: refreshPage
-                  )
-                );   
-              }
-            ),
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: remindersList.length,
+                separatorBuilder: (context, index) => SizedBox(height: 4.0),
+                itemBuilder: (context, index) {
+                  final reminder = remindersList[index];
+
+                  return Slidable(
+                      key: ValueKey(reminder.id),
+                      startActionPane: ActionPane(
+                          // Same as endActionPane
+                          motion: StretchMotion(),
+                          dragDismissible: true,
+                          dismissible: DismissiblePane(onDismissed: () {
+                            remindersList.removeAt(index);
+                            _slideAndRemoveReminder(context, reminder);
+                          }),
+                          children: [
+                            SlidableAction(
+                                icon: Icons.delete,
+                                backgroundColor: Colors.red,
+                                onPressed: (context) {
+                                  remindersList.removeAt(index);
+                                  _slideAndRemoveReminder(context, reminder);
+                                })
+                          ]),
+                      endActionPane: ActionPane(
+                          // Same as startActionPane
+                          motion: StretchMotion(),
+                          dragDismissible: true,
+                          dismissible: DismissiblePane(onDismissed: () {
+                            remindersList.removeAt(index);
+                            _slideAndRemoveReminder(context, reminder);
+                          }),
+                          children: [
+                            SlidableAction(
+                                icon: Icons.delete,
+                                backgroundColor: Colors.red,
+                                onPressed: (context) {
+                                  remindersList.removeAt(index);
+                                  _slideAndRemoveReminder(context, reminder);
+                                })
+                          ]),
+                      child: _ArchiveReminderEntryListTile(
+                          reminder: reminder, refreshPage: refreshPage));
+                }),
           ),
         ],
       ),
     );
   }
-
-  
 }
 
 class _ArchiveReminderEntryListTile extends StatelessWidget {
   final Reminder reminder;
   final VoidCallback refreshPage;
 
-  const _ArchiveReminderEntryListTile({
-    required this.reminder,
-    required this.refreshPage
-  });
+  const _ArchiveReminderEntryListTile(
+      {required this.reminder, required this.refreshPage});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 60,
       child: ListTile(
-        title: Text(
-          reminder.title,
-          style: Theme.of(context).textTheme.titleMedium
-        ),
-        subtitle: Text(
-          getFormattedDateTime(reminder.dateAndTime),
-          style: Theme.of(context).textTheme.bodyMedium
-        ),
+        title: Text(reminder.title,
+            style: Theme.of(context).textTheme.titleMedium),
+        subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
+            style: Theme.of(context).textTheme.bodyMedium),
         tileColor: Theme.of(context).cardColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15)
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         minVerticalPadding: 8,
         minTileHeight: 60,
         onTap: () {
           showModalBottomSheet(
-            isScrollControlled: true,
-            context: context, 
-            builder: (context) {
-              return ReminderSheet(
-                thisReminder: reminder, 
-                refreshHomePage: refreshPage
-              );  
-            }
-          ); 
+              isScrollControlled: true,
+              context: context,
+              builder: (context) {
+                return ReminderSheet(
+                    thisReminder: reminder, refreshHomePage: refreshPage);
+              });
         },
       ),
     );

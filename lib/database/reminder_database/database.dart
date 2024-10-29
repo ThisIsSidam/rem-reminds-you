@@ -9,14 +9,74 @@ import 'package:Rem/utils/generate_id.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../reminder_class/field_mixins/reminder_status/status.dart';
+import '../../reminder_class/field_mixins/reminder_status/status.dart';
 
 class RemindersDatabaseController {
-  static Map<int, Reminder> reminders = {};
   static final _remindersBox = Hive.box(HiveBoxNames.reminders.name);
   static List<int> removedInBackground = [];
 
   static Box<dynamic> get remindersBox => _remindersBox;
+
+  /// Get reminders from the database.
+  static Map<int, Reminder> getReminders() {
+    if (!_remindersBox.isOpen) {
+      Future(() {
+        Hive.openBox(HiveBoxNames.reminders.name);
+      });
+    }
+
+    final Map<int, Reminder> reminders = _remindersBox
+            .get(HiveKeys.remindersBoxKey.key)
+            ?.cast<int, Reminder>() ??
+        {};
+    return reminders;
+  }
+
+  static Map<int, Map<String, String?>> getRemindersAsMaps() {
+    final reminders = getReminders();
+    return reminders.map((key, value) => MapEntry(key, value.toMap()));
+  }
+
+  static Reminder? getReminder(int id) {
+    final reminders = getReminders();
+    return reminders[id];
+  }
+
+  /// Number of reminders present in the database.
+  static int getNumberOfReminders() {
+    final reminders = getReminders();
+    return reminders.length;
+  }
+
+  /// Update reminders to the database.
+  static void updateReminders(Map<int, Reminder> reminders) async {
+    _remindersBox.put(HiveKeys.remindersBoxKey.key, reminders);
+  }
+
+  /// Add a reminder to the database.
+  static void saveReminder(Reminder reminder) {
+    final reminders = getReminders();
+    final updatedReminders = _handleSave(reminders, reminder);
+    updateReminders(updatedReminders);
+  }
+
+  static void removeAllReminders() {
+    _remindersBox.put(HiveKeys.remindersBoxKey.key, {});
+  }
+
+  static void deleteReminder(int id, {bool allRecurringVersions = false}) {
+    final Reminder? reminder = getReminder(id);
+    if (reminder == null) {
+      debugPrint("[deleteReminder] Reminder not found in database");
+      return;
+    }
+
+    NotificationController.cancelScheduledNotification(id.toString());
+    NotificationController.removeNotifications(id.toString());
+    final reminders = getReminders();
+    reminders.remove(id);
+    updateReminders(reminders);
+  }
 
   /// Removes the reminders from the database which were set as 'done' in their
   /// notifications when the app was terminated.
@@ -32,74 +92,86 @@ class RemindersDatabaseController {
     pendingRemovals.put(HiveKeys.pendingRemovalsBoxKey.key, []);
   }
 
-  static void removeAllReminders() {
-    _remindersBox.put(HiveKeys.remindersBoxKey.key, {});
-  }
-
-  /// Get reminders from the database.
-  static Map<int, Reminder> getReminders() {
-    if (!_remindersBox.isOpen) {
-      Future(() {
-        Hive.openBox(HiveBoxNames.reminders.name);
-      });
+  static void markAsDone(int id) {
+    final Reminder? reminder = getReminder(id);
+    if (reminder == null) {
+      debugPrint("[markAsDone] Reminder not found in database");
+      return;
     }
 
-    reminders = _remindersBox
-            .get(HiveKeys.remindersBoxKey.key)
-            ?.cast<int, Reminder>() ??
-        {};
-    return reminders;
+    if (reminder.recurringInterval == RecurringInterval.none) {
+      moveToArchive(id);
+    } else {
+      moveToNextReminderOccurrence(id);
+    }
+
+    NotificationController.removeNotifications(id.toString());
   }
 
-  static Map<int, Map<String, String?>> getRemindersAsMaps() {
+  /// Moves the reminder to Archives.
+  static void moveToArchive(int id) {
+    final Reminder? reminder = getReminder(id);
+    if (reminder == null) {
+      debugPrint("[moveToArchives] Reminder not found in database");
+      return;
+    }
+
+    // Have to cancel scheduled notification in all cases.
+    NotificationController.cancelScheduledNotification(id.toString());
+
+    Archives.addReminderToArchives(reminder);
+    deleteReminder(id);
+  }
+
+  static void moveToNextReminderOccurrence(int id) {
+    final Reminder? reminder = getReminder(id);
+    if (reminder == null) {
+      throw "[moveToNextReminderIteration] Reminder not found in database";
+    }
+
+    // Have to cancel scheduled notification in all cases.
+    NotificationController.cancelScheduledNotification(id.toString());
+
+    reminder.moveToNextOccurence();
+    NotificationController.scheduleNotification(reminder);
     final reminders = getReminders();
-    return reminders.map((key, value) => MapEntry(key, value.toMap()));
+    reminders[id] = reminder;
+    updateReminders(reminders);
   }
 
-  static Reminder? getReminder(int id) {
-    getReminders();
-    return reminders[id];
+  static void moveToPreviousReminderOccurrence(int id) {
+    final Reminder? reminder = getReminder(id);
+    if (reminder == null) {
+      throw "[moveToNextReminderIteration] Reminder not found in database";
+    }
+
+    // Have to cancel scheduled notification in all cases.
+    NotificationController.cancelScheduledNotification(id.toString());
+
+    reminder.moveToPreviousOccurence();
+    NotificationController.scheduleNotification(reminder);
+    final reminders = getReminders();
+    reminders[id] = reminder;
+    updateReminders(reminders);
   }
 
-  /// Update reminders to the database.
-  static void updateReminders() async {
-    _remindersBox.put(HiveKeys.remindersBoxKey.key, reminders);
-  }
-
-  /// Number of reminders present in the database.
-  static int getNumberOfReminders() {
-    getReminders();
-    return reminders.length;
-  }
-
-  /// Add a reminder to the database.
-  static void saveReminder(Reminder reminder) {
-    getReminders();
-
-    printAll("Before Saving");
-
+  static Map<int, Reminder> _handleSave(
+      Map<int, Reminder> reminders, Reminder reminder) {
     if (reminder.id == null) {
       throw "[saveReminder] Reminder id is null";
     } else if (
         // Upon edits, we delete the previous version and create an entirely new one
-        reminder.id !=
-                newReminderID && // New Reminders wouldn't be present in database
+        reminder.id != newReminderID && // Check for new reminders
             reminder.reminderStatus !=
-                ReminderStatus
-                    .archived // Archived reminders would be present only in Archived Database
+                ReminderStatus.archived // Check for archived reminders
         ) {
-      debugPrint("[saveReminder] id : ${reminder.id}");
       NotificationController.cancelScheduledNotification(
           reminder.id.toString());
       reminders.remove(reminder.id);
     }
-
-    if (reminder.reminderStatus ==
-        ReminderStatus
-            .archived) // Moving from archives to main reminder database.
-    {
-      retrieveFromArchives(reminder);
-      return;
+    // Moving from archives to main reminder database.
+    if (reminder.reminderStatus == ReminderStatus.archived) {
+      return retrieveFromArchives(reminder);
     }
 
     // Setup for new reminder
@@ -112,124 +184,23 @@ class RemindersDatabaseController {
     reminder.id = id;
     reminders[reminder.id!] = reminder;
     NotificationController.scheduleNotification(reminder);
-
-    updateReminders();
-    printAll("After Adding");
+    return reminders;
   }
 
-  static Reminder? _getReminder(int id) {
-    getReminders();
-    if (reminders.containsKey(id)) {
-      return reminders[id]!;
-    } else {
-      return null;
-    }
-  }
-
-  static void retrieveFromArchives(Reminder reminder) {
+  static Map<int, Reminder> retrieveFromArchives(Reminder reminder) {
     Archives.deleteArchivedReminder(reminder.id!);
     NotificationController.scheduleNotification(reminder);
     reminder.reminderStatus = ReminderStatus.active;
+    final reminders = getReminders();
     reminders[reminder.id!] = reminder;
-    updateReminders();
-    printAll("After Saving");
-  }
-
-  static void markAsDone(int id) {
-    final Reminder? reminder = _getReminder(id);
-    if (reminder == null) {
-      debugPrint("[markAsDone] Reminder not found in database");
-      return;
-    }
-
-    if (reminder.recurringInterval == RecurringInterval.none) {
-      moveToArchive(id);
-    } else {
-      moveToNextReminderOccurence(id);
-    }
-
-    NotificationController.removeNotifications(id.toString());
-  }
-
-  /// Moves the reminder to Archives.
-  static void moveToArchive(int id) {
-    final Reminder? reminder = _getReminder(id);
-    if (reminder == null) {
-      debugPrint("[moveToArchives] Reminder not found in database");
-      return;
-    }
-
-    // Have to cancel scheduled notification in all cases.
-    NotificationController.cancelScheduledNotification(id.toString());
-
-    reminders.remove(id);
-    Archives.addReminderToArchives(reminder);
-    updateReminders();
-    printAll("After Archiving");
-  }
-
-  static void moveToNextReminderOccurence(int id) {
-    final Reminder? reminder = _getReminder(id);
-    if (reminder == null) {
-      throw "[moveToNextReminderIteration] Reminder not found in database";
-    }
-
-    // Have to cancel scheduled notification in all cases.
-    NotificationController.cancelScheduledNotification(id.toString());
-
-    reminder.moveToNextOccurence();
-    NotificationController.scheduleNotification(reminder);
-    reminders[id] = reminder;
-    updateReminders();
-    printAll('After Skipping');
-  }
-
-  static void moveToPreviousReminderOccurence(int id) {
-    final Reminder? reminder = _getReminder(id);
-    if (reminder == null) {
-      throw "[moveToNextReminderIteration] Reminder not found in database";
-    }
-
-    // Have to cancel scheduled notification in all cases.
-    NotificationController.cancelScheduledNotification(id.toString());
-
-    reminder.moveToPreviousOccurence();
-    NotificationController.scheduleNotification(reminder);
-    reminders[id] = reminder;
-    updateReminders();
-    printAll('After Skipping');
-  }
-
-  static void deleteReminder(int id, {bool allRecurringVersions = false}) {
-    final Reminder? reminder = _getReminder(id);
-    if (reminder == null) {
-      debugPrint("[deleteReminder] Reminder not found in database");
-      return;
-    }
-
-    NotificationController.cancelScheduledNotification(id.toString());
-    NotificationController.removeNotifications(id.toString());
-    reminders.remove(id);
-    updateReminders();
-    printAll('After Deleting');
-  }
-
-  /// Print id of all the reminders which are present in the database.
-  static void printAll(String str) {
-    getReminders();
-
-    debugPrint(str);
-    debugPrint("================");
-
-    reminders.forEach((key, value) {
-      debugPrint("Key: ($key)");
-    });
+    updateReminders(reminders);
+    return reminders;
   }
 
   /// Returns a map which consists of all the reminders in the database categorized
   /// as per their time. The categories are Overdue, Today, Tomorrow and Later.
   static Map<String, List<Reminder>> getReminderLists() {
-    getReminders();
+    final reminders = getReminders();
     final remindersList = reminders.values.toList();
 
     final overdueList = <Reminder>[];

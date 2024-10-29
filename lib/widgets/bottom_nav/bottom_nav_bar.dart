@@ -14,7 +14,6 @@ class NavigationSection extends StatefulWidget {
 }
 
 class _NavigationSectionState extends State<NavigationSection> {
-
   final List<GButton> _tabs = [
     GButton(icon: Icons.archive, text: "Archive"),
     GButton(icon: Icons.home, text: "Home"),
@@ -35,14 +34,11 @@ class _NavigationSectionState extends State<NavigationSection> {
       body: DoubleBackToCloseApp(
         child: _pages[_selectedTab],
         snackBar: buildCustomSnackBar(
-          content: Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Tap back again to leave",
-              style: Theme.of(context).textTheme.bodyLarge
-            ),
-          )
-        ),
+            content: Align(
+          alignment: Alignment.center,
+          child: Text("Tap back again to leave",
+              style: Theme.of(context).textTheme.bodyLarge),
+        )),
       ),
       bottomNavigationBar: GNav(
         tabs: _tabs,

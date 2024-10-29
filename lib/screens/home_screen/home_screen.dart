@@ -3,7 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/database/database.dart';
+import 'package:Rem/database/reminder_database/database.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/provider/settings_provider.dart';

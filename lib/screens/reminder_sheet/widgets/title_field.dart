@@ -12,13 +12,11 @@ class TitleField extends ConsumerStatefulWidget {
 }
 
 class _TitleFieldState extends ConsumerState<TitleField> {
-
   final titleController = TextEditingController();
   final _focusNode = FocusNode();
 
   @override
   void initState() {
-
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -27,17 +25,15 @@ class _TitleFieldState extends ConsumerState<TitleField> {
 
   @override
   Widget build(BuildContext context) {
-
     final reminder = ref.read(reminderNotifierProvider);
     titleController.text = reminder.preParsedTitle;
-    if (titleController.text == reminderNullTitle) 
-    {
+    if (titleController.text == reminderNullTitle) {
       titleController.text = "";
-    } 
+    }
 
     final titleParser = TitleParseHandler(ref: ref);
 
-    // .parse calls the ref.read in the end which then rebuilds. 
+    // .parse calls the ref.read in the end which then rebuilds.
     // Shouldn't be done in build method. Hence the callback.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       titleParser.parse(titleController.text);
@@ -46,16 +42,15 @@ class _TitleFieldState extends ConsumerState<TitleField> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-        ),
-        controller: titleController,
-        focusNode: _focusNode,
-        autofocus: true,
-        onChanged: (str) {
-          titleParser.parse(str);
-        }
-      ),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+          ),
+          controller: titleController,
+          focusNode: _focusNode,
+          autofocus: true,
+          onChanged: (str) {
+            titleParser.parse(str);
+          }),
     );
   }
 }

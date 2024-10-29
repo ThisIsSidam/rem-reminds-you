@@ -6,18 +6,17 @@ mixin ReminderDateTime {
 
   /// If the time to be updated is in the past, increase it by a day.
   void updatedTime(DateTime updatedTime) {
-    if (updatedTime.isBefore(DateTime.now()))
-    {
+    if (updatedTime.isBefore(DateTime.now())) {
       updatedTime = updatedTime.add(Duration(days: 1));
     }
-    updatedTime = DateTime( // Seconds should be 0
-      updatedTime.year,
-      updatedTime.month,
-      updatedTime.day,
-      updatedTime.hour,
-      updatedTime.minute,
-      0
-    );
+    updatedTime = DateTime(
+        // Seconds should be 0
+        updatedTime.year,
+        updatedTime.month,
+        updatedTime.day,
+        updatedTime.hour,
+        updatedTime.minute,
+        0);
     dateAndTime = updatedTime;
   }
 

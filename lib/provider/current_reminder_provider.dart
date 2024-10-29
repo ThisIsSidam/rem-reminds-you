@@ -2,7 +2,6 @@ import 'package:Rem/reminder_class/reminder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ReminderNotifier extends StateNotifier<Reminder> {
-
   ReminderNotifier() : super(Reminder(dateAndTime: DateTime.now()));
 
   void updateReminder(Reminder newReminder) {
@@ -14,7 +13,7 @@ class ReminderNotifier extends StateNotifier<Reminder> {
   }
 }
 
-final reminderNotifierProvider = StateNotifierProvider<ReminderNotifier, Reminder>((ref
-) {
+final reminderNotifierProvider =
+    StateNotifierProvider<ReminderNotifier, Reminder>((ref) {
   return ReminderNotifier();
 });
