@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../consts/enums/hive_box_names.dart';
+import '../consts/enums/hive_enums.dart';
 
 class SettingsDB {
   static final _box = Hive.box(HiveBoxNames.settings.name);

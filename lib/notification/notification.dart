@@ -11,6 +11,8 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../consts/enums/hive_enums.dart';
+
 class NotificationController {
   static ReceivedAction? initialAction;
 
@@ -46,13 +48,14 @@ class NotificationController {
     final DateTime scheduledTime = reminder.dateAndTime;
 
     debugPrint('[NotificationController] Scheduled at: $scheduledTime');
-    debugPrint('[NotificationController] duration: ${reminder.notifRepeatInterval}');
+    debugPrint(
+        '[NotificationController] duration: ${reminder.notifRepeatInterval}');
 
     await AndroidAlarmManager.periodic(
       reminder.notifRepeatInterval,
       id,
       showNotificationCallback,
-      startAt:  scheduledTime,
+      startAt: scheduledTime,
       allowWhileIdle: true,
       exact: true,
       wakeup: true,
@@ -66,33 +69,31 @@ class NotificationController {
   @pragma('vm:entry-point')
   static Future<void> showNotificationCallback(
       int id, Map<String, dynamic> params) async {
-
     debugPrint('[showNotificationCallback] running');
 
     final Map<String, String> strParams = params.cast<String, String>();
 
     final Reminder reminder = Reminder.fromMap(strParams);
 
-    // Should be different each time so that different notifications are shown. 
-    int notificationId = DateTime.now()
-      .difference(reminder.dateAndTime).inMinutes;
+    // Should be different each time so that different notifications are shown.
+    int notificationId =
+        DateTime.now().difference(reminder.dateAndTime).inMinutes;
 
     await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: notificationId,
-          channelKey: '111',
-          title: "Reminder: ${reminder.title}",
-          groupKey: reminder.id.toString(),
-          wakeUpScreen: true,
-          payload: reminder.toMap()),
-      actionButtons: <NotificationActionButton>[
-        NotificationActionButton(
-          key: 'done',
-          label: 'Done',
-          actionType: ActionType.SilentBackgroundAction,
-        )
-      ]
-    );
+        content: NotificationContent(
+            id: notificationId,
+            channelKey: '111',
+            title: "Reminder: ${reminder.title}",
+            groupKey: reminder.id.toString(),
+            wakeUpScreen: true,
+            payload: reminder.toMap()),
+        actionButtons: <NotificationActionButton>[
+          NotificationActionButton(
+            key: 'done',
+            label: 'Done',
+            actionType: ActionType.SilentBackgroundAction,
+          )
+        ]);
   }
 
   /// Used to remove notifications present in user's notification space.
@@ -100,7 +101,7 @@ class NotificationController {
     await AwesomeNotifications().cancelNotificationsByGroupKey(groupKey);
   }
 
-  /// Cancels the scheduled notification. 
+  /// Cancels the scheduled notification.
   static Future<void> cancelScheduledNotification(String groupKey) async {
     if (groupKey == notificationNullGroupKey) {
       debugPrint("[NotificationController] Null groupkey given to cancel.");
@@ -122,33 +123,31 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
+    debugPrint(
+        '[onActionReceivedMethod] Received action: ${receivedAction.actionType}');
 
-    debugPrint('[onActionReceivedMethod] Received action: ${receivedAction.actionType}');
-
-    if (receivedAction.actionType == ActionType.Default)
-    {
+    if (receivedAction.actionType == ActionType.Default) {
       final payload = receivedAction.payload;
-      if (payload == null)
-      {
+      if (payload == null) {
         throw "[onActionReceivedMethod] Payload is null";
-      }
-      else
-      {
+      } else {
         final context = navigatorKey.currentContext!;
 
-        debugPrint('[onActionReceivedMethod] Showing bottom sheet with reminder: $payload');
+        debugPrint(
+            '[onActionReceivedMethod] Showing bottom sheet with reminder: $payload');
 
         showModalBottomSheet(
-          isScrollControlled: true,
-          context: context,
-          builder: (context) {
-            return ReminderSheet(
-              thisReminder: Reminder.fromMap(payload),
-            );
-          }
-        );
-        debugPrint('[onActionReceivedMethod] Removing notifications with group key: ${receivedAction.groupKey ?? notificationNullGroupKey}');
-        removeNotifications(receivedAction.groupKey ?? notificationNullGroupKey);
+            isScrollControlled: true,
+            context: context,
+            builder: (context) {
+              return ReminderSheet(
+                thisReminder: Reminder.fromMap(payload),
+              );
+            });
+        debugPrint(
+            '[onActionReceivedMethod] Removing notifications with group key: ${receivedAction.groupKey ?? notificationNullGroupKey}');
+        removeNotifications(
+            receivedAction.groupKey ?? notificationNullGroupKey);
       }
     }
 
@@ -156,35 +155,34 @@ class NotificationController {
 
     bool isMainActive = await isMainIsolateActive();
 
-    if (receivedAction.buttonKeyPressed == 'done')
-    {
-      cancelScheduledNotification(receivedAction.groupKey ?? notificationNullGroupKey);
-      if (isMainActive == true)
-      {
+    if (receivedAction.buttonKeyPressed == 'done') {
+      cancelScheduledNotification(
+          receivedAction.groupKey ?? notificationNullGroupKey);
+      if (isMainActive == true) {
         final message = {
           'action': 'done',
           'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
         };
         mainIsolate!.send(message);
-        debugPrint('[onActionReceivedMethod] Sent message to main isolate: $message');
-      }
-      else
-      {
+        debugPrint(
+            '[onActionReceivedMethod] Sent message to main isolate: $message');
+      } else {
         await Hive.initFlutter();
 
-        final db = await Hive.openBox(pendingRemovalsBoxName);
+        final db = await Hive.openBox(HiveBoxNames.pendingRemovalsBoxName.name);
 
-        final listo = db.get(pendingRemovalsBoxKey) ?? [];
+        final listo = db.get(HiveKeys.pendingRemovalsBoxKey.key) ?? [];
 
-        listo.add(int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
+        listo.add(
+            int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
 
-        db.put(pendingRemovalsBoxKey, listo);
-        debugPrint('[onActionReceivedMethod] Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}');
+        db.put(HiveKeys.pendingRemovalsBoxKey.key, listo);
+        debugPrint(
+            '[onActionReceivedMethod] Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}');
       }
-    }
-    else
-    {
-      debugPrint("[onActionReceivedMethod] Action on notification: ${receivedAction.actionType}");
+    } else {
+      debugPrint(
+          "[onActionReceivedMethod] Action on notification: ${receivedAction.actionType}");
     }
   }
 
@@ -213,5 +211,4 @@ class NotificationController {
     }
     return false;
   }
-
 }

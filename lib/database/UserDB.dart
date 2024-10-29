@@ -1,4 +1,4 @@
-import 'package:Rem/consts/enums/hive_box_names.dart';
+import 'package:Rem/consts/enums/hive_enums.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 /// IndiValue Stores values that may even be unrelated to each
@@ -7,16 +7,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 /// instead of a key which stores a dictionary of key value pairs.
 class UserDB {
   static final _box = Hive.box(HiveBoxNames.individualValues.name);
-  static const reminderIDGeneratorCurrentCountKey =
-      "reminder_id_generator_current_count";
 
   static int? getNextId() {
     //TODO: Do something about keys
-    return _box.get(reminderIDGeneratorCurrentCountKey);
+    return _box.get(HiveKeys.reminderIDGeneratorCurrentCountKey.key);
   }
 
   static void setID(int value) {
-    _box.put(reminderIDGeneratorCurrentCountKey, value);
+    _box.put(HiveKeys.reminderIDGeneratorCurrentCountKey.key, value);
   }
 
   static String? getStoredAppVersion() {

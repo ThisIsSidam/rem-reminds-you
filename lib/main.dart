@@ -1,5 +1,5 @@
 import 'package:Rem/app.dart';
-import 'package:Rem/consts/enums/hive_box_names.dart';
+import 'package:Rem/consts/enums/hive_enums.dart';
 import 'package:Rem/database/database.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/duration.g.dart';

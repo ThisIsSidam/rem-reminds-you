@@ -1,4 +1,4 @@
-import 'package:Rem/consts/enums/hive_box_names.dart';
+import 'package:Rem/consts/enums/hive_enums.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/provider/text_scale_provider.dart';
 import 'package:Rem/screens/permissions_screen/permissions_screen.dart';

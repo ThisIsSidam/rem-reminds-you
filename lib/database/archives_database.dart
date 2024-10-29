@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/consts/enums/hive_box_names.dart';
+import 'package:Rem/consts/enums/hive_enums.dart';
 import 'package:Rem/reminder_class/field_mixins/reminder_status/status.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Archives {
   static final _box = Hive.box(HiveBoxNames.archives.name);
-  static const archivesKey = 'ARCHIVES';
 
   // Check if box is open and not and retrieve the reminders
   static Map<int, Reminder> getArchivedReminders() {
@@ -19,23 +18,24 @@ class Archives {
     }
 
     final Map<int, Reminder> reminders =
-        _box.get(archivesKey)?.cast<int, Reminder>() ?? {};
+        _box.get(HiveKeys.archivesKey.key)?.cast<int, Reminder>() ?? {};
     return reminders;
   }
 
   static void removeAllArchivedReminders() {
-    _box.put(archivesKey, {});
+    _box.put(HiveKeys.archivesKey.key, {});
   }
 
-  static void _putArchivedReminders(Map<int, Reminder> reminders,
-      {String key = archivesKey}) {
+  static void _putArchivedReminders(
+    Map<int, Reminder> reminders,
+  ) {
     if (!_box.isOpen) {
       Future(() {
         Hive.openBox(HiveBoxNames.reminders.name);
       });
     }
 
-    _box.put(key, reminders);
+    _box.put(HiveKeys.archivesKey.key, reminders);
   }
 
   static void deleteArchivedReminder(int id) {

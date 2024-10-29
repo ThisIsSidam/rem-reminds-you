@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/consts/enums/hive_box_names.dart';
+import 'package:Rem/consts/enums/hive_enums.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/reminder.dart';
@@ -15,35 +15,39 @@ class RemindersDatabaseController {
   static Map<int, Reminder> reminders = {};
   static final _remindersBox = Hive.box(HiveBoxNames.reminders.name);
   static List<int> removedInBackground = [];
-  static const remindersBoxKey = "REMINDERS";
 
   static Box<dynamic> get remindersBox => _remindersBox;
 
   /// Removes the reminders from the database which were set as 'done' in their
   /// notifications when the app was terminated.
   static Future<void> clearPendingRemovals() async {
-    final pendingRemovals = await Hive.openBox(pendingRemovalsBoxName);
+    final pendingRemovals =
+        await Hive.openBox(HiveBoxNames.pendingRemovalsBoxName.name);
 
-    final removals = pendingRemovals.get(pendingRemovalsBoxKey) ?? [];
+    final removals =
+        pendingRemovals.get(HiveKeys.pendingRemovalsBoxKey.key) ?? [];
     for (final id in removals) {
       markAsDone(id);
     }
-    pendingRemovals.put(pendingRemovalsBoxKey, []);
+    pendingRemovals.put(HiveKeys.pendingRemovalsBoxKey.key, []);
   }
 
   static void removeAllReminders() {
-    _remindersBox.put(remindersBoxKey, {});
+    _remindersBox.put(HiveKeys.remindersBoxKey.key, {});
   }
 
   /// Get reminders from the database.
-  static Map<int, Reminder> getReminders({key = remindersBoxKey}) {
+  static Map<int, Reminder> getReminders() {
     if (!_remindersBox.isOpen) {
       Future(() {
         Hive.openBox(HiveBoxNames.reminders.name);
       });
     }
 
-    reminders = _remindersBox.get(key)?.cast<int, Reminder>() ?? {};
+    reminders = _remindersBox
+            .get(HiveKeys.remindersBoxKey.key)
+            ?.cast<int, Reminder>() ??
+        {};
     return reminders;
   }
 
@@ -59,7 +63,7 @@ class RemindersDatabaseController {
 
   /// Update reminders to the database.
   static void updateReminders() async {
-    _remindersBox.put(remindersBoxKey, reminders);
+    _remindersBox.put(HiveKeys.remindersBoxKey.key, reminders);
   }
 
   /// Number of reminders present in the database.
