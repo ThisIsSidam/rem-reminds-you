@@ -1,6 +1,6 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/consts/enums/swipe_actions.dart';
-import 'package:Rem/database/reminder_database/database.dart';
+import 'package:Rem/provider/reminders_provider.dart';
 import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
@@ -13,13 +13,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class HomeScreenReminderListSection extends ConsumerWidget {
   final Widget? label;
   final List<Reminder> remindersList;
-  final VoidCallback refreshPage;
 
   const HomeScreenReminderListSection({
     super.key,
     this.label,
     required this.remindersList,
-    required this.refreshPage,
   });
 
   @override
@@ -43,30 +41,22 @@ class HomeScreenReminderListSection extends ConsumerWidget {
             child: ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: remindersList.length,
-                separatorBuilder: (context, index) => SizedBox(height: 4.0),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 4.0),
                 itemBuilder: (context, index) {
-                  final SwipeAction leftAction =
-                      ref.read(userSettingsProvider).homeTileSwipeActionLeft;
-                  final SwipeAction rightAction =
-                      ref.read(userSettingsProvider).homeTileSwipeActionRight;
                   final reminder = remindersList[index];
 
                   return Slidable(
                       key: ValueKey(reminder.id),
                       startActionPane: ActionPaneManager.getActionToRight(
-                          rightAction,
-                          remindersList,
-                          index,
-                          context,
-                          refreshPage),
+                        ref,
+                        remindersList,
+                        index,
+                        context,
+                      ),
                       endActionPane: ActionPaneManager.getActionToLeft(
-                          leftAction,
-                          remindersList,
-                          index,
-                          context,
-                          refreshPage),
-                      child: HomePageReminderEntryListTile(
-                          reminder: reminder, refreshHomePage: refreshPage));
+                          ref, remindersList, index, context),
+                      child: HomePageReminderEntryListTile(reminder: reminder));
                 }),
           ),
         ],
@@ -75,69 +65,103 @@ class HomeScreenReminderListSection extends ConsumerWidget {
   }
 }
 
-mixin ActionPaneManager {
+class ActionPaneManager {
   static ActionPane? getActionToLeft(
-      SwipeAction action,
-      List<Reminder> remindersList,
-      int index,
-      BuildContext context,
-      void Function() refreshPage) {
+    WidgetRef ref,
+    List<Reminder> remindersList,
+    int index,
+    BuildContext context,
+  ) {
+    final SwipeAction action =
+        ref.read(userSettingsProvider).homeTileSwipeActionLeft;
+
     switch (action) {
       case SwipeAction.none:
         return null;
       case SwipeAction.done:
-        return _doneActionPane(context, remindersList[index], refreshPage);
+        return _doneActionPane(
+          context,
+          remindersList[index],
+          ref,
+        );
       case SwipeAction.delete:
-        return _deleteActionPane(remindersList, index, context, refreshPage);
+        return _deleteActionPane(
+          remindersList,
+          index,
+          context,
+          ref,
+        );
       case SwipeAction.postpone:
-        return _postponeActionPane(context, remindersList[index], refreshPage);
+        return _postponeActionPane(
+          context,
+          remindersList[index],
+          ref,
+        );
       case SwipeAction.doneAndDelete:
-        return _doneAndDeleteActionPane(
-            context, refreshPage, remindersList, index);
+        return _doneAndDeleteActionPane(context, remindersList, index, ref);
     }
   }
 
   static ActionPane? getActionToRight(
-      SwipeAction action,
-      List<Reminder> remindersList,
-      int index,
-      BuildContext context,
-      void Function() refreshPage) {
+    WidgetRef ref,
+    List<Reminder> remindersList,
+    int index,
+    BuildContext context,
+  ) {
+    final SwipeAction action =
+        ref.read(userSettingsProvider).homeTileSwipeActionRight;
+
     switch (action) {
       case SwipeAction.none:
         return null;
       case SwipeAction.done:
-        return _doneActionPane(context, remindersList[index], refreshPage);
+        return _doneActionPane(
+          context,
+          remindersList[index],
+          ref,
+        );
       case SwipeAction.delete:
-        return _deleteActionPane(remindersList, index, context, refreshPage);
+        return _deleteActionPane(
+          remindersList,
+          index,
+          context,
+          ref,
+        );
       case SwipeAction.postpone:
-        return _postponeActionPane(context, remindersList[index], refreshPage);
+        return _postponeActionPane(
+          context,
+          remindersList[index],
+          ref,
+        );
       case SwipeAction.doneAndDelete:
-        return _doneAndDeleteActionPane(
-            context, refreshPage, remindersList, index);
+        return _doneAndDeleteActionPane(context, remindersList, index, ref);
     }
   }
 
   static ActionPane _doneActionPane(
     BuildContext context,
     Reminder reminder,
-    void Function() refreshPage,
+    WidgetRef ref,
   ) {
     return ActionPane(
-        motion: StretchMotion(),
-        children: [_doneSlidableAction(context, reminder, refreshPage)]);
+        motion: const StretchMotion(),
+        children: [_doneSlidableAction(context, reminder, ref)]);
   }
 
-  static ActionPane _deleteActionPane(List<Reminder> remindersList, int index,
-      BuildContext context, void Function() refreshPage) {
+  static ActionPane _deleteActionPane(
+    List<Reminder> remindersList,
+    int index,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     final Reminder reminder = remindersList[index];
 
     return ActionPane(
-        motion: StretchMotion(),
+        motion: const StretchMotion(),
         dragDismissible: true,
         dismissible: DismissiblePane(onDismissed: () {
           remindersList.removeAt(index);
-          _slideAndRemoveReminder(context, reminder, refreshPage);
+          _slideAndRemoveReminder(context, reminder, ref);
         }),
         children: [
           SlidableAction(
@@ -145,120 +169,39 @@ mixin ActionPaneManager {
               icon: Icons.delete_forever,
               onPressed: (context) {
                 remindersList.removeAt(index);
-                _slideAndRemoveReminder(context, reminder, refreshPage);
+                _slideAndRemoveReminder(context, reminder, ref);
               })
         ]);
   }
 
-  static ActionPane _postponeActionPane(
-      BuildContext context, Reminder reminder, void Function() refreshPage) {
-    return ActionPane(motion: StretchMotion(), children: [
-      Consumer(builder: (context, ref, child) {
-        return SlidableAction(
-          icon: Icons.add,
-          onPressed: (context) {
-            final Duration postponeDuration =
-                ref.read(userSettingsProvider).defaultPostponeDuration;
-            reminder.dateAndTime = reminder.dateAndTime.add(postponeDuration);
-            RemindersDatabaseController.saveReminder(reminder);
-            refreshPage();
-
-            final ValueKey snackBarKey =
-                ValueKey<String>('postponed-${reminder.id}');
-            ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
-                key: snackBarKey,
-                content: Row(
-                  children: [
-                    Text("'${reminder.title}' postponed."),
-                    Spacer(),
-                    OneTimeUndoButton(
-                      onPressed: () {
-                        reminder.dateAndTime =
-                            reminder.dateAndTime.subtract(postponeDuration);
-                        RemindersDatabaseController.saveReminder(reminder);
-                        refreshPage();
-                      },
-                    )
-                  ],
-                )));
-          },
-        );
-      })
-    ]);
-  }
-
-  static ActionPane _doneAndDeleteActionPane(BuildContext context,
-      void Function() refreshPage, List<Reminder> remindersList, int index) {
+  static ActionPane _doneAndDeleteActionPane(
+    BuildContext context,
+    List<Reminder> remindersList,
+    int index,
+    WidgetRef ref,
+  ) {
     final reminder = remindersList[index];
 
-    return ActionPane(motion: StretchMotion(), children: [
-      _doneSlidableAction(context, reminder, refreshPage),
+    return ActionPane(motion: const StretchMotion(), children: [
+      _doneSlidableAction(context, reminder, ref),
       SlidableAction(
           backgroundColor: Colors.red,
           icon: Icons.delete_forever,
           onPressed: (context) {
             remindersList.removeAt(index);
-            _slideAndRemoveReminder(context, reminder, refreshPage);
+            _slideAndRemoveReminder(context, reminder, ref);
           })
     ]);
   }
 
-  // To be used inside doneActionPane and doneAndDeleteActionPane
-  static SlidableAction _doneSlidableAction(
+  static void _slideAndRemoveReminder(
     BuildContext context,
     Reminder reminder,
-    void Function() refreshPage,
+    WidgetRef ref,
   ) {
-    return SlidableAction(
-      backgroundColor: Colors.green,
-      icon: Icons.check,
-      onPressed: (context) {
-        RemindersDatabaseController.markAsDone(reminder.id ?? reminderNullID);
-        refreshPage();
+    // Store the provider reference before any potential disposal
+    final remindersProviderValue = ref.read(remindersProvider);
 
-        if (reminder.recurringInterval == RecurringInterval.none) {
-          final ValueKey snackBarKey =
-              ValueKey<String>('archived-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
-              key: snackBarKey,
-              content: Row(
-                children: [
-                  Text("'${reminder.title}' Archived."),
-                  Spacer(),
-                  OneTimeUndoButton(
-                    onPressed: () {
-                      RemindersDatabaseController.retrieveFromArchives(
-                          reminder);
-                      refreshPage();
-                    },
-                  )
-                ],
-              )));
-        } else {
-          final ValueKey snackBarKey = ValueKey<String>('moved-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
-              key: snackBarKey,
-              content: Row(
-                children: [
-                  Text("'${reminder.title}' moved to next occurrence."),
-                  Spacer(),
-                  OneTimeUndoButton(
-                    onPressed: () {
-                      RemindersDatabaseController
-                          .moveToPreviousReminderOccurrence(
-                              reminder.id ?? reminderNullID);
-                      refreshPage();
-                    },
-                  )
-                ],
-              )));
-        }
-      },
-    );
-  }
-
-  static void _slideAndRemoveReminder(
-      BuildContext context, Reminder reminder, void Function() refreshPage) {
     if (reminder.recurringInterval != RecurringInterval.none) {
       showDialog(
         context: context,
@@ -278,7 +221,7 @@ mixin ActionPaneManager {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                 },
                 child: Text(
                   'Cancel',
@@ -287,7 +230,7 @@ mixin ActionPaneManager {
               ),
               TextButton(
                 onPressed: () {
-                  RemindersDatabaseController.moveToArchive(reminder.id!);
+                  remindersProviderValue.moveToArchive(reminder.id!);
 
                   final ValueKey snackBarKey =
                       ValueKey<String>('archived-${reminder.id}');
@@ -297,17 +240,15 @@ mixin ActionPaneManager {
                           content: Row(
                             children: [
                               Text("'${reminder.title}' Archived."),
-                              Spacer(),
+                              const Spacer(),
                               OneTimeUndoButton(
                                 onPressed: () {
-                                  RemindersDatabaseController
-                                      .retrieveFromArchives(reminder);
-                                  refreshPage();
+                                  // remindersProviderValue.retrieveFromArchives(reminder);
                                 },
                               )
                             ],
                           )));
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                 },
                 child: Text(
                   'Archive',
@@ -316,23 +257,22 @@ mixin ActionPaneManager {
               ),
               TextButton(
                 onPressed: () {
-                  RemindersDatabaseController.deleteReminder(reminder.id!);
+                  remindersProviderValue.deleteReminder(reminder.id!);
 
                   ScaffoldMessenger.of(context)
                       .showSnackBar(buildCustomSnackBar(
                           content: Row(
                     children: [
                       Text("'${reminder.title}' deleted"),
-                      Spacer(),
+                      const Spacer(),
                       OneTimeUndoButton(
                         onPressed: () {
-                          RemindersDatabaseController.saveReminder(reminder);
-                          refreshPage();
+                          remindersProviderValue.saveReminder(reminder);
                         },
                       )
                     ],
                   )));
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                 },
                 child: Text(
                   'Delete',
@@ -344,21 +284,110 @@ mixin ActionPaneManager {
         },
       );
     } else {
-      RemindersDatabaseController.deleteReminder(reminder.id!);
+      remindersProviderValue.deleteReminder(reminder.id!);
 
       ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
           content: Row(
         children: [
           Text("'${reminder.title}' deleted"),
-          Spacer(),
+          const Spacer(),
           OneTimeUndoButton(
             onPressed: () {
-              RemindersDatabaseController.saveReminder(reminder);
-              refreshPage();
+              remindersProviderValue.saveReminder(reminder);
             },
           )
         ],
       )));
     }
+  }
+
+  // We should also fix the same issue in _postponeActionPane
+  static ActionPane _postponeActionPane(
+    BuildContext context,
+    Reminder reminder,
+    WidgetRef ref,
+  ) {
+    final Duration postponeDuration =
+        ref.read(userSettingsProvider).defaultPostponeDuration;
+    final remindersProviderValue = ref.read(remindersProvider);
+
+    return ActionPane(motion: const StretchMotion(), children: [
+      SlidableAction(
+        icon: Icons.add,
+        onPressed: (context) {
+          reminder.dateAndTime = reminder.dateAndTime.add(postponeDuration);
+          remindersProviderValue.saveReminder(reminder);
+
+          final ValueKey snackBarKey =
+              ValueKey<String>('postponed-${reminder.id}');
+          ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
+              key: snackBarKey,
+              content: Row(
+                children: [
+                  Text("'${reminder.title}' postponed."),
+                  const Spacer(),
+                  OneTimeUndoButton(
+                    onPressed: () {
+                      reminder.dateAndTime =
+                          reminder.dateAndTime.subtract(postponeDuration);
+                      remindersProviderValue.saveReminder(reminder);
+                    },
+                  )
+                ],
+              )));
+        },
+      )
+    ]);
+  }
+
+  // Also fix _doneSlidableAction
+  static Widget _doneSlidableAction(
+    BuildContext context,
+    Reminder reminder,
+    WidgetRef ref,
+  ) {
+    final remindersProviderValue = ref.read(remindersProvider);
+
+    return SlidableAction(
+      backgroundColor: Colors.green,
+      icon: Icons.check,
+      onPressed: (context) {
+        remindersProviderValue.markAsDone(reminder.id ?? reminderNullID);
+
+        if (reminder.recurringInterval == RecurringInterval.none) {
+          final ValueKey snackBarKey =
+              ValueKey<String>('archived-${reminder.id}');
+          ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
+              key: snackBarKey,
+              content: Row(
+                children: [
+                  Text("'${reminder.title}' Archived."),
+                  const Spacer(),
+                  OneTimeUndoButton(
+                    onPressed: () {
+                      // remindersProviderValue.retrieveFromArchives(reminder);
+                    },
+                  )
+                ],
+              )));
+        } else {
+          final ValueKey snackBarKey = ValueKey<String>('moved-${reminder.id}');
+          ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
+              key: snackBarKey,
+              content: Row(
+                children: [
+                  Text("'${reminder.title}' moved to next occurrence."),
+                  const Spacer(),
+                  OneTimeUndoButton(
+                    onPressed: () {
+                      remindersProviderValue.moveToPreviousReminderOccurrence(
+                          reminder.id ?? reminderNullID);
+                    },
+                  )
+                ],
+              )));
+        }
+      },
+    );
   }
 }

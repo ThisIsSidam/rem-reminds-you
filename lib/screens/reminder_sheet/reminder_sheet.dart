@@ -8,11 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ReminderSheet extends ConsumerStatefulWidget {
   final Reminder thisReminder;
-  final VoidCallback? refreshHomePage;
   const ReminderSheet({
     super.key,
     required this.thisReminder,
-    this.refreshHomePage,
   });
 
   @override
@@ -54,11 +52,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
-            children: [
-              TitleField(),
-              DateTimeSection(),
-              KeyButtonsRow(refreshHomePage: widget.refreshHomePage)
-            ],
+            children: [TitleField(), DateTimeSection(), KeyButtonsRow()],
           ),
         ),
       ),

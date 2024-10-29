@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 
 class HomePageReminderEntryListTile extends StatelessWidget {
   final Reminder reminder;
-  final VoidCallback refreshHomePage;
 
-  const HomePageReminderEntryListTile(
-      {super.key, required this.reminder, required this.refreshHomePage});
+  const HomePageReminderEntryListTile({
+    super.key,
+    required this.reminder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,8 @@ class HomePageReminderEntryListTile extends StatelessWidget {
               context: context,
               builder: (context) {
                 return ReminderSheet(
-                    thisReminder: reminder, refreshHomePage: refreshHomePage);
+                  thisReminder: reminder,
+                );
               });
         },
       ),

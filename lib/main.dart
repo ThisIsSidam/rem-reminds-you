@@ -1,6 +1,5 @@
 import 'package:Rem/app.dart';
 import 'package:Rem/consts/enums/hive_enums.dart';
-import 'package:Rem/database/reminder_database/database.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/duration.g.dart';
 import 'package:Rem/reminder_class/reminder.dart';
@@ -25,8 +24,6 @@ Future<void> initHive() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initHive();
-
-  RemindersDatabaseController.clearPendingRemovals();
 
   // Awesome Notification
   await NotificationController.initializeLocalNotifications();

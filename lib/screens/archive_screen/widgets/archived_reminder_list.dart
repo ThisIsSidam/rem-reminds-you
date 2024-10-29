@@ -138,7 +138,8 @@ class _ArchiveReminderEntryListTile extends StatelessWidget {
               context: context,
               builder: (context) {
                 return ReminderSheet(
-                    thisReminder: reminder, refreshHomePage: refreshPage);
+                  thisReminder: reminder,
+                );
               });
         },
       ),

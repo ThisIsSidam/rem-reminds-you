@@ -3,9 +3,9 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/database/reminder_database/database.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/notification/notification.dart';
+import 'package:Rem/provider/reminders_provider.dart';
 import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/home_screen_lists.dart';
@@ -23,7 +23,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
-  int noOfReminders = 0;
   late Timer _timer; // ignore: unused_field
   Map<String, List<Reminder>> remindersMap = {};
   final ReceivePort receivePort = ReceivePort();
@@ -32,14 +31,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void initState() {
     super.initState();
-
-    // Page refreshes every second
-    // I think I shouldn't be doing this.
-    //TODO: Check if I need to reload every second
-    refreshPage();
-    _timer = Timer.periodic(Duration(seconds: 1), (_) {
-      refreshPage();
-    });
+    remindersMap = ref.read(remindersProvider).categorizedReminders;
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -54,8 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         final id = message['id'];
 
         if (message["action"] == 'done') {
-          RemindersDatabaseController.markAsDone(id);
-          refreshPage();
+          ref.read(remindersProvider).markAsDone(id);
         } else {
           debugPrint("Port message is not refreshHomePage");
         }
@@ -82,32 +73,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     });
   }
 
-  // Refreshes the page
-  // Update the list of reminders
-  void refreshPage() {
-    if (mounted) {
-      setState(() {
-        remindersMap = RemindersDatabaseController.getReminderLists();
-        noOfReminders = RemindersDatabaseController.getNumberOfReminders();
-      });
-    }
-  }
-
-  // Reloading when the user comes back after switching apps
-  // or something.
-  // I don't know if I still need it. Will check later.
-  //TODO: Check if I still need it
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.detached) {
-      dispose();
-    }
-    if (state == AppLifecycleState.resumed) {
-      refreshPage();
-    }
-  }
-
   @override
   void dispose() {
     receivePort.close();
@@ -120,8 +85,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    remindersMap = ref.watch(remindersProvider).categorizedReminders;
+
     // Empty scaffold when no reminders.
-    if (noOfReminders == 0) {
+    if (ref.watch(remindersProvider).reminderCount == 0) {
       return Scaffold(appBar: getAppBar(), body: getEmptyPage());
     }
 
@@ -167,11 +134,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       context: context,
                       builder: (context) {
                         return ReminderSheet(
-                            thisReminder: Reminder(
-                                dateAndTime: DateTime.now().add(ref
-                                    .read(userSettingsProvider)
-                                    .defaultLeadDuration)),
-                            refreshHomePage: refreshPage);
+                          thisReminder: Reminder(
+                              dateAndTime: DateTime.now().add(ref
+                                  .read(userSettingsProvider)
+                                  .defaultLeadDuration)),
+                        );
                       });
                 },
                 child: Padding(
@@ -206,7 +173,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       .titleMedium!
                       .copyWith(color: Colors.red)),
               remindersList: remindersMap[overdueSectionTitle] ?? [],
-              refreshPage: refreshPage,
             );
           case 1:
             return HomeScreenReminderListSection(
@@ -216,7 +182,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       .titleMedium!
                       .copyWith(color: Theme.of(context).primaryColor)),
               remindersList: remindersMap[todaySectionTitle] ?? [],
-              refreshPage: refreshPage,
             );
           case 2:
             return HomeScreenReminderListSection(
@@ -226,7 +191,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       .titleMedium!
                       .copyWith(color: Colors.green)),
               remindersList: remindersMap[tomorrowSectionTitle] ?? [],
-              refreshPage: refreshPage,
             );
           case 3:
             return HomeScreenReminderListSection(
@@ -236,7 +200,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       .titleMedium!
                       .copyWith(color: Colors.yellow)),
               remindersList: remindersMap[laterSectionTitle] ?? [],
-              refreshPage: refreshPage,
             );
           default:
             return SizedBox.shrink();
@@ -254,11 +217,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               context: context,
               builder: (context) {
                 return ReminderSheet(
-                    thisReminder: Reminder(
-                        dateAndTime: DateTime.now().add(ref
-                            .read(userSettingsProvider)
-                            .defaultLeadDuration)),
-                    refreshHomePage: refreshPage);
+                  thisReminder: Reminder(
+                      dateAndTime: DateTime.now().add(
+                          ref.read(userSettingsProvider).defaultLeadDuration)),
+                );
               });
         },
         child: const Icon(
