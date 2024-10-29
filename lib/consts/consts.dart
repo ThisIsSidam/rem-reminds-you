@@ -1,17 +1,8 @@
 const appName = "Rem";
 
-const remindersBoxName = "reminders";
-const remindersBoxKey = "REMINDERS";
-
-const archivesBoxName = "archives";
-const archivesKey = "ARCHIVES";
-
+//TODO: Moving them to the enum
 const pendingRemovalsBoxName = "pending_removals";
 const pendingRemovalsBoxKey = "PENDING_REMOVAL";
-
-const indiValuesBoxName = "indi_values";
-const reminderIDGeneratorCurrentCountKey = "reminder_id_generator_current_count";
-
 
 // Isolate names
 String bg_isolate_name = "background_service_isolate";

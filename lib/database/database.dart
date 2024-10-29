@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:Rem/consts/consts.dart';
+import 'package:Rem/consts/enums/hive_box_names.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/reminder_class/reminder.dart';
@@ -12,19 +13,19 @@ import '../reminder_class/field_mixins/reminder_status/status.dart';
 
 class RemindersDatabaseController {
   static Map<int, Reminder> reminders = {};
-  static final _remindersBox = Hive.box(remindersBoxName);
+  static final _remindersBox = Hive.box(HiveBoxNames.reminders.name);
   static List<int> removedInBackground = [];
+  static const remindersBoxKey = "REMINDERS";
 
   static Box<dynamic> get remindersBox => _remindersBox;
 
-  /// Removes the reminders from the database which were set as 'done' in their 
+  /// Removes the reminders from the database which were set as 'done' in their
   /// notifications when the app was terminated.
   static Future<void> clearPendingRemovals() async {
     final pendingRemovals = await Hive.openBox(pendingRemovalsBoxName);
 
     final removals = pendingRemovals.get(pendingRemovalsBoxKey) ?? [];
-    for (final id in removals) 
-    {
+    for (final id in removals) {
       markAsDone(id);
     }
     pendingRemovals.put(pendingRemovalsBoxKey, []);
@@ -36,12 +37,10 @@ class RemindersDatabaseController {
 
   /// Get reminders from the database.
   static Map<int, Reminder> getReminders({key = remindersBoxKey}) {
-
-    if (!_remindersBox.isOpen)
-    {
-      Future(
-        () {Hive.openBox(remindersBoxName);}
-      );
+    if (!_remindersBox.isOpen) {
+      Future(() {
+        Hive.openBox(HiveBoxNames.reminders.name);
+      });
     }
 
     reminders = _remindersBox.get(key)?.cast<int, Reminder>() ?? {};
@@ -50,7 +49,7 @@ class RemindersDatabaseController {
 
   static Map<int, Map<String, String?>> getRemindersAsMaps() {
     final reminders = getReminders();
-    return reminders.map((key, value) => MapEntry(key, value.toMap()));  
+    return reminders.map((key, value) => MapEntry(key, value.toMap()));
   }
 
   static Reminder? getReminder(int id) {
@@ -75,30 +74,29 @@ class RemindersDatabaseController {
 
     printAll("Before Saving");
 
-    if (reminder.id == null)
-    {
+    if (reminder.id == null) {
       throw "[saveReminder] Reminder id is null";
-    }
-    else if 
-    (
-      // Upon edits, we delete the previous version and create an entirely new one
-      reminder.id != newReminderID && // New Reminders wouldn't be present in database
-      reminder.reminderStatus != ReminderStatus.archived // Archived reminders would be present only in Archived Database
-    ) 
-    {
+    } else if (
+        // Upon edits, we delete the previous version and create an entirely new one
+        reminder.id !=
+                newReminderID && // New Reminders wouldn't be present in database
+            reminder.reminderStatus !=
+                ReminderStatus
+                    .archived // Archived reminders would be present only in Archived Database
+        ) {
       debugPrint("[saveReminder] id : ${reminder.id}");
       NotificationController.cancelScheduledNotification(
-        reminder.id.toString()
-      );
+          reminder.id.toString());
       reminders.remove(reminder.id);
     }
 
-    if (reminder.reminderStatus == ReminderStatus.archived) // Moving from archives to main reminder database.
+    if (reminder.reminderStatus ==
+        ReminderStatus
+            .archived) // Moving from archives to main reminder database.
     {
       retrieveFromArchives(reminder);
       return;
     }
-
 
     // Setup for new reminder
     int? id = reminder.id;
@@ -117,7 +115,7 @@ class RemindersDatabaseController {
 
   static Reminder? _getReminder(int id) {
     getReminders();
-    if (reminders.containsKey(id)){
+    if (reminders.containsKey(id)) {
       return reminders[id]!;
     } else {
       return null;
@@ -146,23 +144,19 @@ class RemindersDatabaseController {
       moveToNextReminderOccurence(id);
     }
 
-    NotificationController.removeNotifications(
-      id.toString()
-    );
+    NotificationController.removeNotifications(id.toString());
   }
 
   /// Moves the reminder to Archives.
-  static void moveToArchive(int id) {  
+  static void moveToArchive(int id) {
     final Reminder? reminder = _getReminder(id);
     if (reminder == null) {
       debugPrint("[moveToArchives] Reminder not found in database");
       return;
-    }    
+    }
 
     // Have to cancel scheduled notification in all cases.
-    NotificationController.cancelScheduledNotification(
-      id.toString()
-    );
+    NotificationController.cancelScheduledNotification(id.toString());
 
     reminders.remove(id);
     Archives.addReminderToArchives(reminder);
@@ -177,9 +171,7 @@ class RemindersDatabaseController {
     }
 
     // Have to cancel scheduled notification in all cases.
-    NotificationController.cancelScheduledNotification(
-      id.toString()
-    );
+    NotificationController.cancelScheduledNotification(id.toString());
 
     reminder.moveToNextOccurence();
     NotificationController.scheduleNotification(reminder);
@@ -195,9 +187,7 @@ class RemindersDatabaseController {
     }
 
     // Have to cancel scheduled notification in all cases.
-    NotificationController.cancelScheduledNotification(
-      id.toString()
-    );
+    NotificationController.cancelScheduledNotification(id.toString());
 
     reminder.moveToPreviousOccurence();
     NotificationController.scheduleNotification(reminder);
@@ -212,7 +202,7 @@ class RemindersDatabaseController {
       debugPrint("[deleteReminder] Reminder not found in database");
       return;
     }
-    
+
     NotificationController.cancelScheduledNotification(id.toString());
     NotificationController.removeNotifications(id.toString());
     reminders.remove(id);
@@ -234,7 +224,7 @@ class RemindersDatabaseController {
 
   /// Returns a map which consists of all the reminders in the database categorized
   /// as per their time. The categories are Overdue, Today, Tomorrow and Later.
-  static Map<String,List<Reminder>> getReminderLists() {
+  static Map<String, List<Reminder>> getReminderLists() {
     getReminders();
     final remindersList = reminders.values.toList();
 
@@ -243,37 +233,34 @@ class RemindersDatabaseController {
     final tomorrowList = <Reminder>[];
     final laterList = <Reminder>[];
 
-    remindersList.sort((a, b) => a.getDiffDuration().compareTo(b.getDiffDuration()));
+    remindersList
+        .sort((a, b) => a.getDiffDuration().compareTo(b.getDiffDuration()));
 
     final now = DateTime.now();
 
-
-    for (final reminder in remindersList)
-    {
+    for (final reminder in remindersList) {
       DateTime dateTime = reminder.dateAndTime;
-      if (dateTime.isBefore(now))
-      {
+      if (dateTime.isBefore(now)) {
         overdueList.add(reminder);
-      }
-      else if (dateTime.day == now.day && dateTime.month == now.month && dateTime.year == now.year) 
-      {
+      } else if (dateTime.day == now.day &&
+          dateTime.month == now.month &&
+          dateTime.year == now.year) {
         todayList.add(reminder);
-      }
-      else if (dateTime.day == now.day+1 && dateTime.month == now.month && dateTime.year == now.year)
-      {
+      } else if (dateTime.day == now.day + 1 &&
+          dateTime.month == now.month &&
+          dateTime.year == now.year) {
         tomorrowList.add(reminder);
-      }
-      else
-      {
+      } else {
         laterList.add(reminder);
       }
-    };
+    }
+    ;
 
     return {
-      overdueSectionTitle : overdueList,
-      todaySectionTitle : todayList,
-      tomorrowSectionTitle : tomorrowList,
-      laterSectionTitle : laterList
+      overdueSectionTitle: overdueList,
+      todaySectionTitle: todayList,
+      tomorrowSectionTitle: tomorrowList,
+      laterSectionTitle: laterList
     };
   }
 
@@ -283,7 +270,8 @@ class RemindersDatabaseController {
 
     // Convert the reminders to a format suitable for JSON
     Map<String, dynamic> backupData = {
-      'reminders': reminders.map((id, reminder) => MapEntry(id.toString(), reminder.toMap())),
+      'reminders': reminders
+          .map((id, reminder) => MapEntry(id.toString(), reminder.toMap())),
       'timestamp': DateTime.now().toIso8601String(),
       'version': '1.0', // You might want to include an app or backup version
     };

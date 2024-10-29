@@ -1,5 +1,4 @@
 import 'package:Rem/app.dart';
-import 'package:Rem/consts/consts.dart';
 import 'package:Rem/consts/enums/hive_box_names.dart';
 import 'package:Rem/database/database.dart';
 import 'package:Rem/notification/notification.dart';
@@ -17,9 +16,9 @@ Future<void> initHive() async {
   Hive.registerAdapter(ReminderAdapter());
 
   // Order of openBox statements is crucial. Do not change.
-  await Hive.openBox(indiValuesBoxName);
-  await Hive.openBox(remindersBoxName);
-  await Hive.openBox(archivesBoxName);
+  await Hive.openBox(HiveBoxNames.individualValues.name);
+  await Hive.openBox(HiveBoxNames.reminders.name);
+  await Hive.openBox(HiveBoxNames.archives.name);
   await Hive.openBox(HiveBoxNames.settings.name);
 }
 

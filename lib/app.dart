@@ -1,4 +1,4 @@
-import 'package:Rem/consts/consts.dart';
+import 'package:Rem/consts/enums/hive_box_names.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/provider/text_scale_provider.dart';
 import 'package:Rem/screens/permissions_screen/permissions_screen.dart';
@@ -54,7 +54,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             } else if (snapshot.hasData) {
               if (snapshot.data!) {
                 return FutureBuilder(
-                    future: Hive.openBox(indiValuesBoxName),
+                    future: Hive.openBox(HiveBoxNames.individualValues.name),
                     builder: (context, stacktrace) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return _loadingScreen();

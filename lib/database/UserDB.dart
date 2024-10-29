@@ -1,4 +1,4 @@
-import 'package:Rem/consts/consts.dart';
+import 'package:Rem/consts/enums/hive_box_names.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 /// IndiValue Stores values that may even be unrelated to each
@@ -6,7 +6,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 /// The keys are the value names and the box just returns int values
 /// instead of a key which stores a dictionary of key value pairs.
 class UserDB {
-  static final _box = Hive.box(indiValuesBoxName);
+  static final _box = Hive.box(HiveBoxNames.individualValues.name);
+  static const reminderIDGeneratorCurrentCountKey =
+      "reminder_id_generator_current_count";
 
   static int? getNextId() {
     //TODO: Do something about keys

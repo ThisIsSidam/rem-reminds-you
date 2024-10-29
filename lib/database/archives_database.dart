@@ -1,24 +1,25 @@
 import 'dart:convert';
 
 import 'package:Rem/consts/consts.dart';
+import 'package:Rem/consts/enums/hive_box_names.dart';
 import 'package:Rem/reminder_class/field_mixins/reminder_status/status.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Archives {
-
-  static final _box = Hive.box(archivesBoxName);
+  static final _box = Hive.box(HiveBoxNames.archives.name);
+  static const archivesKey = 'ARCHIVES';
 
   // Check if box is open and not and retrieve the reminders
-  static Map<int, Reminder> getArchivedReminders({String key = archivesKey}) {
-    if (!_box.isOpen)
-    {
-      Future(
-        () {Hive.openBox(archivesBoxName);}
-      );
+  static Map<int, Reminder> getArchivedReminders() {
+    if (!_box.isOpen) {
+      Future(() {
+        Hive.openBox(HiveBoxNames.archives.name);
+      });
     }
 
-      final Map<int, Reminder> reminders = _box.get(archivesKey)?.cast<int, Reminder>() ?? {};
+    final Map<int, Reminder> reminders =
+        _box.get(archivesKey)?.cast<int, Reminder>() ?? {};
     return reminders;
   }
 
@@ -26,36 +27,31 @@ class Archives {
     _box.put(archivesKey, {});
   }
 
-  static void _putArchivedReminders(Map<int, Reminder> reminders, {String key = archivesKey}) {
-    if (!_box.isOpen)
-    {
-      Future(
-        () {Hive.openBox(remindersBoxName);}
-      );
+  static void _putArchivedReminders(Map<int, Reminder> reminders,
+      {String key = archivesKey}) {
+    if (!_box.isOpen) {
+      Future(() {
+        Hive.openBox(HiveBoxNames.reminders.name);
+      });
     }
 
     _box.put(key, reminders);
   }
 
   static void deleteArchivedReminder(int id) {
-    if (id == reminderNullID)
-    {
+    if (id == reminderNullID) {
       throw "[archivesDeleteReminder] Reminder id is reminderNullID";
     }
 
     final Map<int, Reminder> archives = getArchivedReminders();
     if (archives.containsKey(id)) {
-
       viewAllArchivedReminders("Before Removing from Archives");
 
       archives.remove(id);
       _putArchivedReminders(archives);
 
       viewAllArchivedReminders("After Removing from Archives");
-    }
-
-    else 
-    {
+    } else {
       throw "Reminder not found in Archives";
     }
   }
@@ -67,12 +63,9 @@ class Archives {
 
       viewAllArchivedReminders("Before Adding in Archives");
 
-      if (reminder.id == null)
-      {
+      if (reminder.id == null) {
         throw "[moveReminderToArchives] Reminder id is null";
-      }
-      else if (reminder.id == reminderNullID)
-      {
+      } else if (reminder.id == reminderNullID) {
         throw "[moveReminderToArchives] Reminder id is reminderNullID";
       }
 
@@ -80,15 +73,14 @@ class Archives {
       _putArchivedReminders(archives);
 
       viewAllArchivedReminders("After Adding in Archives");
-    }
-    else throw  "[moveReminderToArchives] Reminder is null";
+    } else
+      throw "[moveReminderToArchives] Reminder is null";
   }
 
   static void viewAllArchivedReminders(String str) {
     final map = getArchivedReminders();
 
-    if (map.isEmpty)
-    {
+    if (map.isEmpty) {
       print("No reminders in Archives");
       return;
     }
@@ -100,7 +92,8 @@ class Archives {
 
     // Convert the reminders to a format suitable for JSON
     Map<String, dynamic> backupData = {
-      'reminders': reminders.map((id, reminder) => MapEntry(id.toString(), reminder.toMap())),
+      'reminders': reminders
+          .map((id, reminder) => MapEntry(id.toString(), reminder.toMap())),
       'timestamp': DateTime.now().toIso8601String(),
       'version': '1.0', // You might want to include an app or backup version
     };

@@ -1,4 +1,3 @@
-import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/archive_screen/widgets/archived_reminder_list.dart';
@@ -16,8 +15,8 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
 
   @override
   void initState() {
-    
-    final Map<int, Reminder> archivedReminderMap = Archives.getArchivedReminders();
+    final Map<int, Reminder> archivedReminderMap =
+        Archives.getArchivedReminders();
     archivedReminders = archivedReminderMap.values.toList();
 
     super.initState();
@@ -25,19 +24,14 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
 
   void refreshPage() {
     setState(() {
-      archivedReminders = Archives.getArchivedReminders(key: archivesKey).values.toList();
+      archivedReminders = Archives.getArchivedReminders().values.toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    if (archivedReminders.isEmpty)
-    {
-      return Scaffold(
-        appBar: getAppBar(),
-        body: getEmptyPage()
-      );
+    if (archivedReminders.isEmpty) {
+      return Scaffold(appBar: getAppBar(), body: getEmptyPage());
     }
     return Scaffold(
       appBar: getAppBar(),
@@ -59,21 +53,19 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
         "Archive",
         style: Theme.of(context).textTheme.titleLarge,
       ),
-      
     );
   }
 
   Widget getEmptyPage() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "No archived reminders",
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ],
-      )
-    );
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "No archived reminders",
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ],
+    ));
   }
 }
