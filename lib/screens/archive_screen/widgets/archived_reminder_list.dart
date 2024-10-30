@@ -1,4 +1,3 @@
-import 'package:Rem/consts/consts.dart';
 import 'package:Rem/provider/archives_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
@@ -22,7 +21,7 @@ class ArchiveEntryLists extends ConsumerWidget {
       BuildContext context, Reminder reminder, WidgetRef ref) {
     final archivesNotifier = ref.read(archivesProvider);
     archivesNotifier.deleteArchivedReminder(
-      reminder.id ?? reminderNullID,
+      reminder.id,
     );
 
     ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(

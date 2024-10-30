@@ -18,7 +18,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
     };
     return Reminder(
       title: fields[0] as String,
-      id: fields[1] as int?,
+      id: fields[1] as int,
       dateAndTime: fields[2] as DateTime,
       baseDateTime: fields[6] as DateTime?,
       preParsedTitle: fields[7] as String?,

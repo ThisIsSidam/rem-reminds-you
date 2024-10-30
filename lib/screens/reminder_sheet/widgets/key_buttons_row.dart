@@ -26,14 +26,18 @@ class KeyButtonsRow extends ConsumerWidget {
       return;
     }
 
-    ref.read(remindersProvider).saveReminder(reminder);
+    if (reminder.reminderStatus == ReminderStatus.archived) {
+      ref.read(remindersProvider).retrieveFromArchives(reminder.id);
+    } else {
+      ref.read(remindersProvider).saveReminder(reminder);
+    }
     Navigator.pop(context);
   }
 
   void deleteReminder(Reminder reminder, BuildContext context, WidgetRef ref) {
     void finalDelete({deleteAllRecurring = false}) {
       ref.read(remindersProvider).deleteReminder(
-            reminder.id!,
+            reminder.id,
           );
       Navigator.pop(context);
     }
@@ -66,9 +70,7 @@ class KeyButtonsRow extends ConsumerWidget {
               ),
               TextButton(
                 onPressed: () {
-                  ref
-                      .read(remindersProvider)
-                      .moveToArchive(reminder.id ?? reminderNullID);
+                  ref.read(remindersProvider).moveToArchive(reminder.id);
                   Navigator.of(context).pop(); // Close the dialog
                   Navigator.pop(context);
                 },

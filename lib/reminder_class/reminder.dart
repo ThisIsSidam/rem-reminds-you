@@ -16,7 +16,7 @@ class Reminder
   String title;
 
   @HiveField(1)
-  int? id;
+  int id;
 
   // These are all in their individual files in field_mixins folder
   // HiveField 2: DateAndTime

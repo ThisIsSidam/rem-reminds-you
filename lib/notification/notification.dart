@@ -43,7 +43,7 @@ class NotificationController {
   static Future<bool> scheduleNotification(
     Reminder reminder,
   ) async {
-    final int id = reminder.id ?? reminderNullID;
+    final int id = reminder.id;
 
     final DateTime scheduledTime = reminder.dateAndTime;
 

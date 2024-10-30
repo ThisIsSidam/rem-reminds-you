@@ -21,30 +21,28 @@ class ArchivesNotifier extends ChangeNotifier {
   }
 
   Future<void> addReminderToArchives(Reminder reminder) async {
-    if (reminder.id == null) {
-      throw "[addReminderToArchives] Reminder id is null";
-    }
     if (reminder.id == reminderNullID) {
       throw "[addReminderToArchives] Reminder id is reminderNullID";
     }
 
     reminder.reminderStatus = ReminderStatus.archived;
-    _archivedReminders[reminder.id!] = reminder;
+    _archivedReminders[reminder.id] = reminder;
     await ArchivesDatabaseController.updateArchivedReminders(
         _archivedReminders);
     notifyListeners();
   }
 
-  Future<void> deleteArchivedReminder(int id) async {
+  Future<Reminder?> deleteArchivedReminder(int id) async {
     if (id == reminderNullID) {
       throw "[deleteArchivedReminder] Reminder id is reminderNullID";
     }
 
     if (_archivedReminders.containsKey(id)) {
-      _archivedReminders.remove(id);
+      final reminder = _archivedReminders.remove(id);
       await ArchivesDatabaseController.updateArchivedReminders(
           _archivedReminders);
       notifyListeners();
+      return reminder;
     } else {
       throw "Reminder not found in Archives";
     }

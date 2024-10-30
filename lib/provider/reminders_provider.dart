@@ -63,8 +63,8 @@ class RemindersNotifier extends ChangeNotifier {
     };
   }
 
-  Future<void> saveReminder(Reminder reminder) async {
-    if (reminder.id == null || reminder.id == newReminderID) {
+  Future<Reminder> saveReminder(Reminder reminder) async {
+    if (reminder.id == newReminderID) {
       reminder.id = generateId(reminder);
       reminder.baseDateTime = reminder.dateAndTime;
     }
@@ -76,12 +76,17 @@ class RemindersNotifier extends ChangeNotifier {
       _reminders.remove(reminder.id);
     }
 
-    _reminders[reminder.id!] = reminder;
+    if (reminder.reminderStatus == ReminderStatus.archived) {
+      reminder.reminderStatus = ReminderStatus.active;
+    }
+
+    _reminders[reminder.id] = reminder;
     await NotificationController.scheduleNotification(reminder);
     RemindersDatabaseController.updateReminders(_reminders);
 
     _updateCategorizedReminders();
     notifyListeners();
+    return reminder;
   }
 
   Future<void> deleteReminder(int id) async {
@@ -163,6 +168,15 @@ class RemindersNotifier extends ChangeNotifier {
 
     _updateCategorizedReminders();
     notifyListeners();
+  }
+
+  Future<Reminder?> retrieveFromArchives(int id) async {
+    var reminder = await ref.read(archivesProvider).deleteArchivedReminder(id);
+    if (reminder != null) {
+      reminder = await saveReminder(reminder);
+      return reminder;
+    }
+    return null;
   }
 
   Future<String> getBackup() async {

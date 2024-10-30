@@ -1,4 +1,3 @@
-import 'package:Rem/consts/consts.dart';
 import 'package:Rem/consts/enums/swipe_actions.dart';
 import 'package:Rem/provider/reminders_provider.dart';
 import 'package:Rem/provider/settings_provider.dart';
@@ -230,7 +229,7 @@ class ActionPaneManager {
               ),
               TextButton(
                 onPressed: () {
-                  remindersProviderValue.moveToArchive(reminder.id!);
+                  remindersProviderValue.moveToArchive(reminder.id);
 
                   final ValueKey snackBarKey =
                       ValueKey<String>('archived-${reminder.id}');
@@ -243,7 +242,8 @@ class ActionPaneManager {
                               const Spacer(),
                               OneTimeUndoButton(
                                 onPressed: () {
-                                  // remindersProviderValue.retrieveFromArchives(reminder);
+                                  remindersProviderValue
+                                      .retrieveFromArchives(reminder.id);
                                 },
                               )
                             ],
@@ -257,7 +257,7 @@ class ActionPaneManager {
               ),
               TextButton(
                 onPressed: () {
-                  remindersProviderValue.deleteReminder(reminder.id!);
+                  remindersProviderValue.deleteReminder(reminder.id);
 
                   ScaffoldMessenger.of(context)
                       .showSnackBar(buildCustomSnackBar(
@@ -284,7 +284,7 @@ class ActionPaneManager {
         },
       );
     } else {
-      remindersProviderValue.deleteReminder(reminder.id!);
+      remindersProviderValue.deleteReminder(reminder.id);
 
       ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
           content: Row(
@@ -352,7 +352,7 @@ class ActionPaneManager {
       backgroundColor: Colors.green,
       icon: Icons.check,
       onPressed: (context) {
-        remindersProviderValue.markAsDone(reminder.id ?? reminderNullID);
+        remindersProviderValue.markAsDone(reminder.id);
 
         if (reminder.recurringInterval == RecurringInterval.none) {
           final ValueKey snackBarKey =
@@ -365,7 +365,7 @@ class ActionPaneManager {
                   const Spacer(),
                   OneTimeUndoButton(
                     onPressed: () {
-                      // remindersProviderValue.retrieveFromArchives(reminder);
+                      remindersProviderValue.retrieveFromArchives(reminder.id);
                     },
                   )
                 ],
@@ -380,8 +380,8 @@ class ActionPaneManager {
                   const Spacer(),
                   OneTimeUndoButton(
                     onPressed: () {
-                      remindersProviderValue.moveToPreviousReminderOccurrence(
-                          reminder.id ?? reminderNullID);
+                      remindersProviderValue
+                          .moveToPreviousReminderOccurrence(reminder.id);
                     },
                   )
                 ],
