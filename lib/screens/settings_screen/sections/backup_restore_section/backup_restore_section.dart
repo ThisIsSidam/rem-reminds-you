@@ -1,19 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:Rem/database/archives_database.dart';
-import 'package:Rem/database/reminder_database/database.dart';
+import 'package:Rem/provider/archives_provider.dart';
 import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class BackupRestoreSection extends StatelessWidget {
+import '../../../../provider/reminders_provider.dart';
+
+class BackupRestoreSection extends ConsumerWidget {
   const BackupRestoreSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -30,9 +32,9 @@ class BackupRestoreSection extends StatelessWidget {
           Column(
             children: [
               SizedBox(height: 10),
-              getBackupTile(context),
+              getBackupTile(context, ref),
               SizedBox(height: 10),
-              getRestoreTile(context),
+              getRestoreTile(context, ref),
               SizedBox(height: 20),
             ],
           )
@@ -41,7 +43,7 @@ class BackupRestoreSection extends StatelessWidget {
     );
   }
 
-  Widget getBackupTile(BuildContext context) {
+  Widget getBackupTile(BuildContext context, WidgetRef ref) {
     return ListTile(
       title: Text('Backup', style: Theme.of(context).textTheme.titleSmall),
       onTap: () async {
@@ -56,8 +58,9 @@ class BackupRestoreSection extends StatelessWidget {
 
         try {
           String remindersJsonData =
-              await RemindersDatabaseController.getBackup();
-          String archivesJsonData = await Archives.getBackup();
+              await ref.read(remindersProvider).getBackup();
+          String archivesJsonData =
+              await ref.read(archivesProvider).getBackup();
 
           // Create a temporary zip file in memory
           final archive = Archive();
@@ -97,7 +100,7 @@ class BackupRestoreSection extends StatelessWidget {
     );
   }
 
-  Widget getRestoreTile(BuildContext context) {
+  Widget getRestoreTile(BuildContext context, WidgetRef ref) {
     return ListTile(
         title: Text('Restore', style: Theme.of(context).textTheme.titleSmall),
         onTap: () async {
@@ -134,7 +137,7 @@ class BackupRestoreSection extends StatelessWidget {
             } else {
               final remindersJsonContent =
                   utf8.decode(remindersJsonFile.content);
-              RemindersDatabaseController.restoreBackup(remindersJsonContent);
+              ref.read(remindersProvider).restoreBackup(remindersJsonContent);
             }
 
             final archivesJsonFile = archive.findFile('archives_backup.json');
@@ -142,7 +145,7 @@ class BackupRestoreSection extends StatelessWidget {
               debugPrint('archives_backup.json not found in the zip file');
             } else {
               final archivesJsonContent = utf8.decode(archivesJsonFile.content);
-              Archives.restoreBackup(archivesJsonContent);
+              ref.read(archivesProvider).restoreBackup(archivesJsonContent);
             }
 
             ScaffoldMessenger.of(context).showSnackBar(

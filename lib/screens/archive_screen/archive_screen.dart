@@ -1,50 +1,27 @@
-import 'package:Rem/database/archives_database.dart';
-import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/provider/archives_provider.dart';
 import 'package:Rem/screens/archive_screen/widgets/archived_reminder_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ArchiveScreen extends StatefulWidget {
-  const ArchiveScreen({super.key});
-
+class ArchiveScreen extends ConsumerWidget {
   @override
-  State<ArchiveScreen> createState() => _ArchiveScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final archivedReminders = ref.watch(archivesProvider).archivedReminders;
 
-class _ArchiveScreenState extends State<ArchiveScreen> {
-  List<Reminder> archivedReminders = [];
-
-  @override
-  void initState() {
-    final Map<int, Reminder> archivedReminderMap =
-        Archives.getArchivedReminders();
-    archivedReminders = archivedReminderMap.values.toList();
-
-    super.initState();
-  }
-
-  void refreshPage() {
-    setState(() {
-      archivedReminders = Archives.getArchivedReminders().values.toList();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     if (archivedReminders.isEmpty) {
-      return Scaffold(appBar: getAppBar(), body: getEmptyPage());
+      return Scaffold(appBar: getAppBar(context), body: getEmptyPage(context));
     }
     return Scaffold(
-      appBar: getAppBar(),
+      appBar: getAppBar(context),
       body: SingleChildScrollView(
         child: ArchiveEntryLists.ArchivedReminderList(
-          remindersList: archivedReminders.reversed.toList(),
-          refreshPage: refreshPage,
+          remindersList: archivedReminders.values.toList().reversed.toList(),
         ),
       ),
     );
   }
 
-  AppBar getAppBar() {
+  AppBar getAppBar(BuildContext context) {
     return AppBar(
       surfaceTintColor: null,
       // toolbarHeight: ,
@@ -56,7 +33,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
     );
   }
 
-  Widget getEmptyPage() {
+  Widget getEmptyPage(BuildContext context) {
     return Center(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,

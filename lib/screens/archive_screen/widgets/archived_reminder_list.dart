@@ -1,29 +1,29 @@
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/database/archives_database.dart';
+import 'package:Rem/provider/archives_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class ArchiveEntryLists extends StatelessWidget {
+class ArchiveEntryLists extends ConsumerWidget {
   final Widget? label;
   final List<Reminder> remindersList;
-  final VoidCallback refreshPage;
 
   const ArchiveEntryLists.ArchivedReminderList({
     super.key,
     this.label,
     required this.remindersList,
-    required this.refreshPage,
   });
 
-  void _slideAndRemoveReminder(BuildContext context, Reminder reminder) {
-    Archives.deleteArchivedReminder(
+  void _slideAndRemoveReminder(
+      BuildContext context, Reminder reminder, WidgetRef ref) {
+    final archivesNotifier = ref.read(archivesProvider);
+    archivesNotifier.deleteArchivedReminder(
       reminder.id ?? reminderNullID,
     );
-    refreshPage();
 
     ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
         content: Row(
@@ -33,8 +33,7 @@ class ArchiveEntryLists extends StatelessWidget {
         TextButton(
           child: Text("Undo"),
           onPressed: () {
-            Archives.addReminderToArchives(reminder);
-            refreshPage();
+            archivesNotifier.addReminderToArchives(reminder);
           },
         )
       ],
@@ -42,7 +41,7 @@ class ArchiveEntryLists extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (remindersList.isEmpty) {
       return const SizedBox();
     }
@@ -74,7 +73,7 @@ class ArchiveEntryLists extends StatelessWidget {
                           dragDismissible: true,
                           dismissible: DismissiblePane(onDismissed: () {
                             remindersList.removeAt(index);
-                            _slideAndRemoveReminder(context, reminder);
+                            _slideAndRemoveReminder(context, reminder, ref);
                           }),
                           children: [
                             SlidableAction(
@@ -82,7 +81,8 @@ class ArchiveEntryLists extends StatelessWidget {
                                 backgroundColor: Colors.red,
                                 onPressed: (context) {
                                   remindersList.removeAt(index);
-                                  _slideAndRemoveReminder(context, reminder);
+                                  _slideAndRemoveReminder(
+                                      context, reminder, ref);
                                 })
                           ]),
                       endActionPane: ActionPane(
@@ -91,7 +91,7 @@ class ArchiveEntryLists extends StatelessWidget {
                           dragDismissible: true,
                           dismissible: DismissiblePane(onDismissed: () {
                             remindersList.removeAt(index);
-                            _slideAndRemoveReminder(context, reminder);
+                            _slideAndRemoveReminder(context, reminder, ref);
                           }),
                           children: [
                             SlidableAction(
@@ -99,11 +99,11 @@ class ArchiveEntryLists extends StatelessWidget {
                                 backgroundColor: Colors.red,
                                 onPressed: (context) {
                                   remindersList.removeAt(index);
-                                  _slideAndRemoveReminder(context, reminder);
+                                  _slideAndRemoveReminder(
+                                      context, reminder, ref);
                                 })
                           ]),
-                      child: _ArchiveReminderEntryListTile(
-                          reminder: reminder, refreshPage: refreshPage));
+                      child: _ArchiveReminderEntryListTile(reminder: reminder));
                 }),
           ),
         ],
@@ -112,15 +112,13 @@ class ArchiveEntryLists extends StatelessWidget {
   }
 }
 
-class _ArchiveReminderEntryListTile extends StatelessWidget {
+class _ArchiveReminderEntryListTile extends ConsumerWidget {
   final Reminder reminder;
-  final VoidCallback refreshPage;
 
-  const _ArchiveReminderEntryListTile(
-      {required this.reminder, required this.refreshPage});
+  const _ArchiveReminderEntryListTile({required this.reminder});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       height: 60,
       child: ListTile(
@@ -144,13 +142,5 @@ class _ArchiveReminderEntryListTile extends StatelessWidget {
         },
       ),
     );
-  }
-
-  void onTapDelete() {
-    if (reminder.id == null) {
-      throw "Couldn't fetch reminder id";
-    }
-    Archives.deleteArchivedReminder(reminder.id ?? reminderNullID);
-    refreshPage();
   }
 }

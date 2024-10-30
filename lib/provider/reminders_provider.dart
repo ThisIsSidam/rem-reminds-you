@@ -1,6 +1,6 @@
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/database/archives_database.dart';
 import 'package:Rem/notification/notification.dart';
+import 'package:Rem/provider/archives_provider.dart';
 import 'package:Rem/reminder_class/field_mixins/reminder_status/status.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/utils/generate_id.dart';
@@ -10,6 +10,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/reminder_database/database.dart';
 
 class RemindersNotifier extends ChangeNotifier {
+  ChangeNotifierProviderRef ref;
+  RemindersNotifier(this.ref) {
+    loadReminders();
+  }
+
   Map<int, Reminder> _reminders = {};
   Map<String, List<Reminder>> _categorizedReminders = {};
 
@@ -59,7 +64,7 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<void> saveReminder(Reminder reminder) async {
-    if (reminder.id == null) {
+    if (reminder.id == null || reminder.id == newReminderID) {
       reminder.id = generateId(reminder);
       reminder.baseDateTime = reminder.dateAndTime;
     }
@@ -113,7 +118,7 @@ class RemindersNotifier extends ChangeNotifier {
     if (reminder == null) return;
 
     await NotificationController.cancelScheduledNotification(id.toString());
-    Archives.addReminderToArchives(reminder);
+    ref.read(archivesProvider).addReminderToArchives(reminder);
 
     _reminders.remove(id);
     RemindersDatabaseController.updateReminders(_reminders);
@@ -171,5 +176,5 @@ class RemindersNotifier extends ChangeNotifier {
 }
 
 final remindersProvider = ChangeNotifierProvider<RemindersNotifier>((ref) {
-  return RemindersNotifier();
+  return RemindersNotifier(ref);
 });
