@@ -40,8 +40,9 @@ class TimeButton extends ConsumerWidget {
     final reminderNotifier = ref.read(reminderNotifierProvider.notifier);
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(4),
-        ),
+            padding: EdgeInsets.all(4),
+            backgroundColor:
+                Theme.of(context).colorScheme.primary.withOpacity(0.1)),
         onPressed: () {
           if (dateTime != null) {
             setTime(reminder);
@@ -54,18 +55,20 @@ class TimeButton extends ConsumerWidget {
   }
 
   Widget getChild(BuildContext context) {
+    late String text;
+
     if (dateTime != null) {
-      return Text(
-        getFormattedTimeForTimeSetButton(dateTime!),
-        style: Theme.of(context).textTheme.bodyMedium,
-      );
+      text = getFormattedTimeForTimeSetButton(dateTime!);
     } else if (duration != null) {
-      return Text(
-        getFormattedDurationForTimeEditButton(duration!, addPlusSymbol: true),
-        style: Theme.of(context).textTheme.bodyMedium,
-      );
+      text =
+          getFormattedDurationForTimeEditButton(duration!, addPlusSymbol: true);
     } else {
       throw "Both dateTime and duration can't be null";
     }
+
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium,
+    );
   }
 }

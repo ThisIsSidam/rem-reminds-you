@@ -131,29 +131,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               height: 75,
               width: 200,
               child: ElevatedButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) {
-                          return ReminderSheet(
-                            thisReminder: Reminder(
-                                dateAndTime: DateTime.now().add(ref
-                                    .read(userSettingsProvider)
-                                    .defaultLeadDuration)),
-                          );
-                        });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Set a reminder",
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
+                onPressed: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return ReminderSheet(
+                          thisReminder: Reminder(
+                              dateAndTime: DateTime.now().add(ref
+                                  .read(userSettingsProvider)
+                                  .defaultLeadDuration)),
+                        );
+                      });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Set a reminder",
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ),
-                  style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                      backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).primaryColor))),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  surfaceTintColor: Colors.transparent,
+                ),
+              ),
             )
           ],
         ),
@@ -179,7 +182,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
-                    .copyWith(color: Theme.of(context).primaryColor)),
+                    .copyWith(color: Theme.of(context).colorScheme.primary)),
             remindersList: remindersMap[todaySectionTitle] ?? [],
           ),
           HomeScreenReminderListSection(

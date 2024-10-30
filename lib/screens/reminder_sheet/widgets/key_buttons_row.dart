@@ -146,16 +146,16 @@ class KeyButtonsRow extends ConsumerWidget {
     return Row(
       children: [
         ElevatedButton(
+          child: Text("Save",
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
           onPressed: () => saveReminder(reminder, context, ref),
-          child: Text("Save", style: Theme.of(context).textTheme.titleMedium),
-          style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-              backgroundColor:
-                  WidgetStatePropertyAll(Theme.of(context).primaryColor),
-              shape: forAllCondition
-                  ? WidgetStatePropertyAll(RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.horizontal(left: Radius.circular(12))))
-                  : null),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            surfaceTintColor: Colors.transparent,
+          ),
         ),
         if (forAllCondition)
           ElevatedButton(
@@ -163,14 +163,16 @@ class KeyButtonsRow extends ConsumerWidget {
               reminder.baseDateTime = reminder.dateAndTime;
               saveReminder(reminder, context, ref);
             },
-            child:
-                Text("For All", style: Theme.of(context).textTheme.titleMedium),
-            style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                backgroundColor: WidgetStatePropertyAll(Colors.red),
-                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.horizontal(right: Radius.circular(12))))),
-          )
+            child: Text("For All",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              surfaceTintColor: Colors.transparent,
+            ),
+          ),
       ],
     );
   }

@@ -63,9 +63,7 @@ class SnoozeOptionsDialog extends ConsumerWidget {
             Navigator.pop(context);
           },
           style: isPickedDuration
-              ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                  backgroundColor:
-                      WidgetStatePropertyAll(Theme.of(context).primaryColor))
+              ? Theme.of(context).elevatedButtonTheme.style
               : Theme.of(context).elevatedButtonTheme.style,
           child: Text(
             getFormattedDurationForTimeEditButton(duration),

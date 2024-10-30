@@ -179,7 +179,7 @@ class _PermissionScreenState extends State<PermissionScreen>
                             ? Colors.red
                             : snapshot.hasData && snapshot.data!
                                 ? ConstColors.lightGreyLessOpacity
-                                : Theme.of(context).primaryColor,
+                                : Theme.of(context).colorScheme.primary,
                       ));
                 }),
           )
@@ -260,7 +260,7 @@ class _PermissionScreenState extends State<PermissionScreen>
                             ? Colors.red
                             : snapshot.hasData && snapshot.data!
                                 ? ConstColors.lightGreyLessOpacity
-                                : Theme.of(context).primaryColor,
+                                : Theme.of(context).colorScheme.primary,
                       ));
                 }),
           ),
@@ -344,7 +344,7 @@ class _PermissionScreenState extends State<PermissionScreen>
                             ? Colors.red
                             : snapshot.hasData && snapshot.data!
                                 ? ConstColors.lightGreyLessOpacity
-                                : Theme.of(context).primaryColor,
+                                : Theme.of(context).colorScheme.primary,
                       )),
                 );
               })
