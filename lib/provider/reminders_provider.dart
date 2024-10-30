@@ -10,8 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/reminder_database/database.dart';
 
 class RemindersNotifier extends ChangeNotifier {
-  ChangeNotifierProviderRef ref;
-  RemindersNotifier(this.ref) {
+  ChangeNotifierProviderRef? ref;
+  RemindersNotifier({this.ref}) {
     loadReminders();
   }
 
@@ -123,7 +123,11 @@ class RemindersNotifier extends ChangeNotifier {
     if (reminder == null) return;
 
     await NotificationController.cancelScheduledNotification(id.toString());
-    ref.read(archivesProvider).addReminderToArchives(reminder);
+    if (ref == null) {
+      ArchivesNotifier().addReminderToArchives(reminder);
+    } else {
+      ref?.read(archivesProvider).addReminderToArchives(reminder);
+    }
 
     _reminders.remove(id);
     RemindersDatabaseController.updateReminders(_reminders);
@@ -171,7 +175,12 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<Reminder?> retrieveFromArchives(int id) async {
-    var reminder = await ref.read(archivesProvider).deleteArchivedReminder(id);
+    late Reminder? reminder;
+    if (ref == null) {
+      reminder = await ArchivesNotifier().deleteArchivedReminder(id);
+    } else {
+      reminder = await ref?.read(archivesProvider).deleteArchivedReminder(id);
+    }
     if (reminder != null) {
       reminder = await saveReminder(reminder);
       return reminder;
@@ -190,5 +199,5 @@ class RemindersNotifier extends ChangeNotifier {
 }
 
 final remindersProvider = ChangeNotifierProvider<RemindersNotifier>((ref) {
-  return RemindersNotifier(ref);
+  return RemindersNotifier(ref: ref);
 });

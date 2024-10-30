@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'database/pending_removals_db.dart';
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> initHive() async {
@@ -17,8 +19,11 @@ Future<void> initHive() async {
   // Order of openBox statements is crucial. Do not change.
   await Hive.openBox(HiveBoxNames.individualValues.name);
   await Hive.openBox(HiveBoxNames.reminders.name);
+  await Hive.openBox(HiveBoxNames.pendingRemovals.name);
   await Hive.openBox(HiveBoxNames.archives.name);
   await Hive.openBox(HiveBoxNames.settings.name);
+
+  await PendingRemovalsDB.clearPendingRemovals();
 }
 
 void main() async {

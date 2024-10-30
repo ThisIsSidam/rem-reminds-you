@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:Rem/consts/consts.dart';
+import 'package:Rem/database/pending_removals_db.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
@@ -169,14 +170,9 @@ class NotificationController {
       } else {
         await Hive.initFlutter();
 
-        final db = await Hive.openBox(HiveBoxNames.pendingRemovalsBoxName.name);
-
-        final listo = db.get(HiveKeys.pendingRemovalsBoxKey.key) ?? [];
-
-        listo.add(
+        await Hive.openBox(HiveBoxNames.pendingRemovals.name);
+        PendingRemovalsDB.addPendingRemoval(
             int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
-
-        db.put(HiveKeys.pendingRemovalsBoxKey.key, listo);
         debugPrint(
             '[onActionReceivedMethod] Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}');
       }

@@ -58,18 +58,4 @@ class RemindersDatabaseController {
       throw Exception('Failed to restore backup: $e');
     }
   }
-
-  /// Removes the reminders from the database which were set as 'done' in their
-  /// notifications when the app was terminated.
-  static Future<void> clearPendingRemovals() async {
-    final pendingRemovals =
-        await Hive.openBox(HiveBoxNames.pendingRemovalsBoxName.name);
-
-    final removals =
-        pendingRemovals.get(HiveKeys.pendingRemovalsBoxKey.key) ?? [];
-    for (final id in removals) {
-      // markAsDone(id);
-    }
-    pendingRemovals.put(HiveKeys.pendingRemovalsBoxKey.key, []);
-  }
 }

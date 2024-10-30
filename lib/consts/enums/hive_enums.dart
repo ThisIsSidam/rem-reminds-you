@@ -1,6 +1,6 @@
 enum HiveBoxNames {
   reminders('reminders'),
-  pendingRemovalsBoxName("pending_removals"),
+  pendingRemovals("pending_removals"),
   individualValues('indi_values'),
   archives('archives'),
   settings('settings'),
