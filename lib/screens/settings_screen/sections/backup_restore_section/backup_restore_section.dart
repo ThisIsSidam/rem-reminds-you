@@ -16,35 +16,36 @@ class BackupRestoreSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          leading: Icon(Icons.backup, color: Colors.transparent),
+          title: Text(
             "Backup & Restore (Experimental)",
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
-                .copyWith(color: Colors.white),
+                .copyWith(color: Theme.of(context).colorScheme.primary),
           ),
-          SizedBox(height: 5),
-          Column(
-            children: [
-              SizedBox(height: 10),
-              getBackupTile(context, ref),
-              SizedBox(height: 10),
-              getRestoreTile(context, ref),
-              SizedBox(height: 20),
-            ],
-          )
-        ],
-      ),
+        ),
+        SizedBox(height: 5),
+        Column(
+          children: [
+            SizedBox(height: 10),
+            getBackupTile(context, ref),
+            SizedBox(height: 10),
+            getRestoreTile(context, ref),
+            SizedBox(height: 20),
+          ],
+        )
+      ],
     );
   }
 
   Widget getBackupTile(BuildContext context, WidgetRef ref) {
     return ListTile(
+      leading: Icon(Icons.backup_outlined),
       title: Text('Backup', style: Theme.of(context).textTheme.titleSmall),
       onTap: () async {
         var status2 = await Permission.manageExternalStorage.request();
@@ -102,6 +103,7 @@ class BackupRestoreSection extends ConsumerWidget {
 
   Widget getRestoreTile(BuildContext context, WidgetRef ref) {
     return ListTile(
+        leading: Icon(Icons.settings_backup_restore),
         title: Text('Restore', style: Theme.of(context).textTheme.titleSmall),
         onTap: () async {
           var status = await Permission.manageExternalStorage.request();

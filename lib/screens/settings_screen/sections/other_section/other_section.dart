@@ -6,33 +6,35 @@ class OtherSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          leading:
+              Icon(Icons.devices_other_outlined, color: Colors.transparent),
+          title: Text(
             "Other",
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
-                .copyWith(color: Colors.white),
+                .copyWith(color: Theme.of(context).colorScheme.primary),
           ),
-          SizedBox(height: 5),
-          Column(
-            children: [
-              SizedBox(height: 10),
-              _buildWhatsNewTile(context),
-              SizedBox(height: 20),
-            ],
-          )
-        ],
-      ),
+        ),
+        SizedBox(height: 5),
+        Column(
+          children: [
+            SizedBox(height: 10),
+            _buildWhatsNewTile(context),
+            SizedBox(height: 20),
+          ],
+        )
+      ],
     );
   }
 
   Widget _buildWhatsNewTile(BuildContext context) {
     return ExpansionTile(
+        leading: Icon(Icons.new_releases_outlined),
         backgroundColor: Theme.of(context).cardColor,
         title: Text(
           "What's New?",

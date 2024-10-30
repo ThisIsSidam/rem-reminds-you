@@ -13,71 +13,75 @@ class UserPreferenceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          leading: Icon(Icons.supervised_user_circle_outlined,
+              color: Colors.transparent),
+          title: Text(
             "User Preferences",
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
-                .copyWith(color: Colors.white),
+                .copyWith(color: Theme.of(context).colorScheme.primary),
           ),
-          SizedBox(height: 5),
-          Column(
-            children: [
-              SizedBox(height: 10),
-              _buildSlideToLeftActionsSetting(context),
-              SizedBox(
-                height: 10,
-              ),
-              _buildSlideToRightActionsSetting(context),
-              SizedBox(height: 10),
-              _buildTextScaleSetting(context),
-              SizedBox(height: 10),
-              _buildQuickPostponeDurationSetting(context),
-              SizedBox(
-                height: 20,
-              ),
-            ],
-          )
-        ],
-      ),
+        ),
+        SizedBox(height: 5),
+        Column(
+          children: [
+            SizedBox(height: 10),
+            _buildSlideToLeftActionsSetting(context),
+            SizedBox(
+              height: 10,
+            ),
+            _buildSlideToRightActionsSetting(context),
+            SizedBox(height: 10),
+            _buildTextScaleSetting(context),
+            SizedBox(height: 10),
+            _buildQuickPostponeDurationSetting(context),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        )
+      ],
     );
   }
 
   Widget _buildTextScaleSetting(BuildContext context) {
     return ListTile(
+      leading: Icon(Icons.format_size),
       title: Text('Text Scale', style: Theme.of(context).textTheme.titleSmall),
-      subtitle: Row(
-        children: [
-          Text('A', style: TextStyle(color: Colors.white)),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Consumer(builder: (context, ref, child) {
-              final textScale = ref.watch(textScaleProvider).textScale;
-              return Slider(
+      subtitle: Consumer(builder: (context, ref, child) {
+        final textScale = ref.watch(textScaleProvider).textScale;
+        return Row(
+          children: [
+            Expanded(
+              child: Slider(
                 value: textScale,
                 min: 0.8,
                 max: 1.4,
+                label: '${textScale}x',
                 divisions: 6,
                 onChanged: (val) {
                   ref.read(textScaleProvider).textScale = val;
                 },
-              );
-            }),
-          ),
-          const SizedBox(width: 10),
-          Text('A', style: TextStyle(color: Colors.white, fontSize: 24)),
-        ],
-      ),
+                inactiveColor: Theme.of(context).colorScheme.secondary,
+                activeColor: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            Text('${textScale.toStringAsPrecision(2)}x',
+                style: Theme.of(context).textTheme.bodyMedium)
+          ],
+        );
+      }),
     );
   }
 
   Widget _buildQuickPostponeDurationSetting(BuildContext context) {
     return ListTile(
+      leading: Icon(Icons.more_time),
       title: Text('Postpone Duration',
           style: Theme.of(context).textTheme.titleSmall),
       trailing: Consumer(builder: (context, ref, child) {
@@ -119,28 +123,26 @@ class UserPreferenceSection extends StatelessWidget {
         SwipeAction action =
             ref.watch(userSettingsProvider).homeTileSwipeActionLeft;
 
-        return ListTileTheme(
-          data: Theme.of(context).listTileTheme,
-          child: ListTile(
-            title: Text(
-              "Swipe to Left Actions",
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            minVerticalPadding: 20,
-            trailing: Text(
-              action.toString(),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            onTap: () async {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                elevation: 5,
-                context: context,
-                builder: (context) => SwipeToLeftActionSheet(),
-              );
-            },
+        return ListTile(
+          leading: Icon(Icons.swipe_left),
+          title: Text(
+            "Swipe to Left Actions",
+            style: Theme.of(context).textTheme.titleSmall,
           ),
+          minVerticalPadding: 20,
+          subtitle: Text(
+            action.toString(),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          onTap: () async {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 5,
+              context: context,
+              builder: (context) => SwipeToLeftActionSheet(),
+            );
+          },
         );
       },
     );
@@ -152,28 +154,26 @@ class UserPreferenceSection extends StatelessWidget {
         SwipeAction action =
             ref.watch(userSettingsProvider).homeTileSwipeActionRight;
 
-        return ListTileTheme(
-          data: Theme.of(context).listTileTheme,
-          child: ListTile(
-            title: Text(
-              "Swipe to Right Actions",
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            minVerticalPadding: 20,
-            trailing: Text(
-              action.toString(),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            onTap: () async {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                elevation: 5,
-                context: context,
-                builder: (context) => SwipeToRightActionSheet(),
-              );
-            },
+        return ListTile(
+          leading: Icon(Icons.swipe_right),
+          title: Text(
+            "Swipe to Right Actions",
+            style: Theme.of(context).textTheme.titleSmall,
           ),
+          minVerticalPadding: 20,
+          subtitle: Text(
+            action.toString(),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          onTap: () async {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 5,
+              context: context,
+              builder: (context) => SwipeToRightActionSheet(),
+            );
+          },
         );
       },
     );
