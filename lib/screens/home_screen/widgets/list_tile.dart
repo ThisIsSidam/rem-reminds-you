@@ -13,44 +13,44 @@ class HomePageReminderEntryListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60,
-      child: ListTile(
-        title: Text(reminder.title,
-            style: Theme.of(context).textTheme.titleMedium),
-        subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
-            style: Theme.of(context).textTheme.bodyMedium),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 5,
-            ),
-            Text(getFormattedDuration(),
-                style: Theme.of(context).textTheme.bodySmall),
-            if (reminder.recurringInterval != RecurringInterval.none)
-              Text(
-                "⟳ ${reminder.recurringInterval.name}",
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-          ],
-        ),
-        tileColor: Theme.of(context).cardColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        minVerticalPadding: 8,
-        minTileHeight: 60,
-        onTap: () {
-          showModalBottomSheet(
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return ReminderSheet(
-                  thisReminder: reminder,
-                );
-              });
-        },
+    return ListTile(
+      title: Text(
+        reminder.title,
+        style: Theme.of(context).textTheme.titleMedium,
+        softWrap: true,
       ),
+      subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
+          style: Theme.of(context).textTheme.bodyMedium),
+      trailing: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 5,
+          ),
+          Text(getFormattedDuration(),
+              style: Theme.of(context).textTheme.bodySmall),
+          if (reminder.recurringInterval != RecurringInterval.none)
+            Text(
+              "⟳ ${reminder.recurringInterval.name}",
+              style: Theme.of(context).textTheme.bodySmall,
+            )
+        ],
+      ),
+      tileColor: Theme.of(context).cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      minVerticalPadding: 8,
+      minTileHeight: 60,
+      onTap: () {
+        showModalBottomSheet(
+            isScrollControlled: true,
+            context: context,
+            builder: (context) {
+              return ReminderSheet(
+                thisReminder: reminder,
+              );
+            });
+      },
     );
   }
 

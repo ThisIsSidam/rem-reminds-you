@@ -25,38 +25,35 @@ class HomeScreenReminderListSection extends ConsumerWidget {
       return const SizedBox();
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (label != null)
             SizedBox(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: label,
-            )),
-          SizedBox(
-            height: remindersList.length * (60 + 5), // Tile height + separators
-            child: ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: remindersList.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 4.0),
-                itemBuilder: (context, index) {
-                  final reminder = remindersList[index];
-
-                  return Slidable(
-                      key: ValueKey(reminder.id),
-                      startActionPane: ActionPaneManager.getActionToRight(
-                        ref,
-                        remindersList,
-                        index,
-                        context,
-                      ),
-                      endActionPane: ActionPaneManager.getActionToLeft(
-                          ref, remindersList, index, context),
-                      child: HomePageReminderEntryListTile(reminder: reminder));
-                }),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: label,
+              ),
+            ),
+          Column(
+            children: [
+              for (int i = 0; i < remindersList.length; i++)
+                Slidable(
+                  key: ValueKey(remindersList[i].id),
+                  startActionPane: ActionPaneManager.getActionToRight(
+                    ref,
+                    remindersList,
+                    i,
+                    context,
+                  ),
+                  endActionPane: ActionPaneManager.getActionToLeft(
+                      ref, remindersList, i, context),
+                  child: HomePageReminderEntryListTile(
+                    reminder: remindersList[i],
+                  ),
+                ),
+            ],
           ),
         ],
       ),

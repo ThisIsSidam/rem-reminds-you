@@ -87,21 +87,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget build(BuildContext context) {
     remindersMap = ref.watch(remindersProvider).categorizedReminders;
 
-    // Empty scaffold when no reminders.
-    if (ref.watch(remindersProvider).reminderCount == 0) {
-      return Scaffold(appBar: getAppBar(), body: getEmptyPage());
-    }
+    final isEmpty = ref.watch(remindersProvider).reminderCount == 0;
 
-    // Proper scaffold when reminders are present
     return Scaffold(
-        appBar: getAppBar(),
-        body: getListedReminderPage(),
-        floatingActionButton: getFloatingActionButton());
+      body: CustomScrollView(
+        slivers: [
+          _buildAppBar(),
+          isEmpty ? getEmptyPage() : getListedReminderPage()
+        ],
+      ),
+      floatingActionButton: isEmpty ? null : getFloatingActionButton(),
+    );
   }
 
   // The appbar for the home page.
-  AppBar getAppBar() {
-    return AppBar(
+  SliverAppBar _buildAppBar() {
+    return SliverAppBar(
       surfaceTintColor: null,
       backgroundColor: Colors.transparent,
       title: Text(
@@ -113,98 +114,91 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   // The empty page widget used in empty scaffold body.
   Widget getEmptyPage() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            noRemindersPageText,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-            height: 75,
-            width: 200,
-            child: ElevatedButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return ReminderSheet(
-                          thisReminder: Reminder(
-                              dateAndTime: DateTime.now().add(ref
-                                  .read(userSettingsProvider)
-                                  .defaultLeadDuration)),
-                        );
-                      });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Set a reminder",
-                    style: Theme.of(context).textTheme.bodyLarge,
+    return SliverToBoxAdapter(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              noRemindersPageText,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: 75,
+              width: 200,
+              child: ElevatedButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return ReminderSheet(
+                            thisReminder: Reminder(
+                                dateAndTime: DateTime.now().add(ref
+                                    .read(userSettingsProvider)
+                                    .defaultLeadDuration)),
+                          );
+                        });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Set a reminder",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ),
-                ),
-                style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                    backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(context).primaryColor))),
-          )
-        ],
+                  style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                      backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).primaryColor))),
+            )
+          ],
+        ),
       ),
     );
   }
 
   // The list of reminders widget used in scaffold body.
   Widget getListedReminderPage() {
-    return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      itemCount: 4,
-      // separatorBuilder: (BuildContext context, int index) => SizedBox(height: 8.0),
-      itemBuilder: (BuildContext context, int index) {
-        switch (index) {
-          case 0:
-            return HomeScreenReminderListSection(
-              label: Text("Overdue",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(color: Colors.red)),
-              remindersList: remindersMap[overdueSectionTitle] ?? [],
-            );
-          case 1:
-            return HomeScreenReminderListSection(
-              label: Text("Today",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(color: Theme.of(context).primaryColor)),
-              remindersList: remindersMap[todaySectionTitle] ?? [],
-            );
-          case 2:
-            return HomeScreenReminderListSection(
-              label: Text("Tomorrow",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(color: Colors.green)),
-              remindersList: remindersMap[tomorrowSectionTitle] ?? [],
-            );
-          case 3:
-            return HomeScreenReminderListSection(
-              label: Text("Later",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(color: Colors.yellow)),
-              remindersList: remindersMap[laterSectionTitle] ?? [],
-            );
-          default:
-            return SizedBox.shrink();
-        }
-      },
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          HomeScreenReminderListSection(
+            label: Text("Overdue",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Colors.red)),
+            remindersList: remindersMap[overdueSectionTitle] ?? [],
+          ),
+          HomeScreenReminderListSection(
+            label: Text("Today",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Theme.of(context).primaryColor)),
+            remindersList: remindersMap[todaySectionTitle] ?? [],
+          ),
+          HomeScreenReminderListSection(
+            label: Text("Tomorrow",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Colors.green)),
+            remindersList: remindersMap[tomorrowSectionTitle] ?? [],
+          ),
+          HomeScreenReminderListSection(
+            label: Text("Later",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Colors.yellow)),
+            remindersList: remindersMap[laterSectionTitle] ?? [],
+          ),
+        ],
+      ),
     );
   }
 
