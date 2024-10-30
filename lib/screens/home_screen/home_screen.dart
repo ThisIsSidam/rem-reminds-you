@@ -114,7 +114,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   // The empty page widget used in empty scaffold body.
   Widget getEmptyPage() {
-    return SliverToBoxAdapter(
+    return SliverFillRemaining(
+      hasScrollBody: false,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
