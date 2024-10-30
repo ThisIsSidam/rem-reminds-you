@@ -146,14 +146,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Set a reminder",
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary),
-                  ),
+                  child: Text("Set a reminder",
+                      style: Theme.of(context).textTheme.bodyLarge),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   surfaceTintColor: Colors.transparent,
                 ),
               ),
@@ -209,6 +207,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   // The floating Action button for adding new reminders.
   Widget getFloatingActionButton() {
     return FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         onPressed: () {
           showModalBottomSheet(
               isScrollControlled: true,

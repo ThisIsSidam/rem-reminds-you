@@ -53,11 +53,19 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
           ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
           Navigator.pop(context);
         },
-        style: isPickedOption
-            ? Theme.of(context).elevatedButtonTheme.style
-            : Theme.of(context).elevatedButtonTheme.style,
-        child: Text(interval.toString(),
-            style: Theme.of(context).textTheme.bodyLarge),
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(4),
+          backgroundColor: isPickedOption
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.secondaryContainer,
+        ),
+        child: Text(
+          interval.toString(),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: isPickedOption
+                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                  : Theme.of(context).colorScheme.onSecondaryContainer),
+        ),
       ),
     );
   }

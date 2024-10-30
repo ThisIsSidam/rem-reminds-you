@@ -40,9 +40,9 @@ class TimeButton extends ConsumerWidget {
     final reminderNotifier = ref.read(reminderNotifierProvider.notifier);
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.all(4),
-            backgroundColor:
-                Theme.of(context).colorScheme.primary.withOpacity(0.1)),
+          padding: EdgeInsets.all(4),
+          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+        ),
         onPressed: () {
           if (dateTime != null) {
             setTime(reminder);
@@ -68,7 +68,10 @@ class TimeButton extends ConsumerWidget {
 
     return Text(
       text,
-      style: Theme.of(context).textTheme.bodyMedium,
+      style: Theme.of(context)
+          .textTheme
+          .bodyMedium!
+          .copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer),
     );
   }
 }

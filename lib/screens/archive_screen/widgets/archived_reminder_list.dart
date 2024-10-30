@@ -45,7 +45,7 @@ class ArchiveEntryLists extends ConsumerWidget {
       return const SizedBox();
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -125,7 +125,8 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
             style: Theme.of(context).textTheme.titleMedium),
         subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
             style: Theme.of(context).textTheme.bodyMedium),
-        tileColor: Theme.of(context).cardColor,
+        tileColor:
+            Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         minVerticalPadding: 8,
         minTileHeight: 60,

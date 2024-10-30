@@ -55,20 +55,26 @@ class SnoozeOptionsDialog extends ConsumerWidget {
       height: 60,
       width: 150,
       child: ElevatedButton(
-          onPressed: () {
-            reminder.notifRepeatInterval = duration;
-            ref
-                .read(reminderNotifierProvider.notifier)
-                .updateReminder(reminder);
-            Navigator.pop(context);
-          },
-          style: isPickedDuration
-              ? Theme.of(context).elevatedButtonTheme.style
-              : Theme.of(context).elevatedButtonTheme.style,
-          child: Text(
-            getFormattedDurationForTimeEditButton(duration),
-            style: Theme.of(context).textTheme.bodyLarge,
-          )),
+        onPressed: () {
+          reminder.notifRepeatInterval = duration;
+          ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
+          Navigator.pop(context);
+        },
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(4),
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: isPickedDuration
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.secondaryContainer,
+        ),
+        child: Text(
+          getFormattedDurationForTimeEditButton(duration),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: isPickedDuration
+                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                  : Theme.of(context).colorScheme.onSecondaryContainer),
+        ),
+      ),
     );
   }
 }

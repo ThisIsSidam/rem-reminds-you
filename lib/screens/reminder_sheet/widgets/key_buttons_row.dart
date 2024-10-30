@@ -146,16 +146,21 @@ class KeyButtonsRow extends ConsumerWidget {
     return Row(
       children: [
         ElevatedButton(
-          child: Text("Save",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+          child: Text(
+            "Save",
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+          ),
           onPressed: () => saveReminder(reminder, context, ref),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            surfaceTintColor: Colors.transparent,
-          ),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              surfaceTintColor: Colors.transparent,
+              shape: forAllCondition
+                  ? RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.horizontal(left: Radius.circular(25)))
+                  : null),
         ),
         if (forAllCondition)
           ElevatedButton(
@@ -167,11 +172,13 @@ class KeyButtonsRow extends ConsumerWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
-                    .copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+                    .copyWith(color: Theme.of(context).colorScheme.onError)),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              surfaceTintColor: Colors.transparent,
-            ),
+                backgroundColor: Theme.of(context).colorScheme.error,
+                surfaceTintColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.horizontal(right: Radius.circular(25)))),
           ),
       ],
     );

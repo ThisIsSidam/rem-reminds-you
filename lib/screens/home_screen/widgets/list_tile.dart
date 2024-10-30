@@ -37,7 +37,7 @@ class HomePageReminderEntryListTile extends StatelessWidget {
             )
         ],
       ),
-      tileColor: Theme.of(context).cardColor,
+      tileColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       minVerticalPadding: 8,
       minTileHeight: 60,
