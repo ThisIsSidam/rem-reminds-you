@@ -2,8 +2,8 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/provider/reminders_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/reminder_recurrence.dart';
-import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/repeat_notif.dart';
+import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/recurrence_dialog.dart';
+import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/snooze_options_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -112,7 +112,10 @@ class KeyButtonsRow extends ConsumerWidget {
             IconButton(
               icon: IconTheme(
                 data: Theme.of(context).iconTheme,
-                child: const Icon(Icons.delete, color: Colors.red),
+                child: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).colorScheme.errorContainer,
+                ),
               ),
               onPressed: () => deleteReminder(reminder, context, ref),
             ),
@@ -121,14 +124,8 @@ class KeyButtonsRow extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              getRepeatNotifButton(context),
-              SizedBox(
-                width: 4,
-              ),
-              getRecurringButton(context),
-              SizedBox(
-                width: 4,
-              ),
+              _buildSnoozeOptionsDialogButton(context),
+              _buildRecurrenceOptionsDialogButton(context),
               _buildSaveButton(context, reminder, ref)
             ],
           ),
@@ -149,12 +146,12 @@ class KeyButtonsRow extends ConsumerWidget {
           child: Text(
             "Save",
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
           ),
           onPressed: () => saveReminder(reminder, context, ref),
           style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               surfaceTintColor: Colors.transparent,
               shape: forAllCondition
                   ? RoundedRectangleBorder(
@@ -169,12 +166,10 @@ class KeyButtonsRow extends ConsumerWidget {
               saveReminder(reminder, context, ref);
             },
             child: Text("For All",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Theme.of(context).colorScheme.onError)),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.onErrorContainer)),
             style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
                 surfaceTintColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                     borderRadius:
@@ -184,10 +179,9 @@ class KeyButtonsRow extends ConsumerWidget {
     );
   }
 
-  Widget getRepeatNotifButton(BuildContext context) {
-    return ElevatedButton(
-      child: Icon(Icons.snooze),
-      style: Theme.of(context).elevatedButtonTheme.style,
+  Widget _buildSnoozeOptionsDialogButton(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.snooze),
       onPressed: () {
         showDialog(
             context: context,
@@ -198,10 +192,9 @@ class KeyButtonsRow extends ConsumerWidget {
     );
   }
 
-  Widget getRecurringButton(BuildContext context) {
-    return ElevatedButton(
-        child: Icon(Icons.event_repeat_outlined),
-        style: Theme.of(context).elevatedButtonTheme.style,
+  Widget _buildRecurrenceOptionsDialogButton(BuildContext context) {
+    return IconButton(
+        icon: Icon(Icons.event_repeat_outlined),
         onPressed: () {
           showDialog(
               context: context,

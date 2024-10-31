@@ -47,11 +47,11 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
       ),
       padding: EdgeInsets.only(bottom: keyboardHeight),
       duration: const Duration(milliseconds: 100),
-      height: screenHeight * 0.50 + keyboardHeight,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [TitleField(), DateTimeSection(), KeyButtonsRow()],
           ),
         ),

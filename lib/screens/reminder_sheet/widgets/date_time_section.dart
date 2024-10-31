@@ -31,48 +31,53 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
     final reminder = ref.watch(reminderNotifierProvider);
     final settings = ref.watch(userSettingsProvider);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          ElevatedButton(
-            style: Theme.of(context).elevatedButtonTheme.style,
-            onPressed: () {
-              setState(() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextButton(
+          onPressed: () {
+            setState(
+              () {
                 showTimePicker = !showTimePicker;
-              });
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  getFormattedDateTime(reminder.dateAndTime),
-                  style: Theme.of(context).textTheme.titleMedium,
+              },
+            );
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                getFormattedDateTime(reminder.dateAndTime),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(
+                width: 24,
+              ),
+              Flexible(
+                child: Text(
+                  reminder.dateAndTime.isBefore(DateTime.now())
+                      ? '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'
+                          .replaceFirst('-', '')
+                      : 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(
-                  width: 24,
-                ),
-                Flexible(
-                  child: Text(
-                    reminder.dateAndTime.isBefore(DateTime.now())
-                        ? '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'
-                            .replaceFirst('-', '')
-                        : 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(
-            height: 8,
-          ),
-          showTimePicker
-              ? _buildTimePicker(reminder, ref)
-              : _buildTimeButtonsGrid(settings),
-        ],
-      ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        AnimatedCrossFade(
+          duration: Duration(milliseconds: 300),
+          firstChild: _buildTimeButtonsGrid(settings),
+          secondChild: _buildTimePicker(reminder, ref),
+          crossFadeState: showTimePicker
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          sizeCurve: Curves.easeInOut,
+        )
+      ],
     );
   }
 

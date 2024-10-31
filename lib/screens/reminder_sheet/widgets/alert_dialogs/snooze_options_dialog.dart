@@ -26,24 +26,29 @@ class SnoozeOptionsDialog extends ConsumerWidget {
       tooltipMsg:
           "A reminder's notification are repeated at a certain interval until you mark the reminder as done.",
       content: SizedBox(
-          height: 175,
-          width: 375,
-          child: getButtonsGrid(context, repeatIntervalDurations, ref)),
+        height: 175,
+        width: 375,
+        child: getButtonsGrid(context, repeatIntervalDurations, ref),
+      ),
     );
   }
 
   Widget getButtonsGrid(
       BuildContext context, List<Duration> intervalDurations, WidgetRef ref) {
-    return GridView.count(
-      mainAxisSpacing: 5,
-      crossAxisSpacing: 5,
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      childAspectRatio: 1.5,
-      children: [
-        for (var dur in intervalDurations)
-          intervalEditButton(dur, context, ref),
-      ],
+    //TODO: Check if all the corners are round or not.
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(25),
+      child: GridView.count(
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        crossAxisCount: 3,
+        shrinkWrap: true,
+        childAspectRatio: 1.5,
+        children: [
+          for (var dur in intervalDurations)
+            intervalEditButton(dur, context, ref),
+        ],
+      ),
     );
   }
 
@@ -51,29 +56,26 @@ class SnoozeOptionsDialog extends ConsumerWidget {
       Duration duration, BuildContext context, WidgetRef ref) {
     final reminder = ref.read(reminderNotifierProvider);
     bool isPickedDuration = duration == reminder.notifRepeatInterval;
-    return SizedBox(
-      height: 60,
-      width: 150,
-      child: ElevatedButton(
-        onPressed: () {
-          reminder.notifRepeatInterval = duration;
-          ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
-          Navigator.pop(context);
-        },
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(4),
-          surfaceTintColor: Colors.transparent,
-          backgroundColor: isPickedDuration
-              ? Theme.of(context).colorScheme.primaryContainer
-              : Theme.of(context).colorScheme.secondaryContainer,
-        ),
-        child: Text(
-          getFormattedDurationForTimeEditButton(duration),
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: isPickedDuration
-                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                  : Theme.of(context).colorScheme.onSecondaryContainer),
-        ),
+    return ElevatedButton(
+      onPressed: () {
+        reminder.notifRepeatInterval = duration;
+        ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
+        Navigator.pop(context);
+      },
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(4),
+        surfaceTintColor: Colors.transparent,
+        shape: BeveledRectangleBorder(),
+        backgroundColor: isPickedDuration
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.secondaryContainer,
+      ),
+      child: Text(
+        getFormattedDurationForTimeEditButton(duration),
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: isPickedDuration
+                ? Theme.of(context).colorScheme.onPrimaryContainer
+                : Theme.of(context).colorScheme.onSecondaryContainer),
       ),
     );
   }

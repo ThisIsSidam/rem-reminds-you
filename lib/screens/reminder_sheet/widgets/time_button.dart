@@ -37,10 +37,24 @@ class TimeButton extends ConsumerWidget {
     final reminder = ref.read(reminderNotifierProvider);
     final reminderNotifier = ref.read(reminderNotifierProvider.notifier);
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(4),
-          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-          shape: RoundedRectangleBorder(),
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all(EdgeInsets.all(4)),
+          backgroundColor: WidgetStateProperty.all(
+            Theme.of(context).colorScheme.secondaryContainer,
+          ),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(),
+          ),
+          splashFactory: InkSplash.splashFactory,
+          overlayColor: WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.pressed)) {
+                return Colors.blue
+                    .withOpacity(0.2); // Set your desired splash color
+              }
+              return null; // Use default overlay color otherwise
+            },
+          ),
         ),
         onPressed: () {
           if (dateTime != null) {
