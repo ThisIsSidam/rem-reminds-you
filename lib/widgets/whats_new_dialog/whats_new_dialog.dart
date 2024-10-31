@@ -12,22 +12,30 @@ class WhatsNewDialog {
     final String storedVersion = UserDB.getStoredAppVersion() ?? '0.0.0';
     if (currentVersion != storedVersion) {
       UserDB.storeAppVersion(currentVersion);
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: Theme.of(context).cardColor,
-              title: Text('What\'s New',
-                  style: Theme.of(context).textTheme.titleLarge),
-              insetPadding: null,
-              contentPadding: null,
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: getWhatsNewTileContent(context),
-              ),
-            );
-          });
+      showWhatsNewDialog(context);
     }
+  }
+
+  static void showWhatsNewDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).cardColor,
+          title: ListTile(
+            leading: Icon(Icons.new_releases_outlined),
+            title: Text('What\'s New',
+                style: Theme.of(context).textTheme.titleLarge),
+          ),
+          insetPadding: EdgeInsets.symmetric(horizontal: 32),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: getWhatsNewTileContent(context),
+          ),
+        );
+      },
+    );
   }
 
   static List<Widget> getWhatsNewTileContent(BuildContext context) {
@@ -95,7 +103,7 @@ class WhatsNewDialog {
                   '- Improvements to Title Parsing\n'
                   '- Auto-apply parsed title from next times\n'
                   '- Various minor changes',
-                  style: Theme.of(context).textTheme.bodySmall),
+                  style: Theme.of(context).textTheme.bodyMedium),
             )),
       )
     ];
