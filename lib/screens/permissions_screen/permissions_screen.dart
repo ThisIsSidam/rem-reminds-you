@@ -1,4 +1,3 @@
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/screens/permissions_screen/utils/app_permi_handler.dart';
 import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -84,11 +83,13 @@ class _PermissionScreenState extends State<PermissionScreen>
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(15)))),
-                            backgroundColor:
+                            backgroundColor: WidgetStatePropertyAll(
                                 snapshot.data != null && snapshot.data!
-                                    ? WidgetStatePropertyAll(ConstColors.blue)
-                                    : WidgetStatePropertyAll(
-                                        ConstColors.lightGreyLessOpacity)))
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .secondaryContainer)),
+                  )
                 : SizedBox(
                     width: double.infinity,
                     height: 56,
@@ -178,7 +179,7 @@ class _PermissionScreenState extends State<PermissionScreen>
                         backgroundColor: snapshot.hasError
                             ? Colors.red
                             : snapshot.hasData && snapshot.data!
-                                ? ConstColors.lightGreyLessOpacity
+                                ? Theme.of(context).colorScheme.secondary
                                 : Theme.of(context).colorScheme.primary,
                       ));
                 }),
@@ -259,7 +260,7 @@ class _PermissionScreenState extends State<PermissionScreen>
                         backgroundColor: snapshot.hasError
                             ? Colors.red
                             : snapshot.hasData && snapshot.data!
-                                ? ConstColors.lightGreyLessOpacity
+                                ? Theme.of(context).colorScheme.secondary
                                 : Theme.of(context).colorScheme.primary,
                       ));
                 }),
@@ -343,7 +344,7 @@ class _PermissionScreenState extends State<PermissionScreen>
                         backgroundColor: snapshot.hasError
                             ? Colors.red
                             : snapshot.hasData && snapshot.data!
-                                ? ConstColors.lightGreyLessOpacity
+                                ? Theme.of(context).colorScheme.secondary
                                 : Theme.of(context).colorScheme.primary,
                       )),
                 );

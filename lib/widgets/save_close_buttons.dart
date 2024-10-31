@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Rem/consts/const_colors.dart';
 
 class SaveCloseButtons extends StatelessWidget {
   final Function() onTapSave;
@@ -17,48 +16,50 @@ class SaveCloseButtons extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
-            child: bottomRowButton(
-                context,
-                "Close",
-                onTapClose == null
-                    ? () {
-                        Navigator.pop(context);
-                      }
-                    : onTapClose!,
-                ConstColors.lightGrey),
+            child: SizedBox(
+              height: 50,
+              width: 100,
+              child: ElevatedButton(
+                  child: Text(
+                    'Close',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSecondaryContainer,
+                        ),
+                  ),
+                  onPressed: onTapClose == null
+                      ? () {
+                          Navigator.pop(context);
+                        }
+                      : onTapClose!,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Theme.of(context).colorScheme.secondaryContainer)),
+            ),
           ),
           SizedBox(
             width: 10,
           ),
           Expanded(
             flex: 3,
-            child:
-                bottomRowButton(context, "Save", onTapSave, ConstColors.blue),
+            child: SizedBox(
+              height: 50,
+              width: 100,
+              child: ElevatedButton(
+                child: Text(
+                  'Save',
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer),
+                ),
+                onPressed: onTapSave,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer),
+              ),
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget bottomRowButton(
-    BuildContext context,
-    String label,
-    void Function() onTap,
-    Color color,
-  ) {
-    return SizedBox(
-      height: 50,
-      width: 100,
-      child: ElevatedButton(
-        style: Theme.of(context)
-            .elevatedButtonTheme
-            .style!
-            .copyWith(backgroundColor: WidgetStatePropertyAll(color)),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        onPressed: onTap,
       ),
     );
   }

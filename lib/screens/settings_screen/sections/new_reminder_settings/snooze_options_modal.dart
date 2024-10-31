@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../provider/settings_provider.dart';
 import '../../../../utils/datetime_methods.dart';
-import '../../../../widgets/duration_picker.dart';
+import '../../../../widgets/hm_duration_picker.dart';
 import '../../../../widgets/save_close_buttons.dart';
 
 class SnoozeOptionsModal extends ConsumerStatefulWidget {
@@ -55,17 +55,17 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 600,
+    return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text("Snooze Options",
-                style: Theme.of(context).textTheme.titleLarge),
+                style: Theme.of(context).textTheme.titleMedium),
             Divider(),
             SizedBox(height: 10),
             _buildButtonsGrid(),
-            DurationPickerBase(onDurationChange: (dur) {
+            HMDurationPicker(onDurationChange: (dur) {
               setState(() {
                 durations[selectedSettingOption] = dur;
               });
@@ -76,19 +76,22 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
   }
 
   Widget _buildButtonsGrid() {
-    return GridView.count(
-      mainAxisSpacing: 5,
-      crossAxisSpacing: 5,
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      childAspectRatio: 1.5,
-      children: [
-        for (var entry in durations.entries)
-          _buildButton(
-              getFormattedDurationForTimeEditButton(entry.value,
-                  addPlusSymbol: false),
-              entry.key),
-      ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(25),
+      child: GridView.count(
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        crossAxisCount: 3,
+        shrinkWrap: true,
+        childAspectRatio: 1.5,
+        children: [
+          for (var entry in durations.entries)
+            _buildButton(
+                getFormattedDurationForTimeEditButton(entry.value,
+                    addPlusSymbol: false),
+                entry.key),
+        ],
+      ),
     );
   }
 
@@ -99,9 +102,12 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
         label,
         style: Theme.of(context).textTheme.titleMedium,
       ),
-      style: selectedSettingOption == option
-          ? Theme.of(context).elevatedButtonTheme.style
-          : Theme.of(context).elevatedButtonTheme.style,
+      style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.zero,
+          backgroundColor: option == selectedSettingOption
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.secondaryContainer,
+          shape: BeveledRectangleBorder()),
     );
   }
 }

@@ -8,12 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class TimeButton extends ConsumerWidget {
   final DateTime? dateTime;
   final Duration? duration;
+  final Alignment? curveCorner;
 
-  TimeButton({
-    super.key,
-    this.dateTime,
-    this.duration,
-  }) : assert(dateTime != null || duration != null,
+  TimeButton({super.key, this.dateTime, this.duration, this.curveCorner})
+      : assert(dateTime != null || duration != null,
             "Both dateTime and duration can't be null");
 
   void editTime(Reminder rem) {
@@ -42,6 +40,7 @@ class TimeButton extends ConsumerWidget {
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(4),
           backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+          shape: RoundedRectangleBorder(),
         ),
         onPressed: () {
           if (dateTime != null) {

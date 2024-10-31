@@ -1,18 +1,18 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
-class CustomDurationPicker extends StatefulWidget {
+class DHMSingleDurationPicker extends StatefulWidget {
   final void Function(Duration) onDurationChanged;
   final bool allowNegative;
-  const CustomDurationPicker(
+  const DHMSingleDurationPicker(
       {Key? key, required this.onDurationChanged, this.allowNegative = false})
       : super(key: key);
 
   @override
-  State<CustomDurationPicker> createState() => _CustomDurationPickerState();
+  State<DHMSingleDurationPicker> createState() =>
+      _DHMSingleDurationPickerState();
 }
 
-class _CustomDurationPickerState extends State<CustomDurationPicker> {
+class _DHMSingleDurationPickerState extends State<DHMSingleDurationPicker> {
   late FixedExtentScrollController plusMinusController;
   late FixedExtentScrollController numController;
   late FixedExtentScrollController modeController;
@@ -93,7 +93,7 @@ class _CustomDurationPickerState extends State<CustomDurationPicker> {
 
   Widget plusMinusPicker() {
     return CupertinoPicker(
-        itemExtent: 32,
+        itemExtent: 70,
         scrollController: plusMinusController,
         onSelectedItemChanged: (i) {
           setState(() {
@@ -101,32 +101,36 @@ class _CustomDurationPickerState extends State<CustomDurationPicker> {
           });
           updateDuration();
         },
-        children: [whiteText("+"), whiteText("-")]);
+        children: [_buildLabel("+"), _buildLabel("-")]);
   }
 
   Widget numPicker() {
     return CupertinoPicker(
-      itemExtent: 32,
+      itemExtent: 70,
       scrollController: numController,
       onSelectedItemChanged: (i) => updateDuration(),
-      children: selectedNumList.map((e) => whiteText(e.toString())).toList(),
+      children: selectedNumList.map((e) => _buildLabel(e.toString())).toList(),
       looping: true,
     );
   }
 
   Widget modePicker() {
     return CupertinoPicker(
-        itemExtent: 32,
+        itemExtent: 70,
         scrollController: modeController,
         onSelectedItemChanged: updateSelectedNumList,
         children: [
-          whiteText("Days"),
-          whiteText("Hours"),
-          whiteText("Minutes")
+          _buildLabel("Days"),
+          _buildLabel("Hours"),
+          _buildLabel("Minutes")
         ]);
   }
 
-  Widget whiteText(String str) {
-    return Text(str, style: Theme.of(context).textTheme.titleLarge);
+  Widget _buildLabel(String text) {
+    return Center(
+      child: Text(
+        text,
+      ),
+    );
   }
 }

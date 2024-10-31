@@ -36,34 +36,35 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
       child: Column(
         children: [
           ElevatedButton(
-              style: Theme.of(context).elevatedButtonTheme.style,
-              onPressed: () {
-                setState(() {
-                  showTimePicker = !showTimePicker;
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    getFormattedDateTime(reminder.dateAndTime),
-                    style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).elevatedButtonTheme.style,
+            onPressed: () {
+              setState(() {
+                showTimePicker = !showTimePicker;
+              });
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  getFormattedDateTime(reminder.dateAndTime),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(
+                  width: 24,
+                ),
+                Flexible(
+                  child: Text(
+                    reminder.dateAndTime.isBefore(DateTime.now())
+                        ? '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'
+                            .replaceFirst('-', '')
+                        : 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(
-                    width: 24,
-                  ),
-                  Flexible(
-                    child: Text(
-                      reminder.dateAndTime.isBefore(DateTime.now())
-                          ? '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'
-                              .replaceFirst('-', '')
-                          : 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              )),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(
             height: 8,
           ),
@@ -96,16 +97,19 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
       settings.quickTimeEditOption8,
     ];
 
-    return GridView.count(
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      crossAxisCount: 4,
-      shrinkWrap: true,
-      childAspectRatio: 1.5,
-      children: [
-        ...setDateTimes.map((dateTime) => TimeButton(dateTime: dateTime)),
-        ...editDurations.map((duration) => TimeButton(duration: duration)),
-      ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(25),
+      child: GridView.count(
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        crossAxisCount: 4,
+        shrinkWrap: true,
+        childAspectRatio: 1.5,
+        children: [
+          ...setDateTimes.map((dateTime) => TimeButton(dateTime: dateTime)),
+          ...editDurations.map((duration) => TimeButton(duration: duration)),
+        ],
+      ),
     );
   }
 

@@ -33,7 +33,7 @@ class WhatsNewDialog {
   static List<Widget> getWhatsNewTileContent(BuildContext context) {
     return <Widget>[
       Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: DecoratedBox(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
