@@ -10,12 +10,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class HomeScreenReminderListSection extends ConsumerWidget {
-  final Widget? label;
+  final Widget label;
   final List<Reminder> remindersList;
 
   const HomeScreenReminderListSection({
     super.key,
-    this.label,
+    required this.label,
     required this.remindersList,
   });
 
@@ -25,17 +25,17 @@ class HomeScreenReminderListSection extends ConsumerWidget {
       return const SizedBox();
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (label != null)
-            SizedBox(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: label,
-              ),
+          SizedBox(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: label,
             ),
+          ),
+          SizedBox(height: 4),
           Column(
             children: [
               for (int i = 0; i < remindersList.length; i++)

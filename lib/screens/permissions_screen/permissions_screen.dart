@@ -1,4 +1,3 @@
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/screens/permissions_screen/utils/app_permi_handler.dart';
 import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -63,32 +62,23 @@ class _PermissionScreenState extends State<PermissionScreen>
                     onPressed: snapshot.data!
                         ? () {
                             Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => NavigationSection()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NavigationSection(),
+                              ),
+                            );
                           }
                         : null,
-                    child: Text("Let's Go!",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                                color: snapshot.data!
-                                    ? Colors.white
-                                    : Colors.grey)),
-                    style: Theme.of(context)
-                        .elevatedButtonTheme
-                        .style!
-                        .copyWith(
-                            shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(15)))),
-                            backgroundColor:
-                                snapshot.data != null && snapshot.data!
-                                    ? WidgetStatePropertyAll(ConstColors.blue)
-                                    : WidgetStatePropertyAll(
-                                        ConstColors.lightGreyLessOpacity)))
+                    child: Text(
+                      "Let's Go!",
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer),
+                  )
                 : SizedBox(
                     width: double.infinity,
                     height: 56,
@@ -135,54 +125,12 @@ class _PermissionScreenState extends State<PermissionScreen>
               ' timely notifications for your reminders.',
               style: Theme.of(context).textTheme.bodyMedium),
           SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: FutureBuilder(
-                future: permissionGiven,
-                builder: (context, snapshot) {
-                  return ElevatedButton(
-                      onPressed: snapshot.hasData
-                          ? () async {
-                              if (snapshot.data!) {
-                                return null;
-                              }
-                              await AwesomeNotifications()
-                                  .requestPermissionToSendNotifications();
-                            }
-                          : null,
-                      child: snapshot.connectionState == ConnectionState.waiting
-                          ? SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : snapshot.hasError
-                              ? Text(
-                                  'ERROR',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                )
-                              : Text(
-                                  snapshot.hasData && snapshot.data!
-                                      ? 'Done'
-                                      : 'Allow',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: snapshot.hasError
-                            ? Colors.red
-                            : snapshot.hasData && snapshot.data!
-                                ? ConstColors.lightGreyLessOpacity
-                                : Theme.of(context).primaryColor,
-                      ));
-                }),
-          )
+          _PermissionButton(
+              permission: permissionGiven,
+              onPressed: () async {
+                await AwesomeNotifications()
+                    .requestPermissionToSendNotifications();
+              }),
         ],
       ),
     );
@@ -217,53 +165,11 @@ class _PermissionScreenState extends State<PermissionScreen>
               " of the app works as intended.",
               style: Theme.of(context).textTheme.bodyMedium),
           SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: FutureBuilder(
-                future: permissionGiven,
-                builder: (context, snapshot) {
-                  return ElevatedButton(
-                      onPressed: snapshot.hasData
-                          ? () async {
-                              if (snapshot.data!) {
-                                return null;
-                              }
-                              await AppPermissionHandler.openAlarmSettigs();
-                            }
-                          : null,
-                      child: snapshot.connectionState == ConnectionState.waiting
-                          ? SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : snapshot.hasError
-                              ? Text(
-                                  'ERROR',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                )
-                              : Text(
-                                  snapshot.hasData && snapshot.data!
-                                      ? 'Done'
-                                      : 'Allow',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: snapshot.hasError
-                            ? Colors.red
-                            : snapshot.hasData && snapshot.data!
-                                ? ConstColors.lightGreyLessOpacity
-                                : Theme.of(context).primaryColor,
-                      ));
-                }),
-          ),
+          _PermissionButton(
+              permission: permissionGiven,
+              onPressed: () async {
+                await AppPermissionHandler.openAlarmSettigs();
+              }),
         ],
       ),
     );
@@ -284,11 +190,12 @@ class _PermissionScreenState extends State<PermissionScreen>
                   text: 'Battery Permission',
                   style: Theme.of(context).textTheme.titleMedium),
               TextSpan(
-                  text: ' (Recommended)',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontStyle: FontStyle.italic))
+                text: ' (Recommended)',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(fontStyle: FontStyle.italic),
+              )
             ])),
             shape: BeveledRectangleBorder(),
           ),
@@ -300,56 +207,80 @@ class _PermissionScreenState extends State<PermissionScreen>
             softWrap: true,
           ),
           SizedBox(height: 16),
-          FutureBuilder(
-              future: permissionGiven,
-              builder: (context, snapshot) {
-                return SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: snapshot.hasData
-                          ? () async {
-                              if (snapshot.data!) {
-                                return null;
-                              }
-                              await AppPermissionHandler
-                                  .requestIgnoreBatteryOptimization();
-                            }
-                          : null,
-                      child: snapshot.connectionState == ConnectionState.waiting
-                          ? SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : snapshot.hasError
-                              ? Text(
-                                  'ERROR',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                )
-                              : Text(
-                                  snapshot.hasData && snapshot.data!
-                                      ? 'Done'
-                                      : 'Set as Unrestricted',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: snapshot.hasError
-                            ? Colors.red
-                            : snapshot.hasData && snapshot.data!
-                                ? ConstColors.lightGreyLessOpacity
-                                : Theme.of(context).primaryColor,
-                      )),
-                );
-              })
+          _PermissionButton(
+            permission: permissionGiven,
+            onPressed: () async {
+              await AppPermissionHandler.requestIgnoreBatteryOptimization();
+            },
+            deniedLabel: 'Set as Unrestricted',
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _PermissionButton extends StatelessWidget {
+  const _PermissionButton(
+      {super.key,
+      required this.permission,
+      required this.onPressed,
+      this.deniedLabel = 'Allow'});
+
+  final Future<bool> permission;
+  final String deniedLabel;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: FutureBuilder(
+          future: permission,
+          builder: (context, snapshot) {
+            return ElevatedButton(
+                onPressed: snapshot.hasData && snapshot.data!
+                    ? null
+                    : () {
+                        print(snapshot.data);
+                        onPressed();
+                        print(snapshot.data);
+                      },
+                child: snapshot.connectionState == ConnectionState.waiting
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : snapshot.hasError
+                        ? Text(
+                            'ERROR',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          )
+                        : Text(
+                            snapshot.hasData && snapshot.data!
+                                ? 'Done'
+                                : deniedLabel,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer,
+                                )),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: snapshot.hasError
+                      ? Theme.of(context).colorScheme.onErrorContainer
+                      : Theme.of(context).colorScheme.primaryContainer,
+                ));
+          }),
     );
   }
 }

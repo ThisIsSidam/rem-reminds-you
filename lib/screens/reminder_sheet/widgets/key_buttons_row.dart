@@ -2,8 +2,7 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/provider/reminders_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/reminder_recurrence.dart';
-import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/repeat_notif.dart';
+import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -112,7 +111,10 @@ class KeyButtonsRow extends ConsumerWidget {
             IconButton(
               icon: IconTheme(
                 data: Theme.of(context).iconTheme,
-                child: const Icon(Icons.delete, color: Colors.red),
+                child: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).colorScheme.errorContainer,
+                ),
               ),
               onPressed: () => deleteReminder(reminder, context, ref),
             ),
@@ -121,14 +123,8 @@ class KeyButtonsRow extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              getRepeatNotifButton(context),
-              SizedBox(
-                width: 4,
-              ),
-              getRecurringButton(context),
-              SizedBox(
-                width: 4,
-              ),
+              _buildSnoozeOptionsDialogButton(context, ref),
+              _buildRecurrenceOptionsDialogButton(context, ref),
               _buildSaveButton(context, reminder, ref)
             ],
           ),
@@ -146,15 +142,20 @@ class KeyButtonsRow extends ConsumerWidget {
     return Row(
       children: [
         ElevatedButton(
+          child: Text(
+            "Save",
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+          ),
           onPressed: () => saveReminder(reminder, context, ref),
-          child: Text("Save", style: Theme.of(context).textTheme.titleMedium),
-          style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-              backgroundColor:
-                  WidgetStatePropertyAll(Theme.of(context).primaryColor),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              surfaceTintColor: Colors.transparent,
               shape: forAllCondition
-                  ? WidgetStatePropertyAll(RoundedRectangleBorder(
+                  ? RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.horizontal(left: Radius.circular(12))))
+                          BorderRadius.horizontal(left: Radius.circular(25)))
                   : null),
         ),
         if (forAllCondition)
@@ -163,42 +164,57 @@ class KeyButtonsRow extends ConsumerWidget {
               reminder.baseDateTime = reminder.dateAndTime;
               saveReminder(reminder, context, ref);
             },
-            child:
-                Text("For All", style: Theme.of(context).textTheme.titleMedium),
-            style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                backgroundColor: WidgetStatePropertyAll(Colors.red),
-                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            child: Text("For All",
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.onErrorContainer)),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                surfaceTintColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.horizontal(right: Radius.circular(12))))),
-          )
+                        BorderRadius.horizontal(right: Radius.circular(25)))),
+          ),
       ],
     );
   }
 
-  Widget getRepeatNotifButton(BuildContext context) {
-    return ElevatedButton(
-      child: Icon(Icons.snooze),
-      style: Theme.of(context).elevatedButtonTheme.style,
+  Widget _buildSnoozeOptionsDialogButton(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(bottomElementProvider.notifier);
+    return IconButton(
+      icon: Icon(Icons.snooze),
+      style: IconButton.styleFrom(
+        backgroundColor:
+            provider.element == ReminderSheetBottomElement.snoozeOptions
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+      ),
       onPressed: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return SnoozeOptionsDialog();
-            });
+        if (provider.element != ReminderSheetBottomElement.snoozeOptions) {
+          provider.element = ReminderSheetBottomElement.snoozeOptions;
+        }
       },
     );
   }
 
-  Widget getRecurringButton(BuildContext context) {
-    return ElevatedButton(
-        child: Icon(Icons.event_repeat_outlined),
-        style: Theme.of(context).elevatedButtonTheme.style,
+  Widget _buildRecurrenceOptionsDialogButton(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final provider = ref.watch(bottomElementProvider.notifier);
+    return IconButton(
+        icon: Icon(Icons.event_repeat),
+        style: IconButton.styleFrom(
+          backgroundColor:
+              provider.element == ReminderSheetBottomElement.recurrenceOptions
+                  ? Theme.of(context).colorScheme.primaryContainer
+                  : null,
+        ),
         onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return ReminderRecurrenceDialog();
-              });
+          if (provider.element !=
+              ReminderSheetBottomElement.recurrenceOptions) {
+            ref.read(bottomElementProvider).element =
+                ReminderSheetBottomElement.recurrenceOptions;
+          }
         });
   }
 }

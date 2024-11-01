@@ -8,12 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class TimeButton extends ConsumerWidget {
   final DateTime? dateTime;
   final Duration? duration;
+  final Alignment? curveCorner;
 
-  TimeButton({
-    super.key,
-    this.dateTime,
-    this.duration,
-  }) : assert(dateTime != null || duration != null,
+  TimeButton({super.key, this.dateTime, this.duration, this.curveCorner})
+      : assert(dateTime != null || duration != null,
             "Both dateTime and duration can't be null");
 
   void editTime(Reminder rem) {
@@ -39,8 +37,24 @@ class TimeButton extends ConsumerWidget {
     final reminder = ref.read(reminderNotifierProvider);
     final reminderNotifier = ref.read(reminderNotifierProvider.notifier);
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(4),
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all(EdgeInsets.all(4)),
+          backgroundColor: WidgetStateProperty.all(
+            Theme.of(context).colorScheme.secondaryContainer,
+          ),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(),
+          ),
+          splashFactory: InkSplash.splashFactory,
+          overlayColor: WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.pressed)) {
+                return Colors.blue
+                    .withOpacity(0.2); // Set your desired splash color
+              }
+              return null; // Use default overlay color otherwise
+            },
+          ),
         ),
         onPressed: () {
           if (dateTime != null) {
@@ -54,18 +68,23 @@ class TimeButton extends ConsumerWidget {
   }
 
   Widget getChild(BuildContext context) {
+    late String text;
+
     if (dateTime != null) {
-      return Text(
-        getFormattedTimeForTimeSetButton(dateTime!),
-        style: Theme.of(context).textTheme.bodyMedium,
-      );
+      text = getFormattedTimeForTimeSetButton(dateTime!);
     } else if (duration != null) {
-      return Text(
-        getFormattedDurationForTimeEditButton(duration!, addPlusSymbol: true),
-        style: Theme.of(context).textTheme.bodyMedium,
-      );
+      text =
+          getFormattedDurationForTimeEditButton(duration!, addPlusSymbol: true);
     } else {
       throw "Both dateTime and duration can't be null";
     }
+
+    return Text(
+      text,
+      style: Theme.of(context)
+          .textTheme
+          .bodyMedium!
+          .copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer),
+    );
   }
 }

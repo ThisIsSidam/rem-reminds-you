@@ -1,4 +1,3 @@
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/screens/settings_screen/sections/backup_restore_section/backup_restore_section.dart';
 import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/new_reminder_section.dart';
 import 'package:Rem/screens/settings_screen/sections/other_section/other_section.dart';
@@ -53,7 +52,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                backgroundColor: ConstColors.darkGrey,
                 title: Text(
                   'Reset Settings to Default?',
                   style: Theme.of(context).textTheme.titleLarge,

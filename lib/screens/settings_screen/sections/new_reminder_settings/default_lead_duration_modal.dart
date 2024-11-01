@@ -1,6 +1,5 @@
-import 'package:Rem/consts/const_colors.dart';
 import 'package:Rem/utils/datetime_methods.dart';
-import 'package:Rem/widgets/duration_picker.dart';
+import 'package:Rem/widgets/hm_duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,17 +14,17 @@ class DefaultLeadDurationModal extends ConsumerWidget {
     String dateTimeString = getFormattedDateTime(dateTime);
     String diffString = getPrettyDurationFromDateTime(dateTime);
 
-    return Container(
-        height: 350,
+    return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text("Default Lead Duration",
-                style: Theme.of(context).textTheme.titleLarge),
+                style: Theme.of(context).textTheme.titleMedium),
             Divider(),
             SizedBox(height: 10),
             dateTimeWidget(context, dateTimeString, diffString),
-            DurationPickerBase(onDurationChange: (dur) {
+            HMDurationPicker(onDurationChange: (dur) {
               ref.read(userSettingsProvider).defaultLeadDuration = dur;
             }),
           ],
@@ -37,7 +36,7 @@ class DefaultLeadDurationModal extends ConsumerWidget {
     return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
-          color: ConstColors.lightGreyLessOpacity,
+          color: Theme.of(context).colorScheme.primaryContainer,
         ),
         margin: EdgeInsets.symmetric(horizontal: 16),
         padding: EdgeInsets.all(10),

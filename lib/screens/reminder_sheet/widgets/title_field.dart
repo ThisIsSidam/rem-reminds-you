@@ -1,5 +1,6 @@
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/title_parser/title_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +25,13 @@ class _TitleFieldState extends ConsumerState<TitleField> {
   }
 
   @override
+  void dispose() {
+    titleController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final reminder = ref.read(reminderNotifierProvider);
     titleController.text = reminder.preParsedTitle;
@@ -42,15 +50,22 @@ class _TitleFieldState extends ConsumerState<TitleField> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-          ),
-          controller: titleController,
-          focusNode: _focusNode,
-          autofocus: true,
-          onChanged: (str) {
-            titleParser.parse(str);
-          }),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+        ),
+        controller: titleController,
+        focusNode: _focusNode,
+        autofocus: true,
+        onChanged: (str) {
+          titleParser.parse(str);
+        },
+        onTap: () {
+          // Defer the bottom element removal
+          Future.microtask(() {
+            ref.read(bottomElementProvider).setAsNone();
+          });
+        },
+      ),
     );
   }
 }

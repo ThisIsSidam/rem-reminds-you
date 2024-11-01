@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../consts/const_colors.dart';
 import '../../../../provider/settings_provider.dart';
 import '../../../../utils/datetime_methods.dart';
-import '../../../../widgets/custom_duration_picker.dart';
+import '../../../../widgets/dhm_single_duration_picker.dart';
 import '../../../../widgets/save_close_buttons.dart';
 
 class QuickTimeTableModal extends ConsumerStatefulWidget {
@@ -85,11 +84,32 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
     Navigator.pop(context);
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Quick Time Table",
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          Divider(),
+          const SizedBox(height: 8),
+          _buildButtonsTable(),
+          getEditWidget(),
+          SaveCloseButtons(onTapSave: onSave),
+        ],
+      ),
+    );
+  }
+
   Widget getEditWidget() {
     if (selectedSettingOption <= 3) {
       return dateTimePickerWidget();
     } else {
-      return CustomDurationPicker(
+      return DHMSingleDurationPicker(
         allowNegative: true,
         onDurationChanged: (dur) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -113,6 +133,7 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
         data: CupertinoThemeData(brightness: Brightness.dark),
         child: CupertinoDatePicker(
           mode: CupertinoDatePickerMode.time,
+          itemExtent: 70,
           initialDateTime: setDateTimes[selectedSettingOption],
           onDateTimeChanged: (dt) {
             setState(() {
@@ -125,18 +146,25 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
   }
 
   Widget _buildButtonsTable() {
-    return GridView.count(
-      mainAxisSpacing: 5,
-      crossAxisSpacing: 5,
-      crossAxisCount: 4,
-      shrinkWrap: true,
-      childAspectRatio: 1.5,
-      children: [
-        ...setDateTimes.entries.map((entry) => _buildButton(
-            getFormattedTimeForTimeSetButton(entry.value), entry.key)),
-        ...editDurations.entries.map((entry) => _buildButton(
-            getFormattedDurationForTimeEditButton(entry.value), entry.key)),
-      ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(25),
+      child: GridView.count(
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        crossAxisCount: 4,
+        shrinkWrap: true,
+        childAspectRatio: 1.5,
+        children: [
+          ...setDateTimes.entries.map(
+            (entry) => _buildButton(
+                getFormattedTimeForTimeSetButton(entry.value), entry.key),
+          ),
+          ...editDurations.entries.map(
+            (entry) => _buildButton(
+                getFormattedDurationForTimeEditButton(entry.value), entry.key),
+          ),
+        ],
+      ),
     );
   }
 
@@ -145,34 +173,14 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
       onPressed: () => setSelectedOption(option),
       child: Text(
         label,
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 12),
+        style: Theme.of(context).textTheme.titleMedium,
       ),
-      style: selectedSettingOption == option
-          ? Theme.of(context).elevatedButtonTheme.style!.copyWith(
-              backgroundColor:
-                  WidgetStatePropertyAll(Theme.of(context).primaryColor))
-          : Theme.of(context).elevatedButtonTheme.style!.copyWith(
-              backgroundColor:
-                  WidgetStatePropertyAll(ConstColors.lightGreyLessOpacity)),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 600,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Column(
-        children: [
-          Text("Quick Time Table",
-              style: Theme.of(context).textTheme.titleLarge),
-          Divider(),
-          SizedBox(height: 10),
-          _buildButtonsTable(),
-          getEditWidget(),
-          SaveCloseButtons(onTapSave: onSave),
-        ],
-      ),
+      style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.zero,
+          backgroundColor: option == selectedSettingOption
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.secondaryContainer,
+          shape: BeveledRectangleBorder()),
     );
   }
 }

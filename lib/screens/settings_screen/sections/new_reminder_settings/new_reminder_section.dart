@@ -12,38 +12,38 @@ class NewReminderSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          leading: Icon(Icons.near_me, color: Colors.transparent),
+          title: Text(
             "New Reminder",
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
-                .copyWith(color: Colors.white),
+                .copyWith(color: Theme.of(context).colorScheme.primary),
           ),
-          SizedBox(height: 5),
-          Column(
-            children: [
-              SizedBox(height: 10),
-              _buildDefaultLeadDurationTile(context, ref),
-              SizedBox(height: 10),
-              _buildDefaultAutoSnoozeDurationTile(context, ref),
-              SizedBox(
-                height: 10,
-              ),
-              _buildQuickTimeTableTile(context),
-              SizedBox(
-                height: 10,
-              ),
-              _buildSnoozeOptionsTile(context),
-              SizedBox(height: 20),
-            ],
-          )
-        ],
-      ),
+        ),
+        SizedBox(height: 5),
+        Column(
+          children: [
+            SizedBox(height: 10),
+            _buildDefaultLeadDurationTile(context, ref),
+            SizedBox(height: 10),
+            _buildDefaultAutoSnoozeDurationTile(context, ref),
+            SizedBox(
+              height: 10,
+            ),
+            _buildQuickTimeTableTile(context),
+            SizedBox(
+              height: 10,
+            ),
+            _buildSnoozeOptionsTile(context),
+            SizedBox(height: 20),
+          ],
+        )
+      ],
     );
   }
 
@@ -54,28 +54,26 @@ class NewReminderSection extends ConsumerWidget {
             ref.watch(userSettingsProvider).defaultLeadDuration;
         final String durString = dur.pretty(tersity: DurationTersity.minute);
 
-        return ListTileTheme(
-          data: Theme.of(context).listTileTheme,
-          child: ListTile(
-            title: Text(
-              "Default lead duration",
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            minVerticalPadding: 20,
-            onTap: () async {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                elevation: 5,
-                context: context,
-                builder: (context) => DefaultLeadDurationModal(),
-              );
-              setState(() {}); // Refresh the tile after modal is closed
-            },
-            trailing: Text(
-              durString,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+        return ListTile(
+          leading: Icon(Icons.add),
+          title: Text(
+            "Default lead duration",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          minVerticalPadding: 20,
+          onTap: () async {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 5,
+              context: context,
+              builder: (context) => DefaultLeadDurationModal(),
+            );
+            setState(() {}); // Refresh the tile after modal is closed
+          },
+          subtitle: Text(
+            durString,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
         );
       },
@@ -91,28 +89,26 @@ class NewReminderSection extends ConsumerWidget {
         final String durString =
             "Every " + dur.pretty(tersity: DurationTersity.minute);
 
-        return ListTileTheme(
-          data: Theme.of(context).listTileTheme,
-          child: ListTile(
-            title: Text(
-              "Default auto snooze duration",
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            minVerticalPadding: 20,
-            onTap: () async {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                elevation: 5,
-                context: context,
-                builder: (context) => DefaultAutoSnoozeDurationModal(),
-              );
-              setState(() {}); // Refresh the tile after modal is closed
-            },
-            trailing: Text(
-              durString,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+        return ListTile(
+          leading: Icon(Icons.snooze),
+          title: Text(
+            "Default auto snooze duration",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          minVerticalPadding: 20,
+          onTap: () async {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 5,
+              context: context,
+              builder: (context) => DefaultAutoSnoozeDurationModal(),
+            );
+            setState(() {}); // Refresh the tile after modal is closed
+          },
+          subtitle: Text(
+            durString,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
         );
       },
@@ -120,46 +116,42 @@ class NewReminderSection extends ConsumerWidget {
   }
 
   Widget _buildQuickTimeTableTile(BuildContext context) {
-    return ListTileTheme(
-      data: Theme.of(context).listTileTheme,
-      child: ListTile(
-        title: Text(
-          "Quick time table",
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        minVerticalPadding: 20,
-        onTap: () {
-          showModalBottomSheet(
-            isScrollControlled: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            elevation: 5,
-            context: context,
-            builder: (context) => QuickTimeTableModal(),
-          );
-        },
+    return ListTile(
+      leading: Icon(Icons.table_chart_outlined),
+      title: Text(
+        "Quick time table",
+        style: Theme.of(context).textTheme.titleSmall,
       ),
+      minVerticalPadding: 20,
+      onTap: () {
+        showModalBottomSheet(
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 5,
+          context: context,
+          builder: (context) => QuickTimeTableModal(),
+        );
+      },
     );
   }
 
   Widget _buildSnoozeOptionsTile(BuildContext context) {
-    return ListTileTheme(
-      data: Theme.of(context).listTileTheme,
-      child: ListTile(
-        title: Text(
-          "Snooze options",
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        minVerticalPadding: 20,
-        onTap: () {
-          showModalBottomSheet(
-            isScrollControlled: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            elevation: 5,
-            context: context,
-            builder: (context) => SnoozeOptionsModal(),
-          );
-        },
+    return ListTile(
+      leading: Icon(Icons.snooze_outlined),
+      title: Text(
+        "Snooze options",
+        style: Theme.of(context).textTheme.titleSmall,
       ),
+      minVerticalPadding: 20,
+      onTap: () {
+        showModalBottomSheet(
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 5,
+          context: context,
+          builder: (context) => SnoozeOptionsModal(),
+        );
+      },
     );
   }
 }
