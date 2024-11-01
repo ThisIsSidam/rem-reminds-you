@@ -19,22 +19,22 @@ class HomePageReminderEntryListTile extends StatelessWidget {
         style: Theme.of(context).textTheme.titleMedium,
         softWrap: true,
       ),
+      dense: true,
       subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
           style: Theme.of(context).textTheme.bodyMedium),
       trailing: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          SizedBox(
-            height: 5,
-          ),
-          Text(getFormattedDuration(),
-              style: Theme.of(context).textTheme.bodySmall),
           if (reminder.recurringInterval != RecurringInterval.none)
             Text(
               "⟳ ${reminder.recurringInterval.name}",
               style: Theme.of(context).textTheme.bodySmall,
-            )
+            ),
+          Text(
+            getFormattedDuration(),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ],
       ),
       tileColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),

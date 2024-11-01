@@ -8,23 +8,25 @@ class ArchiveScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final archivedReminders = ref.watch(archivesProvider).archivedReminders;
 
-    if (archivedReminders.isEmpty) {
-      return Scaffold(appBar: getAppBar(context), body: getEmptyPage(context));
-    }
     return Scaffold(
-      appBar: getAppBar(context),
-      body: SingleChildScrollView(
-        child: ArchiveEntryLists.ArchivedReminderList(
-          remindersList: archivedReminders.values.toList().reversed.toList(),
+        body: CustomScrollView(
+      slivers: [
+        getAppBar(context),
+        SliverFillRemaining(
+          child: archivedReminders.isEmpty
+              ? getEmptyPage(context)
+              : ArchiveEntryLists(
+                  remindersList:
+                      archivedReminders.values.toList().reversed.toList(),
+                ),
         ),
-      ),
-    );
+      ],
+    ));
   }
 
-  AppBar getAppBar(BuildContext context) {
-    return AppBar(
+  SliverAppBar getAppBar(BuildContext context) {
+    return SliverAppBar(
       surfaceTintColor: null,
-      // toolbarHeight: ,
       backgroundColor: Colors.transparent,
       title: Text(
         "Archive",
@@ -38,6 +40,10 @@ class ArchiveScreen extends ConsumerWidget {
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        Icon(
+          Icons.archive,
+          size: 150,
+        ),
         Text(
           "No archived reminders",
           style: Theme.of(context).textTheme.bodyMedium,

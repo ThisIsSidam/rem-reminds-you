@@ -8,12 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ArchiveEntryLists extends ConsumerWidget {
-  final Widget? label;
   final List<Reminder> remindersList;
 
-  const ArchiveEntryLists.ArchivedReminderList({
+  const ArchiveEntryLists({
     super.key,
-    this.label,
     required this.remindersList,
   });
 
@@ -46,67 +44,51 @@ class ArchiveEntryLists extends ConsumerWidget {
     }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (label != null)
-            SizedBox(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: label,
-            )),
-          SizedBox(
-            height: remindersList.length * (60 + 5), // Tile height + separators
-            child: ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: remindersList.length,
-                separatorBuilder: (context, index) => SizedBox(height: 4.0),
-                itemBuilder: (context, index) {
-                  final reminder = remindersList[index];
+      child: ListView.separated(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: remindersList.length,
+          separatorBuilder: (context, index) => SizedBox(height: 8.0),
+          itemBuilder: (context, index) {
+            final reminder = remindersList[index];
 
-                  return Slidable(
-                      key: ValueKey(reminder.id),
-                      startActionPane: ActionPane(
-                          // Same as endActionPane
-                          motion: StretchMotion(),
-                          dragDismissible: true,
-                          dismissible: DismissiblePane(onDismissed: () {
+            return Slidable(
+                key: ValueKey(reminder.id),
+                startActionPane: ActionPane(
+                    // Same as endActionPane
+                    motion: StretchMotion(),
+                    dragDismissible: true,
+                    dismissible: DismissiblePane(onDismissed: () {
+                      remindersList.removeAt(index);
+                      _slideAndRemoveReminder(context, reminder, ref);
+                    }),
+                    children: [
+                      SlidableAction(
+                          icon: Icons.delete,
+                          backgroundColor: Colors.red,
+                          onPressed: (context) {
                             remindersList.removeAt(index);
                             _slideAndRemoveReminder(context, reminder, ref);
-                          }),
-                          children: [
-                            SlidableAction(
-                                icon: Icons.delete,
-                                backgroundColor: Colors.red,
-                                onPressed: (context) {
-                                  remindersList.removeAt(index);
-                                  _slideAndRemoveReminder(
-                                      context, reminder, ref);
-                                })
-                          ]),
-                      endActionPane: ActionPane(
-                          // Same as startActionPane
-                          motion: StretchMotion(),
-                          dragDismissible: true,
-                          dismissible: DismissiblePane(onDismissed: () {
+                          })
+                    ]),
+                endActionPane: ActionPane(
+                    // Same as startActionPane
+                    motion: StretchMotion(),
+                    dragDismissible: true,
+                    dismissible: DismissiblePane(onDismissed: () {
+                      remindersList.removeAt(index);
+                      _slideAndRemoveReminder(context, reminder, ref);
+                    }),
+                    children: [
+                      SlidableAction(
+                          icon: Icons.delete,
+                          backgroundColor: Colors.red,
+                          onPressed: (context) {
                             remindersList.removeAt(index);
                             _slideAndRemoveReminder(context, reminder, ref);
-                          }),
-                          children: [
-                            SlidableAction(
-                                icon: Icons.delete,
-                                backgroundColor: Colors.red,
-                                onPressed: (context) {
-                                  remindersList.removeAt(index);
-                                  _slideAndRemoveReminder(
-                                      context, reminder, ref);
-                                })
-                          ]),
-                      child: _ArchiveReminderEntryListTile(reminder: reminder));
-                }),
-          ),
-        ],
-      ),
+                          })
+                    ]),
+                child: _ArchiveReminderEntryListTile(reminder: reminder));
+          }),
     );
   }
 }
@@ -118,29 +100,25 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: 60,
-      child: ListTile(
-        title: Text(reminder.title,
-            style: Theme.of(context).textTheme.titleMedium),
-        subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
-            style: Theme.of(context).textTheme.bodyMedium),
-        tileColor:
-            Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        minVerticalPadding: 8,
-        minTileHeight: 60,
-        onTap: () {
-          showModalBottomSheet(
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return ReminderSheet(
-                  thisReminder: reminder,
-                );
-              });
-        },
-      ),
+    return ListTile(
+      title:
+          Text(reminder.title, style: Theme.of(context).textTheme.titleMedium),
+      subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
+          style: Theme.of(context).textTheme.bodyMedium),
+      tileColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      minVerticalPadding: 8,
+      minTileHeight: 60,
+      onTap: () {
+        showModalBottomSheet(
+            isScrollControlled: true,
+            context: context,
+            builder: (context) {
+              return ReminderSheet(
+                thisReminder: reminder,
+              );
+            });
+      },
     );
   }
 }
