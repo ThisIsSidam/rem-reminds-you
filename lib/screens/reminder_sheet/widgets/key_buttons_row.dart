@@ -2,8 +2,7 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/provider/reminders_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/recurrence_dialog.dart';
-import 'package:Rem/screens/reminder_sheet/widgets/alert_dialogs/snooze_options_dialog.dart';
+import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -124,8 +123,8 @@ class KeyButtonsRow extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildSnoozeOptionsDialogButton(context),
-              _buildRecurrenceOptionsDialogButton(context),
+              _buildSnoozeOptionsDialogButton(context, ref),
+              _buildRecurrenceOptionsDialogButton(context, ref),
               _buildSaveButton(context, reminder, ref)
             ],
           ),
@@ -179,28 +178,43 @@ class KeyButtonsRow extends ConsumerWidget {
     );
   }
 
-  Widget _buildSnoozeOptionsDialogButton(BuildContext context) {
+  Widget _buildSnoozeOptionsDialogButton(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(bottomElementProvider.notifier);
     return IconButton(
       icon: Icon(Icons.snooze),
+      style: IconButton.styleFrom(
+        backgroundColor:
+            provider.element == ReminderSheetBottomElement.snoozeOptions
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+      ),
       onPressed: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return SnoozeOptionsDialog();
-            });
+        if (provider.element != ReminderSheetBottomElement.snoozeOptions) {
+          provider.element = ReminderSheetBottomElement.snoozeOptions;
+        }
       },
     );
   }
 
-  Widget _buildRecurrenceOptionsDialogButton(BuildContext context) {
+  Widget _buildRecurrenceOptionsDialogButton(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final provider = ref.watch(bottomElementProvider.notifier);
     return IconButton(
-        icon: Icon(Icons.event_repeat_outlined),
+        icon: Icon(Icons.event_repeat),
+        style: IconButton.styleFrom(
+          backgroundColor:
+              provider.element == ReminderSheetBottomElement.recurrenceOptions
+                  ? Theme.of(context).colorScheme.primaryContainer
+                  : null,
+        ),
         onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return ReminderRecurrenceDialog();
-              });
+          if (provider.element !=
+              ReminderSheetBottomElement.recurrenceOptions) {
+            ref.read(bottomElementProvider).element =
+                ReminderSheetBottomElement.recurrenceOptions;
+          }
         });
   }
 }

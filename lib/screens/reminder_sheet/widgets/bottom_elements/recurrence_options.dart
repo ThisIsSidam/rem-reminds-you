@@ -1,22 +1,28 @@
 import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
-import 'package:Rem/screens/reminder_sheet/widgets/base_versions/alert_dialog_base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class ReminderRecurrenceDialog extends ConsumerWidget {
-  ReminderRecurrenceDialog({super.key});
+import '../../providers/bottom_element_provider.dart';
+
+class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
+  ReminderRecurrenceOptionsWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AlertDialogBase(
-      title: "Recurrence Options",
-      tooltipMsg:
-          "Reminder is repeat on either daily or weekly basis. Monthly and More are coming soon.",
-      content: SizedBox(
-          height: 250, width: 375, child: getButtonsGrid(context, ref)),
-    );
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Recurrence Options",
+                style: Theme.of(context).textTheme.titleMedium),
+          ),
+          getButtonsGrid(context, ref)
+        ]);
   }
 
   Widget getButtonsGrid(BuildContext context, WidgetRef ref) {
@@ -27,7 +33,7 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
         crossAxisSpacing: 2,
         crossAxisCount: 2,
         shrinkWrap: true,
-        childAspectRatio: 1.5,
+        childAspectRatio: 2,
         children: [
           intervalButton(RecurringInterval.none, context, ref),
           intervalButton(RecurringInterval.daily, context, ref),
@@ -51,7 +57,7 @@ class ReminderRecurrenceDialog extends ConsumerWidget {
         }
         reminder.recurringInterval = interval;
         ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
-        Navigator.pop(context);
+        ref.read(bottomElementProvider).setAsNone();
       },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.all(4),
