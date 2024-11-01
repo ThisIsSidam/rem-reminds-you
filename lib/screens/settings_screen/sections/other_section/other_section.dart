@@ -23,9 +23,7 @@ class OtherSection extends StatelessWidget {
         SizedBox(height: 5),
         Column(
           children: [
-            SizedBox(height: 10),
             _buildWhatsNewTile(context),
-            SizedBox(height: 20),
           ],
         )
       ],

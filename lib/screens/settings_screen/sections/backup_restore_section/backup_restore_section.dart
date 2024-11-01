@@ -32,11 +32,8 @@ class BackupRestoreSection extends ConsumerWidget {
         SizedBox(height: 5),
         Column(
           children: [
-            SizedBox(height: 10),
             getBackupTile(context, ref),
-            SizedBox(height: 10),
             getRestoreTile(context, ref),
-            SizedBox(height: 20),
           ],
         )
       ],

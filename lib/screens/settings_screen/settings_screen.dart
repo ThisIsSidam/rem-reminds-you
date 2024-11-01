@@ -1,4 +1,5 @@
 import 'package:Rem/screens/settings_screen/sections/backup_restore_section/backup_restore_section.dart';
+import 'package:Rem/screens/settings_screen/sections/gestures_section/gestures_section.dart';
 import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/new_reminder_section.dart';
 import 'package:Rem/screens/settings_screen/sections/other_section/other_section.dart';
 import 'package:Rem/screens/settings_screen/sections/user_preferences_section/user_pref_settings.dart';
@@ -26,7 +27,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           "Settings",
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        actions: [resetIcon()],
+        actions: [
+          resetIcon(),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -34,14 +37,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             UserPreferenceSection(),
+            _buildPaddedDivider(),
+            GesturesSection(),
+            _buildPaddedDivider(),
             NewReminderSection(),
+            _buildPaddedDivider(),
             BackupRestoreSection(),
+            _buildPaddedDivider(),
             OtherSection(),
             _buildVersionWidget()
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildPaddedDivider() {
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16), child: Divider());
   }
 
   Widget resetIcon() {

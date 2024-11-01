@@ -1,6 +1,7 @@
 import 'package:Rem/consts/enums/swipe_actions.dart';
 import 'package:Rem/database/settings_db.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:Rem/utils/extensions/theme_mode.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../reminder_class/reminder.dart';
@@ -317,6 +318,21 @@ class UserSettingsNotifier extends ChangeNotifier {
 
   set defaultPostponeDuration(Duration value) {
     SettingsDB.setUserSetting('defaultPostponeDuration', value);
+    notifyListeners();
+  }
+
+  /// [ThemeMode] is a material enum. Not a self-made one.
+  /// Hence the the method uses a custom .fromString to get the enum value
+  ThemeMode get themeMode {
+    final dynamic value = SettingsDB.getUserSetting('themeMode');
+    if (value == null || value is! String) {
+      return ThemeMode.system;
+    }
+    return ThemeModeExtension.fromString(value) ?? ThemeMode.system;
+  }
+
+  set themeMode(ThemeMode value) {
+    SettingsDB.setUserSetting('themeMode', value.toString());
     notifyListeners();
   }
 }
