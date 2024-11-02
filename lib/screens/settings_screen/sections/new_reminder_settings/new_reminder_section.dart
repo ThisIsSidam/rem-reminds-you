@@ -28,19 +28,10 @@ class NewReminderSection extends ConsumerWidget {
         SizedBox(height: 5),
         Column(
           children: [
-            SizedBox(height: 10),
             _buildDefaultLeadDurationTile(context, ref),
-            SizedBox(height: 10),
             _buildDefaultAutoSnoozeDurationTile(context, ref),
-            SizedBox(
-              height: 10,
-            ),
             _buildQuickTimeTableTile(context),
-            SizedBox(
-              height: 10,
-            ),
             _buildSnoozeOptionsTile(context),
-            SizedBox(height: 20),
           ],
         )
       ],

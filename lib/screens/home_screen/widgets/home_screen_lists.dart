@@ -38,7 +38,8 @@ class HomeScreenReminderListSection extends ConsumerWidget {
           SizedBox(height: 4),
           Column(
             children: [
-              for (int i = 0; i < remindersList.length; i++)
+              for (int i = 0; i < remindersList.length; i++) ...<Widget>[
+                SizedBox(height: 4),
                 Slidable(
                   key: ValueKey(remindersList[i].id),
                   startActionPane: ActionPaneManager.getActionToRight(
@@ -53,6 +54,8 @@ class HomeScreenReminderListSection extends ConsumerWidget {
                     reminder: remindersList[i],
                   ),
                 ),
+                SizedBox(height: 4),
+              ]
             ],
           ),
         ],

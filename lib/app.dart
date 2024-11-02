@@ -1,5 +1,6 @@
 import 'package:Rem/consts/enums/hive_enums.dart';
 import 'package:Rem/main.dart';
+import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/provider/text_scale_provider.dart';
 import 'package:Rem/screens/permissions_screen/permissions_screen.dart';
 import 'package:Rem/screens/permissions_screen/utils/app_permi_handler.dart';
@@ -33,6 +34,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     double textScale = ref.watch(textScaleProvider).textScale;
+    final settings = ref.watch(userSettingsProvider);
 
     return DynamicColorBuilder(builder: (lightDynamic, darkDynamic) {
       ColorScheme lightColorScheme;
@@ -90,7 +92,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               }
             },
           ),
-          themeMode: ThemeMode.system,
+          themeMode: settings.themeMode,
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: lightColorScheme,
