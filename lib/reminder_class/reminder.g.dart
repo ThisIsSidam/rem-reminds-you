@@ -23,7 +23,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       baseDateTime: fields[6] as DateTime?,
       preParsedTitle: fields[7] as String?,
     )
-      ..notifRepeatInterval = fields[4] as Duration
+      ..autoSnoozeInterval = fields[4] as Duration
       ..mixinRecurringInterval = fields[5] as int
       ..mixinReminderStatus = fields[3] as int;
   }
@@ -37,7 +37,7 @@ class ReminderAdapter extends TypeAdapter<Reminder> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(4)
-      ..write(obj.notifRepeatInterval)
+      ..write(obj.autoSnoozeInterval)
       ..writeByte(5)
       ..write(obj.mixinRecurringInterval)
       ..writeByte(6)

@@ -21,7 +21,7 @@ class Reminder
   // These are all in their individual files in field_mixins folder
   // HiveField 2: DateAndTime
   // HiveField 3: reminderStatus
-  // HiveField 4: notifRepeatDuration
+  // HiveField 4: autoSnoozeInteval
   // HiveField 5: recurringInterval
   // HiveField 6: baseDateTime
   // HiveField 7: preParsedTitle
@@ -32,17 +32,16 @@ class Reminder
     required DateTime dateAndTime,
     DateTime? baseDateTime,
     ReminderStatus reminderStatus = ReminderStatus.active,
-    Duration notifInterval = const Duration(minutes: 7),
+    Duration autoSnoozeInterval = const Duration(minutes: 7),
     RecurringInterval? recurInterval,
     String? preParsedTitle,
   }) {
     this.dateAndTime = dateAndTime;
-    this.mixinReminderStatus =
-        RemindersStatusExtension.getIndex(reminderStatus);
+    this.reminderStatus = reminderStatus;
     this.baseDateTime =
         baseDateTime ?? this.dateAndTime; // Same in the beginning
-    super.initRepeatInterval(notifInterval);
-    super.initRecurringInterval(recurInterval);
+    super.autoSnoozeInterval = autoSnoozeInterval;
+    super.recurringInterval = recurInterval ?? RecurringInterval.none;
     this.preParsedTitle = preParsedTitle ?? this.title;
   }
 
@@ -64,7 +63,7 @@ class Reminder
           int.parse(_getValue('baseDateTime'))),
       reminderStatus:
           RemindersStatusExtension.fromInt(int.parse(_getValue('done'))),
-      notifInterval:
+      autoSnoozeInterval:
           Duration(seconds: int.parse(_getValue('notifRepeatInterval'))),
       recurInterval:
           RecurringInterval.fromInt(int.parse(_getValue('_recurringInterval'))),
@@ -78,7 +77,7 @@ class Reminder
       'dateAndTime': dateAndTime.millisecondsSinceEpoch.toString(),
       'baseDateTime': baseDateTime.millisecondsSinceEpoch.toString(),
       'done': mixinReminderStatus.toString(),
-      'notifRepeatInterval': notifRepeatInterval.inSeconds.toString(),
+      'notifRepeatInterval': autoSnoozeInterval.inSeconds.toString(),
       '_recurringInterval': mixinRecurringInterval.toString(),
     };
   }
@@ -93,7 +92,7 @@ class Reminder
     this.id = reminder.id;
     this.baseDateTime = reminder.baseDateTime;
     this.reminderStatus = reminder.reminderStatus;
-    this.notifRepeatInterval = reminder.notifRepeatInterval;
+    this.autoSnoozeInterval = reminder.autoSnoozeInterval;
     this.recurringInterval = reminder.recurringInterval;
     this.preParsedTitle = reminder.preParsedTitle;
   }
@@ -106,7 +105,7 @@ class Reminder
         baseDateTime: this.baseDateTime,
         reminderStatus:
             RemindersStatusExtension.fromInt(this.mixinReminderStatus),
-        notifInterval: this.notifRepeatInterval,
+        autoSnoozeInterval: this.autoSnoozeInterval,
         recurInterval: RecurringInterval.fromInt(this.mixinRecurringInterval),
         preParsedTitle: this.preParsedTitle);
   }

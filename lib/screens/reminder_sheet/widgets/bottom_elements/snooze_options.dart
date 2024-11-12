@@ -69,10 +69,10 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
   Widget intervalEditButton(
       Duration duration, BuildContext context, WidgetRef ref) {
     final reminder = ref.read(reminderNotifierProvider);
-    bool isPickedDuration = duration == reminder.notifRepeatInterval;
+    bool isPickedDuration = duration == reminder.autoSnoozeInterval;
     return ElevatedButton(
       onPressed: () {
-        reminder.notifRepeatInterval = duration;
+        reminder.autoSnoozeInterval = duration;
         ref.read(reminderNotifierProvider.notifier).updateReminder(reminder);
         ref.read(bottomElementProvider).setAsNone();
       },

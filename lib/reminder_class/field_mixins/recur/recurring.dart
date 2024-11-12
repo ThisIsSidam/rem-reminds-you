@@ -10,10 +10,6 @@ mixin Recur {
   @HiveField(6)
   DateTime baseDateTime = DateTime.now();
 
-  void initRecurringInterval(RecurringInterval? interval) {
-    mixinRecurringInterval = (interval ?? RecurringInterval.none).index;
-  }
-
   RecurringInterval get recurringInterval {
     return RecurringInterval.fromInt(mixinRecurringInterval);
   }

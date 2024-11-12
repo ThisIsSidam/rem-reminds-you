@@ -50,10 +50,10 @@ class NotificationController {
 
     debugPrint('[NotificationController] Scheduled at: $scheduledTime');
     debugPrint(
-        '[NotificationController] duration: ${reminder.notifRepeatInterval}');
+        '[NotificationController] duration: ${reminder.autoSnoozeInterval}');
 
     await AndroidAlarmManager.periodic(
-      reminder.notifRepeatInterval,
+      reminder.autoSnoozeInterval,
       id,
       showNotificationCallback,
       startAt: scheduledTime,
