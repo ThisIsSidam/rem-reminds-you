@@ -43,6 +43,8 @@ dependencies:
   google_nav_bar: ^5.0.6
   double_back_to_close_app: ^2.1.0
   flutter_riverpod: ^2.5.1
+  hooks_riverpod: ^2.6.1
+  flutter_hooks: ^0.20.5
   fluttertoast: ^8.2.6
   flutter_slidable: ^3.1.1
   dynamic_color: ^1.7.0

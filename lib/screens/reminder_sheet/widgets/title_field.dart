@@ -3,36 +3,23 @@ import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/title_parser/title_parser.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class TitleField extends ConsumerStatefulWidget {
-  TitleField({super.key});
-
+class TitleField extends HookConsumerWidget {
   @override
-  ConsumerState<TitleField> createState() => _TitleFieldState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final TextEditingController titleController = useTextEditingController();
+    final _focusNode = useFocusNode();
 
-class _TitleFieldState extends ConsumerState<TitleField> {
-  final titleController = TextEditingController();
-  final _focusNode = FocusNode();
+    useEffect(() {
+      debugPrint("run");
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FocusScope.of(context).requestFocus(_focusNode);
+      });
+      return null;
+    }, []);
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_focusNode);
-    });
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final reminder = ref.read(reminderNotifierProvider);
     titleController.text = reminder.preParsedTitle;
     if (titleController.text == reminderNullTitle) {
