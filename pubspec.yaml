@@ -59,6 +59,7 @@ dependencies:
   file_picker: ^8.1.2
   package_info_plus: ^8.0.3
   duration: ^4.0.3
+  logger: ^2.4.0
 
 dev_dependencies:
   flutter_test:
