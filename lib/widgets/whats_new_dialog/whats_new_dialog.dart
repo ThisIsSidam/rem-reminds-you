@@ -45,21 +45,22 @@ class WhatsNewDialog {
         child: DecoratedBox(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Colors.red.shade900),
+                color: Theme.of(context).colorScheme.errorContainer),
             child: ListTile(
               title: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.warning,
-                    color: Colors.white,
                     size: 16,
                   ),
                   SizedBox(
                     width: 8,
                   ),
                   Text('Important!',
-                      style: Theme.of(context).textTheme.titleMedium),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onErrorContainer)),
                 ],
               ),
               subtitle: Text(
@@ -70,7 +71,8 @@ class WhatsNewDialog {
                   ' out even after the update.\n\nAn experimental backup and restore option is present'
                   ' in the settings. You can backup your reminders with it if necessary and restore them '
                   ' after reinstalling.',
-                  style: Theme.of(context).textTheme.bodySmall),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onErrorContainer)),
             )),
       ),
       Padding(
@@ -85,7 +87,6 @@ class WhatsNewDialog {
                 children: [
                   Icon(
                     Icons.new_releases,
-                    color: Colors.white,
                     size: 16,
                   ),
                   SizedBox(

@@ -51,7 +51,9 @@ class _TitleFieldState extends ConsumerState<TitleField> {
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         decoration: InputDecoration(
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
         controller: titleController,
         focusNode: _focusNode,

@@ -47,7 +47,11 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
             children: [
               Text(
                 getFormattedDateTime(reminder.dateAndTime),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: reminder.dateAndTime.isBefore(DateTime.now())
+                          ? Theme.of(context).colorScheme.error
+                          : null,
+                    ),
               ),
               const SizedBox(
                 width: 24,
@@ -58,7 +62,11 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
                       ? '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'
                           .replaceFirst('-', '')
                       : 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: reminder.dateAndTime.isBefore(DateTime.now())
+                            ? Theme.of(context).colorScheme.error
+                            : null,
+                      ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

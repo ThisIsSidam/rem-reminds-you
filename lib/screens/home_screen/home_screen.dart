@@ -121,7 +121,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              noRemindersPageText,
+              "You currently don't have any reminders!",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             SizedBox(

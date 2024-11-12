@@ -12,14 +12,12 @@ class ArchiveScreen extends ConsumerWidget {
         body: CustomScrollView(
       slivers: [
         getAppBar(context),
-        SliverFillRemaining(
-          child: archivedReminders.isEmpty
-              ? getEmptyPage(context)
-              : ArchiveEntryLists(
-                  remindersList:
-                      archivedReminders.values.toList().reversed.toList(),
-                ),
-        ),
+        archivedReminders.isEmpty
+            ? getEmptyPage(context)
+            : ArchiveEntryLists(
+                remindersList:
+                    archivedReminders.values.toList().reversed.toList(),
+              ),
       ],
     ));
   }
@@ -36,19 +34,21 @@ class ArchiveScreen extends ConsumerWidget {
   }
 
   Widget getEmptyPage(BuildContext context) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.archive,
-          size: 150,
-        ),
-        Text(
-          "No archived reminders",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ],
-    ));
+    return SliverFillRemaining(
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.archive,
+            size: 150,
+          ),
+          Text(
+            "No archived reminders",
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      )),
+    );
   }
 }

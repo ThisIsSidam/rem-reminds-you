@@ -42,10 +42,9 @@ class ArchiveEntryLists extends ConsumerWidget {
     if (remindersList.isEmpty) {
       return const SizedBox();
     }
-    return Padding(
+    return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: ListView.separated(
-          physics: const NeverScrollableScrollPhysics(),
+      sliver: SliverList.separated(
           itemCount: remindersList.length,
           separatorBuilder: (context, index) => SizedBox(height: 8.0),
           itemBuilder: (context, index) {
