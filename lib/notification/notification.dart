@@ -52,11 +52,10 @@ class NotificationController {
     debugPrint(
         '[NotificationController] duration: ${reminder.autoSnoozeInterval}');
 
-    await AndroidAlarmManager.periodic(
-      reminder.autoSnoozeInterval,
+    await AndroidAlarmManager.oneShotAt(
+      scheduledTime,
       id,
       showNotificationCallback,
-      startAt: scheduledTime,
       allowWhileIdle: true,
       exact: true,
       wakeup: true,
@@ -73,28 +72,36 @@ class NotificationController {
     debugPrint('[showNotificationCallback] running');
 
     final Map<String, String> strParams = params.cast<String, String>();
-
     final Reminder reminder = Reminder.fromMap(strParams);
 
     // Should be different each time so that different notifications are shown.
     int notificationId =
-        DateTime.now().difference(reminder.dateAndTime).inMinutes;
+        DateTime.now().difference(reminder.baseDateTime).inMinutes;
+
+    print('notifId: $notificationId');
 
     await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: notificationId,
-            channelKey: '111',
-            title: "Reminder: ${reminder.title}",
-            groupKey: reminder.id.toString(),
-            wakeUpScreen: true,
-            payload: reminder.toMap()),
-        actionButtons: <NotificationActionButton>[
-          NotificationActionButton(
-            key: 'done',
-            label: 'Done',
-            actionType: ActionType.SilentBackgroundAction,
-          )
-        ]);
+      content: NotificationContent(
+          id: notificationId,
+          channelKey: '111',
+          title: "Reminder: ${reminder.title}",
+          groupKey: reminder.id.toString(),
+          wakeUpScreen: true,
+          payload: reminder.toMap()),
+      actionButtons: <NotificationActionButton>[
+        NotificationActionButton(
+          key: 'done',
+          label: 'Done',
+          actionType: ActionType.SilentBackgroundAction,
+        )
+      ],
+    );
+
+    // Handle recurring notifications
+    DateTime nextScheduledTime =
+        reminder.dateAndTime.add(reminder.autoSnoozeInterval);
+    reminder.dateAndTime = nextScheduledTime;
+    scheduleNotification(reminder);
   }
 
   /// Used to remove notifications present in user's notification space.

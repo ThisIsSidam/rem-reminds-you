@@ -1,4 +1,5 @@
 import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/bottom_elements/recurrence_options.dart';
@@ -26,6 +27,8 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
   @override
   void initState() {
     initialReminder = widget.thisReminder.deepCopyReminder();
+    initialReminder.autoSnoozeInterval =
+        ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
 
     final reminderProvider = ref.read(reminderNotifierProvider.notifier);
 
