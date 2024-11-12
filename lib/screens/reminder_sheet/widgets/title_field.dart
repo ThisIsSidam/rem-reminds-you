@@ -50,6 +50,7 @@ class _TitleFieldState extends ConsumerState<TitleField> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
