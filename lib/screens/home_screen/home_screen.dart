@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -14,6 +13,8 @@ import 'package:Rem/widgets/whats_new_dialog/whats_new_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../utils/logger/global_logger.dart';
+
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -23,7 +24,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
-  late Timer _timer; // ignore: unused_field
   Map<String, List<Reminder>> remindersMap = {};
   final ReceivePort receivePort = ReceivePort();
   SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
@@ -31,6 +31,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void initState() {
     super.initState();
+    gLogger.i('HomeScreen initState');
     remindersMap = ref.read(remindersProvider).categorizedReminders;
 
     WidgetsBinding.instance.addObserver(this);
@@ -40,41 +41,48 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     // Listening for an app side task request sent upon click on
     // notification button.
+    gLogger.i('Registering main port');
     IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
     receivePort.listen((dynamic message) {
       if (message is Map<String, dynamic>) {
         final id = message['id'];
 
         if (message["action"] == 'done') {
+          gLogger.i('Received done action for $id');
           ref.read(remindersProvider).markAsDone(id);
         } else {
-          debugPrint("Port message is not refreshHomePage");
+          gLogger.w('Port message is not "done", discarding');
         }
       } else if (message is String) {
         if (message == "ping") {
+          gLogger.i('Received ping from NotificationIsolate');
           final notifPingPort =
               IsolateNameServer.lookupPortByName('NotificationIsolate');
-          if (notifPingPort != null)
+          if (notifPingPort != null) {
+            gLogger.i('Send back pong to notificationIsolate');
             notifPingPort.send("pong");
-          else
-            debugPrint("[homePageListener] notifPingPort is null");
+          } else {
+            gLogger.w('notifPingPort is null');
+          }
         } else {
-          debugPrint(
-              "[homepageListener] Unknown string message received $message");
+          gLogger
+              .w('[homepageListener] Unknown string message received $message');
         }
       } else {
-        debugPrint("[homepageListener] Unknown message received $message");
+        gLogger.w('[homepageListener] Unknown message received $message');
       }
     });
 
     // Show the what's new dialog
     WidgetsBinding.instance.addPersistentFrameCallback((_) {
+      gLogger.i('Show what\'s new dialog');
       WhatsNewDialog.checkAndShowWhatsNewDialog(navigatorKey.currentContext!);
     });
   }
 
   @override
   void dispose() {
+    gLogger.i('HomeScreen dispose');
     receivePort.close();
     IsolateNameServer.removePortNameMapping('main');
 
@@ -85,6 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    gLogger.i('Built HomeScreen');
     remindersMap = ref.watch(remindersProvider).categorizedReminders;
 
     final isEmpty = ref.watch(remindersProvider).reminderCount == 0;
@@ -132,6 +141,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
+                  gLogger.i('Show new reminder sheet');
                   showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
@@ -210,6 +220,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         onPressed: () {
+          gLogger.i('Show new reminder sheet');
           showModalBottomSheet(
               isScrollControlled: true,
               context: context,

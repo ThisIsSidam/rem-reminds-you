@@ -3,9 +3,12 @@ import 'package:Rem/screens/archive_screen/widgets/archived_reminder_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../utils/logger/global_logger.dart';
+
 class ArchiveScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    gLogger.i('Build archive screen');
     final archivedReminders = ref.watch(archivesProvider).archivedReminders;
 
     return Scaffold(

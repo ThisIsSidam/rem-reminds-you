@@ -25,7 +25,7 @@ class _NavigationLayerState extends State<NavigationLayer> {
   final List<Widget> _pages = [
     ArchiveScreen(),
     HomeScreen(),
-    SettingsScreen.SettingsScreen(),
+    SettingsScreen(),
   ];
 
   int _selectedTab = 1; // Homepage by default.

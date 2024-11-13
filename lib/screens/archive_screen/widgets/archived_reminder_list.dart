@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../utils/logger/global_logger.dart';
+
 class ArchiveEntryLists extends ConsumerWidget {
   final List<Reminder> remindersList;
 
@@ -65,6 +67,8 @@ class ArchiveEntryLists extends ConsumerWidget {
                           icon: Icons.delete,
                           backgroundColor: Colors.red,
                           onPressed: (context) {
+                            gLogger.i(
+                                'Removing archived reminder with slideAction');
                             remindersList.removeAt(index);
                             _slideAndRemoveReminder(context, reminder, ref);
                           })
@@ -82,6 +86,8 @@ class ArchiveEntryLists extends ConsumerWidget {
                           icon: Icons.delete,
                           backgroundColor: Colors.red,
                           onPressed: (context) {
+                            gLogger.i(
+                                'Removing archived reminder with slideAction');
                             remindersList.removeAt(index);
                             _slideAndRemoveReminder(context, reminder, ref);
                           })
@@ -109,6 +115,7 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
       minVerticalPadding: 8,
       minTileHeight: 60,
       onTap: () {
+        gLogger.i('Show archived reminderSheet | ID: ${reminder.id}');
         showModalBottomSheet(
             isScrollControlled: true,
             context: context,

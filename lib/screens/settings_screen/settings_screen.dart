@@ -4,22 +4,16 @@ import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/new_r
 import 'package:Rem/screens/settings_screen/sections/other_section/other_section.dart';
 import 'package:Rem/screens/settings_screen/sections/user_preferences_section/user_pref_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen.SettingsScreen({super.key});
+import '../../utils/logger/global_logger.dart';
 
+class SettingsScreen extends ConsumerWidget {
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    gLogger.i('Built settings screen');
 
-class _SettingsScreenState extends State<SettingsScreen> {
-  void refresh() {
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -28,7 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
-          resetIcon(),
+          resetIcon(context),
         ],
       ),
       body: SingleChildScrollView(
@@ -57,10 +51,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: EdgeInsets.symmetric(horizontal: 16), child: Divider());
   }
 
-  Widget resetIcon() {
+  Widget resetIcon(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.refresh),
       onPressed: () {
+        gLogger.i('Tapped reset icon');
         showDialog(
             context: context,
             builder: (context) {
@@ -74,14 +69,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     TextButton(
                         onPressed: () {
+                          gLogger.i('Reset cancelled');
                           Navigator.pop(context);
                         },
                         child: Text("No")),
                     TextButton(
                         onPressed: () {
-                          setState(() {
-                            //TODO: Implement reset settings
-                          });
+                          gLogger.i('Resetting settings');
+                          // TODO: implement reset settings
                           Navigator.pop(context);
                         },
                         child: Text("Yes"))
