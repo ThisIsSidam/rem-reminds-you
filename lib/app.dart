@@ -4,6 +4,7 @@ import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/provider/text_scale_provider.dart';
 import 'package:Rem/screens/permissions_screen/permissions_screen.dart';
 import 'package:Rem/screens/permissions_screen/utils/app_permi_handler.dart';
+import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    gLogger.i('App started');
     double textScale = ref.watch(textScaleProvider).textScale;
     final settings = ref.watch(userSettingsProvider);
 
