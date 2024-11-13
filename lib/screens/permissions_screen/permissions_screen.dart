@@ -3,6 +3,8 @@ import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/logger/global_logger.dart';
+
 class PermissionScreen extends StatefulWidget {
   const PermissionScreen({super.key});
 
@@ -26,12 +28,14 @@ class _PermissionScreenState extends State<PermissionScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      gLogger.i('LifecycleState resumed | Rebuilding permissions screen');
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    gLogger.i('Build permissions screen');
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: Center(
@@ -64,7 +68,7 @@ class _PermissionScreenState extends State<PermissionScreen>
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => NavigationSection(),
+                                builder: (context) => NavigationLayer(),
                               ),
                             );
                           }
@@ -128,6 +132,7 @@ class _PermissionScreenState extends State<PermissionScreen>
           _PermissionButton(
               permission: permissionGiven,
               onPressed: () async {
+                gLogger.i('Requesting notification permission');
                 await AwesomeNotifications()
                     .requestPermissionToSendNotifications();
               }),
@@ -168,6 +173,7 @@ class _PermissionScreenState extends State<PermissionScreen>
           _PermissionButton(
               permission: permissionGiven,
               onPressed: () async {
+                gLogger.i('Requesting alarms permissions');
                 await AppPermissionHandler.openAlarmSettigs();
               }),
         ],
@@ -210,6 +216,7 @@ class _PermissionScreenState extends State<PermissionScreen>
           _PermissionButton(
             permission: permissionGiven,
             onPressed: () async {
+              gLogger.i('Requesting battery permissions');
               await AppPermissionHandler.requestIgnoreBatteryOptimization();
             },
             deniedLabel: 'Set as Unrestricted',
@@ -221,11 +228,11 @@ class _PermissionScreenState extends State<PermissionScreen>
 }
 
 class _PermissionButton extends StatelessWidget {
-  const _PermissionButton(
-      {super.key,
-      required this.permission,
-      required this.onPressed,
-      this.deniedLabel = 'Allow'});
+  const _PermissionButton({
+    required this.permission,
+    required this.onPressed,
+    this.deniedLabel = 'Allow',
+  });
 
   final Future<bool> permission;
   final String deniedLabel;
@@ -274,7 +281,8 @@ class _PermissionButton extends StatelessWidget {
                                   color: Theme.of(context)
                                       .colorScheme
                                       .onPrimaryContainer,
-                                )),
+                                ),
+                          ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: snapshot.hasError
                       ? Theme.of(context).colorScheme.onErrorContainer

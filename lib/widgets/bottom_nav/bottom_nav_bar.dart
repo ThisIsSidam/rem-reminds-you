@@ -6,14 +6,16 @@ import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-class NavigationSection extends StatefulWidget {
-  const NavigationSection({super.key});
+import '../../utils/logger/global_logger.dart';
+
+class NavigationLayer extends StatefulWidget {
+  const NavigationLayer({super.key});
 
   @override
-  State<NavigationSection> createState() => _NavigationSectionState();
+  State<NavigationLayer> createState() => _NavigationLayerState();
 }
 
-class _NavigationSectionState extends State<NavigationSection> {
+class _NavigationLayerState extends State<NavigationLayer> {
   final List<GButton> _tabs = [
     GButton(icon: Icons.archive, text: "Archive"),
     GButton(icon: Icons.home, text: "Home"),
@@ -30,15 +32,17 @@ class _NavigationSectionState extends State<NavigationSection> {
 
   @override
   Widget build(BuildContext context) {
+    gLogger.i('Build navigation layer');
     return Scaffold(
       body: DoubleBackToCloseApp(
         child: _pages[_selectedTab],
         snackBar: buildCustomSnackBar(
-            content: Align(
-          alignment: Alignment.center,
-          child: Text("Tap back again to leave",
-              style: Theme.of(context).textTheme.bodyLarge),
-        )),
+          content: Align(
+            alignment: Alignment.center,
+            child: Text("Tap back again to leave",
+                style: Theme.of(context).textTheme.bodyLarge),
+          ),
+        ),
       ),
       bottomNavigationBar: GNav(
         tabs: _tabs,
@@ -46,6 +50,7 @@ class _NavigationSectionState extends State<NavigationSection> {
         selectedIndex: _selectedTab,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         onTabChange: (index) {
+          gLogger.i('Navigating to ${_tabs[index].text}');
           setState(() {
             _selectedTab = index;
           });

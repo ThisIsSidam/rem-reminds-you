@@ -34,7 +34,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    gLogger.i('App started');
+    gLogger.i('App Built');
     double textScale = ref.watch(textScaleProvider).textScale;
     final settings = ref.watch(userSettingsProvider);
 
@@ -60,39 +60,10 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                   .copyWith(textScaler: TextScaler.linear(textScale)),
             );
           },
-          home: FutureBuilder<bool>(
-            future: AppPermissionHandler.checkPermissions(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return _loadingScreen();
-              } else if (snapshot.hasError) {
-                return const Center(
-                    child: Text('Error while checking permissions'));
-              } else if (snapshot.hasData) {
-                if (snapshot.data!) {
-                  return FutureBuilder(
-                      future: Hive.openBox(HiveBoxNames.individualValues.name),
-                      builder: (context, stacktrace) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return _loadingScreen();
-                        } else if (snapshot.hasError) {
-                          return const Center(
-                              child: Text('Error while loading reminders'));
-                        } else if (snapshot.hasData) {
-                          return NavigationSection();
-                        } else {
-                          return const Center(
-                              child: Text('Something went wrong'));
-                        }
-                      });
-                } else {
-                  return PermissionScreen();
-                }
-              } else {
-                return const Center(child: Text('Something went wrong'));
-              }
-            },
+          home: _buildPermissionScreenLayer(
+            child: _buildIndiValuesLayer(
+              child: NavigationLayer(),
+            ),
           ),
           themeMode: settings.themeMode,
           theme: ThemeData(
@@ -104,6 +75,58 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             colorScheme: darkColorScheme,
           ));
     });
+  }
+
+  Widget _buildPermissionScreenLayer({required Widget child}) {
+    return FutureBuilder<bool>(
+      future: AppPermissionHandler.checkPermissions(),
+      builder: (context, snapshot) {
+        gLogger.i('Checking for permissions');
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          gLogger.i('Loading..');
+          return _loadingScreen();
+        } else if (snapshot.hasError) {
+          gLogger.e('Go error checking for permissions');
+          return const Center(child: Text('Error while checking permissions'));
+        } else if (snapshot.hasData) {
+          if (snapshot.data!) {
+            gLogger.i('Permissions granted');
+            return child;
+          } else {
+            gLogger.i('Permissions not granted');
+            return PermissionScreen();
+          }
+        } else {
+          gLogger.e('Something weird happened in permissionsLayer');
+          return const Center(child: Text('Something went wrong'));
+        }
+      },
+    );
+  }
+
+  Widget _buildIndiValuesLayer({required Widget child}) {
+    return FutureBuilder(
+        future: Hive.openBox(HiveBoxNames.individualValues.name),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            gLogger.i('Loading..');
+            return _loadingScreen();
+          } else if (snapshot.hasError) {
+            gLogger.i('Error while opening individual values box');
+            return const Center(
+              child: Text(
+                'Error while loading reminders',
+              ),
+            );
+          } else if (snapshot.hasData) {
+            return child;
+          } else {
+            gLogger.i('Something weird happened in individual values layer');
+            return const Center(
+              child: Text('Something went wrong'),
+            );
+          }
+        });
   }
 
   Widget _loadingScreen() {
