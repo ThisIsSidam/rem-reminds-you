@@ -21,7 +21,7 @@ class RemindersDatabaseController {
         {};
   }
 
-  static void updateReminders(Map<int, Reminder> reminders) async {
+  static Future<void> updateReminders(Map<int, Reminder> reminders) async {
     await _remindersBox.put(HiveKeys.remindersBoxKey.key, reminders);
   }
 

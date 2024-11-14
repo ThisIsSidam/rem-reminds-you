@@ -13,7 +13,6 @@ class TitleField extends HookConsumerWidget {
     final _focusNode = useFocusNode();
 
     useEffect(() {
-      debugPrint("run");
       WidgetsBinding.instance.addPostFrameCallback((_) {
         FocusScope.of(context).requestFocus(_focusNode);
       });

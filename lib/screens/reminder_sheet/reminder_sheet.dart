@@ -7,6 +7,7 @@ import 'package:Rem/screens/reminder_sheet/widgets/bottom_elements/snooze_option
 import 'package:Rem/screens/reminder_sheet/widgets/date_time_section.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/key_buttons_row.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/title_field.dart';
+import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,6 +36,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     Future(() {
       reminderProvider.updateReminder(initialReminder);
       ref.read(bottomElementProvider).setAsNone();
+      gLogger.i("Reminder initialized and bottom element set to none");
     });
 
     super.initState();
@@ -42,7 +44,8 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+    gLogger.i('Build Reminder Sheet');
+    final ThemeData theme = Theme.of(context);
 
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
@@ -74,6 +77,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     final element = ref.watch(bottomElementProvider).element;
     if (element != ReminderSheetBottomElement.none) {
       FocusScope.of(context).unfocus();
+      gLogger.i("Bottom element changed, un-focusing");
     }
 
     return AnimatedSize(
@@ -95,15 +99,17 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
           switch (element) {
             case ReminderSheetBottomElement.none:
               return SizedBox.shrink(
-                key: UniqueKey(), // Add a unique key to force a new widget
+                key: UniqueKey(),
               );
             case ReminderSheetBottomElement.snoozeOptions:
+              gLogger.i("Displaying snooze options");
               return ReminderSnoozeOptionsWidget(
-                key: UniqueKey(), // Add a unique key to trigger animation
+                key: UniqueKey(),
               );
             case ReminderSheetBottomElement.recurrenceOptions:
+              gLogger.i("Displaying recurrence options");
               return ReminderRecurrenceOptionsWidget(
-                key: UniqueKey(), // Add a unique key to trigger animation
+                key: UniqueKey(),
               );
           }
         }(),

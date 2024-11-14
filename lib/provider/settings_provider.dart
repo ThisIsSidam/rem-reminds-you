@@ -5,8 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../reminder_class/reminder.dart';
+import '../utils/logger/global_logger.dart';
 
 class UserSettingsNotifier extends ChangeNotifier {
+  UserSettingsNotifier() {
+    gLogger.i('UserSettingsNotifier initialized');
+  }
+
+  @override
+  void dispose() {
+    gLogger.i('UserSettingsNotifier disposed');
+    super.dispose();
+  }
+
   Duration get defaultLeadDuration {
     final dynamic value = SettingsDB.getUserSetting('defaultLeadDuration');
     if (value == null || value is! Duration) {

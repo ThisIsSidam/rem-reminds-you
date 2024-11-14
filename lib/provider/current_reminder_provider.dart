@@ -1,8 +1,17 @@
 import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReminderNotifier extends StateNotifier<Reminder> {
-  ReminderNotifier() : super(Reminder(dateAndTime: DateTime.now()));
+class SheetReminderNotifier extends StateNotifier<Reminder> {
+  SheetReminderNotifier() : super(Reminder(dateAndTime: DateTime.now())) {
+    gLogger.i('SheetReminderNotifier initialized');
+  }
+
+  @override
+  void dispose() {
+    gLogger.i('ReminderNotifier disposed');
+    super.dispose();
+  }
 
   void updateReminder(Reminder newReminder) {
     state = newReminder.deepCopyReminder();
@@ -14,6 +23,6 @@ class ReminderNotifier extends StateNotifier<Reminder> {
 }
 
 final reminderNotifierProvider =
-    StateNotifierProvider<ReminderNotifier, Reminder>((ref) {
-  return ReminderNotifier();
+    StateNotifierProvider<SheetReminderNotifier, Reminder>((ref) {
+  return SheetReminderNotifier();
 });
