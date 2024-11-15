@@ -1,5 +1,5 @@
 import 'package:Rem/provider/reminders_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:hive/hive.dart';
 
 import '../consts/enums/hive_enums.dart';
@@ -18,16 +18,17 @@ class PendingRemovalsDB {
   }
 
   static Future<void> addPendingRemoval(int id) async {
-    final removals = getPendingRemovals();
+    final List<int> removals = getPendingRemovals();
     removals.add(id);
     _box.put(HiveKeys.pendingRemovalsBoxKey.key, removals);
+    gLogger.i('Added reminder to pendingRemovals | ID : $id');
   }
 
   static Future<void> clearPendingRemovals() async {
     final removals = getPendingRemovals();
     for (final id in removals) {
       RemindersNotifier(ref: null).markAsDone(id);
-      debugPrint('[clearPendingRemovals] id: $id');
+      gLogger.i('Cleared Pending Removals | Len : ${removals.length}');
     }
     _box.put(HiveKeys.pendingRemovalsBoxKey.key, []);
   }

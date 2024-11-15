@@ -22,12 +22,6 @@ void main() async {
   // Awesome Notification
   await NotificationController.initializeLocalNotifications();
 
-  gLogger.d('debug log');
-  gLogger.i('info log');
-  gLogger.f('fatal log');
-  gLogger.w('warning log');
-  gLogger.e('error log');
-
   runApp(ProviderScope(child: MyApp()));
 }
 

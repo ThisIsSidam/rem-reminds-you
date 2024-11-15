@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../provider/reminders_provider.dart';
+import '../../../../utils/logger/global_logger.dart';
 
 class BackupRestoreSection extends ConsumerWidget {
   const BackupRestoreSection({super.key});
@@ -66,10 +67,10 @@ class BackupRestoreSection extends ConsumerWidget {
               remindersJsonData.length, utf8.encode(remindersJsonData)));
           archive.addFile(ArchiveFile('archives_backup.json',
               archivesJsonData.length, utf8.encode(archivesJsonData)));
-          final zipData = ZipEncoder().encode(archive);
+          final List<int>? zipData = ZipEncoder().encode(archive);
 
           if (zipData == null || zipData.isEmpty) {
-            debugPrint('zipData is null or empty');
+            gLogger.i('Failed to create zip data | Data : $zipData');
             return;
           }
 
@@ -87,8 +88,7 @@ class BackupRestoreSection extends ConsumerWidget {
             buildCustomSnackBar(content: Text('Backup created: $outputPath')),
           );
         } catch (e, stackTrace) {
-          print('Error during backup: $e');
-          print('Stack trace: $stackTrace');
+          gLogger.e('Error during backup', error: e, stackTrace: stackTrace);
           ScaffoldMessenger.of(context).showSnackBar(
             buildCustomSnackBar(
                 content: Text('Backup failed: ${e.toString()}')),
@@ -132,7 +132,8 @@ class BackupRestoreSection extends ConsumerWidget {
 
             final remindersJsonFile = archive.findFile('reminders_backup.json');
             if (remindersJsonFile == null) {
-              debugPrint('reminders_backup.json not found in the zip file');
+              gLogger
+                  .e("File 'reminders_backup.json' not found in the zip file");
             } else {
               final remindersJsonContent =
                   utf8.decode(remindersJsonFile.content);
@@ -141,7 +142,8 @@ class BackupRestoreSection extends ConsumerWidget {
 
             final archivesJsonFile = archive.findFile('archives_backup.json');
             if (archivesJsonFile == null) {
-              debugPrint('archives_backup.json not found in the zip file');
+              gLogger
+                  .e("File 'archives_backup.json' not found in the zip file");
             } else {
               final archivesJsonContent = utf8.decode(archivesJsonFile.content);
               ref.read(archivesProvider).restoreBackup(archivesJsonContent);
@@ -152,8 +154,7 @@ class BackupRestoreSection extends ConsumerWidget {
                   content: Text('Backup restored successfully')),
             );
           } catch (e, stackTrace) {
-            print('Error during restore: $e');
-            print('Stack trace: $stackTrace');
+            gLogger.e('Error during restore', error: e, stackTrace: stackTrace);
             ScaffoldMessenger.of(context).showSnackBar(
               buildCustomSnackBar(
                   content: Text('Restore failed: ${e.toString()}')),

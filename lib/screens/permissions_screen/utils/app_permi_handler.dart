@@ -1,5 +1,5 @@
 import 'package:Rem/notification/notification.dart';
-import 'package:flutter/foundation.dart';
+import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/services.dart';
 
 class AppPermissionHandler {
@@ -18,20 +18,16 @@ class AppPermissionHandler {
           await platform.invokeMethod('checkAlarmPermission');
       return isGranted;
     } on PlatformException catch (e) {
-      if (kDebugMode)
-        debugPrint(
-            '[checkAlarmPermission] Failed to check Alarm permission: ${e.message}');
+      gLogger.e('Failed to check Alarm permission', error: e);
       return false;
     }
   }
 
-  static Future<void> openAlarmSettigs() async {
+  static Future<void> openAlarmSettings() async {
     try {
       await platform.invokeMethod('openAlarmSettings');
     } on PlatformException catch (e) {
-      if (kDebugMode)
-        debugPrint(
-            '[openAlarmSettings] Failed to open Alarm settings: ${e.message}');
+      gLogger.e('Failed to open Alarm settings', error: e);
     }
   }
 
@@ -41,8 +37,7 @@ class AppPermissionHandler {
           await platform.invokeMethod('isIgnoringBatteryOptimizations');
       return isIgnoring;
     } on PlatformException catch (e) {
-      if (kDebugMode)
-        debugPrint('[isIgnoringBatt..] Failed to check battery settings: $e');
+      gLogger.e('Failed to check battery settings', error: e);
       return false;
     }
   }
@@ -51,9 +46,7 @@ class AppPermissionHandler {
     try {
       await platform.invokeMethod('requestIgnoreBatteryOptimization');
     } on PlatformException catch (e) {
-      if (kDebugMode)
-        debugPrint(
-            '[requestIgnoreBatteryOptimization] Failed to request battery settings: $e');
+      gLogger.e('Failed to request battery settings', error: e);
     }
   }
 }

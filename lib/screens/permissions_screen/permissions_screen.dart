@@ -174,7 +174,7 @@ class _PermissionScreenState extends State<PermissionScreen>
               permission: permissionGiven,
               onPressed: () async {
                 gLogger.i('Requesting alarms permissions');
-                await AppPermissionHandler.openAlarmSettigs();
+                await AppPermissionHandler.openAlarmSettings();
               }),
         ],
       ),
@@ -246,13 +246,8 @@ class _PermissionButton extends StatelessWidget {
           future: permission,
           builder: (context, snapshot) {
             return ElevatedButton(
-                onPressed: snapshot.hasData && snapshot.data!
-                    ? null
-                    : () {
-                        print(snapshot.data);
-                        onPressed();
-                        print(snapshot.data);
-                      },
+                onPressed:
+                    snapshot.hasData && snapshot.data! ? null : onPressed,
                 child: snapshot.connectionState == ConnectionState.waiting
                     ? SizedBox(
                         width: 20,

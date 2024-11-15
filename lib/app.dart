@@ -86,7 +86,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           gLogger.i('Loading..');
           return _loadingScreen();
         } else if (snapshot.hasError) {
-          gLogger.e('Go error checking for permissions');
+          gLogger.e('Go error checking for permissions',
+              error: snapshot.error, stackTrace: snapshot.stackTrace);
           return const Center(child: Text('Error while checking permissions'));
         } else if (snapshot.hasData) {
           if (snapshot.data!) {
@@ -97,7 +98,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             return PermissionScreen();
           }
         } else {
-          gLogger.e('Something weird happened in permissionsLayer');
+          gLogger.e('Something weird happened in permissionsLayer',
+              error: snapshot.error, stackTrace: snapshot.stackTrace);
           return const Center(child: Text('Something went wrong'));
         }
       },

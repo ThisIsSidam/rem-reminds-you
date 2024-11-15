@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../consts/enums/hive_enums.dart';
+import '../utils/logger/global_logger.dart';
 
 class NotificationController {
   static ReceivedAction? initialAction;
@@ -33,6 +34,8 @@ class NotificationController {
 
     initialAction = await AwesomeNotifications()
         .getInitialNotificationAction(removeFromActionEvents: false);
+
+    gLogger.i('Initialized Notifications');
   }
 
   static Future<bool> checkNotificationPermissions() async {
@@ -48,9 +51,7 @@ class NotificationController {
 
     final DateTime scheduledTime = reminder.dateAndTime;
 
-    debugPrint('[NotificationController] Scheduled at: $scheduledTime');
-    debugPrint(
-        '[NotificationController] duration: ${reminder.autoSnoozeInterval}');
+    gLogger.i('Notification Scheduled | ID: $id | DT : $scheduledTime');
 
     await AndroidAlarmManager.oneShotAt(
       scheduledTime,
@@ -69,7 +70,7 @@ class NotificationController {
   @pragma('vm:entry-point')
   static Future<void> showNotificationCallback(
       int id, Map<String, dynamic> params) async {
-    debugPrint('[showNotificationCallback] running');
+    gLogger.i('Notification Callback Running | callBackId: $id');
 
     final Map<String, String> strParams = params.cast<String, String>();
     final Reminder reminder = Reminder.fromMap(strParams);
@@ -78,7 +79,7 @@ class NotificationController {
     int notificationId =
         DateTime.now().difference(reminder.baseDateTime).inMinutes;
 
-    print('notifId: $notificationId');
+    gLogger.i('Showing notification | notificationID: $notificationId');
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
@@ -102,47 +103,60 @@ class NotificationController {
         reminder.dateAndTime.add(reminder.autoSnoozeInterval);
     reminder.dateAndTime = nextScheduledTime;
     scheduleNotification(reminder);
+    gLogger.i(
+      'Scheduled Next Notification | ID : ${reminder.id} | DT : ${reminder.dateAndTime}',
+    );
   }
 
   /// Used to remove notifications present in user's notification space.
-  static Future<void> removeNotifications(String groupKey) async {
+  static Future<void> removeNotifications(String? groupKey) async {
+    if (groupKey == null) {
+      gLogger.w('Received null groupKey in removeNotifications');
+      return;
+    }
+
     await AwesomeNotifications().cancelNotificationsByGroupKey(groupKey);
+    gLogger.i('Cleared present notifications | gKey : $groupKey');
   }
 
   /// Cancels the scheduled notification.
-  static Future<void> cancelScheduledNotification(String groupKey) async {
-    if (groupKey == notificationNullGroupKey) {
-      debugPrint("[NotificationController] Null groupkey given to cancel.");
+  static Future<void> cancelScheduledNotification(String? groupKey) async {
+    if (groupKey == null) {
+      gLogger.w('Received null groupKey in cancelScheduleNotification');
       return;
     }
 
     // Cancelling through ALM coz AwesomeN is used to only send notification.
     // It has no hands in scheduling notifications.
     await AndroidAlarmManager.cancel(int.parse(groupKey));
-    debugPrint("$groupKey cancelled scheduled notification.");
+    gLogger.i('Cancelled scheduled notifications | gKey : $groupKey');
   }
 
   static Future<void> startListeningNotificationEvents() async {
     AwesomeNotifications()
         .setListeners(onActionReceivedMethod: onActionReceivedMethod);
+
+    gLogger.i('Started Listening to notification events');
   }
 
   @pragma('vm:entry-point')
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
-    debugPrint(
-        '[onActionReceivedMethod] Received action: ${receivedAction.actionType}');
+    gLogger.i(
+        'Received notification action | Action : ${receivedAction.actionType}');
 
     if (receivedAction.actionType == ActionType.Default) {
       final payload = receivedAction.payload;
       if (payload == null) {
-        throw "[onActionReceivedMethod] Payload is null";
+        gLogger.e(
+            'Received null payload through notification action | gKey : ${receivedAction.groupKey}');
+        throw 'Received null payload through notification action | gKey : ${receivedAction.groupKey}';
       } else {
         final context = navigatorKey.currentContext!;
-
-        debugPrint(
-            '[onActionReceivedMethod] Showing bottom sheet with reminder: $payload');
+        final Reminder reminder = Reminder.fromMap(payload);
+        gLogger.i(
+            'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}');
 
         showModalBottomSheet(
             isScrollControlled: true,
@@ -152,10 +166,7 @@ class NotificationController {
                 thisReminder: Reminder.fromMap(payload),
               );
             });
-        debugPrint(
-            '[onActionReceivedMethod] Removing notifications with group key: ${receivedAction.groupKey ?? notificationNullGroupKey}');
-        removeNotifications(
-            receivedAction.groupKey ?? notificationNullGroupKey);
+        removeNotifications(receivedAction.groupKey);
       }
     }
 
@@ -164,6 +175,7 @@ class NotificationController {
     bool isMainActive = await isMainIsolateActive();
 
     if (receivedAction.buttonKeyPressed == 'done') {
+      gLogger.i('Notification action | Done Button Pressed');
       cancelScheduledNotification(
           receivedAction.groupKey ?? notificationNullGroupKey);
       if (isMainActive == true) {
@@ -172,46 +184,55 @@ class NotificationController {
           'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
         };
         mainIsolate!.send(message);
-        debugPrint(
-            '[onActionReceivedMethod] Sent message to main isolate: $message');
+        gLogger.i('Sent action message to main isolate | Message : $message');
       } else {
         await Hive.initFlutter();
 
         await Hive.openBox(HiveBoxNames.pendingRemovals.name);
+
+        if (receivedAction.groupKey == null) {
+          gLogger.e(
+              'Received null groupKey in onActionReceivedMethod | gKey : ${receivedAction.groupKey}');
+          throw 'Received null groupKey in onActionReceivedMethod | gKey : ${receivedAction.groupKey}';
+        }
         PendingRemovalsDB.addPendingRemoval(
-            int.parse(receivedAction.groupKey ?? notificationNullGroupKey));
-        debugPrint(
-            '[onActionReceivedMethod] Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}');
+            int.parse(receivedAction.groupKey!));
+        gLogger.i(
+            'Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}');
       }
-    } else {
-      debugPrint(
-          "[onActionReceivedMethod] Action on notification: ${receivedAction.actionType}");
     }
   }
 
   @pragma('vm:entry-point')
   static Future<bool> isMainIsolateActive() async {
+    gLogger.i('Checking main isolate status');
     final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
     if (mainIsolate != null) {
       final receivePort = ReceivePort();
       IsolateNameServer.registerPortWithName(
           receivePort.sendPort, 'NotificationIsolate');
       mainIsolate.send('ping');
+      gLogger.i("Send 'ping' message to check for main isolate's existence.");
       final timeout = Duration(seconds: 3);
       try {
         final pong = await receivePort.first.timeout(timeout);
         if (pong == 'pong') {
+          gLogger.i("Message 'pong' received | Main isolate active");
           return true;
         }
       } catch (e) {
         if (e is TimeoutException) {
+          gLogger.i(
+              "Timeout | 'pong' msg not received | Main Isolate not active.");
           return false;
         }
       } finally {
         receivePort.close();
         IsolateNameServer.removePortNameMapping('NotificationIsolate');
+        gLogger.i('Closed notification receivePort');
       }
     }
+    gLogger.i('Main Isolate not found');
     return false;
   }
 }
