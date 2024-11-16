@@ -1,5 +1,6 @@
 import 'package:Rem/screens/settings_screen/sections/backup_restore_section/backup_restore_section.dart';
 import 'package:Rem/screens/settings_screen/sections/gestures_section/gestures_section.dart';
+import 'package:Rem/screens/settings_screen/sections/logs/logs_section.dart';
 import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/new_reminder_section.dart';
 import 'package:Rem/screens/settings_screen/sections/other_section/other_section.dart';
 import 'package:Rem/screens/settings_screen/sections/user_preferences_section/user_pref_settings.dart';
@@ -41,6 +42,8 @@ class SettingsScreen extends HookConsumerWidget {
             NewReminderSection(),
             _buildPaddedDivider(),
             BackupRestoreSection(),
+            _buildPaddedDivider(),
+            LogsSection(),
             _buildPaddedDivider(),
             OtherSection(),
             _buildVersionWidget()
