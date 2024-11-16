@@ -1,14 +1,19 @@
 import 'package:Rem/provider/archives_provider.dart';
 import 'package:Rem/screens/archive_screen/widgets/archived_reminder_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../utils/logger/global_logger.dart';
 
-class ArchiveScreen extends ConsumerWidget {
+class ArchiveScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    gLogger.i('Build archive screen');
+    useEffect(() {
+      gLogger.i('Built Archives Sheet');
+      return null;
+    }, []);
+
     final archivedReminders = ref.watch(archivesProvider).archivedReminders;
 
     return Scaffold(

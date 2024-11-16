@@ -75,7 +75,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     // Show the what's new dialog
     WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      gLogger.i('Show what\'s new dialog');
       WhatsNewDialog.checkAndShowWhatsNewDialog(navigatorKey.currentContext!);
     });
   }
@@ -93,7 +92,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    gLogger.i('Built HomeScreen');
     remindersMap = ref.watch(remindersProvider).categorizedReminders;
 
     final isEmpty = ref.watch(remindersProvider).reminderCount == 0;

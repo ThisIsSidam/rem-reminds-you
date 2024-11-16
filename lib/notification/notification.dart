@@ -70,6 +70,7 @@ class NotificationController {
   @pragma('vm:entry-point')
   static Future<void> showNotificationCallback(
       int id, Map<String, dynamic> params) async {
+    await initLogger();
     gLogger.i('Notification Callback Running | callBackId: $id');
 
     final Map<String, String> strParams = params.cast<String, String>();
@@ -143,6 +144,7 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
+    await initLogger();
     gLogger.i(
         'Received notification action | Action : ${receivedAction.actionType}');
 

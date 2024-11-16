@@ -4,15 +4,19 @@ import 'package:Rem/screens/settings_screen/sections/new_reminder_settings/new_r
 import 'package:Rem/screens/settings_screen/sections/other_section/other_section.dart';
 import 'package:Rem/screens/settings_screen/sections/user_preferences_section/user_pref_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../utils/logger/global_logger.dart';
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    gLogger.i('Built settings screen');
+    useEffect(() {
+      gLogger.i('Built Settings Screen');
+      return null;
+    }, []);
 
     return Scaffold(
       appBar: AppBar(

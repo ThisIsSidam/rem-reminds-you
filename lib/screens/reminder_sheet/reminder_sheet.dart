@@ -27,6 +27,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
 
   @override
   void initState() {
+    gLogger.i('Build Reminder Sheet');
     initialReminder = widget.thisReminder.deepCopyReminder();
     initialReminder.autoSnoozeInterval =
         ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
@@ -44,7 +45,6 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
 
   @override
   Widget build(BuildContext context) {
-    gLogger.i('Build Reminder Sheet');
     final ThemeData theme = Theme.of(context);
 
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;

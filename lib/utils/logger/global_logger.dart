@@ -7,10 +7,19 @@ import 'package:path_provider/path_provider.dart';
 /// Needs to be called [initLogger] for it to work.
 late final Logger gLogger;
 
+bool get isLoggerInitialized {
+  try {
+    return gLogger != null;
+  } catch (e) {
+    return false;
+  }
+}
+
 Future<void> initLogger() async {
   final FileOutput fileOutput = FileOutput();
   await fileOutput.init();
 
+  if (isLoggerInitialized) return;
   gLogger = Logger(
     printer: HybridPrinter(
       LogfmtPrinter(),

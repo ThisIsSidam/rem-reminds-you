@@ -2,6 +2,8 @@ import 'package:Rem/database/UserDB.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../utils/logger/global_logger.dart';
+
 class WhatsNewDialog {
   /// Check if app version stored in UsedDB match with current
   /// version or not. If not, show the dialog and save the
@@ -17,6 +19,7 @@ class WhatsNewDialog {
   }
 
   static void showWhatsNewDialog(BuildContext context) async {
+    gLogger.i('Showing what\'s new dialog');
     showDialog(
       context: context,
       builder: (context) {
