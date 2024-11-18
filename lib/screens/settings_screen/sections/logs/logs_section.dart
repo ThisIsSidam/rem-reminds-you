@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:Rem/consts/enums/files_n_folders.dart';
 import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
+import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -53,22 +56,29 @@ class LogsSection extends ConsumerWidget {
 
         try {
           final Directory storage = await getApplicationDocumentsDirectory();
-          final File srcFile = File('${storage.path}/app_logs.txt');
+          final Directory srcFolder =
+              Directory('${storage.path}/${FilesNFolders.logsFolder.name}');
 
           Directory extStorage = Directory('storage/emulated/0/Download');
           if (extStorage.existsSync() == false) {
             extStorage.createSync();
           }
 
-          final outputFile = File('${extStorage.path}/rem_logs.txt');
-          await srcFile.copy(outputFile.path);
+          final outputFile = File('${extStorage.path}/rem_logs.zip');
+          final List<int>? zipData =
+              await createLogsZipData(srcFolder, outputFile);
+
+          if (zipData != null) {
+            await outputFile.writeAsBytes(zipData);
+          }
 
           ScaffoldMessenger.of(context).showSnackBar(
             buildCustomSnackBar(
-                content: Text('Backup created: ${outputFile.path}')),
+                content: Text('Logs saved : ${outputFile.path}')),
           );
         } catch (e, stackTrace) {
-          gLogger.e('Error during backup', error: e, stackTrace: stackTrace);
+          gLogger.e('Error during exporting logs',
+              error: e, stackTrace: stackTrace);
           ScaffoldMessenger.of(context).showSnackBar(
             buildCustomSnackBar(
                 content: Text('Backup failed: ${e.toString()}')),
@@ -76,5 +86,31 @@ class LogsSection extends ConsumerWidget {
         }
       },
     );
+  }
+
+  Future<List<int>?> createLogsZipData(
+      Directory srcFolder, File outputFile) async {
+    final encoder = ZipEncoder();
+    final archive = Archive();
+
+    // Get all files in the source directory
+    final entities = await srcFolder.list(recursive: true).toList();
+
+    // Add each file to the archive
+    for (var entity in entities) {
+      if (entity is File) {
+        final relativePath = p.relative(entity.path, from: srcFolder.path);
+        final data = await entity.readAsBytes();
+        final archiveFile = ArchiveFile(
+          relativePath,
+          data.length,
+          data,
+        );
+        archive.addFile(archiveFile);
+      }
+    }
+
+    final List<int>? zipData = encoder.encode(archive);
+    return zipData;
   }
 }
