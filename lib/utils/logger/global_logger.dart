@@ -1,10 +1,6 @@
-import 'dart:io';
-
-import 'package:Rem/consts/enums/files_n_folders.dart';
-import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-import 'package:mutex/mutex.dart';
-import 'package:path_provider/path_provider.dart';
+
+import 'file_output.dart';
 
 /// Global instance of [Logger].
 /// Needs to be called [initLogger] for it to work.
@@ -19,7 +15,7 @@ bool get isLoggerInitialized {
 }
 
 Future<void> initLogger() async {
-  final FileOutput fileOutput = FileOutput();
+  final AppFileOutput fileOutput = AppFileOutput();
   await fileOutput.init();
 
   if (isLoggerInitialized) return;
@@ -57,49 +53,4 @@ Future<void> initLogger() async {
       <LogOutput>[ConsoleOutput(), fileOutput],
     ),
   );
-}
-
-class FileOutput extends LogOutput {
-  Directory? logs_directory;
-  final mutex = Mutex();
-
-  Future<void> init() async {
-    final directory = await getApplicationDocumentsDirectory();
-    logs_directory =
-        Directory('${directory.path}/${FilesNFolders.logsFolder.name}');
-
-    if (!await logs_directory!.exists()) {
-      await logs_directory!.create();
-    }
-  }
-
-  String getDateAsString() {
-    final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    return formatter.format(now);
-  }
-
-  @override
-  void output(OutputEvent event) async {
-    if (logs_directory == null) {
-      await init();
-    }
-
-    final File file = File(
-        '${logs_directory?.path}/${FilesNFolders.logFilePrefix.name}${getDateAsString()}.txt');
-
-    if (!await file.exists()) {
-      await file.create();
-    }
-
-    // Use a mutex to ensure writes do not overlap
-    await mutex.protect(() async {
-      for (var line in event.lines) {
-        final String formattedDateTime =
-            DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(DateTime.now());
-        await file.writeAsString('$formattedDateTime  $line\n',
-            mode: FileMode.append);
-      }
-    });
-  }
 }

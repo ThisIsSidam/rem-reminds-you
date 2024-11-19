@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:Rem/consts/enums/files_n_folders.dart';
+import 'package:Rem/utils/logger/file_output.dart';
 import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
-import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -33,6 +32,7 @@ class LogsSection extends ConsumerWidget {
         Column(
           children: [
             getLogsTile(context, ref),
+            getClearLogsTile(context),
           ],
         )
       ],
@@ -66,7 +66,7 @@ class LogsSection extends ConsumerWidget {
 
           final outputFile = File('${extStorage.path}/rem_logs.zip');
           final List<int>? zipData =
-              await createLogsZipData(srcFolder, outputFile);
+              await LogsManager.createLogsZipData(srcFolder, outputFile);
 
           if (zipData != null) {
             await outputFile.writeAsBytes(zipData);
@@ -88,29 +88,19 @@ class LogsSection extends ConsumerWidget {
     );
   }
 
-  Future<List<int>?> createLogsZipData(
-      Directory srcFolder, File outputFile) async {
-    final encoder = ZipEncoder();
-    final archive = Archive();
-
-    // Get all files in the source directory
-    final entities = await srcFolder.list(recursive: true).toList();
-
-    // Add each file to the archive
-    for (var entity in entities) {
-      if (entity is File) {
-        final relativePath = p.relative(entity.path, from: srcFolder.path);
-        final data = await entity.readAsBytes();
-        final archiveFile = ArchiveFile(
-          relativePath,
-          data.length,
-          data,
+  Widget getClearLogsTile(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.folder_delete),
+      title: Text(
+        'Clear all logs',
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
+      onTap: () async {
+        await LogsManager.clearLogs();
+        ScaffoldMessenger.of(context).showSnackBar(
+          buildCustomSnackBar(content: Text('Successfully deleted all logs')),
         );
-        archive.addFile(archiveFile);
-      }
-    }
-
-    final List<int>? zipData = encoder.encode(archive);
-    return zipData;
+      },
+    );
   }
 }
