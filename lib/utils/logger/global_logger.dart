@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Rem/consts/enums/files_n_folders.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:mutex/mutex.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Global instance of [Logger].
@@ -60,15 +61,13 @@ Future<void> initLogger() async {
 
 class FileOutput extends LogOutput {
   Directory? logs_directory;
-
-  FileOutput();
+  final mutex = Mutex();
 
   Future<void> init() async {
     final directory = await getApplicationDocumentsDirectory();
     logs_directory =
         Directory('${directory.path}/${FilesNFolders.logsFolder.name}');
 
-    // Create folder if it doesn't exist
     if (!await logs_directory!.exists()) {
       await logs_directory!.create();
     }
@@ -89,17 +88,18 @@ class FileOutput extends LogOutput {
     final File file = File(
         '${logs_directory?.path}/${FilesNFolders.logFilePrefix.name}${getDateAsString()}.txt');
 
-    // Create file if it doesn't exist
     if (!await file.exists()) {
       await file.create();
     }
 
-    // Write logs to file
-    for (var line in event.lines) {
-      final String formattedDateTime =
-          DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(DateTime.now());
-      await file.writeAsString('$formattedDateTime   $line\n',
-          mode: FileMode.append);
-    }
+    // Use a mutex to ensure writes do not overlap
+    await mutex.protect(() async {
+      for (var line in event.lines) {
+        final String formattedDateTime =
+            DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(DateTime.now());
+        await file.writeAsString('$formattedDateTime  $line\n',
+            mode: FileMode.append);
+      }
+    });
   }
 }
