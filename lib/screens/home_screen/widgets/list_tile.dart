@@ -1,10 +1,11 @@
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 
+import '../../../modals/reminder_modal/reminder_modal.dart';
+
 class HomePageReminderEntryListTile extends StatelessWidget {
-  final Reminder reminder;
+  final ReminderModal reminder;
 
   const HomePageReminderEntryListTile({
     super.key,
@@ -20,17 +21,17 @@ class HomePageReminderEntryListTile extends StatelessWidget {
         softWrap: true,
       ),
       dense: true,
-      subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
+      subtitle: Text(getFormattedDateTime(reminder.dateTime),
           style: Theme.of(context).textTheme.bodyMedium),
       trailing: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (reminder.recurringInterval != RecurringInterval.none)
-            Text(
-              "⟳ ${reminder.recurringInterval.name}",
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+          // if (reminder is RecurringReminderModal && reminder.recurringInterval != RecurringInterval.none)
+          //   Text(
+          //     "⟳ ${reminder.recurringInterval.name}",
+          //     style: Theme.of(context).textTheme.bodySmall,
+          //   ),
           Text(
             getFormattedDuration(),
             style: Theme.of(context).textTheme.bodySmall,
@@ -47,7 +48,7 @@ class HomePageReminderEntryListTile extends StatelessWidget {
             context: context,
             builder: (context) {
               return ReminderSheet(
-                thisReminder: reminder,
+                reminder: reminder,
               );
             });
       },
@@ -55,11 +56,11 @@ class HomePageReminderEntryListTile extends StatelessWidget {
   }
 
   String getFormattedDuration() {
-    if (reminder.dateAndTime.isBefore(DateTime.now())) {
-      return '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'
+    if (reminder.dateTime.isBefore(DateTime.now())) {
+      return '${getPrettyDurationFromDateTime(reminder.dateTime)} ago'
           .replaceFirst('-', '');
     } else {
-      return 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}';
+      return 'in ${getPrettyDurationFromDateTime(reminder.dateTime)}';
     }
   }
 }

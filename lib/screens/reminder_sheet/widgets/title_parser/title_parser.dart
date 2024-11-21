@@ -1,34 +1,34 @@
 import 'package:Rem/provider/current_reminder_provider.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TitleParseHandler {
   WidgetRef ref;
-  late Reminder thisReminder;
   late DateTime originalDT;
+  late DateTime dateTime;
+  late String title;
 
   TitleParseHandler({
     required this.ref,
   }) {
-    this.thisReminder = ref.read(reminderNotifierProvider);
-    this.originalDT = thisReminder.dateAndTime;
+    this.dateTime = ref.read(reminderNotifierProvider).dateTime;
+    this.originalDT = dateTime;
+    this.title = ref.read(reminderNotifierProvider).preParsedTitle;
   }
 
   void parse(String str) {
-    thisReminder.preParsedTitle = str;
     final parsedString = extractDateTimeString(str);
 
     if (parsedString != null) {
       final parsedDateTime = getParsedDateTime(parsedString);
       if (parsedDateTime != null) {
-        thisReminder.updatedTime(parsedDateTime);
+        updatedTime(parsedDateTime);
       } else {
-        thisReminder.dateAndTime = originalDT;
+        dateTime = originalDT;
       }
     } else {
-      thisReminder.title = str;
+      title = str;
     }
-    ref.read(reminderNotifierProvider.notifier).updateReminder(thisReminder);
+    ref.read(reminderNotifierProvider).updateDateTime(dateTime);
   }
 
   /// Extracts the [DateTime] or [Duration] string.
@@ -37,7 +37,7 @@ class TitleParseHandler {
     final atIndex = str.lastIndexOf(' at ');
 
     if (inIndex == -1 && atIndex == -1) {
-      thisReminder.title = str;
+      title = str;
     }
 
     final separatorIndex =
@@ -47,7 +47,7 @@ class TitleParseHandler {
       return null;
     }
 
-    thisReminder.title = str.substring(0, separatorIndex).trim();
+    title = str.substring(0, separatorIndex).trim();
 
     String parseString = str.substring(separatorIndex).trim();
     return parseString;
@@ -108,18 +108,35 @@ class TitleParseHandler {
     }
 
     final now = DateTime.now();
-    var dateTime = DateTime(
-        thisReminder.dateAndTime.year,
-        thisReminder.dateAndTime.month,
-        thisReminder.dateAndTime.day,
-        hour,
-        minute);
+    var newDT = DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+      hour,
+      minute,
+    );
 
     // If the parsed time is earlier than the current time, assume it's for tomorrow
-    if (dateTime.isBefore(now)) {
-      dateTime = dateTime.add(const Duration(days: 1));
+    if (newDT.isBefore(now)) {
+      newDT = newDT.add(const Duration(days: 1));
     }
 
-    return dateTime;
+    return newDT;
+  }
+
+  /// If the time to be updated is in the past, increase it by a day.
+  void updatedTime(DateTime updatedTime) {
+    if (updatedTime.isBefore(DateTime.now())) {
+      updatedTime = updatedTime.add(Duration(days: 1));
+    }
+    updatedTime = DateTime(
+        // Seconds should be 0
+        updatedTime.year,
+        updatedTime.month,
+        updatedTime.day,
+        updatedTime.hour,
+        updatedTime.minute,
+        0);
+    dateTime = updatedTime;
   }
 }

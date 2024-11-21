@@ -1,7 +1,7 @@
 import 'package:Rem/consts/enums/swipe_actions.dart';
+import 'package:Rem/modals/recurring_reminder/recurring_reminder.dart';
 import 'package:Rem/provider/reminders_provider.dart';
 import 'package:Rem/provider/settings_provider.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/list_tile.dart';
 import 'package:Rem/widgets/one_time_undo_button/one_time_undo_button.dart';
 import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
@@ -9,9 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../modals/recurring_interval/recurring_interval.dart';
+import '../../../modals/reminder_modal/reminder_modal.dart';
+
 class HomeScreenReminderListSection extends ConsumerWidget {
   final Widget label;
-  final List<Reminder> remindersList;
+  final List<ReminderModal> remindersList;
 
   const HomeScreenReminderListSection({
     super.key,
@@ -67,7 +70,7 @@ class HomeScreenReminderListSection extends ConsumerWidget {
 class ActionPaneManager {
   static ActionPane? getActionToLeft(
     WidgetRef ref,
-    List<Reminder> remindersList,
+    List<ReminderModal> remindersList,
     int index,
     BuildContext context,
   ) {
@@ -103,7 +106,7 @@ class ActionPaneManager {
 
   static ActionPane? getActionToRight(
     WidgetRef ref,
-    List<Reminder> remindersList,
+    List<ReminderModal> remindersList,
     int index,
     BuildContext context,
   ) {
@@ -139,7 +142,7 @@ class ActionPaneManager {
 
   static ActionPane _doneActionPane(
     BuildContext context,
-    Reminder reminder,
+    ReminderModal reminder,
     WidgetRef ref,
   ) {
     return ActionPane(
@@ -148,12 +151,12 @@ class ActionPaneManager {
   }
 
   static ActionPane _deleteActionPane(
-    List<Reminder> remindersList,
+    List<ReminderModal> remindersList,
     int index,
     BuildContext context,
     WidgetRef ref,
   ) {
-    final Reminder reminder = remindersList[index];
+    final ReminderModal reminder = remindersList[index];
 
     return ActionPane(
         motion: const StretchMotion(),
@@ -175,7 +178,7 @@ class ActionPaneManager {
 
   static ActionPane _doneAndDeleteActionPane(
     BuildContext context,
-    List<Reminder> remindersList,
+    List<ReminderModal> remindersList,
     int index,
     WidgetRef ref,
   ) {
@@ -195,13 +198,14 @@ class ActionPaneManager {
 
   static void _slideAndRemoveReminder(
     BuildContext context,
-    Reminder reminder,
+    ReminderModal reminder,
     WidgetRef ref,
   ) {
     // Store the provider reference before any potential disposal
     final remindersProviderValue = ref.read(remindersProvider);
 
-    if (reminder.recurringInterval != RecurringInterval.none) {
+    if (reminder is RecurringReminderModal &&
+        reminder.recurringInterval != RecurringInterval.none) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -304,7 +308,7 @@ class ActionPaneManager {
   // We should also fix the same issue in _postponeActionPane
   static ActionPane _postponeActionPane(
     BuildContext context,
-    Reminder reminder,
+    ReminderModal reminder,
     WidgetRef ref,
   ) {
     final Duration postponeDuration =
@@ -315,7 +319,7 @@ class ActionPaneManager {
       SlidableAction(
         icon: Icons.add,
         onPressed: (context) {
-          reminder.dateAndTime = reminder.dateAndTime.add(postponeDuration);
+          reminder.dateTime = reminder.dateTime.add(postponeDuration);
           remindersProviderValue.saveReminder(reminder);
 
           final ValueKey snackBarKey =
@@ -328,8 +332,8 @@ class ActionPaneManager {
                   const Spacer(),
                   OneTimeUndoButton(
                     onPressed: () {
-                      reminder.dateAndTime =
-                          reminder.dateAndTime.subtract(postponeDuration);
+                      reminder.dateTime =
+                          reminder.dateTime.subtract(postponeDuration);
                       remindersProviderValue.saveReminder(reminder);
                     },
                   )
@@ -343,7 +347,7 @@ class ActionPaneManager {
   // Also fix _doneSlidableAction
   static Widget _doneSlidableAction(
     BuildContext context,
-    Reminder reminder,
+    ReminderModal reminder,
     WidgetRef ref,
   ) {
     final remindersProviderValue = ref.read(remindersProvider);
@@ -354,7 +358,8 @@ class ActionPaneManager {
       onPressed: (context) {
         remindersProviderValue.markAsDone(reminder.id);
 
-        if (reminder.recurringInterval == RecurringInterval.none) {
+        if (reminder is RecurringReminderModal &&
+            reminder.recurringInterval == RecurringInterval.none) {
           final ValueKey snackBarKey =
               ValueKey<String>('archived-${reminder.id}');
           ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(

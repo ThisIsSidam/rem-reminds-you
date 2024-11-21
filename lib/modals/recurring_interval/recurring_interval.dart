@@ -1,9 +1,16 @@
-part of '../../reminder.dart';
+import 'package:hive/hive.dart';
 
+part 'recurring_interval.g.dart';
+
+@HiveType(typeId: 2)
 enum RecurringInterval {
+  @HiveField(0)
   none,
+  @HiveField(1)
   daily,
+  @HiveField(2)
   weekly,
+  @HiveField(3)
   custom;
 
   @override
@@ -27,11 +34,7 @@ enum RecurringInterval {
     );
   }
 
-  static RecurringInterval fromInt(int value) {
+  static RecurringInterval fromIndex(int value) {
     return RecurringInterval.values[value];
-  }
-
-  static int getIndex(RecurringInterval interval) {
-    return interval.index;
   }
 }

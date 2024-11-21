@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:Rem/consts/enums/hive_enums.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../reminder_class/reminder.dart';
+import '../../modals/reminder_modal/reminder_modal.dart';
 
 class RemindersDatabaseController {
   static final _remindersBox = Hive.box(HiveBoxNames.reminders.name);
 
-  static Map<int, Reminder> getReminders() {
+  static Map<int, ReminderModal> getReminders() {
     if (!_remindersBox.isOpen) {
       Future(() {
         Hive.openBox(HiveBoxNames.reminders.name);
@@ -17,11 +17,11 @@ class RemindersDatabaseController {
 
     return _remindersBox
             .get(HiveKeys.remindersBoxKey.key)
-            ?.cast<int, Reminder>() ??
+            ?.cast<int, ReminderModal>() ??
         {};
   }
 
-  static Future<void> updateReminders(Map<int, Reminder> reminders) async {
+  static Future<void> updateReminders(Map<int, ReminderModal> reminders) async {
     await _remindersBox.put(HiveKeys.remindersBoxKey.key, reminders);
   }
 
@@ -30,10 +30,10 @@ class RemindersDatabaseController {
   }
 
   static Future<String> getBackup() async {
-    Map<int, Reminder> reminders = getReminders();
+    Map<int, ReminderModal> reminders = getReminders();
     Map<String, dynamic> backupData = {
       'reminders': reminders
-          .map((id, reminder) => MapEntry(id.toString(), reminder.toMap())),
+          .map((id, reminder) => MapEntry(id.toString(), reminder.toJson())),
       'timestamp': DateTime.now().toIso8601String(),
       'version': '1.0',
     };
@@ -45,11 +45,11 @@ class RemindersDatabaseController {
       Map<String, dynamic> backupData = jsonDecode(jsonData);
       Map<String, dynamic> remindersData = backupData['reminders'];
 
-      Map<int, Reminder> reminders = {};
+      Map<int, ReminderModal> reminders = {};
       remindersData.forEach((key, value) {
         int id = int.parse(key);
         value = value.cast<String, String?>();
-        reminders[id] = Reminder.fromMap(value);
+        reminders[id] = ReminderModal.fromJson(value);
       });
 
       removeAllReminders();

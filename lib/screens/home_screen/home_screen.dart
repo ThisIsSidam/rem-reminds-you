@@ -5,14 +5,13 @@ import 'package:Rem/consts/consts.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/provider/reminders_provider.dart';
-import 'package:Rem/provider/settings_provider.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/home_screen/widgets/home_screen_lists.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/widgets/whats_new_dialog/whats_new_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../modals/reminder_modal/reminder_modal.dart';
 import '../../utils/logger/global_logger.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -24,7 +23,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
-  Map<String, List<Reminder>> remindersMap = {};
+  Map<String, List<ReminderModal>> remindersMap = {};
   final ReceivePort receivePort = ReceivePort();
   SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
 
@@ -140,17 +139,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               child: ElevatedButton(
                 onPressed: () {
                   gLogger.i('Show new reminder sheet');
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return ReminderSheet(
-                          thisReminder: Reminder(
-                              dateAndTime: DateTime.now().add(ref
-                                  .read(userSettingsProvider)
-                                  .defaultLeadDuration)),
-                        );
-                      });
+                  _showReminderSheet();
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -219,19 +208,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         onPressed: () {
           gLogger.i('Show new reminder sheet');
-          showModalBottomSheet(
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return ReminderSheet(
-                  thisReminder: Reminder(
-                      dateAndTime: DateTime.now().add(
-                          ref.read(userSettingsProvider).defaultLeadDuration)),
-                );
-              });
+          _showReminderSheet();
         },
         child: const Icon(
           Icons.add,
         ));
+  }
+
+  void _showReminderSheet({ReminderModal? reminder}) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return ReminderSheet(
+            reminder: reminder,
+          );
+        });
   }
 }

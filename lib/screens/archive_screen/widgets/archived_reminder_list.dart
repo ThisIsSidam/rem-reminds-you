@@ -1,5 +1,4 @@
 import 'package:Rem/provider/archives_provider.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:Rem/widgets/snack_bar/custom_snack_bar.dart';
@@ -7,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../modals/reminder_modal/reminder_modal.dart';
 import '../../../utils/logger/global_logger.dart';
 
 class ArchiveEntryLists extends ConsumerWidget {
-  final List<Reminder> remindersList;
+  final List<ReminderModal> remindersList;
 
   const ArchiveEntryLists({
     super.key,
@@ -18,7 +18,7 @@ class ArchiveEntryLists extends ConsumerWidget {
   });
 
   void _slideAndRemoveReminder(
-      BuildContext context, Reminder reminder, WidgetRef ref) {
+      BuildContext context, ReminderModal reminder, WidgetRef ref) {
     final archivesNotifier = ref.read(archivesProvider);
     archivesNotifier.deleteArchivedReminder(
       reminder.id,
@@ -99,7 +99,7 @@ class ArchiveEntryLists extends ConsumerWidget {
 }
 
 class _ArchiveReminderEntryListTile extends ConsumerWidget {
-  final Reminder reminder;
+  final ReminderModal reminder;
 
   const _ArchiveReminderEntryListTile({required this.reminder});
 
@@ -108,7 +108,7 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
     return ListTile(
       title:
           Text(reminder.title, style: Theme.of(context).textTheme.titleMedium),
-      subtitle: Text(getFormattedDateTime(reminder.dateAndTime),
+      subtitle: Text(getFormattedDateTime(reminder.dateTime),
           style: Theme.of(context).textTheme.bodyMedium),
       tileColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -121,7 +121,7 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
             context: context,
             builder: (context) {
               return ReminderSheet(
-                thisReminder: reminder,
+                reminder: reminder,
               );
             });
       },

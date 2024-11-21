@@ -1,6 +1,4 @@
-import 'package:Rem/provider/current_reminder_provider.dart';
-import 'package:Rem/provider/settings_provider.dart';
-import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/modals/reminder_modal/reminder_modal.dart';
 import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/bottom_elements/recurrence_options.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/bottom_elements/snooze_options.dart';
@@ -11,31 +9,31 @@ import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../provider/current_reminder_provider.dart';
+
 class ReminderSheet extends ConsumerStatefulWidget {
-  final Reminder thisReminder;
   const ReminderSheet({
+    this.reminder,
     super.key,
-    required this.thisReminder,
   });
+
+  final ReminderModal? reminder;
 
   @override
   ConsumerState<ReminderSheet> createState() => _ReminderSheetState();
 }
 
 class _ReminderSheetState extends ConsumerState<ReminderSheet> {
-  late Reminder initialReminder;
-
   @override
   void initState() {
     gLogger.i('Build Reminder Sheet');
-    initialReminder = widget.thisReminder.deepCopyReminder();
-    initialReminder.autoSnoozeInterval =
-        ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
-
-    final reminderProvider = ref.read(reminderNotifierProvider.notifier);
 
     Future(() {
-      reminderProvider.updateReminder(initialReminder);
+      if (widget.reminder != null) {
+        ref.read(reminderNotifierProvider).loadValues(widget.reminder!);
+      } else {
+        ref.read(reminderNotifierProvider).resetValues();
+      }
       ref.read(bottomElementProvider).setAsNone();
       gLogger.i("Reminder initialized and bottom element set to none");
     });
@@ -63,7 +61,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TitleField(),
-              DateTimeSection(),
+              DateTimeField(),
               KeyButtonsRow(),
               _buildBottomElement()
             ],

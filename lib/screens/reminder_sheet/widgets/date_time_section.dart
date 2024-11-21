@@ -1,34 +1,20 @@
 import 'package:Rem/provider/current_reminder_provider.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/time_button.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../provider/settings_provider.dart';
 
-class DateTimeSection extends ConsumerStatefulWidget {
-  const DateTimeSection({super.key});
-
+class DateTimeField extends HookConsumerWidget {
   @override
-  ConsumerState<DateTimeSection> createState() => _DateTimeFieldState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showTimePickerNotifier = useValueNotifier<bool>(false);
 
-class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
-  final titleController = TextEditingController();
-  bool showTimePicker = false;
-
-  @override
-  void initState() {
-    final reminder = ref.read(reminderNotifierProvider);
-    titleController.text = reminder.title;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final reminder = ref.watch(reminderNotifierProvider);
+    final dateTime =
+        ref.watch(reminderNotifierProvider.select((p) => p.dateTime));
     final settings = ref.watch(userSettingsProvider);
 
     return Column(
@@ -36,19 +22,15 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
       children: [
         TextButton(
           onPressed: () {
-            setState(
-              () {
-                showTimePicker = !showTimePicker;
-              },
-            );
+            showTimePickerNotifier.value = !showTimePickerNotifier.value;
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                getFormattedDateTime(reminder.dateAndTime),
+                getFormattedDateTime(dateTime),
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: reminder.dateAndTime.isBefore(DateTime.now())
+                      color: dateTime.isBefore(DateTime.now())
                           ? Theme.of(context).colorScheme.error
                           : null,
                     ),
@@ -58,12 +40,12 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
               ),
               Flexible(
                 child: Text(
-                  reminder.dateAndTime.isBefore(DateTime.now())
-                      ? '${getPrettyDurationFromDateTime(reminder.dateAndTime)} ago'
+                  dateTime.isBefore(DateTime.now())
+                      ? '${getPrettyDurationFromDateTime(dateTime)} ago'
                           .replaceFirst('-', '')
-                      : 'in ${getPrettyDurationFromDateTime(reminder.dateAndTime)}',
+                      : 'in ${getPrettyDurationFromDateTime(dateTime)}',
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: reminder.dateAndTime.isBefore(DateTime.now())
+                        color: dateTime.isBefore(DateTime.now())
                             ? Theme.of(context).colorScheme.error
                             : null,
                       ),
@@ -76,15 +58,18 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
         const SizedBox(
           height: 8,
         ),
-        AnimatedCrossFade(
-          duration: Duration(milliseconds: 300),
-          firstChild: _buildTimeButtonsGrid(settings),
-          secondChild: _buildTimePicker(reminder, ref),
-          crossFadeState: showTimePicker
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
-          sizeCurve: Curves.easeInOut,
-        )
+        ValueListenableBuilder(
+            valueListenable: showTimePickerNotifier,
+            builder: (context, bool show, _) {
+              return AnimatedCrossFade(
+                duration: Duration(milliseconds: 300),
+                firstChild: _buildTimeButtonsGrid(settings),
+                secondChild: _buildTimePicker(ref, dateTime),
+                crossFadeState:
+                    show ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                sizeCurve: Curves.easeInOut,
+              );
+            })
       ],
     );
   }
@@ -119,27 +104,24 @@ class _DateTimeFieldState extends ConsumerState<DateTimeSection> {
         shrinkWrap: true,
         childAspectRatio: 1.5,
         children: [
-          ...setDateTimes.map((dateTime) => TimeButton(dateTime: dateTime)),
-          ...editDurations.map((duration) => TimeButton(duration: duration)),
+          ...setDateTimes.map((dateTime) => TimeSetButton(dateTime: dateTime)),
+          ...editDurations
+              .map((duration) => TimeEditButton(duration: duration)),
         ],
       ),
     );
   }
 
-  Widget _buildTimePicker(Reminder reminder, WidgetRef ref) {
-    final reminderNotifier = ref.read(reminderNotifierProvider.notifier);
-
+  Widget _buildTimePicker(WidgetRef ref, DateTime dateTime) {
     return SizedBox(
       height: 175,
       child: CupertinoTheme(
         data: const CupertinoThemeData(brightness: Brightness.dark),
         child: CupertinoDatePicker(
-          initialDateTime: reminder.dateAndTime,
+          initialDateTime: dateTime,
           itemExtent: 75,
-          onDateTimeChanged: (DateTime dt) {
-            reminder.dateAndTime = dt;
-            reminderNotifier.updateReminder(reminder);
-          },
+          onDateTimeChanged: (DateTime dt) =>
+              ref.read(reminderNotifierProvider).updateDateTime(dt),
           backgroundColor: Colors.transparent,
         ),
       ),

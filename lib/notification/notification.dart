@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/pending_removals_db.dart';
 import 'package:Rem/main.dart';
-import 'package:Rem/reminder_class/reminder.dart';
+import 'package:Rem/modals/reminder_modal/reminder_modal.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -45,11 +45,11 @@ class NotificationController {
   }
 
   static Future<bool> scheduleNotification(
-    Reminder reminder,
+    ReminderModal reminder,
   ) async {
     final int id = reminder.id;
 
-    final DateTime scheduledTime = reminder.dateAndTime;
+    final DateTime scheduledTime = reminder.dateTime;
 
     gLogger.i('Notification Scheduled | ID: $id | DT : $scheduledTime');
 
@@ -61,7 +61,7 @@ class NotificationController {
       exact: true,
       wakeup: true,
       rescheduleOnReboot: true,
-      params: reminder.toMap(),
+      params: reminder.toJson(),
     );
 
     return true;
@@ -74,11 +74,11 @@ class NotificationController {
     gLogger.i('Notification Callback Running | callBackId: $id');
 
     final Map<String, String> strParams = params.cast<String, String>();
-    final Reminder reminder = Reminder.fromMap(strParams);
+    final ReminderModal reminder = ReminderModal.fromJson(strParams);
 
     // Should be different each time so that different notifications are shown.
     int notificationId =
-        DateTime.now().difference(reminder.baseDateTime).inMinutes;
+        int.parse(reminder.id.toString() + DateTime.now().toString());
 
     gLogger.i('Showing notification | notificationID: $notificationId');
 
@@ -89,7 +89,7 @@ class NotificationController {
           title: "Reminder: ${reminder.title}",
           groupKey: reminder.id.toString(),
           wakeUpScreen: true,
-          payload: reminder.toMap()),
+          payload: reminder.toJson()),
       actionButtons: <NotificationActionButton>[
         NotificationActionButton(
           key: 'done',
@@ -100,12 +100,16 @@ class NotificationController {
     );
 
     // Handle recurring notifications
+    if (reminder.autoSnoozeInterval == null) {
+      return;
+    }
+
     DateTime nextScheduledTime =
-        reminder.dateAndTime.add(reminder.autoSnoozeInterval);
-    reminder.dateAndTime = nextScheduledTime;
+        reminder.dateTime.add(reminder.autoSnoozeInterval!);
+    reminder.dateTime = nextScheduledTime;
     scheduleNotification(reminder);
     gLogger.i(
-      'Scheduled Next Notification | ID : ${reminder.id} | DT : ${reminder.dateAndTime}',
+      'Scheduled Next Notification | ID : ${reminder.id} | DT : ${reminder.dateTime}',
     );
   }
 
@@ -156,7 +160,7 @@ class NotificationController {
         throw 'Received null payload through notification action | gKey : ${receivedAction.groupKey}';
       } else {
         final context = navigatorKey.currentContext!;
-        final Reminder reminder = Reminder.fromMap(payload);
+        final ReminderModal reminder = ReminderModal.fromJson(payload);
         gLogger.i(
             'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}');
 
@@ -165,7 +169,7 @@ class NotificationController {
             context: context,
             builder: (context) {
               return ReminderSheet(
-                thisReminder: Reminder.fromMap(payload),
+                reminder: reminder,
               );
             });
         removeNotifications(receivedAction.groupKey);

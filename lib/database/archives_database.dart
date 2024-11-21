@@ -1,23 +1,24 @@
 import 'dart:convert';
 
 import 'package:Rem/consts/enums/hive_enums.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+import '../modals/reminder_modal/reminder_modal.dart';
 
 class ArchivesDatabaseController {
   static final _box = Hive.box(HiveBoxNames.archives.name);
 
-  static Map<int, Reminder> getArchivedReminders() {
+  static Map<int, ReminderModal> getArchivedReminders() {
     if (!_box.isOpen) {
       Future(() {
         Hive.openBox(HiveBoxNames.archives.name);
       });
     }
-    return _box.get(HiveKeys.archivesKey.key)?.cast<int, Reminder>() ?? {};
+    return _box.get(HiveKeys.archivesKey.key)?.cast<int, ReminderModal>() ?? {};
   }
 
   static Future<void> updateArchivedReminders(
-      Map<int, Reminder> reminders) async {
+      Map<int, ReminderModal> reminders) async {
     await _box.put(HiveKeys.archivesKey.key, reminders);
   }
 
@@ -26,10 +27,10 @@ class ArchivesDatabaseController {
   }
 
   static Future<String> getBackup() async {
-    Map<int, Reminder> reminders = getArchivedReminders();
+    Map<int, ReminderModal> reminders = getArchivedReminders();
     Map<String, dynamic> backupData = {
       'reminders': reminders
-          .map((id, reminder) => MapEntry(id.toString(), reminder.toMap())),
+          .map((id, reminder) => MapEntry(id.toString(), reminder.toJson())),
       'timestamp': DateTime.now().toIso8601String(),
       'version': '1.0',
     };
@@ -41,11 +42,11 @@ class ArchivesDatabaseController {
       Map<String, dynamic> backupData = jsonDecode(jsonData);
       Map<String, dynamic> remindersData = backupData['reminders'];
 
-      Map<int, Reminder> reminders = {};
+      Map<int, ReminderModal> reminders = {};
       remindersData.forEach((key, value) {
         int id = int.parse(key);
         value = value.cast<String, String?>();
-        reminders[id] = Reminder.fromMap(value);
+        reminders[id] = ReminderModal.fromJson(value);
       });
 
       await removeAllArchivedReminders();

@@ -1,7 +1,6 @@
 import 'package:Rem/database/UserDB.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 
-int generateId(Reminder reminder) {
+int generateId() {
   final currCount = UserDB.getNextId();
 
   if (currCount == null) {
@@ -12,4 +11,8 @@ int generateId(Reminder reminder) {
 
   UserDB.setID(currCount + 1);
   return currCount;
+}
+
+int generatedNotificationId(int id) {
+  return int.parse(id.toString() + DateTime.now().toString());
 }

@@ -1,9 +1,8 @@
 import 'package:Rem/database/archives_database.dart';
-import 'package:Rem/reminder_class/field_mixins/reminder_status/status.dart';
-import 'package:Rem/reminder_class/reminder.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../modals/reminder_modal/reminder_modal.dart';
 import '../utils/logger/global_logger.dart';
 
 class ArchivesNotifier extends ChangeNotifier {
@@ -18,9 +17,9 @@ class ArchivesNotifier extends ChangeNotifier {
     super.dispose();
   }
 
-  Map<int, Reminder> _archivedReminders = {};
+  Map<int, ReminderModal> _archivedReminders = {};
 
-  Map<int, Reminder> get archivedReminders => _archivedReminders;
+  Map<int, ReminderModal> get archivedReminders => _archivedReminders;
   int get archiveCount => _archivedReminders.length;
 
   Future<void> loadArchivedReminders() async {
@@ -28,8 +27,8 @@ class ArchivesNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addReminderToArchives(Reminder reminder) async {
-    reminder.reminderStatus = ReminderStatus.archived;
+  Future<void> addReminderToArchives(ReminderModal reminder) async {
+    ;
     _archivedReminders[reminder.id] = reminder;
     await ArchivesDatabaseController.updateArchivedReminders(
         _archivedReminders);
@@ -38,7 +37,7 @@ class ArchivesNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Reminder?> deleteArchivedReminder(int id) async {
+  Future<ReminderModal?> deleteArchivedReminder(int id) async {
     if (_archivedReminders.containsKey(id)) {
       final reminder = _archivedReminders.remove(id);
       await ArchivesDatabaseController.updateArchivedReminders(
@@ -71,6 +70,10 @@ class ArchivesNotifier extends ChangeNotifier {
     await ArchivesDatabaseController.restoreBackup(jsonData);
     gLogger.i('Restored Database Backup');
     await loadArchivedReminders();
+  }
+
+  Future<bool> isInArchives(int id) async {
+    return await _archivedReminders.containsKey(id);
   }
 }
 

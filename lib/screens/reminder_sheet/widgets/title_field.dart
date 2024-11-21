@@ -19,10 +19,11 @@ class TitleField extends HookConsumerWidget {
       return null;
     }, []);
 
-    final reminder = ref.read(reminderNotifierProvider);
-    titleController.text = reminder.preParsedTitle;
+    titleController.text =
+        ref.read(reminderNotifierProvider.select((p) => p.preParsedTitle));
+
     if (titleController.text == reminderNullTitle) {
-      titleController.text = "";
+      titleController.text = '';
     }
 
     final titleParser = TitleParseHandler(ref: ref);
