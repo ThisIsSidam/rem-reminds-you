@@ -1,4 +1,4 @@
-import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/provider/sheet_reminder_notifier.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/time_button.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,8 +13,7 @@ class DateTimeField extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final showTimePickerNotifier = useValueNotifier<bool>(false);
 
-    final dateTime =
-        ref.watch(reminderNotifierProvider.select((p) => p.dateTime));
+    final dateTime = ref.watch(sheetReminderNotifier.select((p) => p.dateTime));
     final settings = ref.watch(userSettingsProvider);
 
     return Column(
@@ -121,7 +120,7 @@ class DateTimeField extends HookConsumerWidget {
           initialDateTime: dateTime,
           itemExtent: 75,
           onDateTimeChanged: (DateTime dt) =>
-              ref.read(reminderNotifierProvider).updateDateTime(dt),
+              ref.read(sheetReminderNotifier).updateDateTime(dt),
           backgroundColor: Colors.transparent,
         ),
       ),

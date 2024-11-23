@@ -1,4 +1,4 @@
-import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/provider/sheet_reminder_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -46,8 +46,7 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
 
   Widget intervalButton(
       RecurringInterval interval, BuildContext context, WidgetRef ref) {
-    final recurringInterval =
-        ref.read(reminderNotifierProvider).recurringInterval;
+    final recurringInterval = ref.read(sheetReminderNotifier).recurringInterval;
     bool isPickedOption = interval == recurringInterval;
 
     return ElevatedButton(
@@ -56,7 +55,7 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
           Fluttertoast.showToast(msg: "Coming soon!");
           return;
         }
-        ref.read(reminderNotifierProvider).updateRecurringInterval(interval);
+        ref.read(sheetReminderNotifier).updateRecurringInterval(interval);
         ref.read(bottomElementProvider).setAsNone();
       },
       style: ElevatedButton.styleFrom(

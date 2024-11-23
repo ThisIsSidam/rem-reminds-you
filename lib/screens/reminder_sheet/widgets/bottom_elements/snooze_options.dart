@@ -1,5 +1,5 @@
-import 'package:Rem/provider/current_reminder_provider.dart';
 import 'package:Rem/provider/settings_provider.dart';
+import 'package:Rem/provider/sheet_reminder_notifier.dart';
 import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
@@ -57,14 +57,11 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
 
   Widget intervalEditButton(
       Duration duration, BuildContext context, WidgetRef ref) {
-    final snoozeInterval =
-        ref.read(reminderNotifierProvider).autoSnoozeInterval;
+    final snoozeInterval = ref.read(sheetReminderNotifier).autoSnoozeInterval;
     bool isPickedDuration = duration == snoozeInterval;
     return ElevatedButton(
       onPressed: () {
-        ref
-            .read(reminderNotifierProvider.notifier)
-            .updateAutoSnoozeInterval(duration);
+        ref.read(sheetReminderNotifier).updateAutoSnoozeInterval(duration);
         ref.read(bottomElementProvider).setAsNone();
       },
       style: ElevatedButton.styleFrom(

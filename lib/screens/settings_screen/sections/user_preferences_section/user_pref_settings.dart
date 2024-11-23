@@ -30,11 +30,11 @@ class UserPreferenceSection extends HookWidget {
   }
 
   Widget _buildThemeSetting(BuildContext context) {
-    final MenuController controller = MenuController();
+    final controller = useMemoized(() => MenuController());
 
     useEffect(() {
       return controller.close;
-    }, []);
+    }, [controller]);
 
     return Consumer(builder: (context, ref, child) {
       final settingsNotifier = ref.read(userSettingsProvider.notifier);
@@ -93,8 +93,10 @@ class UserPreferenceSection extends HookWidget {
                 activeColor: Theme.of(context).colorScheme.primary,
               ),
             ),
-            Text('${textScale.toStringAsPrecision(2)}x',
-                style: Theme.of(context).textTheme.bodyMedium)
+            Text(
+              '${textScale.toStringAsPrecision(2)}x',
+              style: Theme.of(context).textTheme.bodyMedium,
+            )
           ],
         );
       }),

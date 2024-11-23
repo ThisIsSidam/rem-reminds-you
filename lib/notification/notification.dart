@@ -7,6 +7,7 @@ import 'package:Rem/database/pending_removals_db.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/modals/reminder_modal/reminder_modal.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
+import 'package:Rem/utils/generate_id.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
@@ -77,8 +78,7 @@ class NotificationController {
     final ReminderModal reminder = ReminderModal.fromJson(strParams);
 
     // Should be different each time so that different notifications are shown.
-    int notificationId =
-        int.parse(reminder.id.toString() + DateTime.now().toString());
+    int notificationId = generatedNotificationId(id);
 
     gLogger.i('Showing notification | notificationID: $notificationId');
 
@@ -101,6 +101,9 @@ class NotificationController {
 
     // Handle recurring notifications
     if (reminder.autoSnoozeInterval == null) {
+      gLogger.i(
+        'AutoSnoozeInterval Null | ID : ${reminder.id} | DT : ${reminder.dateTime}',
+      );
       return;
     }
 

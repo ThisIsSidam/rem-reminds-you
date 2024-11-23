@@ -1,3 +1,4 @@
+import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import '../modals/reminder_modal/reminder_modal.dart';
 import '../utils/generate_id.dart';
 
 class SheetReminderNotifier extends ChangeNotifier {
+  Ref ref;
   int? _id;
   String _title = '';
   String _preParsedTitle = '';
@@ -16,7 +18,11 @@ class SheetReminderNotifier extends ChangeNotifier {
   Duration? _autoSnoozeInterval;
   RecurringInterval _recurringInterval = RecurringInterval.none;
 
-  SheetReminderNotifier() {
+  SheetReminderNotifier({required this.ref}) {
+    final settings = ref.read(userSettingsProvider);
+    _dateTime = DateTime.now().add(settings.defaultLeadDuration);
+    _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
+
     gLogger.i('SheetReminderNotifier initialized');
   }
 
@@ -72,12 +78,15 @@ class SheetReminderNotifier extends ChangeNotifier {
   }
 
   void resetValues() {
+    final settings = ref.read(userSettingsProvider);
     _id = null;
     _title = '';
     _preParsedTitle = '';
-    _dateTime = DateTime.now();
+    _dateTime = DateTime.now().add(settings.defaultLeadDuration);
     _baseDateTime = DateTime.now();
-    _autoSnoozeInterval = null;
+    _autoSnoozeInterval =
+        _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
+    ;
     _recurringInterval = RecurringInterval.none;
     notifyListeners();
   }
@@ -120,7 +129,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   }
 }
 
-final reminderNotifierProvider =
+final sheetReminderNotifier =
     ChangeNotifierProvider<SheetReminderNotifier>((ref) {
-  return SheetReminderNotifier();
+  return SheetReminderNotifier(ref: ref);
 });

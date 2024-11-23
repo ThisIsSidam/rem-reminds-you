@@ -21,8 +21,11 @@ class RemindersNotifier extends ChangeNotifier {
   Map<String, List<ReminderModal>> _categorizedReminders = {};
 
   Map<int, ReminderModal> get reminders => _reminders;
-  Map<String, List<ReminderModal>> get categorizedReminders =>
-      _categorizedReminders;
+  Map<String, List<ReminderModal>> get categorizedReminders {
+    _updateCategorizedReminders();
+    return _categorizedReminders;
+  }
+
   int get reminderCount => _reminders.length;
 
   Future<void> loadReminders() async {
@@ -111,7 +114,7 @@ class RemindersNotifier extends ChangeNotifier {
     if (reminder == null) return;
 
     gLogger.i('Marking Reminder as Done | ID: ${reminder.id}');
-    if (reminder is RecurringReminderModal &&
+    if (reminder is! RecurringReminderModal ||
         reminder.recurringInterval == RecurringInterval.none) {
       gLogger.i('Moving Reminder to Archives | ID: ${reminder.id}');
       await moveToArchive(id);

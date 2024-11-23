@@ -31,7 +31,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void initState() {
     super.initState();
     gLogger.i('HomeScreen initState');
-    remindersMap = ref.read(remindersProvider).categorizedReminders;
+    remindersMap =
+        ref.read(remindersProvider.select((p) => p.categorizedReminders));
 
     WidgetsBinding.instance.addObserver(this);
 

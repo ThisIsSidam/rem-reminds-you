@@ -358,11 +358,12 @@ class ActionPaneManager {
       onPressed: (context) {
         remindersProviderValue.markAsDone(reminder.id);
 
-        if (reminder is RecurringReminderModal &&
+        if (reminder is! RecurringReminderModal ||
             reminder.recurringInterval == RecurringInterval.none) {
           final ValueKey snackBarKey =
               ValueKey<String>('archived-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
+            buildCustomSnackBar(
               key: snackBarKey,
               content: Row(
                 children: [
@@ -374,10 +375,13 @@ class ActionPaneManager {
                     },
                   )
                 ],
-              )));
+              ),
+            ),
+          );
         } else {
           final ValueKey snackBarKey = ValueKey<String>('moved-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
+            buildCustomSnackBar(
               key: snackBarKey,
               content: Row(
                 children: [
@@ -390,7 +394,9 @@ class ActionPaneManager {
                     },
                   )
                 ],
-              )));
+              ),
+            ),
+          );
         }
       },
     );

@@ -1,4 +1,4 @@
-import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/provider/sheet_reminder_notifier.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +31,7 @@ class TimeSetButton extends ConsumerWidget {
           ),
         ),
         onPressed: () {
-          final reminderTime = ref.read(reminderNotifierProvider).dateTime;
+          final reminderTime = ref.read(sheetReminderNotifier).dateTime;
 
           DateTime updatedTime = DateTime(
             reminderTime.year,
@@ -41,7 +41,7 @@ class TimeSetButton extends ConsumerWidget {
             dateTime.minute,
           );
 
-          ref.read(reminderNotifierProvider).updateDateTime(updatedTime);
+          ref.read(sheetReminderNotifier).updateDateTime(updatedTime);
         },
         child: getChild(context));
   }
@@ -89,9 +89,9 @@ class TimeEditButton extends ConsumerWidget {
         ),
         onPressed: () {
           final DateTime reminderTime =
-              ref.read(reminderNotifierProvider).dateTime;
+              ref.read(sheetReminderNotifier).dateTime;
           ref
-              .read(reminderNotifierProvider)
+              .read(sheetReminderNotifier)
               .updateDateTime(reminderTime.add(duration));
         },
         child: getChild(context));

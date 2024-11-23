@@ -1,5 +1,5 @@
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/provider/sheet_reminder_notifier.dart';
 import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/title_parser/title_parser.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class TitleField extends HookConsumerWidget {
     }, []);
 
     titleController.text =
-        ref.read(reminderNotifierProvider.select((p) => p.preParsedTitle));
+        ref.read(sheetReminderNotifier.select((p) => p.preParsedTitle));
 
     if (titleController.text == reminderNullTitle) {
       titleController.text = '';
@@ -47,6 +47,7 @@ class TitleField extends HookConsumerWidget {
         focusNode: _focusNode,
         autofocus: true,
         onChanged: (str) {
+          ref.read(sheetReminderNotifier).updatePreParsedTitle(str);
           titleParser.parse(str);
         },
         onTap: () {

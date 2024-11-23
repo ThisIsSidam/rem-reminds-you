@@ -9,7 +9,7 @@ import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../provider/current_reminder_provider.dart';
+import '../../provider/sheet_reminder_notifier.dart';
 
 class ReminderSheet extends ConsumerStatefulWidget {
   const ReminderSheet({
@@ -30,9 +30,9 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
 
     Future(() {
       if (widget.reminder != null) {
-        ref.read(reminderNotifierProvider).loadValues(widget.reminder!);
+        ref.read(sheetReminderNotifier).loadValues(widget.reminder!);
       } else {
-        ref.read(reminderNotifierProvider).resetValues();
+        ref.read(sheetReminderNotifier).resetValues();
       }
       ref.read(bottomElementProvider).setAsNone();
       gLogger.i("Reminder initialized and bottom element set to none");

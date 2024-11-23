@@ -1,44 +1,40 @@
-import 'package:Rem/provider/current_reminder_provider.dart';
+import 'package:Rem/provider/sheet_reminder_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TitleParseHandler {
   WidgetRef ref;
   late DateTime originalDT;
   late DateTime dateTime;
-  late String title;
 
   TitleParseHandler({
     required this.ref,
   }) {
-    this.dateTime = ref.read(reminderNotifierProvider).dateTime;
+    this.dateTime = ref.read(sheetReminderNotifier).dateTime;
     this.originalDT = dateTime;
-    this.title = ref.read(reminderNotifierProvider).preParsedTitle;
   }
 
   void parse(String str) {
-    final parsedString = extractDateTimeString(str);
+    final reminderNotifier = ref.read(sheetReminderNotifier.notifier);
+    final (String, String)? extractedStrings = extractDateTimeString(str);
 
-    if (parsedString != null) {
-      final parsedDateTime = getParsedDateTime(parsedString);
+    if (extractedStrings != null) {
+      reminderNotifier.updateTitle(extractedStrings.$1);
+      final parsedDateTime = getParsedDateTime(extractedStrings.$2);
       if (parsedDateTime != null) {
-        updatedTime(parsedDateTime);
+        dateTime = moveTimeIfNeeded(parsedDateTime);
       } else {
         dateTime = originalDT;
       }
     } else {
-      title = str;
+      reminderNotifier.updateTitle(str);
     }
-    ref.read(reminderNotifierProvider).updateDateTime(dateTime);
+    reminderNotifier.updateDateTime(dateTime);
   }
 
   /// Extracts the [DateTime] or [Duration] string.
-  String? extractDateTimeString(String str) {
+  (String, String)? extractDateTimeString(String str) {
     final inIndex = str.lastIndexOf(' in ');
     final atIndex = str.lastIndexOf(' at ');
-
-    if (inIndex == -1 && atIndex == -1) {
-      title = str;
-    }
 
     final separatorIndex =
         (inIndex > atIndex && inIndex != -1) ? inIndex : atIndex;
@@ -47,10 +43,10 @@ class TitleParseHandler {
       return null;
     }
 
-    title = str.substring(0, separatorIndex).trim();
-
-    String parseString = str.substring(separatorIndex).trim();
-    return parseString;
+    return (
+      str.substring(0, separatorIndex).trim(),
+      str.substring(separatorIndex).trim()
+    );
   }
 
   /// Extracts the [DateTime] object from the [DateTime] string.
@@ -125,7 +121,7 @@ class TitleParseHandler {
   }
 
   /// If the time to be updated is in the past, increase it by a day.
-  void updatedTime(DateTime updatedTime) {
+  DateTime moveTimeIfNeeded(DateTime updatedTime) {
     if (updatedTime.isBefore(DateTime.now())) {
       updatedTime = updatedTime.add(Duration(days: 1));
     }
@@ -137,6 +133,6 @@ class TitleParseHandler {
         updatedTime.hour,
         updatedTime.minute,
         0);
-    dateTime = updatedTime;
+    return updatedTime;
   }
 }

@@ -9,7 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../../modals/recurring_interval/recurring_interval.dart';
 import '../../../modals/recurring_reminder/recurring_reminder.dart';
 import '../../../provider/archives_provider.dart';
-import '../../../provider/current_reminder_provider.dart';
+import '../../../provider/sheet_reminder_notifier.dart';
 
 class KeyButtonsRow extends ConsumerWidget {
   const KeyButtonsRow({
@@ -18,7 +18,7 @@ class KeyButtonsRow extends ConsumerWidget {
 
   void saveReminder(BuildContext context, WidgetRef ref) async {
     final ReminderModal reminder =
-        ref.read(reminderNotifierProvider).constructReminder();
+        ref.read(sheetReminderNotifier).constructReminder();
 
     if (reminder.title == "No Title") {
       Fluttertoast.showToast(msg: "Enter a title!");
@@ -55,8 +55,7 @@ class KeyButtonsRow extends ConsumerWidget {
       Navigator.pop(context);
     }
 
-    final recurringInterval =
-        ref.read(reminderNotifierProvider).recurringInterval;
+    final recurringInterval = ref.read(sheetReminderNotifier).recurringInterval;
 
     if (recurringInterval != RecurringInterval.none) {
       showDialog(
@@ -74,7 +73,7 @@ class KeyButtonsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(reminderNotifierProvider.select((p) => p.id));
+    final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -108,7 +107,7 @@ class KeyButtonsRow extends ConsumerWidget {
   }
 
   Widget _buildSaveButton(BuildContext context, WidgetRef ref) {
-    final reminder = ref.read(reminderNotifierProvider);
+    final reminder = ref.read(sheetReminderNotifier);
 
     bool forAllCondition = reminder.id != newReminderID &&
         reminder is RecurringReminderModal &&
@@ -201,7 +200,7 @@ class _RecurringReminderDeletionDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(reminderNotifierProvider.select((p) => p.id));
+    final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
     return AlertDialog(
       elevation: 5,
       surfaceTintColor: Colors.transparent,

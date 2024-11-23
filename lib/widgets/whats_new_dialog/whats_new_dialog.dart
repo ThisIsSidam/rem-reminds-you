@@ -27,14 +27,18 @@ class WhatsNewDialog {
           backgroundColor: Theme.of(context).cardColor,
           title: ListTile(
             leading: Icon(Icons.new_releases_outlined),
-            title: Text('What\'s New',
-                style: Theme.of(context).textTheme.titleLarge),
+            title: Text(
+              'What\'s New',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
           insetPadding: EdgeInsets.symmetric(horizontal: 32),
           contentPadding: EdgeInsets.symmetric(horizontal: 16),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: getWhatsNewTileContent(context),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: getWhatsNewTileContent(context),
+            ),
           ),
         );
       },
@@ -60,10 +64,12 @@ class WhatsNewDialog {
                   SizedBox(
                     width: 8,
                   ),
-                  Text('Important!',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onErrorContainer)),
+                  Text(
+                    'Important!',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onErrorContainer,
+                        ),
+                  ),
                 ],
               ),
               subtitle: Text(
