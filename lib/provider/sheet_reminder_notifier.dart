@@ -17,6 +17,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   DateTime _baseDateTime = DateTime.now();
   Duration? _autoSnoozeInterval;
   RecurringInterval _recurringInterval = RecurringInterval.none;
+  bool _noRush = false;
 
   SheetReminderNotifier({required this.ref}) {
     final settings = ref.read(userSettingsProvider);
@@ -40,6 +41,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   DateTime get baseDateTime => _baseDateTime;
   Duration? get autoSnoozeInterval => _autoSnoozeInterval;
   RecurringInterval get recurringInterval => _recurringInterval;
+  bool get noRush => _noRush;
 
   // Setters
   void updateId(int? newId) {
@@ -77,6 +79,11 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateNoRush(bool newNoRush) {
+    _noRush = newNoRush;
+    notifyListeners();
+  }
+
   void resetValues() {
     final settings = ref.read(userSettingsProvider);
     _id = null;
@@ -86,8 +93,8 @@ class SheetReminderNotifier extends ChangeNotifier {
     _baseDateTime = DateTime.now();
     _autoSnoozeInterval =
         _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
-    ;
     _recurringInterval = RecurringInterval.none;
+    _noRush = false;
     notifyListeners();
   }
 

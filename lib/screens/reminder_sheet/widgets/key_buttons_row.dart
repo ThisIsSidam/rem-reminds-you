@@ -74,6 +74,7 @@ class KeyButtonsRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
+    final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -96,8 +97,8 @@ class KeyButtonsRow extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildSnoozeOptionsDialogButton(context, ref),
-              _buildRecurrenceOptionsDialogButton(context, ref),
+              if (!noRush) _buildSnoozeOptionsDialogButton(context, ref),
+              if (!noRush) _buildRecurrenceOptionsDialogButton(context, ref),
               _buildSaveButton(context, ref)
             ],
           ),

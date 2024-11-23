@@ -14,61 +14,64 @@ class DateTimeField extends HookConsumerWidget {
     final showTimePickerNotifier = useValueNotifier<bool>(false);
 
     final dateTime = ref.watch(sheetReminderNotifier.select((p) => p.dateTime));
+    final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
     final settings = ref.watch(userSettingsProvider);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        TextButton(
-          onPressed: () {
-            showTimePickerNotifier.value = !showTimePickerNotifier.value;
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                getFormattedDateTime(dateTime),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: dateTime.isBefore(DateTime.now())
-                          ? Theme.of(context).colorScheme.error
-                          : null,
-                    ),
-              ),
-              const SizedBox(
-                width: 24,
-              ),
-              Flexible(
-                child: Text(
-                  dateTime.isBefore(DateTime.now())
-                      ? '${getPrettyDurationFromDateTime(dateTime)} ago'
-                          .replaceFirst('-', '')
-                      : 'in ${getPrettyDurationFromDateTime(dateTime)}',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        if (!noRush)
+          TextButton(
+            onPressed: () {
+              showTimePickerNotifier.value = !showTimePickerNotifier.value;
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  getFormattedDateTime(dateTime),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: dateTime.isBefore(DateTime.now())
                             ? Theme.of(context).colorScheme.error
                             : null,
                       ),
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
+                const SizedBox(
+                  width: 24,
+                ),
+                Flexible(
+                  child: Text(
+                    dateTime.isBefore(DateTime.now())
+                        ? '${getPrettyDurationFromDateTime(dateTime)} ago'
+                            .replaceFirst('-', '')
+                        : 'in ${getPrettyDurationFromDateTime(dateTime)}',
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: dateTime.isBefore(DateTime.now())
+                              ? Theme.of(context).colorScheme.error
+                              : null,
+                        ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
         const SizedBox(
           height: 8,
         ),
         ValueListenableBuilder(
-            valueListenable: showTimePickerNotifier,
-            builder: (context, bool show, _) {
-              return AnimatedCrossFade(
-                duration: Duration(milliseconds: 300),
-                firstChild: _buildTimeButtonsGrid(settings),
-                secondChild: _buildTimePicker(ref, dateTime),
-                crossFadeState:
-                    show ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                sizeCurve: Curves.easeInOut,
-              );
-            })
+          valueListenable: showTimePickerNotifier,
+          builder: (context, bool show, _) {
+            return AnimatedCrossFade(
+              duration: Duration(milliseconds: 300),
+              firstChild: _buildTimeButtonsGrid(settings),
+              secondChild: _buildHiddenSection(context, ref, dateTime, noRush),
+              crossFadeState:
+                  show ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              sizeCurve: Curves.easeInOut,
+            );
+          },
+        )
       ],
     );
   }
@@ -103,11 +106,44 @@ class DateTimeField extends HookConsumerWidget {
         shrinkWrap: true,
         childAspectRatio: 1.5,
         children: [
-          ...setDateTimes.map((dateTime) => TimeSetButton(dateTime: dateTime)),
-          ...editDurations
-              .map((duration) => TimeEditButton(duration: duration)),
+          ...setDateTimes.map(
+            (dateTime) => TimeSetButton(dateTime: dateTime),
+          ),
+          ...editDurations.map(
+            (duration) => TimeEditButton(duration: duration),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildHiddenSection(
+      BuildContext context, WidgetRef ref, DateTime dateTime, bool noRush) {
+    final ThemeData theme = Theme.of(context);
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: noRush
+                  ? theme.colorScheme.primaryContainer
+                  : theme.colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ListTile(
+              title: Text('No Rush'),
+              trailing: Switch(
+                value: noRush,
+                onChanged: (bool val) {
+                  ref.read(sheetReminderNotifier).updateNoRush(val);
+                },
+              ),
+            ),
+          ),
+        ),
+        if (!noRush) _buildTimePicker(ref, dateTime),
+      ],
     );
   }
 

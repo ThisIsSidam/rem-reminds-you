@@ -1,5 +1,6 @@
 import 'package:Rem/app.dart';
 import 'package:Rem/consts/enums/hive_enums.dart';
+import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ Future<void> initHive() async {
   Hive.registerAdapter(ReminderModalAdapter());
   Hive.registerAdapter(RecurringIntervalAdapter());
   Hive.registerAdapter(RecurringReminderModalAdapter());
+  Hive.registerAdapter(NoRushRemindersModalAdapter());
 
   // Order of openBox statements is crucial. Do not change.
   await Hive.openBox(HiveBoxNames.individualValues.name);
