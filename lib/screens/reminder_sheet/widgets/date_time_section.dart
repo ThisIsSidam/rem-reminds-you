@@ -17,6 +17,11 @@ class DateTimeField extends HookConsumerWidget {
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
     final settings = ref.watch(userSettingsProvider);
 
+    useEffect(() {
+      if (noRush) showTimePickerNotifier.value = true;
+      return null;
+    }, []);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

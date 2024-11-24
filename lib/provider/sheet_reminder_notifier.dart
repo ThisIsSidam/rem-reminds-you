@@ -1,3 +1,4 @@
+import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
 import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/foundation.dart';
@@ -110,11 +111,20 @@ class SheetReminderNotifier extends ChangeNotifier {
     _recurringInterval = reminder is RecurringReminderModal
         ? reminder.recurringInterval
         : RecurringInterval.none;
+    if (reminder is NoRushRemindersModal) _noRush = true;
     notifyListeners();
   }
 
   ReminderModal constructReminder() {
-    if (_recurringInterval == RecurringInterval.none) {
+    final autoSnooze = ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
+
+    if (_noRush) {
+      return NoRushRemindersModal(
+        id: id ?? generateId(),
+        title: title,
+        autoSnoozeInterval: autoSnooze,
+      );
+    } else if (_recurringInterval == RecurringInterval.none) {
       return ReminderModal(
         id: id ?? generateId(),
         dateTime: dateTime,

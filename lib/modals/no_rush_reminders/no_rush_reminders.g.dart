@@ -19,9 +19,10 @@ class NoRushRemindersModalAdapter extends TypeAdapter<NoRushRemindersModal> {
     return NoRushRemindersModal(
       id: fields[0] as int,
       title: fields[1] as String,
-      dateTime: fields[2] as DateTime,
       autoSnoozeInterval: fields[4] as Duration?,
-    )..PreParsedTitle = fields[3] as String;
+    )
+      ..dateTime = fields[2] as DateTime
+      ..PreParsedTitle = fields[3] as String;
   }
 
   @override

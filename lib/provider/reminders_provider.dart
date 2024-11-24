@@ -1,7 +1,9 @@
 import 'package:Rem/consts/consts.dart';
+import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
 import 'package:Rem/modals/recurring_reminder/recurring_reminder.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/provider/archives_provider.dart';
+import 'package:Rem/screens/home_screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,10 +20,10 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Map<int, ReminderModal> _reminders = {};
-  Map<String, List<ReminderModal>> _categorizedReminders = {};
+  Map<HomeScreenSection, List<ReminderModal>> _categorizedReminders = {};
 
   Map<int, ReminderModal> get reminders => _reminders;
-  Map<String, List<ReminderModal>> get categorizedReminders {
+  Map<HomeScreenSection, List<ReminderModal>> get categorizedReminders {
     _updateCategorizedReminders();
     return _categorizedReminders;
   }
@@ -41,12 +43,17 @@ class RemindersNotifier extends ChangeNotifier {
     final todayList = <ReminderModal>[];
     final tomorrowList = <ReminderModal>[];
     final laterList = <ReminderModal>[];
+    final noRushList = <NoRushRemindersModal>[];
 
     final sortedReminders = _reminders.values.toList()
       ..sort((a, b) => a.getDiffDuration().compareTo(b.getDiffDuration()));
 
     for (final reminder in sortedReminders) {
       DateTime dateTime = reminder.dateTime;
+      if (reminder is NoRushRemindersModal) {
+        noRushList.add(reminder);
+        continue;
+      }
       if (dateTime.isBefore(now)) {
         overdueList.add(reminder);
       } else if (dateTime.day == now.day &&
@@ -63,10 +70,11 @@ class RemindersNotifier extends ChangeNotifier {
     }
 
     _categorizedReminders = {
-      overdueSectionTitle: overdueList,
-      todaySectionTitle: todayList,
-      tomorrowSectionTitle: tomorrowList,
-      laterSectionTitle: laterList
+      HomeScreenSection.overdue: overdueList,
+      HomeScreenSection.today: todayList,
+      HomeScreenSection.tomorrow: tomorrowList,
+      HomeScreenSection.later: laterList,
+      HomeScreenSection.noRush: noRushList,
     };
   }
 
@@ -114,7 +122,9 @@ class RemindersNotifier extends ChangeNotifier {
     if (reminder == null) return;
 
     gLogger.i('Marking Reminder as Done | ID: ${reminder.id}');
-    if (reminder is! RecurringReminderModal ||
+    if (reminder is NoRushRemindersModal) {
+      deleteReminder(id);
+    } else if (reminder is! RecurringReminderModal ||
         reminder.recurringInterval == RecurringInterval.none) {
       gLogger.i('Moving Reminder to Archives | ID: ${reminder.id}');
       await moveToArchive(id);

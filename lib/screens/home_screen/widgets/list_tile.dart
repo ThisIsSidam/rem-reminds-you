@@ -1,3 +1,4 @@
+import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
@@ -21,23 +22,27 @@ class HomePageReminderEntryListTile extends StatelessWidget {
         softWrap: true,
       ),
       dense: true,
-      subtitle: Text(getFormattedDateTime(reminder.dateTime),
-          style: Theme.of(context).textTheme.bodyMedium),
-      trailing: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          // if (reminder is RecurringReminderModal && reminder.recurringInterval != RecurringInterval.none)
-          //   Text(
-          //     "⟳ ${reminder.recurringInterval.name}",
-          //     style: Theme.of(context).textTheme.bodySmall,
-          //   ),
-          Text(
-            getFormattedDuration(),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
-      ),
+      subtitle: reminder is NoRushRemindersModal
+          ? null
+          : Text(getFormattedDateTime(reminder.dateTime),
+              style: Theme.of(context).textTheme.bodyMedium),
+      trailing: reminder is NoRushRemindersModal
+          ? null
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // if (reminder is RecurringReminderModal && reminder.recurringInterval != RecurringInterval.none)
+                //   Text(
+                //     "⟳ ${reminder.recurringInterval.name}",
+                //     style: Theme.of(context).textTheme.bodySmall,
+                //   ),
+                Text(
+                  getFormattedDuration(),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
       tileColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       minVerticalPadding: 8,

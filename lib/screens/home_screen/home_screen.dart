@@ -14,6 +14,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../modals/reminder_modal/reminder_modal.dart';
 import '../../utils/logger/global_logger.dart';
 
+enum HomeScreenSection {
+  overdue('Overdue'),
+  today('Today'),
+  tomorrow('Tomorrow'),
+  later('Later'),
+  noRush('No Rush'),
+  ;
+
+  final String title;
+  const HomeScreenSection(this.title);
+}
+
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -23,7 +35,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
-  Map<String, List<ReminderModal>> remindersMap = {};
+  Map<HomeScreenSection, List<ReminderModal>> remindersMap = {};
   final ReceivePort receivePort = ReceivePort();
   SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
 
@@ -31,8 +43,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void initState() {
     super.initState();
     gLogger.i('HomeScreen initState');
-    remindersMap =
-        ref.read(remindersProvider.select((p) => p.categorizedReminders));
+    remindersMap = ref.read(
+      remindersProvider.select((p) => p.categorizedReminders),
+    );
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -92,7 +105,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    remindersMap = ref.watch(remindersProvider).categorizedReminders;
+    remindersMap = ref.watch(
+      remindersProvider.select((p) => p.categorizedReminders),
+    );
 
     final isEmpty = ref.watch(remindersProvider).reminderCount == 0;
 
@@ -166,37 +181,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       delegate: SliverChildListDelegate(
         [
           HomeScreenReminderListSection(
-            label: Text("Overdue",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Colors.red)),
-            remindersList: remindersMap[overdueSectionTitle] ?? [],
+            label: Text(
+              HomeScreenSection.overdue.title,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Colors.red,
+                  ),
+            ),
+            remindersList: remindersMap[HomeScreenSection.overdue] ?? [],
+            hideIfEmpty: true,
           ),
           HomeScreenReminderListSection(
-            label: Text("Today",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Theme.of(context).colorScheme.primary)),
-            remindersList: remindersMap[todaySectionTitle] ?? [],
+            label: Text(
+              HomeScreenSection.today.title,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+            ),
+            remindersList: remindersMap[HomeScreenSection.today] ?? [],
           ),
           HomeScreenReminderListSection(
-            label: Text("Tomorrow",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Colors.green)),
-            remindersList: remindersMap[tomorrowSectionTitle] ?? [],
+            label: Text(
+              HomeScreenSection.tomorrow.title,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Colors.green,
+                  ),
+            ),
+            remindersList: remindersMap[HomeScreenSection.tomorrow] ?? [],
           ),
           HomeScreenReminderListSection(
-            label: Text("Later",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Colors.yellow)),
-            remindersList: remindersMap[laterSectionTitle] ?? [],
+            label: Text(
+              HomeScreenSection.later.title,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Colors.yellow,
+                  ),
+            ),
+            remindersList: remindersMap[HomeScreenSection.later] ?? [],
           ),
+          HomeScreenReminderListSection(
+            label: Text(
+              HomeScreenSection.noRush.title,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Colors.white,
+                  ),
+            ),
+            remindersList: remindersMap[HomeScreenSection.noRush] ?? [],
+          )
         ],
       ),
     );
