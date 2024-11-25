@@ -8,6 +8,7 @@ import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -51,13 +52,15 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           brightness: Brightness.dark,
         );
       }
+
       return MaterialApp(
           navigatorKey: navigatorKey,
           builder: (context, child) {
             return MediaQuery(
               child: child!,
-              data: MediaQuery.of(context)
-                  .copyWith(textScaler: TextScaler.linear(textScale)),
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(textScale),
+              ),
             );
           },
           home: _buildPermissionScreenLayer(
@@ -69,10 +72,24 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: lightColorScheme,
+            appBarTheme: AppBarTheme(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light, // for iOS
+              ),
+            ),
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
             colorScheme: darkColorScheme,
+            appBarTheme: AppBarTheme(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark, // for iOS
+              ),
+            ),
           ));
     });
   }

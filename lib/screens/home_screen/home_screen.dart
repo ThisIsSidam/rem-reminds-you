@@ -184,7 +184,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             label: Text(
               HomeScreenSection.overdue.title,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Colors.red,
+                    color: Theme.of(context).colorScheme.error,
                   ),
             ),
             remindersList: remindersMap[HomeScreenSection.overdue] ?? [],
@@ -203,7 +203,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             label: Text(
               HomeScreenSection.tomorrow.title,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Colors.green,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
             ),
             remindersList: remindersMap[HomeScreenSection.tomorrow] ?? [],
@@ -212,7 +212,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             label: Text(
               HomeScreenSection.later.title,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Colors.yellow,
+                    color: Theme.of(context).colorScheme.inversePrimary,
                   ),
             ),
             remindersList: remindersMap[HomeScreenSection.later] ?? [],
@@ -221,7 +221,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             label: Text(
               HomeScreenSection.noRush.title,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.inverseSurface,
                   ),
             ),
             remindersList: remindersMap[HomeScreenSection.noRush] ?? [],
