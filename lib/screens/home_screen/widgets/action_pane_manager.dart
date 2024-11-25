@@ -1,4 +1,3 @@
-import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -130,15 +129,14 @@ class ActionPaneManager {
     final reminder = remindersList[index];
 
     return ActionPane(motion: const StretchMotion(), children: [
-      if (reminder is! NoRushRemindersModal)
-        SlidableAction(
-          backgroundColor: Colors.red,
-          icon: Icons.delete_forever,
-          onPressed: (context) {
-            remindersList.removeAt(index);
-            _slideAndRemoveReminder(context, reminder, ref);
-          },
-        ),
+      SlidableAction(
+        backgroundColor: Colors.red,
+        icon: Icons.delete_forever,
+        onPressed: (context) {
+          remindersList.removeAt(index);
+          _slideAndRemoveReminder(context, reminder, ref);
+        },
+      ),
       _doneSlidableAction(context, reminder, ref),
     ]);
   }

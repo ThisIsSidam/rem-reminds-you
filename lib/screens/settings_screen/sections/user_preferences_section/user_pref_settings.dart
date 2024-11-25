@@ -12,15 +12,19 @@ class UserPreferenceSection extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // User Pref is placed at the top in list of sections and would not contain
-    // a title widget, it looks weird with one.
+    final controller = useMemoized(() => MenuController());
+
+    useEffect(() {
+      return controller.close;
+    }, [controller]);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 5),
         Column(
           children: [
-            _buildThemeSetting(context),
+            _buildThemeSetting(context, controller),
             _buildTextScaleSetting(context),
             _buildQuickPostponeDurationSetting(context),
           ],
@@ -29,13 +33,7 @@ class UserPreferenceSection extends HookWidget {
     );
   }
 
-  Widget _buildThemeSetting(BuildContext context) {
-    final controller = useMemoized(() => MenuController());
-
-    useEffect(() {
-      return controller.close;
-    }, [controller]);
-
+  Widget _buildThemeSetting(BuildContext context, MenuController controller) {
     return Consumer(builder: (context, ref, child) {
       final settingsNotifier = ref.read(userSettingsProvider.notifier);
       final themeMode = ref.watch(userSettingsProvider).themeMode;

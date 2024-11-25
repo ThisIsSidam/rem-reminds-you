@@ -122,9 +122,7 @@ class RemindersNotifier extends ChangeNotifier {
     if (reminder == null) return;
 
     gLogger.i('Marking Reminder as Done | ID: ${reminder.id}');
-    if (reminder is NoRushRemindersModal) {
-      deleteReminder(id);
-    } else if (reminder is! RecurringReminderModal ||
+    if (reminder is! RecurringReminderModal ||
         reminder.recurringInterval == RecurringInterval.none) {
       gLogger.i('Moving Reminder to Archives | ID: ${reminder.id}');
       await moveToArchive(id);
