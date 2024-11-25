@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../modals/no_rush_reminders/no_rush_reminders.dart';
 import '../../../modals/reminder_modal/reminder_modal.dart';
 import '../../../utils/logger/global_logger.dart';
 
@@ -105,26 +106,51 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListTile(
-      title:
-          Text(reminder.title, style: Theme.of(context).textTheme.titleMedium),
-      subtitle: Text(getFormattedDateTime(reminder.dateTime),
-          style: Theme.of(context).textTheme.bodyMedium),
-      tileColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      minVerticalPadding: 8,
-      minTileHeight: 60,
+    return InkWell(
       onTap: () {
         gLogger.i('Show archived reminderSheet | ID: ${reminder.id}');
         showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context) {
-              return ReminderSheet(
-                reminder: reminder,
-              );
-            });
+          isScrollControlled: true,
+          context: context,
+          builder: (context) {
+            return ReminderSheet(
+              reminder: reminder,
+            );
+          },
+        );
       },
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.10),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color:
+                Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: double.maxFinite,
+                child: Text(
+                  reminder.title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  softWrap: true,
+                ),
+              ),
+              if (reminder is! NoRushRemindersModal)
+                Text(
+                  getFormattedDateTime(reminder.dateTime),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
