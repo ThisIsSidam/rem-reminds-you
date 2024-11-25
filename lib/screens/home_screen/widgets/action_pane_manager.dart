@@ -1,3 +1,4 @@
+import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -20,6 +21,7 @@ class ActionPaneManager {
   ) {
     final SwipeAction action =
         ref.read(userSettingsProvider).homeTileSwipeActionLeft;
+    final ReminderModal reminder = remindersList[index];
 
     switch (action) {
       case SwipeAction.none:
@@ -27,7 +29,7 @@ class ActionPaneManager {
       case SwipeAction.done:
         return _doneActionPane(
           context,
-          remindersList[index],
+          reminder,
           ref,
         );
       case SwipeAction.delete:
@@ -38,11 +40,13 @@ class ActionPaneManager {
           ref,
         );
       case SwipeAction.postpone:
-        return _postponeActionPane(
-          context,
-          remindersList[index],
-          ref,
-        );
+        return reminder is NoRushRemindersModal
+            ? null
+            : _postponeActionPane(
+                context,
+                reminder,
+                ref,
+              );
       case SwipeAction.doneAndDelete:
         return _doneAndDeleteActionPane(context, remindersList, index, ref);
     }
