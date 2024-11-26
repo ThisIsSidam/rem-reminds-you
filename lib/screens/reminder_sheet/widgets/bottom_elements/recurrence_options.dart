@@ -30,9 +30,9 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
       child: GridView.count(
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
-        crossAxisCount: 2,
+        crossAxisCount: 3,
         shrinkWrap: true,
-        childAspectRatio: 2,
+        childAspectRatio: 1.5,
         children: [
           for (final RecurringInterval interval in RecurringInterval.values)
             intervalButton(interval, context, ref)

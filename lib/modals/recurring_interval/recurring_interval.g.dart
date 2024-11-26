@@ -23,6 +23,8 @@ class RecurringIntervalAdapter extends TypeAdapter<RecurringInterval> {
         return RecurringInterval.weekdays;
       case 4:
         return RecurringInterval.weekends;
+      case 5:
+        return RecurringInterval.monthly;
       default:
         return RecurringInterval.none;
     }
@@ -45,6 +47,9 @@ class RecurringIntervalAdapter extends TypeAdapter<RecurringInterval> {
         break;
       case RecurringInterval.weekends:
         writer.writeByte(4);
+        break;
+      case RecurringInterval.monthly:
+        writer.writeByte(5);
         break;
     }
   }

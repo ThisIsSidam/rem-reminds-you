@@ -13,7 +13,9 @@ enum RecurringInterval {
   @HiveField(3)
   weekdays,
   @HiveField(4)
-  weekends;
+  weekends,
+  @HiveField(5)
+  monthly;
 
   @override
   String toString() {
@@ -28,6 +30,8 @@ enum RecurringInterval {
         return 'Weekdays';
       case weekends:
         return 'Weekends';
+      case monthly:
+        return 'Monthly';
     }
   }
 
@@ -49,9 +53,11 @@ enum RecurringInterval {
       case weekly:
         return const Duration(days: 7);
       case weekdays:
-        return _getNextWeekday(dt);
+        return _getDurationForNextWeekday(dt);
       case weekends:
-        return _getNextWeekend(dt);
+        return _getDurationForNextWeekend(dt);
+      case monthly:
+        return _getDurationForNextMonth(dt);
       case none:
         return null;
     }
@@ -64,16 +70,18 @@ enum RecurringInterval {
       case weekly:
         return const Duration(days: 7);
       case weekdays:
-        return _getPreviousWeekday(dt);
+        return _getDurationForPreviousWeekday(dt);
       case weekends:
-        return _getPreviousWeekend(dt);
+        return _getDurationForPreviousWeekend(dt);
+      case monthly:
+        return _getDurationForPreviousMonth(dt);
       case none:
         return null;
     }
   }
 }
 
-Duration _getNextWeekday(DateTime dt) {
+Duration _getDurationForNextWeekday(DateTime dt) {
   int daysToAdd = 1;
   if (dt.weekday == DateTime.friday) {
     daysToAdd = 3;
@@ -84,7 +92,7 @@ Duration _getNextWeekday(DateTime dt) {
   return Duration(days: daysToAdd);
 }
 
-Duration _getNextWeekend(DateTime dt) {
+Duration _getDurationForNextWeekend(DateTime dt) {
   int daysToAdd = 1;
 
   if (dt.weekday == DateTime.friday) {
@@ -100,7 +108,15 @@ Duration _getNextWeekend(DateTime dt) {
   return Duration(days: daysToAdd);
 }
 
-Duration _getPreviousWeekday(DateTime dt) {
+Duration _getDurationForNextMonth(DateTime dt) {
+  final updatedDateTime = dt.copyWith(
+    month: dt.month + 1,
+  );
+
+  return updatedDateTime.difference(dt);
+}
+
+Duration _getDurationForPreviousWeekday(DateTime dt) {
   int daysToSubtract = 1;
   if (dt.weekday == DateTime.monday) {
     daysToSubtract = 3;
@@ -111,7 +127,7 @@ Duration _getPreviousWeekday(DateTime dt) {
   return Duration(days: daysToSubtract);
 }
 
-Duration _getPreviousWeekend(DateTime dt) {
+Duration _getDurationForPreviousWeekend(DateTime dt) {
   int daysToSubtract = 1;
 
   if (dt.weekday == DateTime.monday) {
@@ -125,4 +141,12 @@ Duration _getPreviousWeekend(DateTime dt) {
   }
 
   return Duration(days: daysToSubtract);
+}
+
+Duration _getDurationForPreviousMonth(DateTime dt) {
+  final updatedDateTime = dt.copyWith(
+    month: dt.month - 1,
+  );
+
+  return dt.difference(updatedDateTime);
 }
