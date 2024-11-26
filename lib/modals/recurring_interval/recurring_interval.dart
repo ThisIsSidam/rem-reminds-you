@@ -11,7 +11,9 @@ enum RecurringInterval {
   @HiveField(2)
   weekly,
   @HiveField(3)
-  custom;
+  weekdays,
+  @HiveField(4)
+  weekends;
 
   @override
   String toString() {
@@ -22,8 +24,10 @@ enum RecurringInterval {
         return 'Daily';
       case weekly:
         return 'Weekly';
-      case custom:
-        return 'Custom';
+      case weekdays:
+        return 'Weekdays';
+      case weekends:
+        return 'Weekends';
     }
   }
 
@@ -37,4 +41,88 @@ enum RecurringInterval {
   static RecurringInterval fromIndex(int value) {
     return RecurringInterval.values[value];
   }
+
+  Duration? getRecurringIncrementDuration(DateTime dt) {
+    switch (this) {
+      case daily:
+        return const Duration(days: 1);
+      case weekly:
+        return const Duration(days: 7);
+      case weekdays:
+        return _getNextWeekday(dt);
+      case weekends:
+        return _getNextWeekend(dt);
+      case none:
+        return null;
+    }
+  }
+
+  Duration? getRecurringDecrementDuration(DateTime dt) {
+    switch (this) {
+      case daily:
+        return const Duration(days: 1);
+      case weekly:
+        return const Duration(days: 7);
+      case weekdays:
+        return _getPreviousWeekday(dt);
+      case weekends:
+        return _getPreviousWeekend(dt);
+      case none:
+        return null;
+    }
+  }
+}
+
+Duration _getNextWeekday(DateTime dt) {
+  int daysToAdd = 1;
+  if (dt.weekday == DateTime.friday) {
+    daysToAdd = 3;
+  } else if (dt.weekday == DateTime.saturday) {
+    daysToAdd = 2;
+  }
+
+  return Duration(days: daysToAdd);
+}
+
+Duration _getNextWeekend(DateTime dt) {
+  int daysToAdd = 1;
+
+  if (dt.weekday == DateTime.friday) {
+    daysToAdd = 1;
+  } else if (dt.weekday == DateTime.saturday) {
+    daysToAdd = 1;
+  } else if (dt.weekday == DateTime.sunday) {
+    daysToAdd = 6;
+  } else {
+    daysToAdd = DateTime.saturday - dt.weekday;
+  }
+
+  return Duration(days: daysToAdd);
+}
+
+Duration _getPreviousWeekday(DateTime dt) {
+  int daysToSubtract = 1;
+  if (dt.weekday == DateTime.monday) {
+    daysToSubtract = 3;
+  } else if (dt.weekday == DateTime.sunday) {
+    daysToSubtract = 2;
+  }
+
+  return Duration(days: daysToSubtract);
+}
+
+Duration _getPreviousWeekend(DateTime dt) {
+  int daysToSubtract = 1;
+
+  if (dt.weekday == DateTime.monday) {
+    daysToSubtract = 1;
+  } else if (dt.weekday == DateTime.sunday) {
+    daysToSubtract = 1;
+  } else if (dt.weekday == DateTime.saturday) {
+    daysToSubtract = 6;
+  } else {
+    daysToSubtract = dt.weekday - DateTime.saturday;
+  }
+
+  return Duration(days: daysToSubtract);
 }

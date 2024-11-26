@@ -81,9 +81,8 @@ class RecurringReminderModal extends ReminderModal {
     dateTime = baseDateTime;
   }
 
-  /// Increment the date and time by 1 day or 1 week depending on the repeat interval.
   void _incrementRecurDuration() {
-    final increment = getRecurIncrementDuration();
+    final increment = recurringInterval.getRecurringIncrementDuration(dateTime);
 
     if (increment != null) {
       baseDateTime = baseDateTime.add(increment);
@@ -91,20 +90,10 @@ class RecurringReminderModal extends ReminderModal {
   }
 
   void _decrementRecurDuration() {
-    final decrement = getRecurIncrementDuration();
+    final decrement = recurringInterval.getRecurringDecrementDuration(dateTime);
 
     if (decrement != null) {
       baseDateTime = baseDateTime.subtract(decrement);
-    }
-  }
-
-  Duration? getRecurIncrementDuration() {
-    if (recurringInterval == RecurringInterval.daily) {
-      return Duration(days: 1);
-    } else if (recurringInterval == RecurringInterval.weekly) {
-      return Duration(days: 7);
-    } else {
-      return null;
     }
   }
 }

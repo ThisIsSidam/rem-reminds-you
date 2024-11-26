@@ -59,7 +59,7 @@ class HomePageReminderEntryListTile extends StatelessWidget {
                           RecurringInterval.none) ...<Widget>[
                     const SizedBox(width: 8), // Add some minimum spacing
                     Text(
-                      "⟳ ${(reminder as RecurringReminderModal).recurringInterval.name}",
+                      "⟳ ${(reminder as RecurringReminderModal).recurringInterval.toString()}",
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -76,8 +76,9 @@ class HomePageReminderEntryListTile extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     Text(
-                      getFormattedDuration(),
+                      getFormattedDuration(reminder),
                       style: Theme.of(context).textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -86,14 +87,5 @@ class HomePageReminderEntryListTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String getFormattedDuration() {
-    if (reminder.dateTime.isBefore(DateTime.now())) {
-      return '${getPrettyDurationFromDateTime(reminder.dateTime)} ago'
-          .replaceFirst('-', '');
-    } else {
-      return 'in ${getPrettyDurationFromDateTime(reminder.dateTime)}';
-    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:Rem/modals/reminder_modal/reminder_modal.dart';
 import 'package:duration/duration.dart';
 import 'package:intl/intl.dart';
 
@@ -8,11 +9,20 @@ String getFormattedDateTime(DateTime dateTime) {
   return formatted;
 }
 
+String getFormattedDuration(ReminderModal reminder) {
+  if (reminder.dateTime.isBefore(DateTime.now())) {
+    return '${getPrettyDurationFromDateTime(reminder.dateTime)} ago'
+        .replaceFirst('-', '');
+  } else {
+    return 'in ${getPrettyDurationFromDateTime(reminder.dateTime)}';
+  }
+}
+
 String getPrettyDurationFromDateTime(DateTime dateTime) {
   DateTime now = DateTime.now();
   Duration dur = dateTime
       .difference(DateTime(now.year, now.month, now.day, now.hour, now.minute));
-  return dur.pretty(tersity: DurationTersity.minute);
+  return dur.pretty(tersity: DurationTersity.minute, maxUnits: 2);
 }
 
 String getFormattedTimeForTimeSetButton(DateTime time) {

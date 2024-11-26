@@ -1,7 +1,6 @@
 import 'package:Rem/provider/sheet_reminder_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../../modals/recurring_interval/recurring_interval.dart';
 import '../../providers/bottom_element_provider.dart';
@@ -35,10 +34,8 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
         shrinkWrap: true,
         childAspectRatio: 2,
         children: [
-          intervalButton(RecurringInterval.none, context, ref),
-          intervalButton(RecurringInterval.daily, context, ref),
-          intervalButton(RecurringInterval.weekly, context, ref),
-          intervalButton(RecurringInterval.custom, context, ref),
+          for (final RecurringInterval interval in RecurringInterval.values)
+            intervalButton(interval, context, ref)
         ],
       ),
     );
@@ -51,10 +48,6 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
 
     return ElevatedButton(
       onPressed: () {
-        if (interval == RecurringInterval.custom) {
-          Fluttertoast.showToast(msg: "Coming soon!");
-          return;
-        }
         ref.read(sheetReminderNotifier).updateRecurringInterval(interval);
         ref.read(bottomElementProvider).setAsNone();
       },
