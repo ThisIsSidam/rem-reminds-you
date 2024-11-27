@@ -85,17 +85,18 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void resetValues() {
+  void resetValuesWith({Duration? customDuration, bool isNoRush = false}) {
     final settings = ref.read(userSettingsProvider);
     _id = null;
     _title = '';
     _preParsedTitle = '';
-    _dateTime = DateTime.now().add(settings.defaultLeadDuration);
+    _dateTime =
+        DateTime.now().add(customDuration ?? settings.defaultLeadDuration);
     _baseDateTime = DateTime.now();
     _autoSnoozeInterval =
         _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
     _recurringInterval = RecurringInterval.none;
-    _noRush = false;
+    _noRush = isNoRush;
     notifyListeners();
   }
 

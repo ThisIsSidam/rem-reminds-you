@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../modals/reminder_modal/reminder_modal.dart';
+import '../../provider/sheet_reminder_notifier.dart';
 import '../../utils/logger/global_logger.dart';
 
 enum HomeScreenSection {
@@ -181,48 +182,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       delegate: SliverChildListDelegate(
         [
           HomeScreenReminderListSection(
-            label: Text(
-              HomeScreenSection.overdue.title,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+            label: _buildHomeSectionButton(
+              label: HomeScreenSection.overdue.title,
+              color: Theme.of(context).colorScheme.error,
             ),
             remindersList: remindersMap[HomeScreenSection.overdue] ?? [],
             hideIfEmpty: true,
           ),
           HomeScreenReminderListSection(
-            label: Text(
-              HomeScreenSection.today.title,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+            label: _buildHomeSectionButton(
+              onTap: () {
+                _showReminderSheet();
+              },
+              label: HomeScreenSection.today.title,
+              color: Theme.of(context).colorScheme.primary,
             ),
             remindersList: remindersMap[HomeScreenSection.today] ?? [],
           ),
           HomeScreenReminderListSection(
-            label: Text(
-              HomeScreenSection.tomorrow.title,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
+            label: _buildHomeSectionButton(
+              onTap: () {
+                _showReminderSheet(duration: Duration(days: 1));
+              },
+              label: HomeScreenSection.tomorrow.title,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             remindersList: remindersMap[HomeScreenSection.tomorrow] ?? [],
           ),
           HomeScreenReminderListSection(
-            label: Text(
-              HomeScreenSection.later.title,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                  ),
+            label: _buildHomeSectionButton(
+              onTap: () {
+                _showReminderSheet(duration: Duration(days: 7));
+              },
+              label: HomeScreenSection.later.title,
+              color: Theme.of(context).colorScheme.inversePrimary,
             ),
             remindersList: remindersMap[HomeScreenSection.later] ?? [],
           ),
           HomeScreenReminderListSection(
-            label: Text(
-              HomeScreenSection.noRush.title,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.inverseSurface,
-                  ),
+            label: _buildHomeSectionButton(
+              onTap: () {
+                _showReminderSheet(isNoRush: true);
+              },
+              label: HomeScreenSection.noRush.title,
+              color: Theme.of(context).colorScheme.inverseSurface,
             ),
             remindersList: remindersMap[HomeScreenSection.noRush] ?? [],
           )
@@ -234,18 +237,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   // The floating Action button for adding new reminders.
   Widget getFloatingActionButton() {
     return FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        onPressed: () {
-          gLogger.i('Show new reminder sheet');
-          _showReminderSheet();
-        },
-        child: const Icon(
-          Icons.add,
-        ));
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+      onPressed: () {
+        gLogger.i('Show new reminder sheet');
+        _showReminderSheet();
+      },
+      child: const Icon(
+        Icons.add,
+      ),
+    );
   }
 
-  void _showReminderSheet({ReminderModal? reminder}) {
+  void _showReminderSheet(
+      {ReminderModal? reminder, Duration? duration, bool isNoRush = false}) {
+    if (duration != null) {
+      ref.read(sheetReminderNotifier).resetValuesWith(
+            customDuration: duration,
+          );
+    } else if (isNoRush) {
+      ref.read(sheetReminderNotifier).resetValuesWith(
+            isNoRush: true,
+          );
+    }
+
     showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -254,5 +269,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             reminder: reminder,
           );
         });
+  }
+
+  TextButton _buildHomeSectionButton({
+    required String label,
+    required Color color,
+    VoidCallback? onTap,
+  }) {
+    return TextButton(
+        onPressed: onTap,
+        style: TextButton.styleFrom(
+          alignment: Alignment.topLeft,
+          visualDensity: VisualDensity.compact,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          padding: EdgeInsets.zero,
+        ),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: color,
+              ),
+        ));
   }
 }

@@ -29,11 +29,9 @@ class HomeScreenReminderListSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: label,
-            ),
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: label,
           ),
           SizedBox(height: 4),
           Column(

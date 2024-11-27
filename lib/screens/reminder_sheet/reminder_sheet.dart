@@ -1,4 +1,4 @@
-import 'package:Rem/modals/reminder_modal/reminder_modal.dart';
+import 'package:Rem/provider/sheet_reminder_notifier.dart';
 import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/bottom_elements/recurrence_options.dart';
 import 'package:Rem/screens/reminder_sheet/widgets/bottom_elements/snooze_options.dart';
@@ -9,7 +9,7 @@ import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../provider/sheet_reminder_notifier.dart';
+import '../../modals/reminder_modal/reminder_modal.dart';
 
 class ReminderSheet extends ConsumerStatefulWidget {
   const ReminderSheet({
@@ -31,9 +31,8 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     Future(() {
       if (widget.reminder != null) {
         ref.read(sheetReminderNotifier).loadValues(widget.reminder!);
-      } else {
-        ref.read(sheetReminderNotifier).resetValues();
       }
+
       ref.read(bottomElementProvider).setAsNone();
       gLogger.i("Reminder initialized and bottom element set to none");
     });
