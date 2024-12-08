@@ -346,6 +346,45 @@ class UserSettingsNotifier extends ChangeNotifier {
     SettingsDB.setUserSetting('themeMode', value.toString());
     notifyListeners();
   }
+
+  DateTime get quietHoursStartTime {
+    final dynamic value = SettingsDB.getUserSetting('quietHoursStartTime');
+    if (value == null || value is! DateTime) {
+      return DateTime(0, 0, 0, 23, 0, 0, 0, 0);
+    }
+    return value;
+  }
+
+  set quietHoursStartTime(DateTime value) {
+    SettingsDB.setUserSetting('quietHoursStartTime', value);
+    notifyListeners();
+  }
+
+  DateTime get quietHoursEndTime {
+    final dynamic value = SettingsDB.getUserSetting('quietHoursEndTime');
+    if (value == null || value is! DateTime) {
+      return DateTime(0, 0, 0, 7, 0, 0, 0, 0);
+    }
+    return value;
+  }
+
+  set quietHoursEndTime(DateTime value) {
+    SettingsDB.setUserSetting('quietHoursEndTime', value);
+    notifyListeners();
+  }
+
+  double get textScale {
+    final dynamic value = SettingsDB.getUserSetting('textScale');
+    if (value == null || value is! double) {
+      return 1.0;
+    }
+    return value;
+  }
+
+  set textScale(double value) {
+    SettingsDB.setUserSetting('textScale', value);
+    notifyListeners();
+  }
 }
 
 final userSettingsProvider =

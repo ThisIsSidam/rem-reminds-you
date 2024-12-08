@@ -1,7 +1,6 @@
 import 'package:Rem/consts/enums/hive_enums.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/provider/settings_provider.dart';
-import 'package:Rem/provider/text_scale_provider.dart';
 import 'package:Rem/screens/permissions_screen/permissions_screen.dart';
 import 'package:Rem/screens/permissions_screen/utils/app_permi_handler.dart';
 import 'package:Rem/utils/logger/global_logger.dart';
@@ -36,8 +35,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     gLogger.i('App Built');
-    double textScale = ref.watch(textScaleProvider).textScale;
-    final settings = ref.watch(userSettingsProvider);
+    final (ThemeMode, double) settings = ref
+        .watch(userSettingsProvider.select((p) => (p.themeMode, p.textScale)));
 
     return DynamicColorBuilder(builder: (lightDynamic, darkDynamic) {
       ColorScheme lightColorScheme;
@@ -59,7 +58,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             return MediaQuery(
               child: child!,
               data: MediaQuery.of(context).copyWith(
-                textScaler: TextScaler.linear(textScale),
+                textScaler: TextScaler.linear(settings.$2),
               ),
             );
           },
@@ -68,7 +67,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               child: NavigationLayer(),
             ),
           ),
-          themeMode: settings.themeMode,
+          themeMode: settings.$1,
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: lightColorScheme,

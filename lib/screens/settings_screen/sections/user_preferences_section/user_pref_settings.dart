@@ -1,5 +1,5 @@
 import 'package:Rem/provider/settings_provider.dart';
-import 'package:Rem/provider/text_scale_provider.dart';
+import 'package:Rem/screens/settings_screen/sections/user_preferences_section/quiet_hours_sheet.dart';
 import 'package:Rem/utils/extensions/string_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -27,6 +27,7 @@ class UserPreferenceSection extends HookWidget {
             _buildThemeSetting(context, controller),
             _buildTextScaleSetting(context),
             _buildQuickPostponeDurationSetting(context),
+            _buildQuietHoursSetting(context),
           ],
         )
       ],
@@ -74,7 +75,8 @@ class UserPreferenceSection extends HookWidget {
       leading: Icon(Icons.format_size),
       title: Text('Text Scale', style: Theme.of(context).textTheme.titleSmall),
       subtitle: Consumer(builder: (context, ref, child) {
-        final textScale = ref.watch(textScaleProvider).textScale;
+        final textScale =
+            ref.watch(userSettingsProvider.select((p) => p.textScale));
         return Row(
           children: [
             Expanded(
@@ -85,7 +87,7 @@ class UserPreferenceSection extends HookWidget {
                 label: '${textScale}x',
                 divisions: 6,
                 onChanged: (val) {
-                  ref.read(textScaleProvider).textScale = val;
+                  ref.read(userSettingsProvider).textScale = val;
                 },
                 inactiveColor: Theme.of(context).colorScheme.secondary,
                 activeColor: Theme.of(context).colorScheme.primary,
@@ -134,6 +136,37 @@ class UserPreferenceSection extends HookWidget {
               ref.read(userSettingsProvider).defaultPostponeDuration = value;
             });
       }),
+    );
+  }
+
+  Widget _buildQuietHoursSetting(BuildContext context) {
+    return ListTile(
+      onTap: () async {
+        await showModalBottomSheet(
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 5,
+          context: context,
+          builder: (context) => QuietHoursSheet(),
+        );
+      },
+      leading: Icon(Icons.nightlight),
+      title: Text(
+        'Quiet Hours',
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
+      subtitle: Consumer(
+        builder: (context, ref, child) {
+          final quietHoursStartTime =
+              ref.watch(userSettingsProvider).quietHoursStartTime;
+          final quietHoursEndTime =
+              ref.watch(userSettingsProvider).quietHoursEndTime;
+          return Text(
+            '${quietHoursStartTime.hour.toString().padLeft(2, '0')}:${quietHoursStartTime.minute.toString().padLeft(2, '0')} - ${quietHoursEndTime.hour.toString().padLeft(2, '0')}:${quietHoursEndTime.minute.toString().padLeft(2, '0')}',
+            style: Theme.of(context).textTheme.bodySmall,
+          );
+        },
+      ),
     );
   }
 }

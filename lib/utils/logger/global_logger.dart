@@ -8,6 +8,7 @@ late final Logger gLogger;
 
 bool get isLoggerInitialized {
   try {
+    // ignore: unnecessary_null_comparison
     return gLogger != null;
   } catch (e) {
     return false;
