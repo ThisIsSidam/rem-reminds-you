@@ -1,14 +1,14 @@
-import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
-import 'package:Rem/modals/recurring_reminder/recurring_reminder.dart';
+import 'package:Rem/models/no_rush_reminders/no_rush_reminders.dart';
+import 'package:Rem/models/recurring_reminder/recurring_reminder.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 
-import '../../../modals/recurring_interval/recurring_interval.dart';
-import '../../../modals/reminder_modal/reminder_modal.dart';
+import '../../../models/recurring_interval/recurring_interval.dart';
+import '../../../models/reminder_model/reminder_model.dart';
 
 class HomePageReminderEntryListTile extends StatelessWidget {
-  final ReminderModal reminder;
+  final ReminderModel reminder;
 
   const HomePageReminderEntryListTile({
     super.key,
@@ -54,23 +54,23 @@ class HomePageReminderEntryListTile extends StatelessWidget {
                       softWrap: true,
                     ),
                   ),
-                  if (reminder is RecurringReminderModal &&
-                      (reminder as RecurringReminderModal).recurringInterval !=
+                  if (reminder is RecurringReminderModel &&
+                      (reminder as RecurringReminderModel).recurringInterval !=
                           RecurringInterval.none) ...<Widget>[
                     const SizedBox(width: 8), // Add some minimum spacing
                     Text(
-                      "⟳ ${(reminder as RecurringReminderModal).recurringInterval.toString()}",
+                      "⟳ ${(reminder as RecurringReminderModel).recurringInterval.toString()}",
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ],
               ),
-              if (reminder is! NoRushRemindersModal)
+              if (reminder is! NoRushRemindersModel)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (reminder is! NoRushRemindersModal)
+                    if (reminder is! NoRushRemindersModel)
                       Text(
                         getFormattedDateTime(reminder.dateTime),
                         style: Theme.of(context).textTheme.bodyMedium,

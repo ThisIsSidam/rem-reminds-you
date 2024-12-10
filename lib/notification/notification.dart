@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:Rem/consts/consts.dart';
 import 'package:Rem/database/pending_removals_db.dart';
 import 'package:Rem/main.dart';
-import 'package:Rem/modals/reminder_modal/reminder_modal.dart';
+import 'package:Rem/models/reminder_model/reminder_model.dart';
 import 'package:Rem/screens/reminder_sheet/reminder_sheet.dart';
 import 'package:Rem/utils/generate_id.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
@@ -46,7 +46,7 @@ class NotificationController {
   }
 
   static Future<bool> scheduleNotification(
-    ReminderModal reminder,
+    ReminderModel reminder,
   ) async {
     final int id = reminder.id;
 
@@ -75,7 +75,7 @@ class NotificationController {
     gLogger.i('Notification Callback Running | callBackId: $id');
 
     final Map<String, String> strParams = params.cast<String, String>();
-    final ReminderModal reminder = ReminderModal.fromJson(strParams);
+    final ReminderModel reminder = ReminderModel.fromJson(strParams);
 
     // Should be different each time so that different notifications are shown.
     int notificationId = generatedNotificationId(id);
@@ -163,7 +163,7 @@ class NotificationController {
         throw 'Received null payload through notification action | gKey : ${receivedAction.groupKey}';
       } else {
         final context = navigatorKey.currentContext!;
-        final ReminderModal reminder = ReminderModal.fromJson(payload);
+        final ReminderModel reminder = ReminderModel.fromJson(payload);
         gLogger.i(
             'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}');
 

@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
-part 'reminder_modal.g.dart';
+part 'reminder_model.g.dart';
 
 @HiveType(typeId: 0)
-class ReminderModal {
+class ReminderModel {
   @HiveField(0)
   int id;
   @HiveField(1)
@@ -14,7 +14,7 @@ class ReminderModal {
   String PreParsedTitle;
   @HiveField(4)
   Duration? autoSnoozeInterval;
-  ReminderModal({
+  ReminderModel({
     required this.id,
     required this.title,
     required this.dateTime,
@@ -32,8 +32,8 @@ class ReminderModal {
     };
   }
 
-  factory ReminderModal.fromJson(Map<String, String?> json) {
-    return ReminderModal(
+  factory ReminderModel.fromJson(Map<String, String?> json) {
+    return ReminderModel(
       id: int.parse(json['id']!),
       title: json['title']!,
       dateTime: DateTime.parse(json['dateTime']!),
@@ -44,14 +44,14 @@ class ReminderModal {
     );
   }
 
-  ReminderModal copyWith({
+  ReminderModel copyWith({
     int? id,
     String? title,
     DateTime? dateTime,
     String? preParsedTitle,
     Duration? autoSnoozeInterval,
   }) {
-    return ReminderModal(
+    return ReminderModel(
       id: id ?? this.id,
       title: title ?? this.title,
       dateTime: dateTime ?? this.dateTime,
@@ -60,7 +60,7 @@ class ReminderModal {
     );
   }
 
-  bool compareTo(ReminderModal other) {
+  bool compareTo(ReminderModel other) {
     return dateTime.isBefore(other.dateTime);
   }
 

@@ -1,12 +1,12 @@
-import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
+import 'package:Rem/models/no_rush_reminders/no_rush_reminders.dart';
 import 'package:Rem/provider/settings_provider.dart';
 import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../modals/recurring_interval/recurring_interval.dart';
-import '../modals/recurring_reminder/recurring_reminder.dart';
-import '../modals/reminder_modal/reminder_modal.dart';
+import '../models/recurring_interval/recurring_interval.dart';
+import '../models/recurring_reminder/recurring_reminder.dart';
+import '../models/reminder_model/reminder_model.dart';
 import '../utils/generate_id.dart';
 
 class SheetReminderNotifier extends ChangeNotifier {
@@ -100,33 +100,33 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadValues(ReminderModal reminder) {
+  void loadValues(ReminderModel reminder) {
     _id = reminder.id;
     _title = reminder.title;
     _preParsedTitle = reminder.PreParsedTitle;
     _dateTime = reminder.dateTime;
-    _baseDateTime = reminder is RecurringReminderModal
+    _baseDateTime = reminder is RecurringReminderModel
         ? reminder.baseDateTime
         : DateTime.now();
     _autoSnoozeInterval = reminder.autoSnoozeInterval;
-    _recurringInterval = reminder is RecurringReminderModal
+    _recurringInterval = reminder is RecurringReminderModel
         ? reminder.recurringInterval
         : RecurringInterval.none;
-    if (reminder is NoRushRemindersModal) _noRush = true;
+    if (reminder is NoRushRemindersModel) _noRush = true;
     notifyListeners();
   }
 
-  ReminderModal constructReminder() {
+  ReminderModel constructReminder() {
     final autoSnooze = ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
 
     if (_noRush) {
-      return NoRushRemindersModal(
+      return NoRushRemindersModel(
         id: id ?? generateId(),
         title: title,
         autoSnoozeInterval: autoSnooze,
       );
     } else if (_recurringInterval == RecurringInterval.none) {
-      return ReminderModal(
+      return ReminderModel(
         id: id ?? generateId(),
         dateTime: dateTime,
         title: title,
@@ -134,7 +134,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         autoSnoozeInterval: autoSnoozeInterval,
       );
     } else {
-      return RecurringReminderModal(
+      return RecurringReminderModel(
         title: title,
         id: id ?? generateId(),
         dateTime: dateTime,

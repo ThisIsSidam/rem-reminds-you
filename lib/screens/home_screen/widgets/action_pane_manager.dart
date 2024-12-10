@@ -1,12 +1,12 @@
-import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
+import 'package:Rem/models/no_rush_reminders/no_rush_reminders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../consts/enums/swipe_actions.dart';
-import '../../../modals/recurring_interval/recurring_interval.dart';
-import '../../../modals/recurring_reminder/recurring_reminder.dart';
-import '../../../modals/reminder_modal/reminder_modal.dart';
+import '../../../models/recurring_interval/recurring_interval.dart';
+import '../../../models/recurring_reminder/recurring_reminder.dart';
+import '../../../models/reminder_model/reminder_model.dart';
 import '../../../provider/reminders_provider.dart';
 import '../../../provider/settings_provider.dart';
 import '../../../widgets/one_time_undo_button/one_time_undo_button.dart';
@@ -15,13 +15,13 @@ import '../../../widgets/snack_bar/custom_snack_bar.dart';
 class ActionPaneManager {
   static ActionPane? getActionToLeft(
     WidgetRef ref,
-    List<ReminderModal> remindersList,
+    List<ReminderModel> remindersList,
     int index,
     BuildContext context,
   ) {
     final SwipeAction action =
         ref.read(userSettingsProvider).homeTileSwipeActionLeft;
-    final ReminderModal reminder = remindersList[index];
+    final ReminderModel reminder = remindersList[index];
 
     switch (action) {
       case SwipeAction.none:
@@ -40,7 +40,7 @@ class ActionPaneManager {
           ref,
         );
       case SwipeAction.postpone:
-        return reminder is NoRushRemindersModal
+        return reminder is NoRushRemindersModel
             ? null
             : _postponeActionPane(
                 context,
@@ -54,7 +54,7 @@ class ActionPaneManager {
 
   static ActionPane? getActionToRight(
     WidgetRef ref,
-    List<ReminderModal> remindersList,
+    List<ReminderModel> remindersList,
     int index,
     BuildContext context,
   ) {
@@ -90,7 +90,7 @@ class ActionPaneManager {
 
   static ActionPane _doneActionPane(
     BuildContext context,
-    ReminderModal reminder,
+    ReminderModel reminder,
     WidgetRef ref,
   ) {
     return ActionPane(
@@ -99,12 +99,12 @@ class ActionPaneManager {
   }
 
   static ActionPane _deleteActionPane(
-    List<ReminderModal> remindersList,
+    List<ReminderModel> remindersList,
     int index,
     BuildContext context,
     WidgetRef ref,
   ) {
-    final ReminderModal reminder = remindersList[index];
+    final ReminderModel reminder = remindersList[index];
 
     return ActionPane(
         motion: const StretchMotion(),
@@ -126,7 +126,7 @@ class ActionPaneManager {
 
   static ActionPane _doneAndDeleteActionPane(
     BuildContext context,
-    List<ReminderModal> remindersList,
+    List<ReminderModel> remindersList,
     int index,
     WidgetRef ref,
   ) {
@@ -147,13 +147,13 @@ class ActionPaneManager {
 
   static void _slideAndRemoveReminder(
     BuildContext context,
-    ReminderModal reminder,
+    ReminderModel reminder,
     WidgetRef ref,
   ) {
     // Store the provider reference before any potential disposal
     final remindersProviderValue = ref.read(remindersProvider);
 
-    if (reminder is RecurringReminderModal &&
+    if (reminder is RecurringReminderModel &&
         reminder.recurringInterval != RecurringInterval.none) {
       showDialog(
         context: context,
@@ -257,7 +257,7 @@ class ActionPaneManager {
   // We should also fix the same issue in _postponeActionPane
   static ActionPane _postponeActionPane(
     BuildContext context,
-    ReminderModal reminder,
+    ReminderModel reminder,
     WidgetRef ref,
   ) {
     final Duration postponeDuration =
@@ -296,7 +296,7 @@ class ActionPaneManager {
   // Also fix _doneSlidableAction
   static Widget _doneSlidableAction(
     BuildContext context,
-    ReminderModal reminder,
+    ReminderModel reminder,
     WidgetRef ref,
   ) {
     final remindersProviderValue = ref.read(remindersProvider);
@@ -307,7 +307,7 @@ class ActionPaneManager {
       onPressed: (context) {
         remindersProviderValue.markAsDone(reminder.id);
 
-        if (reminder is! RecurringReminderModal ||
+        if (reminder is! RecurringReminderModel ||
             reminder.recurringInterval == RecurringInterval.none) {
           final ValueKey snackBarKey =
               ValueKey<String>('archived-${reminder.id}');

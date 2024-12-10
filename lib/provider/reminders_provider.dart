@@ -1,6 +1,6 @@
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
-import 'package:Rem/modals/recurring_reminder/recurring_reminder.dart';
+import 'package:Rem/models/no_rush_reminders/no_rush_reminders.dart';
+import 'package:Rem/models/recurring_reminder/recurring_reminder.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/provider/archives_provider.dart';
 import 'package:Rem/screens/home_screen/home_screen.dart';
@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/reminder_database/database.dart';
-import '../modals/recurring_interval/recurring_interval.dart';
-import '../modals/reminder_modal/reminder_modal.dart';
+import '../models/recurring_interval/recurring_interval.dart';
+import '../models/reminder_model/reminder_model.dart';
 import '../utils/logger/global_logger.dart';
 
 class RemindersNotifier extends ChangeNotifier {
@@ -19,11 +19,11 @@ class RemindersNotifier extends ChangeNotifier {
     loadReminders();
   }
 
-  Map<int, ReminderModal> _reminders = {};
-  Map<HomeScreenSection, List<ReminderModal>> _categorizedReminders = {};
+  Map<int, ReminderModel> _reminders = {};
+  Map<HomeScreenSection, List<ReminderModel>> _categorizedReminders = {};
 
-  Map<int, ReminderModal> get reminders => _reminders;
-  Map<HomeScreenSection, List<ReminderModal>> get categorizedReminders {
+  Map<int, ReminderModel> get reminders => _reminders;
+  Map<HomeScreenSection, List<ReminderModel>> get categorizedReminders {
     _updateCategorizedReminders();
     return _categorizedReminders;
   }
@@ -39,18 +39,18 @@ class RemindersNotifier extends ChangeNotifier {
 
   void _updateCategorizedReminders() {
     final now = DateTime.now();
-    final overdueList = <ReminderModal>[];
-    final todayList = <ReminderModal>[];
-    final tomorrowList = <ReminderModal>[];
-    final laterList = <ReminderModal>[];
-    final noRushList = <NoRushRemindersModal>[];
+    final overdueList = <ReminderModel>[];
+    final todayList = <ReminderModel>[];
+    final tomorrowList = <ReminderModel>[];
+    final laterList = <ReminderModel>[];
+    final noRushList = <NoRushRemindersModel>[];
 
     final sortedReminders = _reminders.values.toList()
       ..sort((a, b) => a.getDiffDuration().compareTo(b.getDiffDuration()));
 
     for (final reminder in sortedReminders) {
       DateTime dateTime = reminder.dateTime;
-      if (reminder is NoRushRemindersModal) {
+      if (reminder is NoRushRemindersModel) {
         noRushList.add(reminder);
         continue;
       }
@@ -78,7 +78,7 @@ class RemindersNotifier extends ChangeNotifier {
     };
   }
 
-  Future<ReminderModal> saveReminder(ReminderModal reminder) async {
+  Future<ReminderModel> saveReminder(ReminderModel reminder) async {
     // if (reminder.id == newReminderID) {
     //   reminder.id = generateId(reminder);
     //   reminder.baseDateTime = reminder.dateTime;
@@ -101,7 +101,7 @@ class RemindersNotifier extends ChangeNotifier {
     return reminder;
   }
 
-  Future<ReminderModal?> deleteReminder(int id) async {
+  Future<ReminderModel?> deleteReminder(int id) async {
     final reminder = _reminders[id];
     if (reminder == null) return null;
 
@@ -122,7 +122,7 @@ class RemindersNotifier extends ChangeNotifier {
     if (reminder == null) return;
 
     gLogger.i('Marking Reminder as Done | ID: ${reminder.id}');
-    if (reminder is! RecurringReminderModal ||
+    if (reminder is! RecurringReminderModel ||
         reminder.recurringInterval == RecurringInterval.none) {
       gLogger.i('Moving Reminder to Archives | ID: ${reminder.id}');
       await moveToArchive(id);
@@ -158,7 +158,7 @@ class RemindersNotifier extends ChangeNotifier {
 
   Future<void> moveToNextReminderOccurrence(int id) async {
     final reminder = _reminders[id];
-    if (reminder == null || reminder is! RecurringReminderModal) {
+    if (reminder == null || reminder is! RecurringReminderModel) {
       return;
     }
 
@@ -177,7 +177,7 @@ class RemindersNotifier extends ChangeNotifier {
 
   Future<void> moveToPreviousReminderOccurrence(int id) async {
     final reminder = _reminders[id];
-    if (reminder == null || reminder is! RecurringReminderModal) return;
+    if (reminder == null || reminder is! RecurringReminderModel) return;
 
     await NotificationController.cancelScheduledNotification(id.toString());
     reminder.moveToPreviousOccurrence();
@@ -201,8 +201,8 @@ class RemindersNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<ReminderModal?> retrieveFromArchives(int id) async {
-    ReminderModal? reminder;
+  Future<ReminderModel?> retrieveFromArchives(int id) async {
+    ReminderModel? reminder;
 
     gLogger.i('Retrieving reminder from Archives | ID : ${id}');
     if (ref == null) {

@@ -9,7 +9,7 @@ import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../modals/reminder_modal/reminder_modal.dart';
+import '../../models/reminder_model/reminder_model.dart';
 
 class ReminderSheet extends ConsumerStatefulWidget {
   const ReminderSheet({
@@ -17,7 +17,7 @@ class ReminderSheet extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final ReminderModal? reminder;
+  final ReminderModel? reminder;
 
   @override
   ConsumerState<ReminderSheet> createState() => _ReminderSheetState();

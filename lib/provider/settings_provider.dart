@@ -4,7 +4,7 @@ import 'package:Rem/utils/extensions/theme_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../modals/recurring_interval/recurring_interval.dart';
+import '../models/recurring_interval/recurring_interval.dart';
 import '../utils/logger/global_logger.dart';
 
 class UserSettingsNotifier extends ChangeNotifier {

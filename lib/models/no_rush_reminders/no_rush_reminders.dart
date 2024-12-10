@@ -2,19 +2,19 @@ import 'dart:math';
 
 import 'package:hive/hive.dart';
 
-import '../reminder_modal/reminder_modal.dart';
+import '../reminder_model/reminder_model.dart';
 
 part 'no_rush_reminders.g.dart';
 
 @HiveType(typeId: 3)
-class NoRushRemindersModal extends ReminderModal {
-  NoRushRemindersModal({
+class NoRushRemindersModel extends ReminderModel {
+  NoRushRemindersModel({
     required super.id,
     required super.title,
     required super.autoSnoozeInterval,
   }) : super(PreParsedTitle: title, dateTime: _generateRandomFutureTime());
 
-  // Will use fromJson and toJson methods of ReminderModal as the attributes
+  // Will use fromJson and toJson methods of ReminderModel as the attributes
   // are same
 
   /// Generate DateTime for this new noRush reminder.

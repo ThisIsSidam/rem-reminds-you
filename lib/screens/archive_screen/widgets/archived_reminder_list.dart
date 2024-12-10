@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../modals/no_rush_reminders/no_rush_reminders.dart';
-import '../../../modals/reminder_modal/reminder_modal.dart';
+import '../../../models/no_rush_reminders/no_rush_reminders.dart';
+import '../../../models/reminder_model/reminder_model.dart';
 import '../../../utils/logger/global_logger.dart';
 
 class ArchiveEntryLists extends ConsumerWidget {
-  final List<ReminderModal> remindersList;
+  final List<ReminderModel> remindersList;
 
   const ArchiveEntryLists({
     super.key,
@@ -19,7 +19,7 @@ class ArchiveEntryLists extends ConsumerWidget {
   });
 
   void _slideAndRemoveReminder(
-      BuildContext context, ReminderModal reminder, WidgetRef ref) {
+      BuildContext context, ReminderModel reminder, WidgetRef ref) {
     final archivesNotifier = ref.read(archivesProvider);
     archivesNotifier.deleteArchivedReminder(
       reminder.id,
@@ -100,7 +100,7 @@ class ArchiveEntryLists extends ConsumerWidget {
 }
 
 class _ArchiveReminderEntryListTile extends ConsumerWidget {
-  final ReminderModal reminder;
+  final ReminderModel reminder;
 
   const _ArchiveReminderEntryListTile({required this.reminder});
 
@@ -142,7 +142,7 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
                   softWrap: true,
                 ),
               ),
-              if (reminder is! NoRushRemindersModal)
+              if (reminder is! NoRushRemindersModel)
                 Text(
                   getFormattedDateTime(reminder.dateTime),
                   style: Theme.of(context).textTheme.bodyMedium,

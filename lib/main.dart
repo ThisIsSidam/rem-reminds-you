@@ -1,6 +1,6 @@
 import 'package:Rem/app.dart';
 import 'package:Rem/consts/enums/hive_enums.dart';
-import 'package:Rem/modals/no_rush_reminders/no_rush_reminders.dart';
+import 'package:Rem/models/no_rush_reminders/no_rush_reminders.dart';
 import 'package:Rem/notification/notification.dart';
 import 'package:Rem/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'database/pending_removals_db.dart';
-import 'modals/duration.g.dart';
-import 'modals/recurring_interval/recurring_interval.dart';
-import 'modals/recurring_reminder/recurring_reminder.dart';
-import 'modals/reminder_modal/reminder_modal.dart';
+import 'models/duration.g.dart';
+import 'models/recurring_interval/recurring_interval.dart';
+import 'models/recurring_reminder/recurring_reminder.dart';
+import 'models/reminder_model/reminder_model.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -31,10 +31,10 @@ void main() async {
 Future<void> initHive() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DurationAdapter());
-  Hive.registerAdapter(ReminderModalAdapter());
+  Hive.registerAdapter(ReminderModelAdapter());
   Hive.registerAdapter(RecurringIntervalAdapter());
-  Hive.registerAdapter(RecurringReminderModalAdapter());
-  Hive.registerAdapter(NoRushRemindersModalAdapter());
+  Hive.registerAdapter(RecurringReminderModelAdapter());
+  Hive.registerAdapter(NoRushRemindersModelAdapter());
 
   // Order of openBox statements is crucial. Do not change.
   await Hive.openBox(HiveBoxNames.individualValues.name);

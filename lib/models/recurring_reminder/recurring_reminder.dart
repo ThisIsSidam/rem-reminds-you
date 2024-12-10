@@ -1,12 +1,12 @@
 import 'package:hive/hive.dart';
 
 import '../recurring_interval/recurring_interval.dart';
-import '../reminder_modal/reminder_modal.dart';
+import '../reminder_model/reminder_model.dart';
 
 part 'recurring_reminder.g.dart';
 
 @HiveType(typeId: 1)
-class RecurringReminderModal extends ReminderModal {
+class RecurringReminderModel extends ReminderModel {
   @HiveField(10)
   RecurringInterval recurringInterval;
   @HiveField(11)
@@ -14,7 +14,7 @@ class RecurringReminderModal extends ReminderModal {
   @HiveField(12)
   bool paused;
 
-  RecurringReminderModal({
+  RecurringReminderModel({
     required super.id,
     required super.title,
     required super.dateTime,
@@ -34,8 +34,8 @@ class RecurringReminderModal extends ReminderModal {
     return data;
   }
 
-  factory RecurringReminderModal.fromJson(Map<String, String?> map) {
-    return RecurringReminderModal(
+  factory RecurringReminderModel.fromJson(Map<String, String?> map) {
+    return RecurringReminderModel(
       id: int.parse(map['id']!),
       title: map['title']!,
       dateTime: DateTime.parse(map['dateTime']!),
@@ -49,7 +49,7 @@ class RecurringReminderModal extends ReminderModal {
     );
   }
 
-  RecurringReminderModal copyWithRecurring({
+  RecurringReminderModel copyWithRecurring({
     int? id,
     String? title,
     DateTime? dateTime,
@@ -59,7 +59,7 @@ class RecurringReminderModal extends ReminderModal {
     DateTime? baseDateTime,
     bool? paused,
   }) {
-    return RecurringReminderModal(
+    return RecurringReminderModel(
       id: id ?? this.id,
       title: title ?? this.title,
       dateTime: dateTime ?? this.dateTime,

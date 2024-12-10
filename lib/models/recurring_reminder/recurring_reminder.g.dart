@@ -1,34 +1,44 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'no_rush_reminders.dart';
+part of 'recurring_reminder.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class NoRushRemindersModalAdapter extends TypeAdapter<NoRushRemindersModal> {
+class RecurringReminderModelAdapter
+    extends TypeAdapter<RecurringReminderModel> {
   @override
-  final int typeId = 3;
+  final int typeId = 1;
 
   @override
-  NoRushRemindersModal read(BinaryReader reader) {
+  RecurringReminderModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return NoRushRemindersModal(
+    return RecurringReminderModel(
       id: fields[0] as int,
       title: fields[1] as String,
+      dateTime: fields[2] as DateTime,
+      PreParsedTitle: fields[3] as String,
       autoSnoozeInterval: fields[4] as Duration?,
-    )
-      ..dateTime = fields[2] as DateTime
-      ..PreParsedTitle = fields[3] as String;
+      recurringInterval: fields[10] as RecurringInterval,
+      baseDateTime: fields[11] as DateTime,
+      paused: fields[12] as bool,
+    );
   }
 
   @override
-  void write(BinaryWriter writer, NoRushRemindersModal obj) {
+  void write(BinaryWriter writer, RecurringReminderModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(8)
+      ..writeByte(10)
+      ..write(obj.recurringInterval)
+      ..writeByte(11)
+      ..write(obj.baseDateTime)
+      ..writeByte(12)
+      ..write(obj.paused)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +57,7 @@ class NoRushRemindersModalAdapter extends TypeAdapter<NoRushRemindersModal> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is NoRushRemindersModalAdapter &&
+      other is RecurringReminderModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

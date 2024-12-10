@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'reminder_modal.dart';
+part of 'reminder_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ReminderModalAdapter extends TypeAdapter<ReminderModal> {
+class ReminderModelAdapter extends TypeAdapter<ReminderModel> {
   @override
   final int typeId = 0;
 
   @override
-  ReminderModal read(BinaryReader reader) {
+  ReminderModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ReminderModal(
+    return ReminderModel(
       id: fields[0] as int,
       title: fields[1] as String,
       dateTime: fields[2] as DateTime,
@@ -26,7 +26,7 @@ class ReminderModalAdapter extends TypeAdapter<ReminderModal> {
   }
 
   @override
-  void write(BinaryWriter writer, ReminderModal obj) {
+  void write(BinaryWriter writer, ReminderModel obj) {
     writer
       ..writeByte(5)
       ..writeByte(0)
@@ -47,7 +47,7 @@ class ReminderModalAdapter extends TypeAdapter<ReminderModal> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ReminderModalAdapter &&
+      other is ReminderModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

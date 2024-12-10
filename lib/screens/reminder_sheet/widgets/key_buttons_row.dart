@@ -1,13 +1,13 @@
 import 'package:Rem/consts/consts.dart';
-import 'package:Rem/modals/reminder_modal/reminder_modal.dart';
+import 'package:Rem/models/reminder_model/reminder_model.dart';
 import 'package:Rem/provider/reminders_provider.dart';
 import 'package:Rem/screens/reminder_sheet/providers/bottom_element_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../../modals/recurring_interval/recurring_interval.dart';
-import '../../../modals/recurring_reminder/recurring_reminder.dart';
+import '../../../models/recurring_interval/recurring_interval.dart';
+import '../../../models/recurring_reminder/recurring_reminder.dart';
 import '../../../provider/archives_provider.dart';
 import '../../../provider/sheet_reminder_notifier.dart';
 
@@ -17,7 +17,7 @@ class KeyButtonsRow extends ConsumerWidget {
   });
 
   void saveReminder(BuildContext context, WidgetRef ref) async {
-    final ReminderModal reminder =
+    final ReminderModel reminder =
         ref.read(sheetReminderNotifier).constructReminder();
 
     if (reminder.title == "No Title") {
@@ -111,7 +111,7 @@ class KeyButtonsRow extends ConsumerWidget {
     final reminder = ref.read(sheetReminderNotifier);
 
     bool forAllCondition = reminder.id != newReminderID &&
-        reminder is RecurringReminderModal &&
+        reminder is RecurringReminderModel &&
         reminder.recurringInterval != RecurringInterval.none &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
 
