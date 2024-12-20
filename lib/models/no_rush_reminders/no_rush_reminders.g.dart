@@ -20,9 +20,8 @@ class NoRushRemindersModelAdapter extends TypeAdapter<NoRushRemindersModel> {
       id: fields[0] as int,
       title: fields[1] as String,
       autoSnoozeInterval: fields[4] as Duration?,
-    )
-      ..dateTime = fields[2] as DateTime
-      ..PreParsedTitle = fields[3] as String;
+      dateTime: fields[2] as DateTime,
+    )..PreParsedTitle = fields[3] as String;
   }
 
   @override

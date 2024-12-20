@@ -124,6 +124,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         id: id ?? generateId(),
         title: title,
         autoSnoozeInterval: autoSnooze,
+        dateTime: NoRushRemindersModel.generateRandomFutureTime(),
       );
     } else if (_recurringInterval == RecurringInterval.none) {
       return ReminderModel(
