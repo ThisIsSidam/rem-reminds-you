@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../provider/settings_provider.dart';
 
-class DateTimeField extends HookConsumerWidget {
+class DateTimeSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final showTimePickerNotifier = useValueNotifier<bool>(false);
@@ -20,7 +20,7 @@ class DateTimeField extends HookConsumerWidget {
     useEffect(() {
       if (noRush) showTimePickerNotifier.value = true;
       return null;
-    }, []);
+    }, [noRush]);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -141,7 +141,7 @@ class DateTimeField extends HookConsumerWidget {
               trailing: Switch(
                 value: noRush,
                 onChanged: (bool val) {
-                  ref.read(sheetReminderNotifier).updateNoRush(val);
+                  ref.read(sheetReminderNotifier).toggleNoRushSwitch(val);
                 },
               ),
             ),

@@ -80,7 +80,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateNoRush(bool newNoRush) {
+  void toggleNoRushSwitch(bool newNoRush) {
     _noRush = newNoRush;
     notifyListeners();
   }

@@ -60,7 +60,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TitleField(),
-              DateTimeField(),
+              DateTimeSection(),
               KeyButtonsRow(),
               _buildBottomElement()
             ],
