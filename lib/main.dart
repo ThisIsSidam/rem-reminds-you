@@ -1,17 +1,17 @@
 import 'package:Rem/app.dart';
-import 'package:Rem/consts/enums/hive_enums.dart';
-import 'package:Rem/models/no_rush_reminders/no_rush_reminders.dart';
-import 'package:Rem/notification/notification.dart';
-import 'package:Rem/utils/logger/global_logger.dart';
+import 'package:Rem/core/enums/hive_enums.dart';
+import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
+import 'package:Rem/core/services/notification_service/notification_service.dart';
+import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'database/pending_removals_db.dart';
-import 'models/duration.g.dart';
-import 'models/recurring_interval/recurring_interval.dart';
-import 'models/recurring_reminder/recurring_reminder.dart';
-import 'models/reminder_model/reminder_model.dart';
+import 'core/hive/pending_removals_db.dart';
+import 'core/models/duration.g.dart';
+import 'core/models/recurring_interval/recurring_interval.dart';
+import 'core/models/recurring_reminder/recurring_reminder.dart';
+import 'core/models/reminder_model/reminder_model.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

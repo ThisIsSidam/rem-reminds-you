@@ -1,10 +1,10 @@
-import 'package:Rem/consts/enums/hive_enums.dart';
+import 'package:Rem/core/enums/hive_enums.dart';
+import 'package:Rem/feature/permissions/domain/app_permi_handler.dart';
+import 'package:Rem/feature/permissions/presentation/screens/permissions_screen.dart';
+import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
 import 'package:Rem/main.dart';
-import 'package:Rem/provider/settings_provider.dart';
-import 'package:Rem/screens/permissions_screen/permissions_screen.dart';
-import 'package:Rem/screens/permissions_screen/utils/app_permi_handler.dart';
-import 'package:Rem/utils/logger/global_logger.dart';
-import 'package:Rem/widgets/bottom_nav/bottom_nav_bar.dart';
+import 'package:Rem/shared/utils/logger/global_logger.dart';
+import 'package:Rem/shared/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
