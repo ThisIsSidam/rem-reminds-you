@@ -1,7 +1,7 @@
 import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/models/reminder_model/reminder_model.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/providers/bottom_element_provider.dart';
+import 'package:Rem/feature/reminder_screen/presentation/providers/bottom_element_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';

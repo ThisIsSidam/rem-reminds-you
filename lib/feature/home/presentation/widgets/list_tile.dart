@@ -1,6 +1,6 @@
 import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
 import 'package:Rem/core/models/recurring_reminder/recurring_reminder.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/sheets/reminder_sheet.dart';
+import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 
@@ -19,14 +19,12 @@ class HomePageReminderEntryListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context) {
-              return ReminderSheet(
-                reminder: reminder,
-              );
-            });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReminderScreen(reminder: reminder),
+          ),
+        );
       },
       child: DecoratedBox(
         decoration: BoxDecoration(

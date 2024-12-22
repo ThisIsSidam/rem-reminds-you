@@ -1,18 +1,18 @@
-import 'package:Rem/feature/reminder_sheet/presentation/providers/bottom_element_provider.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/widgets/bottom_elements/recurrence_options.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/widgets/bottom_elements/snooze_options.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/widgets/date_time_section.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/widgets/key_buttons_row.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/widgets/title_field.dart';
+import 'package:Rem/feature/reminder_screen/presentation/providers/bottom_element_provider.dart';
+import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/bottom_elements/recurrence_options.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/bottom_elements/snooze_options.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/date_time_section.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/key_buttons_row.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/title_field.dart';
 import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/models/reminder_model/reminder_model.dart';
 
-class ReminderSheet extends ConsumerStatefulWidget {
-  const ReminderSheet({
+class ReminderScreen extends ConsumerStatefulWidget {
+  const ReminderScreen({
     this.reminder,
     super.key,
   });
@@ -20,10 +20,10 @@ class ReminderSheet extends ConsumerStatefulWidget {
   final ReminderModel? reminder;
 
   @override
-  ConsumerState<ReminderSheet> createState() => _ReminderSheetState();
+  ConsumerState<ReminderScreen> createState() => _ReminderSheetState();
 }
 
-class _ReminderSheetState extends ConsumerState<ReminderSheet> {
+class _ReminderSheetState extends ConsumerState<ReminderScreen> {
   @override
   void initState() {
     gLogger.i('Build Reminder Sheet');
@@ -46,24 +46,31 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
 
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
-    return AnimatedContainer(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-        color: theme.scaffoldBackgroundColor,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(
+          widget.reminder != null ? 'Edit Reminder' : 'Add Reminder',
+        ),
       ),
-      padding: EdgeInsets.only(bottom: keyboardHeight),
-      duration: const Duration(milliseconds: 100),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TitleField(),
-              DateTimeSection(),
-              KeyButtonsRow(),
-              _buildBottomElement()
-            ],
+      body: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+          color: theme.scaffoldBackgroundColor,
+        ),
+        padding: EdgeInsets.only(bottom: keyboardHeight),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TitleField(),
+                DateTimeSection(),
+                KeyButtonsRow(),
+                _buildBottomElement()
+              ],
+            ),
           ),
         ),
       ),

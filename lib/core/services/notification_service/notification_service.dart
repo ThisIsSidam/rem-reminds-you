@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/hive/pending_removals_db.dart';
 import 'package:Rem/core/models/reminder_model/reminder_model.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/sheets/reminder_sheet.dart';
+import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/shared/utils/generate_id.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
@@ -167,14 +167,12 @@ class NotificationController {
         gLogger.i(
             'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}');
 
-        showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context) {
-              return ReminderSheet(
-                reminder: reminder,
-              );
-            });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReminderScreen(reminder: reminder),
+          ),
+        );
         removeNotifications(receivedAction.groupKey);
       }
     }

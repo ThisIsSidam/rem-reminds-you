@@ -5,7 +5,7 @@ import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/services/notification_service/notification_service.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
 import 'package:Rem/feature/home/presentation/widgets/home_screen_lists.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/sheets/reminder_sheet.dart';
+import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
-import '../../../reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
+import '../../../reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
 
 enum HomeScreenSection {
   overdue('Overdue'),
@@ -261,14 +261,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           );
     }
 
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (context) {
-          return ReminderSheet(
-            reminder: reminder,
-          );
-        });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReminderScreen(reminder: reminder),
+      ),
+    );
   }
 
   TextButton _buildHomeSectionButton({
