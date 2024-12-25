@@ -1,4 +1,5 @@
 import 'package:Rem/core/enums/hive_enums.dart';
+import 'package:Rem/core/theme/app_theme.dart';
 import 'package:Rem/feature/permissions/domain/app_permi_handler.dart';
 import 'package:Rem/feature/permissions/presentation/screens/permissions_screen.dart';
 import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
@@ -46,10 +47,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
         lightColorScheme = lightDynamic.harmonized();
         darkColorScheme = darkDynamic.harmonized();
       } else {
-        lightColorScheme = ColorScheme.fromSwatch(primarySwatch: Colors.blue);
-        darkColorScheme = ColorScheme.fromSwatch(
-          brightness: Brightness.dark,
-        );
+        lightColorScheme = appColorScheme;
+        darkColorScheme = appDarkColorScheme;
       }
 
       return MaterialApp(
