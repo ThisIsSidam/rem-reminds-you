@@ -80,8 +80,9 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleNoRushSwitch(bool newNoRush) {
-    _noRush = newNoRush;
+  /// Use the value, if not present, flip the current value.
+  void toggleNoRushSwitch({bool? value}) {
+    _noRush = !_noRush;
     notifyListeners();
   }
 

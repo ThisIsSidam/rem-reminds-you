@@ -1,4 +1,4 @@
-import 'package:Rem/feature/reminder_screen/presentation/providers/bottom_element_provider.dart';
+import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
 import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
 import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
@@ -62,7 +62,7 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
     return ElevatedButton(
       onPressed: () {
         ref.read(sheetReminderNotifier).updateAutoSnoozeInterval(duration);
-        ref.read(bottomElementProvider).setAsNone();
+        ref.read(centralWidgetNotifierProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.all(4),

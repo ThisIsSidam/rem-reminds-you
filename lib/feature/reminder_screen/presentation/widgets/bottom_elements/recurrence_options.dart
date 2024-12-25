@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../providers/bottom_element_provider.dart';
+import '../../providers/central_widget_provider.dart';
 
 class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
   ReminderRecurrenceOptionsWidget({super.key});
@@ -49,7 +49,7 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
     return ElevatedButton(
       onPressed: () {
         ref.read(sheetReminderNotifier).updateRecurringInterval(interval);
-        ref.read(bottomElementProvider).setAsNone();
+        ref.read(centralWidgetNotifierProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.all(4),

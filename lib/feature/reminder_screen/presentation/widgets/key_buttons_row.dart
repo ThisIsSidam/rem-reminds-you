@@ -1,7 +1,7 @@
 import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/models/reminder_model/reminder_model.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
-import 'package:Rem/feature/reminder_screen/presentation/providers/bottom_element_provider.dart';
+import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -75,6 +75,9 @@ class KeyButtonsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
+    final bottomElement = ref.watch(centralWidgetNotifierProvider);
+    final bottomElementNotifier =
+        ref.read(centralWidgetNotifierProvider.notifier);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -97,8 +100,53 @@ class KeyButtonsRow extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (!noRush) _buildSnoozeOptionsDialogButton(context, ref),
-              if (!noRush) _buildRecurrenceOptionsDialogButton(context, ref),
+              if (!noRush) ...<Widget>[
+                IconButton(
+                  icon: Icon(Icons.snooze),
+                  style: IconButton.styleFrom(
+                    backgroundColor: bottomElement ==
+                            CentralElement.snoozeOptions
+                        ? Theme.of(context).colorScheme.primaryContainer
+                        : null,
+                  ),
+                  onPressed: () {
+                    if (bottomElement !=
+                        CentralElement.snoozeOptions) {
+                      bottomElementNotifier
+                          .switchTo(CentralElement.snoozeOptions);
+                    }
+                  },
+                ),
+                IconButton(
+                    icon: Icon(Icons.event_repeat),
+                    style: IconButton.styleFrom(
+                      backgroundColor: bottomElement ==
+                              CentralElement.snoozeOptions
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : null,
+                    ),
+                    onPressed: () {
+                      if (bottomElement !=
+                          CentralElement.recurrenceOptions) {
+                        bottomElementNotifier
+                            .switchTo(CentralElement.recurrenceOptions);
+                      }
+                    }),
+              ],
+              IconButton(
+                icon: Icon(Icons.event_busy),
+                style: IconButton.styleFrom(
+                  backgroundColor: noRush
+                      ? Theme.of(context).colorScheme.primaryContainer
+                      : null,
+                ),
+                onPressed: () {
+                  ref.read(sheetReminderNotifier.notifier).toggleNoRushSwitch();
+                  ref.read(centralWidgetNotifierProvider.notifier).switchTo(
+                    CentralElement.noRush
+                  );
+                },
+              ),
               _buildSaveButton(context, ref)
             ],
           ),
@@ -151,46 +199,6 @@ class KeyButtonsRow extends ConsumerWidget {
           ),
       ],
     );
-  }
-
-  Widget _buildSnoozeOptionsDialogButton(BuildContext context, WidgetRef ref) {
-    final provider = ref.watch(bottomElementProvider.notifier);
-    return IconButton(
-      icon: Icon(Icons.snooze),
-      style: IconButton.styleFrom(
-        backgroundColor:
-            provider.element == ReminderSheetBottomElement.snoozeOptions
-                ? Theme.of(context).colorScheme.primaryContainer
-                : null,
-      ),
-      onPressed: () {
-        if (provider.element != ReminderSheetBottomElement.snoozeOptions) {
-          provider.element = ReminderSheetBottomElement.snoozeOptions;
-        }
-      },
-    );
-  }
-
-  Widget _buildRecurrenceOptionsDialogButton(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    final provider = ref.watch(bottomElementProvider.notifier);
-    return IconButton(
-        icon: Icon(Icons.event_repeat),
-        style: IconButton.styleFrom(
-          backgroundColor:
-              provider.element == ReminderSheetBottomElement.recurrenceOptions
-                  ? Theme.of(context).colorScheme.primaryContainer
-                  : null,
-        ),
-        onPressed: () {
-          if (provider.element !=
-              ReminderSheetBottomElement.recurrenceOptions) {
-            ref.read(bottomElementProvider).element =
-                ReminderSheetBottomElement.recurrenceOptions;
-          }
-        });
   }
 }
 

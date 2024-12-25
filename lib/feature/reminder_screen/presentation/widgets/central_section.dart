@@ -1,26 +1,24 @@
+import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
 import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/bottom_elements/recurrence_options.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/bottom_elements/snooze_options.dart';
 import 'package:Rem/feature/reminder_screen/presentation/widgets/time_button.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
+import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../settings/presentation/providers/settings_provider.dart';
 
-class DateTimeSection extends HookConsumerWidget {
+class CentralSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showTimePickerNotifier = useValueNotifier<bool>(false);
-
     final dateTime = ref.watch(sheetReminderNotifier.select((p) => p.dateTime));
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
-    final settings = ref.watch(userSettingsProvider);
-
-    useEffect(() {
-      if (noRush) showTimePickerNotifier.value = true;
-      return null;
-    }, [noRush]);
+    final bottomElement = ref.watch(centralWidgetNotifierProvider);
+    final bottomElementNotifier =
+        ref.read(centralWidgetNotifierProvider.notifier);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -28,7 +26,13 @@ class DateTimeSection extends HookConsumerWidget {
         if (!noRush)
           TextButton(
             onPressed: () {
-              showTimePickerNotifier.value = !showTimePickerNotifier.value;
+              if (bottomElement != CentralElement.dateTimeGrid) {
+                bottomElementNotifier
+                    .switchTo(CentralElement.dateTimeGrid);
+              } else {
+                bottomElementNotifier
+                    .switchTo(CentralElement.timePicker);
+              }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,20 +68,63 @@ class DateTimeSection extends HookConsumerWidget {
         const SizedBox(
           height: 8,
         ),
-        ValueListenableBuilder(
-          valueListenable: showTimePickerNotifier,
-          builder: (context, bool show, _) {
-            return AnimatedCrossFade(
-              duration: Duration(milliseconds: 300),
-              firstChild: _buildTimeButtonsGrid(settings),
-              secondChild: _buildHiddenSection(context, ref, dateTime, noRush),
-              crossFadeState:
-                  show ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              sizeCurve: Curves.easeInOut,
-            );
-          },
-        )
+        CentralWidget(),
       ],
+    );
+  }
+}
+
+class CentralWidget extends ConsumerWidget {
+  const CentralWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final element = ref.watch(centralWidgetNotifierProvider);
+    final settings = ref.watch(userSettingsProvider);
+    final dateTime = ref.watch(sheetReminderNotifier).dateTime;
+    // FocusScope.of(context).unfocus();
+    if (element != CentralElement.dateTimeGrid) {
+      gLogger.i("Bottom element changed, un-focusing");
+    }
+    return AnimatedSize(
+      duration: Duration(milliseconds: 300),
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        switchInCurve: Curves.easeOutQuad,
+        switchOutCurve: Curves.easeInQuad,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(
+            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                CurvedAnimation(
+                    parent: animation,
+                    curve: Interval(0.0, 0.8, curve: Curves.easeOutQuad))),
+            child: child,
+          );
+        },
+        child: () {
+          switch (element) {
+            case CentralElement.noRush:
+              return SizedBox.shrink();
+            case CentralElement.dateTimeGrid:
+              return _buildTimeButtonsGrid(settings);
+            case CentralElement.timePicker:
+              return _buildTimePicker(
+                ref,
+                dateTime,
+              );
+            case CentralElement.snoozeOptions:
+              gLogger.i("Displaying snooze options");
+              return ReminderSnoozeOptionsWidget(
+                key: UniqueKey(),
+              );
+            case CentralElement.recurrenceOptions:
+              gLogger.i("Displaying recurrence options");
+              return ReminderRecurrenceOptionsWidget(
+                key: UniqueKey(),
+              );
+          }
+        }(),
+      ),
     );
   }
 
@@ -103,7 +150,7 @@ class DateTimeSection extends HookConsumerWidget {
     ];
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: BorderRadius.circular(24),
       child: GridView.count(
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
@@ -119,36 +166,6 @@ class DateTimeSection extends HookConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildHiddenSection(
-      BuildContext context, WidgetRef ref, DateTime dateTime, bool noRush) {
-    final ThemeData theme = Theme.of(context);
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: noRush
-                  ? theme.colorScheme.primaryContainer
-                  : theme.colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ListTile(
-              title: Text('No Rush'),
-              trailing: Switch(
-                value: noRush,
-                onChanged: (bool val) {
-                  ref.read(sheetReminderNotifier).toggleNoRushSwitch(val);
-                },
-              ),
-            ),
-          ),
-        ),
-        if (!noRush) _buildTimePicker(ref, dateTime),
-      ],
     );
   }
 

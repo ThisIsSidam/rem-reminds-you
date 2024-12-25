@@ -1,8 +1,6 @@
-import 'package:Rem/feature/reminder_screen/presentation/providers/bottom_element_provider.dart';
+import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
 import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
-import 'package:Rem/feature/reminder_screen/presentation/widgets/bottom_elements/recurrence_options.dart';
-import 'package:Rem/feature/reminder_screen/presentation/widgets/bottom_elements/snooze_options.dart';
-import 'package:Rem/feature/reminder_screen/presentation/widgets/date_time_section.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/central_section.dart';
 import 'package:Rem/feature/reminder_screen/presentation/widgets/key_buttons_row.dart';
 import 'package:Rem/feature/reminder_screen/presentation/widgets/title_field.dart';
 import 'package:Rem/shared/utils/logger/global_logger.dart';
@@ -31,9 +29,11 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
     Future(() {
       if (widget.reminder != null) {
         ref.read(sheetReminderNotifier).loadValues(widget.reminder!);
+      } else {
+        ref.read(sheetReminderNotifier).resetValuesWith();
       }
 
-      ref.read(bottomElementProvider).setAsNone();
+      ref.read(centralWidgetNotifierProvider.notifier).reset();
       gLogger.i("Reminder initialized and bottom element set to none");
     });
 
@@ -45,78 +45,59 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
     final ThemeData theme = Theme.of(context);
 
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          widget.reminder != null ? 'Edit Reminder' : 'Add Reminder',
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-          color: theme.scaffoldBackgroundColor,
-        ),
-        padding: EdgeInsets.only(bottom: keyboardHeight),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TitleField(),
-                DateTimeSection(),
-                KeyButtonsRow(),
-                _buildBottomElement()
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isKeyboardVisible =
+              MediaQuery.of(context).viewInsets.bottom > 0;
 
-  Widget _buildBottomElement() {
-    final element = ref.watch(bottomElementProvider).element;
-    if (element != ReminderSheetBottomElement.none) {
-      FocusScope.of(context).unfocus();
-      gLogger.i("Bottom element changed, un-focusing");
-    }
+          return Stack(
+            children: [
+              // Empty background body
+              Container(
+                color: Colors.black.withAlpha(100),
+              ),
 
-    return AnimatedSize(
-      duration: Duration(milliseconds: 300),
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.easeOutQuad,
-        switchOutCurve: Curves.easeInQuad,
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return FadeTransition(
-            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                CurvedAnimation(
-                    parent: animation,
-                    curve: Interval(0.0, 0.8, curve: Curves.easeOutQuad))),
-            child: child,
+              // Floating Container
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 300),
+                top: isKeyboardVisible
+                    ? constraints.maxHeight *
+                        0.2 // Move up when keyboard appears
+                    : constraints.maxHeight * 0.4, // Centered when no keyboard
+                left: 16,
+                right: 16,
+                child: SafeArea(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      color: noRush
+                          ? theme.colorScheme.secondaryContainer
+                          : theme.colorScheme.tertiaryContainer,
+                    ),
+                    padding: EdgeInsets.only(bottom: keyboardHeight),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TitleField(),
+                            CentralSection(),
+                            KeyButtonsRow(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         },
-        child: () {
-          switch (element) {
-            case ReminderSheetBottomElement.none:
-              return SizedBox.shrink(
-                key: UniqueKey(),
-              );
-            case ReminderSheetBottomElement.snoozeOptions:
-              gLogger.i("Displaying snooze options");
-              return ReminderSnoozeOptionsWidget(
-                key: UniqueKey(),
-              );
-            case ReminderSheetBottomElement.recurrenceOptions:
-              gLogger.i("Displaying recurrence options");
-              return ReminderRecurrenceOptionsWidget(
-                key: UniqueKey(),
-              );
-          }
-        }(),
       ),
     );
   }
