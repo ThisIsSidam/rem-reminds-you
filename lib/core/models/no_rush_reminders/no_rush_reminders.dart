@@ -1,4 +1,5 @@
 import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:random_datetime/random_datetime.dart';
 import 'package:random_datetime/random_dt_options.dart';
@@ -25,8 +26,8 @@ class NoRushRemindersModel extends ReminderModel {
   /// Is used in the provider, when creating the new noRush reminder
   static DateTime generateRandomFutureTime() {
     final UserSettingsNotifier settings = UserSettingsNotifier();
-    final DateTime startTime = settings.quietHoursStartTime;
-    final DateTime endTime = settings.quietHoursEndTime;
+    final TimeOfDay startTime = settings.quietHoursStartTime;
+    final TimeOfDay endTime = settings.quietHoursEndTime;
 
     final DateTime now = DateTime.now();
     final DateTime startDate = now.add(Duration(days: 3));

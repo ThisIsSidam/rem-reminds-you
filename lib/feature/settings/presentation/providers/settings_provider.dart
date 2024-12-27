@@ -347,28 +347,28 @@ class UserSettingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  DateTime get quietHoursStartTime {
+  TimeOfDay get quietHoursStartTime {
     final dynamic value = SettingsDB.getUserSetting('quietHoursStartTime');
-    if (value == null || value is! DateTime) {
-      return DateTime(0, 0, 0, 23, 0, 0, 0, 0);
+    if (value == null || value is! TimeOfDay) {
+      return TimeOfDay(hour: 23, minute: 0);
     }
     return value;
   }
 
-  set quietHoursStartTime(DateTime value) {
+  set quietHoursStartTime(TimeOfDay value) {
     SettingsDB.setUserSetting('quietHoursStartTime', value);
     notifyListeners();
   }
 
-  DateTime get quietHoursEndTime {
+  TimeOfDay get quietHoursEndTime {
     final dynamic value = SettingsDB.getUserSetting('quietHoursEndTime');
-    if (value == null || value is! DateTime) {
-      return DateTime(0, 0, 0, 7, 0, 0, 0, 0);
+    if (value == null || value is! TimeOfDay) {
+      return TimeOfDay(hour: 7, minute: 0);
     }
     return value;
   }
 
-  set quietHoursEndTime(DateTime value) {
+  set quietHoursEndTime(TimeOfDay value) {
     SettingsDB.setUserSetting('quietHoursEndTime', value);
     notifyListeners();
   }

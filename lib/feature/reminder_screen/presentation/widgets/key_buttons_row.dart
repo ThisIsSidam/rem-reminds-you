@@ -130,9 +130,6 @@ class KeyButtonsRow extends ConsumerWidget {
                 active: noRush,
                 onTap: () {
                   ref.read(sheetReminderNotifier.notifier).toggleNoRushSwitch();
-                  ref
-                      .read(centralWidgetNotifierProvider.notifier)
-                      .switchTo(CentralElement.noRush);
                 },
               ),
               _buildSaveButton(context, ref)

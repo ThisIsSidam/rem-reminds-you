@@ -1,4 +1,3 @@
-import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
 import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -6,7 +5,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'central_widget_provider.g.dart';
 
 enum CentralElement {
-  noRush,
   dateTimeGrid,
   timePicker,
   snoozeOptions,
@@ -16,7 +14,6 @@ enum CentralElement {
 @riverpod
 class CentralWidgetNotifier extends _$CentralWidgetNotifier
     with ChangeNotifier {
-
   static final CentralElement _default = CentralElement.dateTimeGrid;
 
   @override

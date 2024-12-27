@@ -9,6 +9,7 @@ import '../../../providers/settings_provider.dart';
 
 class QuickTimeTableModal extends ConsumerStatefulWidget {
   QuickTimeTableModal({super.key});
+
   @override
   ConsumerState<QuickTimeTableModal> createState() =>
       _QuickTimeTableModalState();
@@ -129,18 +130,15 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
       width: 400,
       height: 200,
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: CupertinoTheme(
-        data: CupertinoThemeData(brightness: Brightness.dark),
-        child: CupertinoDatePicker(
-          mode: CupertinoDatePickerMode.time,
-          itemExtent: 70,
-          initialDateTime: setDateTimes[selectedSettingOption],
-          onDateTimeChanged: (dt) {
-            setState(() {
-              setDateTimes[selectedSettingOption] = dt;
-            });
-          },
-        ),
+      child: CupertinoDatePicker(
+        mode: CupertinoDatePickerMode.time,
+        itemExtent: 70,
+        initialDateTime: setDateTimes[selectedSettingOption],
+        onDateTimeChanged: (dt) {
+          setState(() {
+            setDateTimes[selectedSettingOption] = dt;
+          });
+        },
       ),
     );
   }

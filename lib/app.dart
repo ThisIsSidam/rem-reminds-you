@@ -7,6 +7,7 @@ import 'package:Rem/main.dart';
 import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:Rem/shared/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,43 +53,49 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
       }
 
       return MaterialApp(
-          navigatorKey: navigatorKey,
-          builder: (context, child) {
-            return MediaQuery(
-              child: child!,
-              data: MediaQuery.of(context).copyWith(
-                textScaler: TextScaler.linear(settings.$2),
-              ),
-            );
-          },
-          home: _buildPermissionScreenLayer(
-            child: _buildIndiValuesLayer(
-              child: NavigationLayer(),
+        navigatorKey: navigatorKey,
+        builder: (context, child) {
+          return MediaQuery(
+            child: child!,
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.linear(settings.$2),
+            ),
+          );
+        },
+        home: _buildPermissionScreenLayer(
+          child: _buildIndiValuesLayer(
+            child: NavigationLayer(),
+          ),
+        ),
+        themeMode: settings.$1,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: lightColorScheme,
+          appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light, // for iOS
             ),
           ),
-          themeMode: settings.$1,
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: lightColorScheme,
-            appBarTheme: AppBarTheme(
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-                statusBarIconBrightness: Brightness.dark,
-                statusBarBrightness: Brightness.light, // for iOS
-              ),
+        ),
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          colorScheme: darkColorScheme,
+          appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.light,
+              statusBarBrightness: Brightness.dark, // for iOS
             ),
           ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorScheme: darkColorScheme,
-            appBarTheme: AppBarTheme(
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-                statusBarIconBrightness: Brightness.light,
-                statusBarBrightness: Brightness.dark, // for iOS
-              ),
-            ),
-          ));
+          cupertinoOverrideTheme: CupertinoThemeData(
+            brightness: settings.$1 == ThemeMode.light
+                ? Brightness.light
+                : Brightness.dark,
+          ),
+        ),
+      );
     });
   }
 

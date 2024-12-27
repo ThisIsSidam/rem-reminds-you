@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-enum SelectedTime { start, end }
+enum SelectedTime { none, start, end }
 
 class QuietHoursSheet extends HookWidget {
   QuietHoursSheet({super.key});
@@ -12,7 +12,7 @@ class QuietHoursSheet extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final ValueNotifier<SelectedTime> selectedTimeNotifier =
-        ValueNotifier(SelectedTime.start);
+        ValueNotifier(SelectedTime.none);
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -27,8 +27,10 @@ class QuietHoursSheet extends HookWidget {
                   Divider(),
                   _buildTimeButtonsRow(selectedTime, selectedTimeNotifier),
                   const SizedBox(height: 40),
-                  _buildTimePicker(selectedTime),
-                  const SizedBox(height: 40),
+                  if (selectedTime != SelectedTime.none) ...<Widget>[
+                    _buildTimePicker(selectedTime),
+                    const SizedBox(height: 40),
+                  ]
                 ],
               );
             }));
@@ -38,7 +40,7 @@ class QuietHoursSheet extends HookWidget {
       SelectedTime timeType, ValueNotifier<SelectedTime> selectedTime) {
     return Consumer(
       builder: (context, ref, child) {
-        final (DateTime, DateTime) quietHours = ref.watch(userSettingsProvider
+        final (TimeOfDay, TimeOfDay) quietHours = ref.watch(userSettingsProvider
             .select((p) => (p.quietHoursStartTime, p.quietHoursEndTime)));
         return Row(
           children: [
@@ -125,12 +127,17 @@ class QuietHoursSheet extends HookWidget {
         return CupertinoDatePicker(
           mode: CupertinoDatePickerMode.time,
           use24hFormat: true,
-          initialDateTime: settings.quietHoursStartTime,
           onDateTimeChanged: (dt) {
             if (selectedTime == SelectedTime.start) {
-              settings.quietHoursStartTime = dt;
+              settings.quietHoursStartTime = TimeOfDay(
+                hour: dt.hour,
+                minute: dt.minute,
+              );
             } else {
-              settings.quietHoursEndTime = dt;
+              settings.quietHoursEndTime = TimeOfDay(
+                hour: dt.hour,
+                minute: dt.minute,
+              );
             }
           },
         );

@@ -12,10 +12,14 @@ import '../../../../core/models/reminder_model/reminder_model.dart';
 class ReminderScreen extends ConsumerStatefulWidget {
   const ReminderScreen({
     this.reminder,
+    this.customDuration,
+    this.isNoRush = false,
     super.key,
   });
 
   final ReminderModel? reminder;
+  final Duration? customDuration;
+  final bool isNoRush;
 
   @override
   ConsumerState<ReminderScreen> createState() => _ReminderSheetState();
@@ -30,7 +34,10 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
       if (widget.reminder != null) {
         ref.read(sheetReminderNotifier).loadValues(widget.reminder!);
       } else {
-        ref.read(sheetReminderNotifier).resetValuesWith();
+        ref.read(sheetReminderNotifier).resetValuesWith(
+              customDuration: widget.customDuration,
+              isNoRush: widget.isNoRush,
+            );
       }
 
       ref.read(centralWidgetNotifierProvider.notifier).reset();

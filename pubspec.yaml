@@ -64,6 +64,7 @@ dependencies:
   path: ^1.9.0
   mutex: ^3.1.0
   random_datetime: ^1.0.3
+  flutter_datetime_picker_plus: ^2.2.0
 
 dev_dependencies:
   flutter_test:

@@ -86,7 +86,9 @@ class CentralWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final element = ref.watch(centralWidgetNotifierProvider);
     final settings = ref.watch(userSettingsProvider);
-    final dateTime = ref.watch(sheetReminderNotifier).dateTime;
+
+    final dateTime = ref.watch(sheetReminderNotifier.select((p) => p.dateTime));
+    final isNoRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
     if (element != CentralElement.dateTimeGrid) {
       gLogger.i("Bottom element changed, un-focusing");
     }
@@ -106,9 +108,8 @@ class CentralWidget extends ConsumerWidget {
           );
         },
         child: () {
+          if (isNoRush) return SizedBox.shrink();
           switch (element) {
-            case CentralElement.noRush:
-              return SizedBox.shrink();
             case CentralElement.dateTimeGrid:
               return _buildTimeButtonsGrid(settings);
             case CentralElement.timePicker:
@@ -176,15 +177,12 @@ class CentralWidget extends ConsumerWidget {
   Widget _buildTimePicker(WidgetRef ref, DateTime dateTime) {
     return SizedBox(
       height: 175,
-      child: CupertinoTheme(
-        data: const CupertinoThemeData(brightness: Brightness.dark),
-        child: CupertinoDatePicker(
-          initialDateTime: dateTime,
-          itemExtent: 75,
-          onDateTimeChanged: (DateTime dt) =>
-              ref.read(sheetReminderNotifier).updateDateTime(dt),
-          backgroundColor: Colors.transparent,
-        ),
+      child: CupertinoDatePicker(
+        initialDateTime: dateTime,
+        itemExtent: 75,
+        onDateTimeChanged: (DateTime dt) =>
+            ref.read(sheetReminderNotifier).updateDateTime(dt),
+        backgroundColor: Colors.transparent,
       ),
     );
   }

@@ -13,7 +13,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
-import '../../../reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
 
 enum HomeScreenSection {
   overdue('Overdue'),
@@ -24,6 +23,7 @@ enum HomeScreenSection {
   ;
 
   final String title;
+
   const HomeScreenSection(this.title);
 }
 
@@ -251,20 +251,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _showReminderSheet(
       {ReminderModel? reminder, Duration? duration, bool isNoRush = false}) {
-    if (duration != null) {
-      ref.read(sheetReminderNotifier).resetValuesWith(
-            customDuration: duration,
-          );
-    } else if (isNoRush) {
-      ref.read(sheetReminderNotifier).resetValuesWith(
-            isNoRush: true,
-          );
-    }
-
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReminderScreen(reminder: reminder),
+        builder: (context) => ReminderScreen(
+          reminder: reminder,
+          customDuration: duration,
+          isNoRush: isNoRush,
+        ),
       ),
     );
   }
