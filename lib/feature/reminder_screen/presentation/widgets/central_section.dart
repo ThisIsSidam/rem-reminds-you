@@ -19,50 +19,55 @@ class CentralSection extends HookConsumerWidget {
     final bottomElement = ref.watch(centralWidgetNotifierProvider);
     final bottomElementNotifier =
         ref.read(centralWidgetNotifierProvider.notifier);
-
+    final ThemeData theme = Theme.of(context);
+    final Color textColor = dateTime.isBefore(DateTime.now())
+        ? theme.colorScheme.onErrorContainer
+        : noRush
+            ? theme.colorScheme.onSecondaryContainer
+            : theme.colorScheme.onTertiaryContainer;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (!noRush)
-          TextButton(
-            onPressed: () {
-              if (bottomElement != CentralElement.dateTimeGrid) {
-                bottomElementNotifier
-                    .switchTo(CentralElement.dateTimeGrid);
-              } else {
-                bottomElementNotifier
-                    .switchTo(CentralElement.timePicker);
-              }
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  getFormattedDateTime(dateTime),
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: dateTime.isBefore(DateTime.now())
-                            ? Theme.of(context).colorScheme.error
-                            : null,
-                      ),
-                ),
-                const SizedBox(
-                  width: 24,
-                ),
-                Flexible(
-                  child: Text(
-                    dateTime.isBefore(DateTime.now())
-                        ? '${getPrettyDurationFromDateTime(dateTime)} ago'
-                            .replaceFirst('-', '')
-                        : 'in ${getPrettyDurationFromDateTime(dateTime)}',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: dateTime.isBefore(DateTime.now())
-                              ? Theme.of(context).colorScheme.error
-                              : null,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 4,
+            ),
+            child: InkWell(
+              onTap: () {
+                if (bottomElement != CentralElement.dateTimeGrid) {
+                  bottomElementNotifier.switchTo(CentralElement.dateTimeGrid);
+                } else {
+                  bottomElementNotifier.switchTo(CentralElement.timePicker);
+                }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    getFormattedDateTime(dateTime),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: textColor,
                         ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    width: 24,
+                  ),
+                  Flexible(
+                    child: Text(
+                      dateTime.isBefore(DateTime.now())
+                          ? '${getPrettyDurationFromDateTime(dateTime)} ago'
+                              .replaceFirst('-', '')
+                          : 'in ${getPrettyDurationFromDateTime(dateTime)}',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: textColor,
+                          ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         const SizedBox(
@@ -82,7 +87,6 @@ class CentralWidget extends ConsumerWidget {
     final element = ref.watch(centralWidgetNotifierProvider);
     final settings = ref.watch(userSettingsProvider);
     final dateTime = ref.watch(sheetReminderNotifier).dateTime;
-    // FocusScope.of(context).unfocus();
     if (element != CentralElement.dateTimeGrid) {
       gLogger.i("Bottom element changed, un-focusing");
     }

@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class TitleField extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final dateTime = ref.watch(sheetReminderNotifier.select((p) => p.dateTime));
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
     final TextEditingController titleController = useTextEditingController();
     final _focusNode = useFocusNode();
@@ -36,6 +37,11 @@ class TitleField extends HookConsumerWidget {
     });
 
     final theme = Theme.of(context);
+    final Color color = dateTime.isBefore(DateTime.now())
+        ? theme.colorScheme.onErrorContainer
+        : noRush
+            ? theme.colorScheme.onSecondaryContainer
+            : theme.colorScheme.onTertiaryContainer;
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -51,25 +57,32 @@ class TitleField extends HookConsumerWidget {
                   color: theme.colorScheme.onSecondaryContainer,
                   fontStyle: FontStyle.italic,
                 ),
-
               ),
             ),
           TextField(
             textCapitalization: TextCapitalization.sentences,
             decoration: InputDecoration(
-              label: Text('Title'),
+              label: Text(
+                'Title',
+                style: theme.textTheme.titleSmall!.copyWith(
+                  color: color,
+                  fontStyle: FontStyle.normal,
+                ),
+              ),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: noRush
-                        ? theme.colorScheme.onSecondaryContainer
-                        : theme.colorScheme.onPrimaryContainer,
-                  )),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(width: 2, color: color),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: color),
+              ),
             ),
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: noRush
-                    ? theme.colorScheme.onSecondaryContainer
-                    : theme.colorScheme.onPrimaryContainer),
+            style:
+                Theme.of(context).textTheme.titleMedium!.copyWith(color: color),
             controller: titleController,
             focusNode: _focusNode,
             autofocus: true,

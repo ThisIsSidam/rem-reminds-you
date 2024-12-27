@@ -46,6 +46,7 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
 
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
+    final dateTime = ref.watch(sheetReminderNotifier.select((p) => p.dateTime));
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -65,33 +66,39 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 300),
                 top: isKeyboardVisible
-                    ? constraints.maxHeight *
-                        0.2 // Move up when keyboard appears
-                    : constraints.maxHeight * 0.4, // Centered when no keyboard
+                    ? constraints.maxHeight * 0.2
+                    : constraints.maxHeight * 0.4,
                 left: 16,
                 right: 16,
                 child: SafeArea(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: noRush
-                          ? theme.colorScheme.secondaryContainer
-                          : theme.colorScheme.tertiaryContainer,
-                    ),
-                    padding: EdgeInsets.only(bottom: keyboardHeight),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TitleField(),
-                            CentralSection(),
-                            KeyButtonsRow(),
-                          ],
+                  child: Column(
+                    children: [
+                      KeyButtonsRow(),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: dateTime.isBefore(DateTime.now())
+                              ? theme.colorScheme.errorContainer
+                              : noRush
+                                  ? theme.colorScheme.secondaryContainer
+                                  : theme.colorScheme.tertiaryContainer,
+                        ),
+                        padding: EdgeInsets.only(bottom: keyboardHeight),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(height: 4),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TitleField(),
+                              ),
+                              CentralSection(),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),

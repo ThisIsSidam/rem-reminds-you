@@ -75,9 +75,7 @@ class KeyButtonsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
-    final bottomElement = ref.watch(centralWidgetNotifierProvider);
-    final bottomElementNotifier =
-        ref.read(centralWidgetNotifierProvider.notifier);
+    final centralElement = ref.watch(centralWidgetNotifierProvider);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -85,66 +83,56 @@ class KeyButtonsRow extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           if (id != null) ...<Widget>[
-            IconButton(
-              icon: IconTheme(
-                data: Theme.of(context).iconTheme,
-                child: Icon(
-                  Icons.delete,
-                  color: Theme.of(context).colorScheme.errorContainer,
-                ),
-              ),
-              onPressed: () => deleteReminder(id, context, ref),
+            _buildButton(
+              context: context,
+              icon: Icons.delete,
+              active: true,
+              fillColor: Theme.of(context).colorScheme.errorContainer,
+              onTap: () => deleteReminder(id, context, ref),
             ),
             Spacer(),
           ],
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              _buildButton(
+                context: context,
+                icon: Icons.close,
+                active: true,
+                onTap: () => Navigator.pop(context),
+                fillColor: Colors.grey,
+              ),
               if (!noRush) ...<Widget>[
-                IconButton(
-                  icon: Icon(Icons.snooze),
-                  style: IconButton.styleFrom(
-                    backgroundColor: bottomElement ==
-                            CentralElement.snoozeOptions
-                        ? Theme.of(context).colorScheme.primaryContainer
-                        : null,
-                  ),
-                  onPressed: () {
-                    if (bottomElement !=
-                        CentralElement.snoozeOptions) {
-                      bottomElementNotifier
-                          .switchTo(CentralElement.snoozeOptions);
-                    }
+                _buildButton(
+                  context: context,
+                  icon: Icons.snooze,
+                  active: centralElement == CentralElement.snoozeOptions,
+                  onTap: () {
+                    ref
+                        .read(centralWidgetNotifierProvider.notifier)
+                        .switchTo(CentralElement.snoozeOptions);
                   },
                 ),
-                IconButton(
-                    icon: Icon(Icons.event_repeat),
-                    style: IconButton.styleFrom(
-                      backgroundColor: bottomElement ==
-                              CentralElement.snoozeOptions
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : null,
-                    ),
-                    onPressed: () {
-                      if (bottomElement !=
-                          CentralElement.recurrenceOptions) {
-                        bottomElementNotifier
-                            .switchTo(CentralElement.recurrenceOptions);
-                      }
-                    }),
-              ],
-              IconButton(
-                icon: Icon(Icons.event_busy),
-                style: IconButton.styleFrom(
-                  backgroundColor: noRush
-                      ? Theme.of(context).colorScheme.primaryContainer
-                      : null,
+                _buildButton(
+                  context: context,
+                  icon: Icons.event_repeat,
+                  active: centralElement == CentralElement.recurrenceOptions,
+                  onTap: () {
+                    ref
+                        .read(centralWidgetNotifierProvider.notifier)
+                        .switchTo(CentralElement.recurrenceOptions);
+                  },
                 ),
-                onPressed: () {
+              ],
+              _buildButton(
+                context: context,
+                icon: Icons.event_busy,
+                active: noRush,
+                onTap: () {
                   ref.read(sheetReminderNotifier.notifier).toggleNoRushSwitch();
-                  ref.read(centralWidgetNotifierProvider.notifier).switchTo(
-                    CentralElement.noRush
-                  );
+                  ref
+                      .read(centralWidgetNotifierProvider.notifier)
+                      .switchTo(CentralElement.noRush);
                 },
               ),
               _buildSaveButton(context, ref)
@@ -152,6 +140,25 @@ class KeyButtonsRow extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  RawMaterialButton _buildButton({
+    required BuildContext context,
+    required IconData icon,
+    required active,
+    required onTap,
+    Color? fillColor,
+  }) {
+    return RawMaterialButton(
+      constraints: BoxConstraints(maxWidth: 48),
+      child: Icon(icon),
+      fillColor: active
+          ? fillColor ?? Theme.of(context).colorScheme.primaryContainer
+          : Colors.grey,
+      onPressed: onTap,
+      padding: EdgeInsets.all(8),
+      shape: CircleBorder(),
     );
   }
 

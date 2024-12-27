@@ -22,7 +22,8 @@ String getPrettyDurationFromDateTime(DateTime dateTime) {
   DateTime now = DateTime.now();
   Duration dur = dateTime
       .difference(DateTime(now.year, now.month, now.day, now.hour, now.minute));
-  return dur.pretty(tersity: DurationTersity.minute, maxUnits: 2);
+  return dur.pretty(
+      tersity: DurationTersity.minute, maxUnits: 2, abbreviated: true);
 }
 
 String getFormattedTimeForTimeSetButton(DateTime time) {
