@@ -118,12 +118,10 @@ class CentralWidget extends ConsumerWidget {
                 dateTime,
               );
             case CentralElement.snoozeOptions:
-              gLogger.i("Displaying snooze options");
               return ReminderSnoozeOptionsWidget(
                 key: UniqueKey(),
               );
             case CentralElement.recurrenceOptions:
-              gLogger.i("Displaying recurrence options");
               return ReminderRecurrenceOptionsWidget(
                 key: UniqueKey(),
               );

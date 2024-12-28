@@ -263,24 +263,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  TextButton _buildHomeSectionButton({
+  InkWell _buildHomeSectionButton({
     required String label,
     required Color color,
     VoidCallback? onTap,
   }) {
-    return TextButton(
-        onPressed: onTap,
-        style: TextButton.styleFrom(
-          alignment: Alignment.topLeft,
-          visualDensity: VisualDensity.compact,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          padding: EdgeInsets.zero,
-        ),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: color,
-              ),
+    return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: color,
+                ),
+          ),
         ));
   }
 }

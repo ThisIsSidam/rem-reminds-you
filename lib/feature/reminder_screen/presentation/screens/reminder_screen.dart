@@ -56,7 +56,7 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
     final dateTime = ref.watch(sheetReminderNotifier.select((p) => p.dateTime));
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isKeyboardVisible =
@@ -72,13 +72,16 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
               // Floating Container
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 300),
+                // alignment: Alignment(0, 50),
+                left: 16,
+                right: 16,
                 top: isKeyboardVisible
                     ? constraints.maxHeight * 0.2
                     : constraints.maxHeight * 0.4,
-                left: 16,
-                right: 16,
-                child: SafeArea(
+                // top: constraints.maxHeight * 0.2,
+                child: SingleChildScrollView(
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       KeyButtonsRow(),
                       Container(
@@ -91,18 +94,15 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
                                   : theme.colorScheme.tertiaryContainer,
                         ),
                         padding: EdgeInsets.only(bottom: keyboardHeight),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(height: 4),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TitleField(),
-                              ),
-                              CentralSection(),
-                            ],
-                          ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TitleField(),
+                            ),
+                            CentralSection(),
+                          ],
                         ),
                       ),
                     ],

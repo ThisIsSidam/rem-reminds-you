@@ -14,26 +14,29 @@ class QuietHoursSheet extends HookWidget {
     final ValueNotifier<SelectedTime> selectedTimeNotifier =
         ValueNotifier(SelectedTime.none);
 
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: ValueListenableBuilder(
-            valueListenable: selectedTimeNotifier,
-            builder: (context, selectedTime, child) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Quiet Hours",
-                      style: Theme.of(context).textTheme.titleMedium),
-                  Divider(),
-                  _buildTimeButtonsRow(selectedTime, selectedTimeNotifier),
-                  const SizedBox(height: 40),
-                  if (selectedTime != SelectedTime.none) ...<Widget>[
-                    _buildTimePicker(selectedTime),
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: ValueListenableBuilder(
+              valueListenable: selectedTimeNotifier,
+              builder: (context, selectedTime, child) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Quiet Hours",
+                        style: Theme.of(context).textTheme.titleMedium),
+                    Divider(),
+                    _buildTimeButtonsRow(selectedTime, selectedTimeNotifier),
                     const SizedBox(height: 40),
-                  ]
-                ],
-              );
-            }));
+                    if (selectedTime != SelectedTime.none) ...<Widget>[
+                      _buildTimePicker(selectedTime),
+                      const SizedBox(height: 40),
+                    ]
+                  ],
+                );
+              })),
+    );
   }
 
   Consumer _buildTimeButtonsRow(
@@ -45,32 +48,35 @@ class QuietHoursSheet extends HookWidget {
         return Row(
           children: [
             Expanded(
-              child: ElevatedButton(
-                onPressed: timeType != SelectedTime.start
-                    ? () {
-                        selectedTime.value = SelectedTime.start;
-                      }
-                    : null,
-                child: Text(
-                  '${quietHours.$1.hour.toString().padLeft(2, '0')}:${quietHours.$1.minute.toString().padLeft(2, '0')}',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: timeType == SelectedTime.start
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.tertiaryContainer,
-                  surfaceTintColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.horizontal(
-                      left: Radius.circular(12),
-                      right: Radius.zero,
-                    ),
+              child: SizedBox(
+                height: 75,
+                child: ElevatedButton(
+                  onPressed: timeType != SelectedTime.start
+                      ? () {
+                          selectedTime.value = SelectedTime.start;
+                        }
+                      : null,
+                  child: Text(
+                    '${quietHours.$1.hour.toString().padLeft(2, '0')}:${quietHours.$1.minute.toString().padLeft(2, '0')}',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: timeType == SelectedTime.start
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
                   ),
-                  disabledBackgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.tertiaryContainer,
+                    surfaceTintColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(12),
+                        right: Radius.zero,
+                      ),
+                    ),
+                    disabledBackgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
                 ),
               ),
             ),
@@ -84,32 +90,35 @@ class QuietHoursSheet extends HookWidget {
                       Text(':', style: Theme.of(context).textTheme.titleLarge),
                 )),
             Expanded(
-              child: ElevatedButton(
-                onPressed: selectedTime.value != SelectedTime.end
-                    ? () {
-                        selectedTime.value = SelectedTime.end;
-                      }
-                    : null,
-                child: Text(
-                  '${quietHours.$2.hour.toString().padLeft(2, '0')}:${quietHours.$2.minute.toString().padLeft(2, '0')}',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: timeType == SelectedTime.end
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.tertiaryContainer,
-                  surfaceTintColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.horizontal(
-                      left: Radius.zero,
-                      right: Radius.circular(12),
-                    ),
+              child: SizedBox(
+                height: 75,
+                child: ElevatedButton(
+                  onPressed: selectedTime.value != SelectedTime.end
+                      ? () {
+                          selectedTime.value = SelectedTime.end;
+                        }
+                      : null,
+                  child: Text(
+                    '${quietHours.$2.hour.toString().padLeft(2, '0')}:${quietHours.$2.minute.toString().padLeft(2, '0')}',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: timeType == SelectedTime.end
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
                   ),
-                  disabledBackgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.tertiaryContainer,
+                    surfaceTintColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.horizontal(
+                        left: Radius.zero,
+                        right: Radius.circular(12),
+                      ),
+                    ),
+                    disabledBackgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
                 ),
               ),
             ),

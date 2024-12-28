@@ -14,10 +14,6 @@ class UserPreferenceSection extends HookWidget {
   Widget build(BuildContext context) {
     final controller = useMemoized(() => MenuController());
 
-    useEffect(() {
-      return controller.close;
-    }, [controller]);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
