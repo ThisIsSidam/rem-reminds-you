@@ -1,6 +1,7 @@
 import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
 import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
 import 'package:Rem/feature/reminder_screen/presentation/widgets/central_section.dart';
+import 'package:Rem/feature/reminder_screen/presentation/widgets/delete_button.dart';
 import 'package:Rem/feature/reminder_screen/presentation/widgets/key_buttons_row.dart';
 import 'package:Rem/feature/reminder_screen/presentation/widgets/title_field.dart';
 import 'package:Rem/shared/utils/logger/global_logger.dart';
@@ -67,6 +68,13 @@ class _ReminderSheetState extends ConsumerState<ReminderScreen> {
               // Empty background body
               Container(
                 color: Colors.black.withAlpha(100),
+              ),
+
+              // Delete Button
+              Positioned(
+                right: 8,
+                top: 8,
+                child: DeleteReminderButton(),
               ),
 
               // Floating Container

@@ -2,6 +2,7 @@ import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/models/reminder_model/reminder_model.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
 import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
+import 'package:Rem/feature/reminder_screen/presentation/screens/sounds_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -38,42 +39,8 @@ class KeyButtonsRow extends ConsumerWidget {
     Navigator.pop(context);
   }
 
-  void deleteReminder(
-    int id,
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    if (await ref.read(archivesProvider).isInArchives(id)) {
-      ref.read(archivesProvider).deleteArchivedReminder(id);
-      return;
-    }
-
-    void finalDelete({deleteAllRecurring = false}) {
-      ref.read(remindersProvider).deleteReminder(
-            id,
-          );
-      Navigator.pop(context);
-    }
-
-    final recurringInterval = ref.read(sheetReminderNotifier).recurringInterval;
-
-    if (recurringInterval != RecurringInterval.none) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return _RecurringReminderDeletionDialog(
-            finalDelete: finalDelete,
-          );
-        },
-      );
-    } else {
-      finalDelete();
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
     final centralElement = ref.watch(centralWidgetNotifierProvider);
 
@@ -82,16 +49,6 @@ class KeyButtonsRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (id != null) ...<Widget>[
-            _buildButton(
-              context: context,
-              icon: Icons.delete,
-              active: true,
-              fillColor: Theme.of(context).colorScheme.errorContainer,
-              onTap: () => deleteReminder(id, context, ref),
-            ),
-            Spacer(),
-          ],
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -101,6 +58,20 @@ class KeyButtonsRow extends ConsumerWidget {
                 active: true,
                 onTap: () => Navigator.pop(context),
                 fillColor: Colors.grey,
+              ),
+              _buildButton(
+                context: context,
+                icon: Icons.music_note,
+                // active: customSound != null,
+                active: true,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SoundsScreen(),
+                    ),
+                  );
+                },
               ),
               if (!noRush) ...<Widget>[
                 _buildButton(
@@ -201,62 +172,6 @@ class KeyButtonsRow extends ConsumerWidget {
                     borderRadius:
                         BorderRadius.horizontal(right: Radius.circular(25)))),
           ),
-      ],
-    );
-  }
-}
-
-class _RecurringReminderDeletionDialog extends ConsumerWidget {
-  const _RecurringReminderDeletionDialog({required this.finalDelete});
-
-  final Function({bool deleteAllRecurring}) finalDelete;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
-    return AlertDialog(
-      elevation: 5,
-      surfaceTintColor: Colors.transparent,
-      backgroundColor: Theme.of(context).cardColor,
-      title: Text(
-        'Recurring Reminder',
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-      content: Text(
-        'This is a recurring reminder. Do you really want to delete it? You can also archive it.',
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
-          },
-          child: Text(
-            'Cancel',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            ref.read(remindersProvider).moveToArchive(id!);
-            Navigator.of(context).pop(); // Close the dialog
-            Navigator.pop(context);
-          },
-          child: Text(
-            'Archive',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            finalDelete(deleteAllRecurring: true);
-            Navigator.of(context).pop(); // Close the dialog
-          },
-          child: Text(
-            'Delete',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ),
       ],
     );
   }
