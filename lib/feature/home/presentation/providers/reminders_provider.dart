@@ -14,6 +14,7 @@ import '../../data/hive/reminders_db.dart';
 
 class RemindersNotifier extends ChangeNotifier {
   Ref? ref;
+
   RemindersNotifier({this.ref}) {
     gLogger.i('RemindersNotifier initialized');
     loadReminders();
@@ -23,6 +24,7 @@ class RemindersNotifier extends ChangeNotifier {
   Map<HomeScreenSection, List<ReminderModel>> _categorizedReminders = {};
 
   Map<int, ReminderModel> get reminders => _reminders;
+
   Map<HomeScreenSection, List<ReminderModel>> get categorizedReminders {
     _updateCategorizedReminders();
     return _categorizedReminders;
@@ -229,6 +231,37 @@ class RemindersNotifier extends ChangeNotifier {
     RemindersDatabaseController.restoreBackup(jsonData);
     await loadReminders();
     gLogger.i('Restored Database Backup');
+  }
+
+  Future<void> pauseReminder(int id) async {
+    final reminder = _reminders[id];
+    if (reminder is RecurringReminderModel &&
+        reminder.recurringInterval != RecurringInterval.none) {
+      reminder.paused = true;
+      _reminders[id] = reminder;
+      NotificationController.cancelScheduledNotification(id.toString());
+      RemindersDatabaseController.updateReminders(_reminders);
+      notifyListeners();
+    }
+  }
+
+  Future<void> resumeReminder(int id) async {
+    final reminder = _reminders[id];
+    if (reminder is RecurringReminderModel &&
+        reminder.recurringInterval != RecurringInterval.none) {
+      reminder.paused = false;
+
+      // Upon resume, we move the dataTime to next occurrence until
+      // the dateTime is in future
+      while (reminder.dateTime.isBefore(DateTime.now())) {
+        reminder.moveToNextOccurrence();
+      }
+
+      _reminders[id] = reminder;
+      RemindersDatabaseController.updateReminders(_reminders);
+      NotificationController.scheduleNotification(reminder);
+      notifyListeners();
+    }
   }
 
   @override
