@@ -1,32 +1,21 @@
 import 'dart:io';
 
+import 'package:Rem/feature/reminder_screen/presentation/providers/sounds_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 
-class SoundsScreen extends StatefulWidget {
-  const SoundsScreen({Key? key}) : super(key: key);
+import '../../../../shared/widgets/async_value_widget.dart';
 
-  @override
-  State<SoundsScreen> createState() => _SoundsScreenState();
-}
-
-class _SoundsScreenState extends State<SoundsScreen> {
-  Future<List<FileSystemEntity>> getSoundFiles() async {
-    final Directory appDir = await getApplicationDocumentsDirectory();
-    final Directory soundsDir = Directory(path.join(appDir.path, 'sounds'));
-
-    if (!await soundsDir.exists()) {
-      await soundsDir.create(recursive: true);
-    }
-
-    return soundsDir.listSync();
-  }
-
-  Future<void> deleteSound(BuildContext context, FileSystemEntity file) async {
+class SoundsScreen extends ConsumerWidget {
+  Future<void> deleteSound(
+    BuildContext context,
+    FileSystemEntity file,
+    SoundsNotifier notifier,
+  ) async {
     final ThemeData theme = Theme.of(context);
 
     // Show confirmation dialog
@@ -35,7 +24,8 @@ class _SoundsScreenState extends State<SoundsScreen> {
       builder: (BuildContext context) => AlertDialog(
         title: const Text('Delete Sound'),
         content: Text(
-            'Are you sure you want to delete ${path.basename(file.path).replaceFirst('res_', '')}?'),
+          'Are you sure you want to delete ${path.basename(file.path).replaceFirst('res_', '')}?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -59,8 +49,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
 
     if (confirm == true) {
       try {
-        await file.delete();
-        setState(() {});
+        await notifier.deleteSound(file);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -82,34 +71,9 @@ class _SoundsScreenState extends State<SoundsScreen> {
     }
   }
 
-  Future<String?> copySoundToResources(File soundFile) async {
-    try {
-      String fileName = path.basename(soundFile.path);
-
-      // Add 'res_' in front of fileName if not present.
-      if (!fileName.startsWith('res_')) {
-        fileName = 'res_$fileName';
-      }
-
-      // Get the application documents directory
-      Directory appDir = await getApplicationDocumentsDirectory();
-      String resourcePath = path.join(appDir.path, 'sounds', fileName);
-
-      // Create the sounds directory if it doesn't exist
-      await Directory(path.join(appDir.path, 'sounds')).create(recursive: true);
-
-      await soundFile.copy(resourcePath);
-
-      // Return just the filename to use in notifications
-      return fileName;
-    } catch (e) {
-      print('Error copying sound file: $e');
-      return null;
-    }
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final soundsNotifier = ref.read(soundsNotifierProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -118,49 +82,41 @@ class _SoundsScreenState extends State<SoundsScreen> {
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
-      body: FutureBuilder<List<FileSystemEntity>>(
-        future: getSoundFiles(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: AsyncValueWidget<List<FileSystemEntity>>(
+        value: ref.watch(soundsNotifierProvider),
+        data: (sounds) => LayoutBuilder(
+          builder: (context, constraints) {
+            final double cardWidth = 180.0; // Minimum card width
+            final int crossAxisCount =
+                (constraints.maxWidth / cardWidth).floor();
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
-          final List<FileSystemEntity> soundFiles = snapshot.data ?? [];
-
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final double cardWidth = 180.0; // Minimum card width
-              final int crossAxisCount =
-                  (constraints.maxWidth / cardWidth).floor();
-
-              return GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  childAspectRatio: 1.5,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: soundFiles.length + 1, // +1 for "Add Sound" card
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return _buildAddSoundCard(context);
-                  }
-                  return _buildSoundCard(context, soundFiles[index - 1]);
-                },
-              );
-            },
-          );
-        },
+            return GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                childAspectRatio: 1.3,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              itemCount: sounds.length + 1, // +1 for "Add Sound" card
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _buildAddSoundCard(context, soundsNotifier);
+                }
+                return _buildSoundCard(
+                  context,
+                  sounds[index - 1],
+                  soundsNotifier,
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildAddSoundCard(BuildContext context) {
+  Widget _buildAddSoundCard(BuildContext context, SoundsNotifier notifier) {
     return Card(
       elevation: 2,
       color: Theme.of(context).colorScheme.secondaryContainer,
@@ -173,8 +129,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
 
           if (result != null) {
             File file = File(result.files.single.path!);
-            await copySoundToResources(file);
-            setState(() {});
+            notifier.copySoundToResources(file);
           }
         },
         child: Column(
@@ -182,15 +137,21 @@ class _SoundsScreenState extends State<SoundsScreen> {
           children: const [
             Icon(Icons.add_circle_outline, size: 40),
             SizedBox(height: 8),
-            Text('Add Sound',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              'Add Sound',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSoundCard(BuildContext context, FileSystemEntity file) {
+  Widget _buildSoundCard(
+    BuildContext context,
+    FileSystemEntity file,
+    SoundsNotifier notifier,
+  ) {
     final String fileName = path.basename(file.path).replaceFirst('res_', '');
     final player = AudioPlayer();
     final theme = Theme.of(context);
@@ -214,50 +175,51 @@ class _SoundsScreenState extends State<SoundsScreen> {
           onTap: () {
             // TODO: Implement sound selection
           },
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        fileName,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  fileName,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => deleteSound(context, file),
+              ),
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => deleteSound(context, file, notifier),
+                  ),
+                  SizedBox(
+                    width: 2,
+                    height: 40,
+                    child: const VerticalDivider(
+                      thickness: 1.5,
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.play_circle_fill),
-                      onPressed: () async {
-                        try {
-                          isPlaying.value = true;
-                          await player.setFilePath(file.path);
-                          await player.play();
-                        } catch (e) {
-                          print('Error playing sound: $e');
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.play_circle_fill),
+                    onPressed: () async {
+                      try {
+                        isPlaying.value = true;
+                        await player.setFilePath(file.path);
+                        await player.play();
+                      } catch (e) {
+                        print('Error playing sound: $e');
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       );
