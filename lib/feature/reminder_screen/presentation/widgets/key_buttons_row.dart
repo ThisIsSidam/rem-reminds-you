@@ -27,7 +27,8 @@ class KeyButtonsRow extends ConsumerWidget {
     }
     if (reminder.dateTime.isBefore(DateTime.now())) {
       Fluttertoast.showToast(
-          msg: "Time machine is broke. Can't remind you in the past!");
+        msg: "Time machine is broke. Can't remind you in the past!",
+      );
       return;
     }
 
@@ -41,7 +42,10 @@ class KeyButtonsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final sheetNotifier = ref.read(sheetReminderNotifier.notifier);
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
+    final customSound =
+        ref.watch(sheetReminderNotifier.select((p) => p.customSound));
     final centralElement = ref.watch(centralWidgetNotifierProvider);
 
     return Padding(
@@ -68,7 +72,13 @@ class KeyButtonsRow extends ConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SoundsScreen(),
+                      builder: (context) => SoundsScreen(
+                        selectedSound: customSound,
+                        onSelectSound: (String soundPath) {
+                          sheetNotifier.updateCustomSound(soundPath);
+                          Navigator.pop(context);
+                        },
+                      ),
                     ),
                   );
                 },

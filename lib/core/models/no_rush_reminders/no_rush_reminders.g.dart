@@ -21,13 +21,14 @@ class NoRushRemindersModelAdapter extends TypeAdapter<NoRushRemindersModel> {
       title: fields[1] as String,
       autoSnoozeInterval: fields[4] as Duration?,
       dateTime: fields[2] as DateTime,
+      customSound: fields[5] as String?,
     )..PreParsedTitle = fields[3] as String;
   }
 
   @override
   void write(BinaryWriter writer, NoRushRemindersModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -37,7 +38,9 @@ class NoRushRemindersModelAdapter extends TypeAdapter<NoRushRemindersModel> {
       ..writeByte(3)
       ..write(obj.PreParsedTitle)
       ..writeByte(4)
-      ..write(obj.autoSnoozeInterval);
+      ..write(obj.autoSnoozeInterval)
+      ..writeByte(5)
+      ..write(obj.customSound);
   }
 
   @override

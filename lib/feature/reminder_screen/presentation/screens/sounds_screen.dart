@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:Rem/feature/reminder_screen/presentation/providers/sounds_provider.dart';
+import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -11,6 +12,16 @@ import 'package:path/path.dart' as path;
 import '../../../../shared/widgets/async_value_widget.dart';
 
 class SoundsScreen extends ConsumerWidget {
+  const SoundsScreen({this.onSelectSound, this.selectedSound, super.key});
+
+  /// When tapped on a sound card
+  /// For when this screen is created from [ReminderScreen]
+  final Function(String)? onSelectSound;
+
+  /// The path of the selected sound
+  /// For when this screen is created from [ReminderScreen]
+  final String? selectedSound;
+
   Future<void> deleteSound(
     BuildContext context,
     FileSystemEntity file,
@@ -170,11 +181,11 @@ class SoundsScreen extends ConsumerWidget {
         elevation: 2,
         color: isPlaying.value
             ? theme.colorScheme.secondaryContainer
-            : theme.colorScheme.primaryContainer,
+            : selectedSound == file.path
+                ? theme.colorScheme.tertiaryContainer
+                : theme.colorScheme.primaryContainer,
         child: InkWell(
-          onTap: () {
-            // TODO: Implement sound selection
-          },
+          onTap: () => onSelectSound?.call(file.path),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

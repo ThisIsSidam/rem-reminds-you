@@ -14,12 +14,16 @@ class ReminderModel {
   String PreParsedTitle;
   @HiveField(4)
   Duration? autoSnoozeInterval;
+  @HiveField(5)
+  String? customSound;
+
   ReminderModel({
     required this.id,
     required this.title,
     required this.dateTime,
     required this.PreParsedTitle,
     this.autoSnoozeInterval,
+    this.customSound,
   });
 
   Map<String, String?> toJson() {
@@ -29,6 +33,7 @@ class ReminderModel {
       'dateTime': dateTime.toIso8601String(),
       'PreParsedTitle': PreParsedTitle,
       'autoSnoozeInterval': autoSnoozeInterval?.inMilliseconds.toString(),
+      'customSound': customSound,
     };
   }
 
@@ -41,6 +46,7 @@ class ReminderModel {
       autoSnoozeInterval: json['autoSnoozeInterval'] != null
           ? Duration(milliseconds: int.parse(json['autoSnoozeInterval']!))
           : null,
+      customSound: json['customSound'],
     );
   }
 
@@ -57,6 +63,7 @@ class ReminderModel {
       dateTime: dateTime ?? this.dateTime,
       PreParsedTitle: preParsedTitle ?? this.PreParsedTitle,
       autoSnoozeInterval: autoSnoozeInterval ?? this.autoSnoozeInterval,
+      customSound: this.customSound,
     );
   }
 

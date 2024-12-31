@@ -20,6 +20,7 @@ class RecurringReminderModel extends ReminderModel {
     required super.dateTime,
     required super.PreParsedTitle,
     required super.autoSnoozeInterval,
+    super.customSound,
     required this.recurringInterval,
     required this.baseDateTime,
     this.paused = false,
@@ -42,6 +43,7 @@ class RecurringReminderModel extends ReminderModel {
       autoSnoozeInterval:
           Duration(milliseconds: int.parse(map['autoSnoozeInterval']!)),
       PreParsedTitle: map['PreParsedTitle']!,
+      customSound: map['customSound'],
       recurringInterval:
           RecurringInterval.values[int.parse(map['recurringInterval']!)],
       baseDateTime: DateTime.parse(map['baseDateTime']!),
@@ -55,6 +57,7 @@ class RecurringReminderModel extends ReminderModel {
     DateTime? dateTime,
     Duration? autoSnoozeInterval,
     String? PreParsedTitle,
+    String? customSound,
     RecurringInterval? recurringInterval,
     DateTime? baseDateTime,
     bool? paused,

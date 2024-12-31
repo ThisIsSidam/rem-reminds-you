@@ -28,6 +28,7 @@ class NotificationController {
         NotificationChannel(
           channelKey: '111',
           channelName: 'rem_channel',
+          soundSource: 'resource://raw/res_bell',
           channelDescription: 'Shows Reminder Notification',
         )
       ],
@@ -84,12 +85,14 @@ class NotificationController {
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-          id: notificationId,
-          channelKey: '111',
-          title: "Reminder: ${reminder.title}",
-          groupKey: reminder.id.toString(),
-          wakeUpScreen: true,
-          payload: reminder.toJson()),
+        id: notificationId,
+        channelKey: '111',
+        title: "Reminder: ${reminder.title}",
+        groupKey: reminder.id.toString(),
+        wakeUpScreen: true,
+        customSound: 'resource://raw/res_bell',
+        payload: reminder.toJson(),
+      ),
       actionButtons: <NotificationActionButton>[
         NotificationActionButton(
           key: 'done',

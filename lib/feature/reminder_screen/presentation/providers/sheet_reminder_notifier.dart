@@ -17,6 +17,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   DateTime _dateTime = DateTime.now();
   DateTime _baseDateTime = DateTime.now();
   Duration? _autoSnoozeInterval;
+  String? _customSound;
   RecurringInterval _recurringInterval = RecurringInterval.none;
   bool _noRush = false;
 
@@ -36,12 +37,21 @@ class SheetReminderNotifier extends ChangeNotifier {
 
   // Getters
   int? get id => _id;
+
   String get title => _title;
+
   String get preParsedTitle => _preParsedTitle;
+
   DateTime get dateTime => _dateTime;
+
   DateTime get baseDateTime => _baseDateTime;
+
   Duration? get autoSnoozeInterval => _autoSnoozeInterval;
+
+  String? get customSound => _customSound;
+
   RecurringInterval get recurringInterval => _recurringInterval;
+
   bool get noRush => _noRush;
 
   // Setters
@@ -75,6 +85,11 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateCustomSound(String newSound) {
+    _customSound = newSound;
+    notifyListeners();
+  }
+
   void updateRecurringInterval(RecurringInterval newInterval) {
     _recurringInterval = newInterval;
     notifyListeners();
@@ -96,6 +111,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     _baseDateTime = DateTime.now();
     _autoSnoozeInterval =
         _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
+    _customSound = null;
     _recurringInterval = RecurringInterval.none;
     _noRush = isNoRush;
     notifyListeners();
@@ -110,6 +126,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         ? reminder.baseDateTime
         : DateTime.now();
     _autoSnoozeInterval = reminder.autoSnoozeInterval;
+    _customSound = reminder.customSound;
     _recurringInterval = reminder is RecurringReminderModel
         ? reminder.recurringInterval
         : RecurringInterval.none;
@@ -125,6 +142,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         id: id ?? generateId(),
         title: title,
         autoSnoozeInterval: autoSnooze,
+        customSound: customSound,
         dateTime: NoRushRemindersModel.generateRandomFutureTime(),
       );
     } else if (_recurringInterval == RecurringInterval.none) {
@@ -134,6 +152,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         title: title,
         PreParsedTitle: preParsedTitle,
         autoSnoozeInterval: autoSnoozeInterval,
+        customSound: customSound,
       );
     } else {
       return RecurringReminderModel(
@@ -142,6 +161,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         dateTime: dateTime,
         autoSnoozeInterval: autoSnoozeInterval,
         baseDateTime: baseDateTime,
+        customSound: customSound,
         PreParsedTitle: preParsedTitle,
         recurringInterval: recurringInterval,
       );

@@ -22,13 +22,14 @@ class ReminderModelAdapter extends TypeAdapter<ReminderModel> {
       dateTime: fields[2] as DateTime,
       PreParsedTitle: fields[3] as String,
       autoSnoozeInterval: fields[4] as Duration?,
+      customSound: fields[5] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ReminderModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class ReminderModelAdapter extends TypeAdapter<ReminderModel> {
       ..writeByte(3)
       ..write(obj.PreParsedTitle)
       ..writeByte(4)
-      ..write(obj.autoSnoozeInterval);
+      ..write(obj.autoSnoozeInterval)
+      ..writeByte(5)
+      ..write(obj.customSound);
   }
 
   @override

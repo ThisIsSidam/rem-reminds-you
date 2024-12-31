@@ -23,6 +23,7 @@ class RecurringReminderModelAdapter
       dateTime: fields[2] as DateTime,
       PreParsedTitle: fields[3] as String,
       autoSnoozeInterval: fields[4] as Duration?,
+      customSound: fields[5] as String?,
       recurringInterval: fields[10] as RecurringInterval,
       baseDateTime: fields[11] as DateTime,
       paused: fields[12] as bool,
@@ -32,7 +33,7 @@ class RecurringReminderModelAdapter
   @override
   void write(BinaryWriter writer, RecurringReminderModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(10)
       ..write(obj.recurringInterval)
       ..writeByte(11)
@@ -48,7 +49,9 @@ class RecurringReminderModelAdapter
       ..writeByte(3)
       ..write(obj.PreParsedTitle)
       ..writeByte(4)
-      ..write(obj.autoSnoozeInterval);
+      ..write(obj.autoSnoozeInterval)
+      ..writeByte(5)
+      ..write(obj.customSound);
   }
 
   @override

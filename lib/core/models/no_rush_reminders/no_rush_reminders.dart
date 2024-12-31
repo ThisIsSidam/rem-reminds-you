@@ -10,12 +10,13 @@ part 'no_rush_reminders.g.dart';
 
 @HiveType(typeId: 3)
 class NoRushRemindersModel extends ReminderModel {
-  NoRushRemindersModel(
-      {required super.id,
-      required super.title,
-      required super.autoSnoozeInterval,
-      required super.dateTime})
-      : super(
+  NoRushRemindersModel({
+    required super.id,
+    required super.title,
+    required super.autoSnoozeInterval,
+    required super.dateTime,
+    super.customSound,
+  }) : super(
           PreParsedTitle: title,
         );
 
