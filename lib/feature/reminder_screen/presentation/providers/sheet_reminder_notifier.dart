@@ -1,12 +1,12 @@
-import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
+import 'package:Rem/core/models/no_rush_reminder/no_rush_reminders_model.dart';
 import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
 import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/enums/recurring_interval.dart';
+import '../../../../core/models/basic_reminder_model.dart';
+import '../../../../core/models/recurring_reminder/recurring_reminder_model.dart';
 import '../../../../shared/utils/generate_id.dart';
 
 class SheetReminderNotifier extends ChangeNotifier {
@@ -36,12 +36,19 @@ class SheetReminderNotifier extends ChangeNotifier {
 
   // Getters
   int? get id => _id;
+
   String get title => _title;
+
   String get preParsedTitle => _preParsedTitle;
+
   DateTime get dateTime => _dateTime;
+
   DateTime get baseDateTime => _baseDateTime;
+
   Duration? get autoSnoozeInterval => _autoSnoozeInterval;
+
   RecurringInterval get recurringInterval => _recurringInterval;
+
   bool get noRush => _noRush;
 
   // Setters
@@ -101,7 +108,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadValues(ReminderModel reminder) {
+  void loadValues(BasicReminderModel reminder) {
     _id = reminder.id;
     _title = reminder.title;
     _preParsedTitle = reminder.PreParsedTitle;
@@ -117,7 +124,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  ReminderModel constructReminder() {
+  BasicReminderModel constructReminder() {
     final autoSnooze = ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
 
     if (_noRush) {
@@ -128,7 +135,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         dateTime: NoRushRemindersModel.generateRandomFutureTime(),
       );
     } else if (_recurringInterval == RecurringInterval.none) {
-      return ReminderModel(
+      return BasicReminderModel(
         id: id ?? generateId(),
         dateTime: dateTime,
         title: title,

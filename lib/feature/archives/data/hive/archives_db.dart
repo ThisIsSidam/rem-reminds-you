@@ -3,22 +3,25 @@ import 'dart:convert';
 import 'package:Rem/core/enums/hive_enums.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/models/basic_reminder_model.dart';
 
 class ArchivesDatabaseController {
   static final _box = Hive.box(HiveBoxNames.archives.name);
 
-  static Map<int, ReminderModel> getArchivedReminders() {
+  static Map<int, BasicReminderModel> getArchivedReminders() {
     if (!_box.isOpen) {
       Future(() {
         Hive.openBox(HiveBoxNames.archives.name);
       });
     }
-    return _box.get(HiveKeys.archivesKey.key)?.cast<int, ReminderModel>() ?? {};
+    return _box
+            .get(HiveKeys.archivesKey.key)
+            ?.cast<int, BasicReminderModel>() ??
+        {};
   }
 
   static Future<void> updateArchivedReminders(
-      Map<int, ReminderModel> reminders) async {
+      Map<int, BasicReminderModel> reminders) async {
     await _box.put(HiveKeys.archivesKey.key, reminders);
   }
 
@@ -27,7 +30,7 @@ class ArchivesDatabaseController {
   }
 
   static Future<String> getBackup() async {
-    Map<int, ReminderModel> reminders = getArchivedReminders();
+    Map<int, BasicReminderModel> reminders = getArchivedReminders();
     Map<String, dynamic> backupData = {
       'reminders': reminders
           .map((id, reminder) => MapEntry(id.toString(), reminder.toJson())),
@@ -42,11 +45,11 @@ class ArchivesDatabaseController {
       Map<String, dynamic> backupData = jsonDecode(jsonData);
       Map<String, dynamic> remindersData = backupData['reminders'];
 
-      Map<int, ReminderModel> reminders = {};
+      Map<int, BasicReminderModel> reminders = {};
       remindersData.forEach((key, value) {
         int id = int.parse(key);
         value = value.cast<String, String?>();
-        reminders[id] = ReminderModel.fromJson(value);
+        reminders[id] = BasicReminderModel.fromJson(value);
       });
 
       await removeAllArchivedReminders();

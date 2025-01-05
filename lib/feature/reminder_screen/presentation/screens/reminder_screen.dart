@@ -7,7 +7,7 @@ import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/models/basic_reminder_model.dart';
 
 class ReminderScreen extends ConsumerStatefulWidget {
   const ReminderScreen({
@@ -17,7 +17,7 @@ class ReminderScreen extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final ReminderModel? reminder;
+  final BasicReminderModel? reminder;
   final Duration? customDuration;
   final bool isNoRush;
 

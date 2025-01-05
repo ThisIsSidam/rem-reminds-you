@@ -4,7 +4,7 @@ import 'dart:ui';
 
 import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/hive/pending_removals_db.dart';
-import 'package:Rem/core/models/reminder_model/reminder_model.dart';
+import 'package:Rem/core/models/basic_reminder_model.dart';
 import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/shared/utils/generate_id.dart';
@@ -15,6 +15,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../shared/utils/logger/global_logger.dart';
 import '../../enums/hive_enums.dart';
+import '../../models/reminder_union.dart';
 
 class NotificationController {
   static ReceivedAction? initialAction;
@@ -46,7 +47,7 @@ class NotificationController {
   }
 
   static Future<bool> scheduleNotification(
-    ReminderModel reminder,
+    Reminder reminder,
   ) async {
     final int id = reminder.id;
 
@@ -75,7 +76,7 @@ class NotificationController {
     gLogger.i('Notification Callback Running | callBackId: $id');
 
     final Map<String, String> strParams = params.cast<String, String>();
-    final ReminderModel reminder = ReminderModel.fromJson(strParams);
+    final Reminder reminder = Reminder.fromJson(strParams);
 
     // Should be different each time so that different notifications are shown.
     int notificationId = generatedNotificationId(id);
@@ -84,12 +85,13 @@ class NotificationController {
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-          id: notificationId,
-          channelKey: '111',
-          title: "Reminder: ${reminder.title}",
-          groupKey: reminder.id.toString(),
-          wakeUpScreen: true,
-          payload: reminder.toJson()),
+        id: notificationId,
+        channelKey: '111',
+        title: "Reminder: ${reminder.title}",
+        groupKey: reminder.id.toString(),
+        wakeUpScreen: true,
+        payload: reminder.toJson(),
+      ),
       actionButtons: <NotificationActionButton>[
         NotificationActionButton(
           key: 'done',
@@ -107,9 +109,6 @@ class NotificationController {
       return;
     }
 
-    DateTime nextScheduledTime =
-        reminder.dateTime.add(reminder.autoSnoozeInterval!);
-    reminder.dateTime = nextScheduledTime;
     scheduleNotification(reminder);
     gLogger.i(
       'Scheduled Next Notification | ID : ${reminder.id} | DT : ${reminder.dateTime}',
@@ -163,7 +162,8 @@ class NotificationController {
         throw 'Received null payload through notification action | gKey : ${receivedAction.groupKey}';
       } else {
         final context = navigatorKey.currentContext!;
-        final ReminderModel reminder = ReminderModel.fromJson(payload);
+        final BasicReminderModel reminder =
+            BasicReminderModel.fromJson(payload);
         gLogger.i(
             'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}');
 

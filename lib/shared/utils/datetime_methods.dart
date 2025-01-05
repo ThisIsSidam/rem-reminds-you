@@ -1,4 +1,4 @@
-import 'package:Rem/core/models/reminder_model/reminder_model.dart';
+import 'package:Rem/core/models/basic_reminder_model.dart';
 import 'package:duration/duration.dart';
 import 'package:intl/intl.dart';
 
@@ -9,7 +9,7 @@ String getFormattedDateTime(DateTime dateTime) {
   return formatted;
 }
 
-String getFormattedDuration(ReminderModel reminder) {
+String getFormattedDuration(BasicReminderModel reminder) {
   if (reminder.dateTime.isBefore(DateTime.now())) {
     return '${getPrettyDurationFromDateTime(reminder.dateTime)} ago'
         .replaceFirst('-', '');

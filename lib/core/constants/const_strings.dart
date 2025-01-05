@@ -12,6 +12,7 @@ const tomorrowSectionTitle = "Tomorrow";
 const laterSectionTitle = "Later";
 
 const newReminderID = -100;
+
 const reminderNullTitle = "No Title";
 const reminderNullID = -1;
 const reminderDefaultRepetitionCount = 5;

@@ -2,7 +2,7 @@ import 'package:Rem/feature/archives/data/hive/archives_db.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/models/basic_reminder_model.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 
 class ArchivesNotifier extends ChangeNotifier {
@@ -17,9 +17,10 @@ class ArchivesNotifier extends ChangeNotifier {
     super.dispose();
   }
 
-  Map<int, ReminderModel> _archivedReminders = {};
+  Map<int, BasicReminderModel> _archivedReminders = {};
 
-  Map<int, ReminderModel> get archivedReminders => _archivedReminders;
+  Map<int, BasicReminderModel> get archivedReminders => _archivedReminders;
+
   int get archiveCount => _archivedReminders.length;
 
   Future<void> loadArchivedReminders() async {
@@ -27,7 +28,7 @@ class ArchivesNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addReminderToArchives(ReminderModel reminder) async {
+  Future<void> addReminderToArchives(BasicReminderModel reminder) async {
     ;
     _archivedReminders[reminder.id] = reminder;
     await ArchivesDatabaseController.updateArchivedReminders(
@@ -37,7 +38,7 @@ class ArchivesNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<ReminderModel?> deleteArchivedReminder(int id) async {
+  Future<BasicReminderModel?> deleteArchivedReminder(int id) async {
     if (_archivedReminders.containsKey(id)) {
       final reminder = _archivedReminders.remove(id);
       await ArchivesDatabaseController.updateArchivedReminders(

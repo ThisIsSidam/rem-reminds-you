@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/models/basic_reminder_model.dart';
+import '../../../../core/models/no_rush_reminder/no_rush_reminders_model.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 
 class ArchiveEntryLists extends ConsumerWidget {
-  final List<ReminderModel> remindersList;
+  final List<BasicReminderModel> remindersList;
 
   const ArchiveEntryLists({
     super.key,
@@ -19,7 +19,7 @@ class ArchiveEntryLists extends ConsumerWidget {
   });
 
   void _slideAndRemoveReminder(
-      BuildContext context, ReminderModel reminder, WidgetRef ref) {
+      BuildContext context, BasicReminderModel reminder, WidgetRef ref) {
     final archivesNotifier = ref.read(archivesProvider);
     archivesNotifier.deleteArchivedReminder(
       reminder.id,
@@ -100,7 +100,7 @@ class ArchiveEntryLists extends ConsumerWidget {
 }
 
 class _ArchiveReminderEntryListTile extends ConsumerWidget {
-  final ReminderModel reminder;
+  final BasicReminderModel reminder;
 
   const _ArchiveReminderEntryListTile({required this.reminder});
 

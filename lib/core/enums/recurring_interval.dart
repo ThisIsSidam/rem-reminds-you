@@ -1,20 +1,11 @@
-import 'package:hive/hive.dart';
 
-part 'recurring_interval.g.dart';
 
-@HiveType(typeId: 2)
 enum RecurringInterval {
-  @HiveField(0)
   none,
-  @HiveField(1)
   daily,
-  @HiveField(2)
   weekly,
-  @HiveField(3)
   weekdays,
-  @HiveField(4)
   weekends,
-  @HiveField(5)
   monthly;
 
   @override

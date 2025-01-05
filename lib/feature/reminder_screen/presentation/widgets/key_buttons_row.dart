@@ -1,13 +1,13 @@
 import 'package:Rem/core/constants/const_strings.dart';
-import 'package:Rem/core/models/reminder_model/reminder_model.dart';
+import 'package:Rem/core/models/basic_reminder_model.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
 import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
+import '../../../../core/enums/recurring_interval.dart';
+import '../../../../core/models/recurring_reminder/recurring_reminder_model.dart';
 import '../../../archives/presentation/providers/archives_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
@@ -17,7 +17,7 @@ class KeyButtonsRow extends ConsumerWidget {
   });
 
   void saveReminder(BuildContext context, WidgetRef ref) async {
-    final ReminderModel reminder =
+    final BasicReminderModel reminder =
         ref.read(sheetReminderNotifier).constructReminder();
 
     if (reminder.title == "No Title") {

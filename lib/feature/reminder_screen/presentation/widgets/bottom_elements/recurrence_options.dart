@@ -2,7 +2,7 @@ import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminde
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/models/recurring_interval/recurring_interval.dart';
+import '../../../../../core/enums/recurring_interval.dart';
 import '../../providers/central_widget_provider.dart';
 
 class ReminderRecurrenceOptionsWidget extends ConsumerWidget {

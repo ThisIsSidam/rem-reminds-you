@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:Rem/core/enums/hive_enums.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/models/basic_reminder_model.dart';
 
 class RemindersDatabaseController {
   static final _remindersBox = Hive.box(HiveBoxNames.reminders.name);
 
-  static Map<int, ReminderModel> getReminders() {
+  static Map<int, BasicReminderModel> getReminders() {
     if (!_remindersBox.isOpen) {
       Future(() {
         Hive.openBox(HiveBoxNames.reminders.name);
@@ -17,11 +17,12 @@ class RemindersDatabaseController {
 
     return _remindersBox
             .get(HiveKeys.remindersBoxKey.key)
-            ?.cast<int, ReminderModel>() ??
+            ?.cast<int, BasicReminderModel>() ??
         {};
   }
 
-  static Future<void> updateReminders(Map<int, ReminderModel> reminders) async {
+  static Future<void> updateReminders(
+      Map<int, BasicReminderModel> reminders) async {
     await _remindersBox.put(HiveKeys.remindersBoxKey.key, reminders);
   }
 
@@ -30,7 +31,7 @@ class RemindersDatabaseController {
   }
 
   static Future<String> getBackup() async {
-    Map<int, ReminderModel> reminders = getReminders();
+    Map<int, BasicReminderModel> reminders = getReminders();
     Map<String, dynamic> backupData = {
       'reminders': reminders
           .map((id, reminder) => MapEntry(id.toString(), reminder.toJson())),
@@ -45,11 +46,11 @@ class RemindersDatabaseController {
       Map<String, dynamic> backupData = jsonDecode(jsonData);
       Map<String, dynamic> remindersData = backupData['reminders'];
 
-      Map<int, ReminderModel> reminders = {};
+      Map<int, BasicReminderModel> reminders = {};
       remindersData.forEach((key, value) {
         int id = int.parse(key);
         value = value.cast<String, String?>();
-        reminders[id] = ReminderModel.fromJson(value);
+        reminders[id] = BasicReminderModel.fromJson(value);
       });
 
       removeAllReminders();

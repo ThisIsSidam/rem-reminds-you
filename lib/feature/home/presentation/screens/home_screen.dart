@@ -11,7 +11,7 @@ import 'package:Rem/shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/models/basic_reminder_model.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 
 enum HomeScreenSection {
@@ -36,7 +36,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
-  Map<HomeScreenSection, List<ReminderModel>> remindersMap = {};
+  Map<HomeScreenSection, List<BasicReminderModel>> remindersMap = {};
   final ReceivePort receivePort = ReceivePort();
   SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
 
@@ -250,7 +250,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _showReminderSheet(
-      {ReminderModel? reminder, Duration? duration, bool isNoRush = false}) {
+      {BasicReminderModel? reminder,
+      Duration? duration,
+      bool isNoRush = false}) {
     Navigator.push(
       context,
       MaterialPageRoute(

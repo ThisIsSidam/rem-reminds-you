@@ -1,12 +1,12 @@
-import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
+import 'package:Rem/core/models/no_rush_reminder/no_rush_reminders_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../core/enums/recurring_interval.dart';
 import '../../../../core/enums/swipe_actions.dart';
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/models/basic_reminder_model.dart';
+import '../../../../core/models/recurring_reminder/recurring_reminder_model.dart';
 import '../../../../shared/widgets/one_time_undo_button/one_time_undo_button.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
@@ -15,13 +15,13 @@ import '../providers/reminders_provider.dart';
 class ActionPaneManager {
   static ActionPane? getActionToLeft(
     WidgetRef ref,
-    List<ReminderModel> remindersList,
+    List<BasicReminderModel> remindersList,
     int index,
     BuildContext context,
   ) {
     final SwipeAction action =
         ref.read(userSettingsProvider).homeTileSwipeActionLeft;
-    final ReminderModel reminder = remindersList[index];
+    final BasicReminderModel reminder = remindersList[index];
 
     switch (action) {
       case SwipeAction.none:
@@ -54,7 +54,7 @@ class ActionPaneManager {
 
   static ActionPane? getActionToRight(
     WidgetRef ref,
-    List<ReminderModel> remindersList,
+    List<BasicReminderModel> remindersList,
     int index,
     BuildContext context,
   ) {
@@ -90,7 +90,7 @@ class ActionPaneManager {
 
   static ActionPane _doneActionPane(
     BuildContext context,
-    ReminderModel reminder,
+    BasicReminderModel reminder,
     WidgetRef ref,
   ) {
     return ActionPane(
@@ -99,12 +99,12 @@ class ActionPaneManager {
   }
 
   static ActionPane _deleteActionPane(
-    List<ReminderModel> remindersList,
+    List<BasicReminderModel> remindersList,
     int index,
     BuildContext context,
     WidgetRef ref,
   ) {
-    final ReminderModel reminder = remindersList[index];
+    final BasicReminderModel reminder = remindersList[index];
 
     return ActionPane(
         motion: const StretchMotion(),
@@ -126,7 +126,7 @@ class ActionPaneManager {
 
   static ActionPane _doneAndDeleteActionPane(
     BuildContext context,
-    List<ReminderModel> remindersList,
+    List<BasicReminderModel> remindersList,
     int index,
     WidgetRef ref,
   ) {
@@ -147,7 +147,7 @@ class ActionPaneManager {
 
   static void _slideAndRemoveReminder(
     BuildContext context,
-    ReminderModel reminder,
+    BasicReminderModel reminder,
     WidgetRef ref,
   ) {
     // Store the provider reference before any potential disposal
@@ -257,7 +257,7 @@ class ActionPaneManager {
   // We should also fix the same issue in _postponeActionPane
   static ActionPane _postponeActionPane(
     BuildContext context,
-    ReminderModel reminder,
+    BasicReminderModel reminder,
     WidgetRef ref,
   ) {
     final Duration postponeDuration =
@@ -296,7 +296,7 @@ class ActionPaneManager {
   // Also fix _doneSlidableAction
   static Widget _doneSlidableAction(
     BuildContext context,
-    ReminderModel reminder,
+    BasicReminderModel reminder,
     WidgetRef ref,
   ) {
     final remindersProviderValue = ref.read(remindersProvider);

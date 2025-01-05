@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/models/basic_reminder_model.dart';
 import 'action_pane_manager.dart';
 
 class HomeScreenReminderListSection extends ConsumerWidget {
   final Widget label;
-  final List<ReminderModel> remindersList;
+  final List<BasicReminderModel> remindersList;
   final bool hideIfEmpty;
 
   const HomeScreenReminderListSection({

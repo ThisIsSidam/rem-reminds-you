@@ -1,16 +1,16 @@
-import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
-import 'package:Rem/core/models/recurring_reminder/recurring_reminder.dart';
+import 'package:Rem/core/models/no_rush_reminder/no_rush_reminders_model.dart';
+import 'package:Rem/core/models/recurring_reminder/recurring_reminder_model.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
 import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/enums/recurring_interval.dart';
+import '../../../../core/models/basic_reminder_model.dart';
 
 class HomePageReminderEntryListTile extends HookConsumerWidget {
-  final ReminderModel reminder;
+  final BasicReminderModel reminder;
 
   const HomePageReminderEntryListTile({
     super.key,
