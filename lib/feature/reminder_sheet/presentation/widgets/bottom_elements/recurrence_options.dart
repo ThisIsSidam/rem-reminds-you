@@ -1,4 +1,4 @@
-import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,21 +10,6 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Recurrence Options",
-                style: Theme.of(context).textTheme.titleMedium),
-          ),
-          getButtonsGrid(context, ref)
-        ]);
-  }
-
-  Widget getButtonsGrid(BuildContext context, WidgetRef ref) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(25),
       child: GridView.count(

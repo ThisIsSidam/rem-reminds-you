@@ -5,7 +5,7 @@ import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/services/notification_service/notification_service.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
 import 'package:Rem/feature/home/presentation/widgets/home_screen_lists.dart';
-import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import 'package:flutter/material.dart';
@@ -113,6 +113,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final isEmpty = ref.watch(remindersProvider).reminderCount == 0;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: CustomScrollView(
         slivers: [
           _buildAppBar(),
@@ -239,27 +240,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return FloatingActionButton(
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      onPressed: () {
-        gLogger.i('Show new reminder sheet');
-        _showReminderSheet();
-      },
+      onPressed: () => _showReminderSheet(),
       child: const Icon(
         Icons.add,
       ),
     );
   }
 
-  void _showReminderSheet(
-      {ReminderModel? reminder, Duration? duration, bool isNoRush = false}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ReminderScreen(
-          reminder: reminder,
-          customDuration: duration,
-          isNoRush: isNoRush,
-        ),
-      ),
+  void _showReminderSheet({
+    ReminderModel? reminder,
+    Duration? duration,
+    bool isNoRush = false,
+  }) {
+    ReminderSheetHelper.openSheet(
+      context: context,
+      reminder: reminder,
+      ref: ref,
+      customDuration: duration,
+      isNoRush: isNoRush,
     );
   }
 

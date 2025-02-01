@@ -1,8 +1,8 @@
-import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
-import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
-import 'package:Rem/feature/reminder_screen/presentation/widgets/bottom_elements/recurrence_options.dart';
-import 'package:Rem/feature/reminder_screen/presentation/widgets/bottom_elements/snooze_options.dart';
-import 'package:Rem/feature/reminder_screen/presentation/widgets/time_button.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/providers/central_widget_provider.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/widgets/bottom_elements/recurrence_options.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/widgets/bottom_elements/snooze_options.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/widgets/time_button.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,8 +16,8 @@ class CentralSection extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dateTime = ref.watch(sheetReminderNotifier.select((p) => p.dateTime));
     final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
-    final bottomElement = ref.watch(centralWidgetNotifierProvider);
-    final bottomElementNotifier =
+    final centralElement = ref.watch(centralWidgetNotifierProvider);
+    final centralElementNotififer =
         ref.read(centralWidgetNotifierProvider.notifier);
     final ThemeData theme = Theme.of(context);
     final Color textColor = dateTime.isBefore(DateTime.now())
@@ -35,38 +35,45 @@ class CentralSection extends HookConsumerWidget {
               vertical: 4,
             ),
             child: InkWell(
+              borderRadius: BorderRadius.circular(12),
               onTap: () {
-                if (bottomElement != CentralElement.dateTimeGrid) {
-                  bottomElementNotifier.switchTo(CentralElement.dateTimeGrid);
+                if (centralElement != CentralElement.dateTimeGrid) {
+                  centralElementNotififer.switchTo(CentralElement.dateTimeGrid);
                 } else {
-                  bottomElementNotifier.switchTo(CentralElement.timePicker);
+                  centralElementNotififer.switchTo(CentralElement.timePicker);
                 }
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    getFormattedDateTime(dateTime),
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: textColor,
-                        ),
-                  ),
-                  const SizedBox(
-                    width: 24,
-                  ),
-                  Flexible(
-                    child: Text(
-                      dateTime.isBefore(DateTime.now())
-                          ? '${getPrettyDurationFromDateTime(dateTime)} ago'
-                              .replaceFirst('-', '')
-                          : 'in ${getPrettyDurationFromDateTime(dateTime)}',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 4,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      getFormattedDateTime(dateTime),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: textColor,
                           ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    Flexible(
+                      child: Text(
+                        dateTime.isBefore(DateTime.now())
+                            ? '${getPrettyDurationFromDateTime(dateTime)} ago'
+                                .replaceFirst('-', '')
+                            : 'in ${getPrettyDurationFromDateTime(dateTime)}',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: textColor,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -155,6 +162,7 @@ class CentralWidget extends ConsumerWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: GridView.count(
+        physics: NeverScrollableScrollPhysics(),
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
         crossAxisCount: 4,

@@ -1,5 +1,5 @@
-import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
-import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/providers/central_widget_provider.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
 import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
@@ -21,24 +21,6 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
       settings.autoSnoozeOption6,
     ];
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("Auto-Snooze Options",
-              style: Theme.of(context).textTheme.titleMedium),
-        ),
-        getButtonsGrid(context, repeatIntervalDurations, ref),
-      ],
-    );
-  }
-
-  Widget getButtonsGrid(
-      BuildContext context, List<Duration> intervalDurations, WidgetRef ref) {
-    //TODO: Check if all the corners are round or not.
     return ClipRRect(
       borderRadius: BorderRadius.circular(25),
       child: GridView.count(
@@ -48,7 +30,7 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
         shrinkWrap: true,
         childAspectRatio: 1.5,
         children: [
-          for (var dur in intervalDurations)
+          for (var dur in repeatIntervalDurations)
             intervalEditButton(dur, context, ref),
         ],
       ),

@@ -5,12 +5,11 @@ import 'dart:ui';
 import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/hive/pending_removals_db.dart';
 import 'package:Rem/core/models/reminder_model/reminder_model.dart';
-import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
 import 'package:Rem/main.dart';
 import 'package:Rem/shared/utils/generate_id.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../shared/utils/logger/global_logger.dart';
@@ -165,13 +164,12 @@ class NotificationController {
         final context = navigatorKey.currentContext!;
         final ReminderModel reminder = ReminderModel.fromJson(payload);
         gLogger.i(
-            'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}');
+          'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}',
+        );
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ReminderScreen(reminder: reminder),
-          ),
+        ReminderSheetHelper.openSheet(
+          context: context,
+          reminder: reminder,
         );
         removeNotifications(receivedAction.groupKey);
       }

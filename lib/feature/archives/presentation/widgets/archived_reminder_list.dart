@@ -1,5 +1,5 @@
 import 'package:Rem/feature/archives/presentation/providers/archives_provider.dart';
-import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:Rem/shared/widgets/snack_bar/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -109,11 +109,10 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
     return InkWell(
       onTap: () {
         gLogger.i('Show archived reminderSheet | ID: ${reminder.id}');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ReminderScreen(reminder: reminder),
-          ),
+        ReminderSheetHelper.openSheet(
+          context: context,
+          ref: ref,
+          reminder: reminder,
         );
       },
       child: DecoratedBox(

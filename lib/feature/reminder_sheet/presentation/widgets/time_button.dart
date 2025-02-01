@@ -1,4 +1,4 @@
-import 'package:Rem/feature/reminder_screen/presentation/providers/sheet_reminder_notifier.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

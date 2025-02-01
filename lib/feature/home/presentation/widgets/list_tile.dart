@@ -1,7 +1,7 @@
 import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
 import 'package:Rem/core/models/recurring_reminder/recurring_reminder.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
-import 'package:Rem/feature/reminder_screen/presentation/screens/reminder_screen.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
 import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,11 +28,10 @@ class HomePageReminderEntryListTile extends HookConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ReminderScreen(reminder: reminder),
-          ),
+        ReminderSheetHelper.openSheet(
+          context: context,
+          ref: ref,
+          reminder: reminder,
         );
       },
       child: DecoratedBox(

@@ -1,7 +1,7 @@
 import 'package:Rem/core/constants/const_strings.dart';
 import 'package:Rem/core/models/reminder_model/reminder_model.dart';
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
-import 'package:Rem/feature/reminder_screen/presentation/providers/central_widget_provider.dart';
+import 'package:Rem/feature/reminder_sheet/presentation/providers/central_widget_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -100,7 +100,6 @@ class KeyButtonsRow extends ConsumerWidget {
                 icon: Icons.close,
                 active: true,
                 onTap: () => Navigator.pop(context),
-                fillColor: Colors.grey,
               ),
               if (!noRush) ...<Widget>[
                 _buildButton(
@@ -140,22 +139,30 @@ class KeyButtonsRow extends ConsumerWidget {
     );
   }
 
-  RawMaterialButton _buildButton({
+  IconButton _buildButton({
     required BuildContext context,
     required IconData icon,
     required active,
     required onTap,
     Color? fillColor,
   }) {
-    return RawMaterialButton(
-      constraints: BoxConstraints(maxWidth: 48),
-      child: Icon(icon),
-      fillColor: active
-          ? fillColor ?? Theme.of(context).colorScheme.primaryContainer
-          : Colors.grey,
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return IconButton.filled(
+      constraints: BoxConstraints(maxWidth: 64),
+      icon: Icon(
+        icon,
+        color: active
+            ? colorScheme.onPrimaryContainer
+            : colorScheme.primaryContainer,
+      ),
+      style: IconButton.styleFrom(
+        backgroundColor: active
+            ? fillColor ?? colorScheme.primaryContainer
+            : colorScheme.onPrimaryContainer,
+        padding: EdgeInsets.all(8),
+        shape: CircleBorder(),
+      ),
       onPressed: onTap,
-      padding: EdgeInsets.all(8),
-      shape: CircleBorder(),
     );
   }
 
