@@ -19,6 +19,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   Duration? _autoSnoozeInterval;
   RecurringInterval _recurringInterval = RecurringInterval.none;
   bool _noRush = false;
+  bool _isPaused = false;
 
   SheetReminderNotifier({required this.ref}) {
     final settings = ref.read(userSettingsProvider);
@@ -43,6 +44,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   Duration? get autoSnoozeInterval => _autoSnoozeInterval;
   RecurringInterval get recurringInterval => _recurringInterval;
   bool get noRush => _noRush;
+  bool get isPaused => _isPaused;
 
   // Setters
   void updateId(int? newId) {
@@ -80,9 +82,13 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Use the value, if not present, flip the current value.
-  void toggleNoRushSwitch({bool? value}) {
+  void toggleNoRushSwitch() {
     _noRush = !_noRush;
+    notifyListeners();
+  }
+
+  void togglePausedSwitch() {
+    _isPaused = !_isPaused;
     notifyListeners();
   }
 
@@ -98,6 +104,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
     _recurringInterval = RecurringInterval.none;
     _noRush = isNoRush;
+    _isPaused = false;
     notifyListeners();
   }
 
@@ -114,6 +121,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         ? reminder.recurringInterval
         : RecurringInterval.none;
     if (reminder is NoRushRemindersModel) _noRush = true;
+    _isPaused = reminder is RecurringReminderModel ? reminder.paused : false;
     notifyListeners();
   }
 
@@ -144,6 +152,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         baseDateTime: baseDateTime,
         PreParsedTitle: preParsedTitle,
         recurringInterval: recurringInterval,
+        paused: isPaused,
       );
     }
   }
