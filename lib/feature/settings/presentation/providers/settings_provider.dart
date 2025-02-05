@@ -19,6 +19,13 @@ class UserSettingsNotifier extends ChangeNotifier {
     super.dispose();
   }
 
+  void resetSettings() {
+    for (final entry in defaultSettings.entries) {
+      SettingsDB.setUserSetting(entry.key, entry.value);
+    }
+    notifyListeners();
+  }
+
   Duration get defaultLeadDuration {
     const String key = 'defaultLeadDuration';
     final dynamic value = SettingsDB.getUserSetting(key);

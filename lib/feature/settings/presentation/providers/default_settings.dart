@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 final Map<String, dynamic> defaultSettings = {
   'defaultLeadDuration': Duration(hours: 1),
-  'defaultAutoSnoozeDuration': Duration(minutes: 15),
+  'defaultAutoSnoozeDuration': Duration(minutes: 10),
   'recurringIntervalFieldValue': 'none', // RecurringInterval.none.toString()
   'quickTimeSetOption1': DateTime(0, 0, 0, 9, 30, 0, 0, 0),
   'quickTimeSetOption2': DateTime(0, 0, 0, 12, 0, 0, 0),

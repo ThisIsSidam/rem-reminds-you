@@ -1,3 +1,4 @@
+import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
 import 'package:Rem/feature/settings/presentation/widgets/sections/backup_restore_section/backup_restore_section.dart';
 import 'package:Rem/feature/settings/presentation/widgets/sections/gestures_section/gestures_section.dart';
 import 'package:Rem/feature/settings/presentation/widgets/sections/logs/logs_section.dart';
@@ -14,6 +15,7 @@ import '../../../../shared/utils/logger/global_logger.dart';
 class SettingsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsNotifier = ref.watch(userSettingsProvider.notifier);
     useEffect(() {
       gLogger.i('Built Settings Screen');
       return null;
@@ -27,7 +29,7 @@ class SettingsScreen extends HookConsumerWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
-          resetIcon(context),
+          resetIcon(context, settingsNotifier),
         ],
       ),
       body: SingleChildScrollView(
@@ -58,7 +60,10 @@ class SettingsScreen extends HookConsumerWidget {
         padding: EdgeInsets.symmetric(horizontal: 16), child: Divider());
   }
 
-  Widget resetIcon(BuildContext context) {
+  Widget resetIcon(
+    BuildContext context,
+    UserSettingsNotifier notifier,
+  ) {
     return IconButton(
       icon: Icon(Icons.refresh),
       onPressed: () {
@@ -68,7 +73,7 @@ class SettingsScreen extends HookConsumerWidget {
             builder: (context) {
               return AlertDialog(
                 title: Text(
-                  'Reset Settings to Default?',
+                  'Reset settings to default?',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 content: Row(
@@ -83,7 +88,7 @@ class SettingsScreen extends HookConsumerWidget {
                     TextButton(
                         onPressed: () {
                           gLogger.i('Resetting settings');
-                          // TODO: implement reset settings
+                          notifier.resetSettings();
                           Navigator.pop(context);
                         },
                         child: Text("Yes"))
