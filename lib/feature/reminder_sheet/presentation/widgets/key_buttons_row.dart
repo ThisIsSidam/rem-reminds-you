@@ -93,6 +93,7 @@ class KeyButtonsRow extends ConsumerWidget {
             Spacer(),
           ],
           Row(
+            spacing: 4,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildButton(
@@ -151,6 +152,7 @@ class KeyButtonsRow extends ConsumerWidget {
       constraints: BoxConstraints(maxWidth: 64),
       icon: Icon(
         icon,
+        size: 24,
         color: active
             ? colorScheme.onPrimaryContainer
             : colorScheme.primaryContainer,

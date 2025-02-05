@@ -18,26 +18,23 @@ class ReminderSheet extends ConsumerWidget {
       constraints: BoxConstraints(
         maxHeight: 500 + keyboardInsets,
       ),
-      child: PopScope(
-        canPop: false,
-        child: SingleChildScrollView(
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-              color: dateTime.isBefore(DateTime.now())
-                  ? theme.colorScheme.errorContainer
-                  : null,
-            ),
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + keyboardInsets),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TitleField(),
-                CentralSection(),
-                KeyButtonsRow(),
-              ],
-            ),
+      child: SingleChildScrollView(
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+            color: dateTime.isBefore(DateTime.now())
+                ? theme.colorScheme.errorContainer
+                : null,
+          ),
+          padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + keyboardInsets),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TitleField(),
+              CentralSection(),
+              KeyButtonsRow(),
+            ],
           ),
         ),
       ),
