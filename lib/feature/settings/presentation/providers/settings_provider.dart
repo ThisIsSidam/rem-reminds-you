@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
+import 'default_settings.dart';
 
 class UserSettingsNotifier extends ChangeNotifier {
   UserSettingsNotifier() {
@@ -19,35 +20,38 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Duration get defaultLeadDuration {
-    final dynamic value = SettingsDB.getUserSetting('defaultLeadDuration');
+    const String key = 'defaultLeadDuration';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: 5);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set defaultLeadDuration(Duration value) {
-    SettingsDB.setUserSetting('defaultLeadDuration', value);
+    const String key = 'defaultLeadDuration';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get defaultAutoSnoozeDuration {
-    final dynamic value =
-        SettingsDB.getUserSetting('defaultAutoSnoozeDuration');
+    const String key = 'defaultAutoSnoozeDuration';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: 5);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set defaultAutoSnoozeDuration(Duration value) {
-    SettingsDB.setUserSetting('defaultAutoSnoozeDuration', value);
+    const String key = 'defaultAutoSnoozeDuration';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   RecurringInterval get recurringIntervalFieldValue {
-    final dynamic value =
-        SettingsDB.getUserSetting('recurringIntervalFieldValue');
+    const String key = 'recurringIntervalFieldValue';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! String) {
       return RecurringInterval.none;
     }
@@ -55,246 +59,284 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   set recurringIntervalFieldValue(RecurringInterval value) {
-    SettingsDB.setUserSetting('recurringIntervalFieldValue', value.toString());
+    const String key = 'recurringIntervalFieldValue';
+    SettingsDB.setUserSetting(key, value.toString());
     notifyListeners();
   }
 
   DateTime get quickTimeSetOption1 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeSetOption1');
+    const String key = 'quickTimeSetOption1';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! DateTime) {
-      return DateTime(0, 0, 0, 9, 30, 0, 0, 0);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeSetOption1(DateTime value) {
-    SettingsDB.setUserSetting('quickTimeSetOption1', value);
+    const String key = 'quickTimeSetOption1';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   DateTime get quickTimeSetOption2 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeSetOption2');
+    const String key = 'quickTimeSetOption2';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! DateTime) {
-      return DateTime(0, 0, 0, 12, 0, 0, 0);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeSetOption2(DateTime value) {
-    SettingsDB.setUserSetting('quickTimeSetOption2', value);
+    const String key = 'quickTimeSetOption2';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   DateTime get quickTimeSetOption3 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeSetOption3');
+    const String key = 'quickTimeSetOption3';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! DateTime) {
-      return DateTime(0, 0, 0, 18, 30, 0, 0, 0);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeSetOption3(DateTime value) {
-    SettingsDB.setUserSetting('quickTimeSetOption3', value);
+    const String key = 'quickTimeSetOption3';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   DateTime get quickTimeSetOption4 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeSetOption4');
+    const String key = 'quickTimeSetOption4';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! DateTime) {
-      return DateTime(0, 0, 0, 22, 0, 0, 0);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeSetOption4(DateTime value) {
-    SettingsDB.setUserSetting('quickTimeSetOption4', value);
+    const String key = 'quickTimeSetOption4';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption1 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeEditOption1');
+    const String key = 'quickTimeEditOption1';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: 10);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeEditOption1(Duration value) {
-    SettingsDB.setUserSetting('quickTimeEditOption1', value);
+    const String key = 'quickTimeEditOption1';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption2 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeEditOption2');
+    const String key = 'quickTimeEditOption2';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(hours: 1);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeEditOption2(Duration value) {
-    SettingsDB.setUserSetting('quickTimeEditOption2', value);
+    const String key = 'quickTimeEditOption2';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption3 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeEditOption3');
+    const String key = 'quickTimeEditOption3';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(hours: 3);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeEditOption3(Duration value) {
-    SettingsDB.setUserSetting('quickTimeEditOption3', value);
+    const String key = 'quickTimeEditOption3';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption4 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeEditOption4');
+    const String key = 'quickTimeEditOption4';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(days: 1);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeEditOption4(Duration value) {
-    SettingsDB.setUserSetting('quickTimeEditOption4', value);
+    const String key = 'quickTimeEditOption4';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption5 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeEditOption5');
+    const String key = 'quickTimeEditOption5';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: -10);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeEditOption5(Duration value) {
-    SettingsDB.setUserSetting('quickTimeEditOption5', value);
+    const String key = 'quickTimeEditOption5';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption6 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeEditOption6');
+    const String key = 'quickTimeEditOption6';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(hours: -1);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeEditOption6(Duration value) {
-    SettingsDB.setUserSetting('quickTimeEditOption6', value);
+    const String key = 'quickTimeEditOption6';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption7 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeEditOption7');
+    const String key = 'quickTimeEditOption7';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(hours: -3);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeEditOption7(Duration value) {
-    SettingsDB.setUserSetting('quickTimeEditOption7', value);
+    const String key = 'quickTimeEditOption7';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption8 {
-    final dynamic value = SettingsDB.getUserSetting('quickTimeEditOption8');
+    const String key = 'quickTimeEditOption8';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(days: -1);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quickTimeEditOption8(Duration value) {
-    SettingsDB.setUserSetting('quickTimeEditOption8', value);
+    const String key = 'quickTimeEditOption8';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption1 {
-    final dynamic value = SettingsDB.getUserSetting('autoSnoozeOption1');
+    const String key = 'autoSnoozeOption1';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: 5);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set autoSnoozeOption1(Duration value) {
-    SettingsDB.setUserSetting('autoSnoozeOption1', value);
+    const String key = 'autoSnoozeOption1';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption2 {
-    final dynamic value = SettingsDB.getUserSetting('autoSnoozeOption2');
+    const String key = 'autoSnoozeOption2';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: 10);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set autoSnoozeOption2(Duration value) {
-    SettingsDB.setUserSetting('autoSnoozeOption2', value);
+    const String key = 'autoSnoozeOption2';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption3 {
-    final dynamic value = SettingsDB.getUserSetting('autoSnoozeOption3');
+    const String key = 'autoSnoozeOption3';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: 15);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set autoSnoozeOption3(Duration value) {
-    SettingsDB.setUserSetting('autoSnoozeOption3', value);
+    const String key = 'autoSnoozeOption3';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption4 {
-    final dynamic value = SettingsDB.getUserSetting('autoSnoozeOption4');
+    const String key = 'autoSnoozeOption4';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: 30);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set autoSnoozeOption4(Duration value) {
-    SettingsDB.setUserSetting('autoSnoozeOption4', value);
+    const String key = 'autoSnoozeOption4';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption5 {
-    final dynamic value = SettingsDB.getUserSetting('autoSnoozeOption5');
+    const String key = 'autoSnoozeOption5';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(hours: 1);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set autoSnoozeOption5(Duration value) {
-    SettingsDB.setUserSetting('autoSnoozeOption5', value);
+    const String key = 'autoSnoozeOption5';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption6 {
-    final dynamic value = SettingsDB.getUserSetting('autoSnoozeOption6');
+    const String key = 'autoSnoozeOption6';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(hours: 2);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set autoSnoozeOption6(Duration value) {
-    SettingsDB.setUserSetting('autoSnoozeOption6', value);
+    const String key = 'autoSnoozeOption6';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   SwipeAction get homeTileSwipeActionLeft {
-    final dynamic value = SettingsDB.getUserSetting('homeTileSwipeActionLeft');
+    const String key = 'homeTileSwipeActionLeft';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! String) {
       return SwipeAction.postpone;
     }
@@ -302,12 +344,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   set homeTileSwipeActionLeft(SwipeAction value) {
-    SettingsDB.setUserSetting('homeTileSwipeActionLeft', value.toString());
+    const String key = 'homeTileSwipeActionLeft';
+    SettingsDB.setUserSetting(key, value.toString());
     notifyListeners();
   }
 
   SwipeAction get homeTileSwipeActionRight {
-    final dynamic value = SettingsDB.getUserSetting('homeTileSwipeActionRight');
+    const String key = 'homeTileSwipeActionRight';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! String) {
       return SwipeAction.done;
     }
@@ -315,74 +359,83 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   set homeTileSwipeActionRight(SwipeAction value) {
-    SettingsDB.setUserSetting('homeTileSwipeActionRight', value.toString());
+    const String key = 'homeTileSwipeActionRight';
+    SettingsDB.setUserSetting(key, value.toString());
     notifyListeners();
   }
 
   Duration get defaultPostponeDuration {
-    final dynamic value = SettingsDB.getUserSetting('defaultPostponeDuration');
+    const String key = 'defaultPostponeDuration';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return Duration(minutes: 30);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set defaultPostponeDuration(Duration value) {
-    SettingsDB.setUserSetting('defaultPostponeDuration', value);
+    const String key = 'defaultPostponeDuration';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
-  /// [ThemeMode] is a material enum. Not a self-made one.
-  /// Hence the the method uses a custom .fromString to get the enum value
   ThemeMode get themeMode {
-    final dynamic value = SettingsDB.getUserSetting('themeMode');
+    const String key = 'themeMode';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! String) {
       return ThemeMode.system;
     }
-    return ThemeModeExtension.fromString(value) ?? ThemeMode.system;
+    return ThemeModeX.fromString(value) ?? ThemeMode.system;
   }
 
   set themeMode(ThemeMode value) {
-    SettingsDB.setUserSetting('themeMode', value.toString());
+    const String key = 'themeMode';
+    SettingsDB.setUserSetting(key, value.toString());
     notifyListeners();
   }
 
   TimeOfDay get quietHoursStartTime {
-    final dynamic value = SettingsDB.getUserSetting('quietHoursStartTime');
+    const String key = 'quietHoursStartTime';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! TimeOfDay) {
-      return TimeOfDay(hour: 23, minute: 0);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quietHoursStartTime(TimeOfDay value) {
-    SettingsDB.setUserSetting('quietHoursStartTime', value);
+    const String key = 'quietHoursStartTime';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   TimeOfDay get quietHoursEndTime {
-    final dynamic value = SettingsDB.getUserSetting('quietHoursEndTime');
+    const String key = 'quietHoursEndTime';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! TimeOfDay) {
-      return TimeOfDay(hour: 7, minute: 0);
+      return defaultSettings[key];
     }
     return value;
   }
 
   set quietHoursEndTime(TimeOfDay value) {
-    SettingsDB.setUserSetting('quietHoursEndTime', value);
+    const String key = 'quietHoursEndTime';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 
   double get textScale {
-    final dynamic value = SettingsDB.getUserSetting('textScale');
+    const String key = 'textScale';
+    final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! double) {
-      return 1.0;
+      return defaultSettings[key];
     }
     return value;
   }
 
   set textScale(double value) {
-    SettingsDB.setUserSetting('textScale', value);
+    const String key = 'textScale';
+    SettingsDB.setUserSetting(key, value);
     notifyListeners();
   }
 }
