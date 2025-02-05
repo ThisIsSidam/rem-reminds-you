@@ -1,6 +1,6 @@
 import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
 import 'package:Rem/shared/utils/logger/global_logger.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import '../enums/hive_enums.dart';
 

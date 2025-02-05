@@ -1,4 +1,4 @@
-import 'package:hive/hive.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 part 'reminder_model.g.dart';
 
@@ -14,6 +14,7 @@ class ReminderModel {
   String PreParsedTitle;
   @HiveField(4)
   Duration? autoSnoozeInterval;
+
   ReminderModel({
     required this.id,
     required this.title,

@@ -6,10 +6,9 @@ import 'package:Rem/core/services/notification_service/notification_service.dart
 import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import 'core/hive/pending_removals_db.dart';
-import 'core/hive_adapters/duration_adapter.dart';
 import 'core/models/recurring_interval/recurring_interval.dart';
 import 'core/models/recurring_reminder/recurring_reminder.dart';
 import 'core/models/reminder_model/reminder_model.dart';
@@ -32,7 +31,6 @@ void main() async {
 Future<void> initHive() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TimeOfDayAdapter());
-  Hive.registerAdapter(DurationAdapter());
   Hive.registerAdapter(ReminderModelAdapter());
   Hive.registerAdapter(RecurringIntervalAdapter());
   Hive.registerAdapter(RecurringReminderModelAdapter());

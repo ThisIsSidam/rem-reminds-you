@@ -17,7 +17,7 @@ class ReminderModelAdapter extends TypeAdapter<ReminderModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ReminderModel(
-      id: fields[0] as int,
+      id: (fields[0] as num).toInt(),
       title: fields[1] as String,
       dateTime: fields[2] as DateTime,
       PreParsedTitle: fields[3] as String,

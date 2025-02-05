@@ -1,6 +1,6 @@
 import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:random_datetime/random_datetime.dart';
 import 'package:random_datetime/random_dt_options.dart';
 

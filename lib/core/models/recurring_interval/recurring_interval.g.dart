@@ -35,22 +35,16 @@ class RecurringIntervalAdapter extends TypeAdapter<RecurringInterval> {
     switch (obj) {
       case RecurringInterval.none:
         writer.writeByte(0);
-        break;
       case RecurringInterval.daily:
         writer.writeByte(1);
-        break;
       case RecurringInterval.weekly:
         writer.writeByte(2);
-        break;
       case RecurringInterval.weekdays:
         writer.writeByte(3);
-        break;
       case RecurringInterval.weekends:
         writer.writeByte(4);
-        break;
       case RecurringInterval.monthly:
         writer.writeByte(5);
-        break;
     }
   }
 

@@ -17,7 +17,7 @@ class NoRushRemindersModelAdapter extends TypeAdapter<NoRushRemindersModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return NoRushRemindersModel(
-      id: fields[0] as int,
+      id: (fields[0] as num).toInt(),
       title: fields[1] as String,
       autoSnoozeInterval: fields[4] as Duration?,
       dateTime: fields[2] as DateTime,

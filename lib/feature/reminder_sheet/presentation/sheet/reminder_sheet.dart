@@ -22,7 +22,7 @@ class ReminderSheet extends ConsumerWidget {
         canPop: false,
         child: SingleChildScrollView(
           child: AnimatedContainer(
-            duration: Duration(milliseconds: 300),
+            duration: Duration(milliseconds: 200),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
               color: dateTime.isBefore(DateTime.now())

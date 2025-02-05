@@ -10,7 +10,7 @@ import 'package:Rem/main.dart';
 import 'package:Rem/shared/utils/generate_id.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import '../../../shared/utils/logger/global_logger.dart';
 import '../../enums/hive_enums.dart';

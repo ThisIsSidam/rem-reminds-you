@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:Rem/core/enums/hive_enums.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import '../../../../core/models/reminder_model/reminder_model.dart';
 

@@ -1,5 +1,5 @@
 import 'package:Rem/core/enums/hive_enums.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 /// IndiValue Stores values that may even be unrelated to each
 /// other that I just had to store for using them in the app.

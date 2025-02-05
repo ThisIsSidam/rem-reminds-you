@@ -1,4 +1,4 @@
-import 'package:hive/hive.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import '../recurring_interval/recurring_interval.dart';
 import '../reminder_model/reminder_model.dart';
