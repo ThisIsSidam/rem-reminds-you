@@ -1,4 +1,4 @@
-import 'package:Rem/feature/home/presentation/widgets/list_tile.dart';
+import 'package:Rem/feature/home/presentation/widgets/reminder_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';

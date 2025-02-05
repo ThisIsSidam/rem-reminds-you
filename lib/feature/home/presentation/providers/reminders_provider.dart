@@ -86,18 +86,23 @@ class RemindersNotifier extends ChangeNotifier {
     //   reminder.baseDateTime = reminder.dateTime;
     // }
 
-    if (reminder.id != newReminderID &&
+    if (reminder.id != newReminderID ||
         (await ref?.read(archivesProvider).isInArchives(reminder.id) ??
             false)) {
       await NotificationController.cancelScheduledNotification(
-          reminder.id.toString());
+        reminder.id.toString(),
+      );
       _reminders.remove(reminder.id);
     }
 
     _reminders[reminder.id] = reminder;
-    await NotificationController.scheduleNotification(reminder);
-    gLogger.i('Saved Reminder in Database | ID: ${reminder.id}');
+
+    if (reminder is RecurringReminderModel ? !reminder.paused : true) {
+      // Only reschedule if reminder is NOT paused
+      await NotificationController.scheduleNotification(reminder);
+    }
     await RemindersDatabaseController.updateReminders(_reminders);
+    gLogger.i('Saved Reminder in Database | ID: ${reminder.id}');
     _updateCategorizedReminders();
     notifyListeners();
     return reminder;
