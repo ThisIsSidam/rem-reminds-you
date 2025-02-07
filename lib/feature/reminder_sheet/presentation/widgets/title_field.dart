@@ -15,7 +15,12 @@ class TitleField extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final SheetReminderNotifier notifier = ref.watch(sheetReminderNotifier);
+    final DateTime dateTime = ref.watch(
+      sheetReminderNotifier.select((SheetReminderNotifier p) => p.dateTime),
+    );
+    final bool noRush = ref.watch(
+      sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
+    );
     final TextEditingController titleController = useTextEditingController();
     final FocusNode focusNode = useFocusNode();
 
@@ -47,9 +52,9 @@ class TitleField extends HookConsumerWidget {
     });
 
     final ThemeData theme = Theme.of(context);
-    final Color color = notifier.dateTime.isBefore(DateTime.now())
+    final Color color = dateTime.isBefore(DateTime.now())
         ? theme.colorScheme.onErrorContainer
-        : notifier.noRush
+        : noRush
             ? theme.colorScheme.onSecondaryContainer
             : theme.colorScheme.onTertiaryContainer;
 
@@ -58,7 +63,7 @@ class TitleField extends HookConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (notifier.noRush)
+          if (noRush)
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Text(
@@ -105,7 +110,6 @@ class TitleField extends HookConsumerWidget {
                         .copyWith(color: color),
                     controller: titleController,
                     focusNode: focusNode,
-                    autofocus: true,
                     onChanged: (String str) {
                       ref.read(sheetReminderNotifier).updatePreParsedTitle(str);
                       titleParser.parse(str);
@@ -121,9 +125,7 @@ class TitleField extends HookConsumerWidget {
                   ),
                 ),
               ),
-              if (notifier.id != null &&
-                  notifier.recurringInterval != RecurringInterval.none)
-                const PauseButton(height: _height),
+              const PauseButton(height: _height),
             ],
           ),
         ],
@@ -142,6 +144,18 @@ class PauseButton extends ConsumerWidget {
     final bool isPaused = ref.watch(
       sheetReminderNotifier.select((SheetReminderNotifier p) => p.isPaused),
     );
+    final int? id = ref.watch(
+      sheetReminderNotifier.select((SheetReminderNotifier p) => p.id),
+    );
+    final RecurringInterval interval = ref.watch(
+      sheetReminderNotifier.select(
+        (SheetReminderNotifier p) => p.recurringInterval,
+      ),
+    );
+
+    if (id == null || interval == RecurringInterval.none) {
+      return const SizedBox.shrink();
+    }
 
     return SizedBox(
       height: height,
