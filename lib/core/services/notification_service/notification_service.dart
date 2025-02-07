@@ -14,8 +14,8 @@ import '../../../main.dart';
 import '../../../shared/utils/generate_id.dart';
 import '../../../shared/utils/logger/global_logger.dart';
 import '../../constants/const_strings.dart';
-import '../../enums/hive_enums.dart';
-import '../../hive/pending_removals_db.dart';
+import '../../enums/storage_enums.dart';
+import '../../local_storage/pending_removals_db.dart';
 import '../../models/reminder_model/reminder_model.dart';
 
 class NotificationController {

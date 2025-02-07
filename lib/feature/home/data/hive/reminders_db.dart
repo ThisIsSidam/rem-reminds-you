@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
-import '../../../../core/enums/hive_enums.dart';
+import '../../../../core/enums/storage_enums.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
 
 class RemindersDatabaseController {

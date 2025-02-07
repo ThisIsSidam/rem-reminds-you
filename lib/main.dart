@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
-import 'core/enums/hive_enums.dart';
-import 'core/hive/custom_adapters/time_of_day_adapter.dart';
-import 'core/hive/pending_removals_db.dart';
+import 'core/enums/storage_enums.dart';
+import 'core/local_storage/hive_custom_adapters/time_of_day_adapter.dart';
+import 'core/local_storage/pending_removals_db.dart';
 import 'core/models/no_rush_reminders/no_rush_reminders.dart';
 import 'core/models/recurring_interval/recurring_interval.dart';
 import 'core/models/recurring_reminder/recurring_reminder.dart';
 import 'core/models/reminder_model/reminder_model.dart';
+import 'core/providers/global_providers.dart';
 import 'core/services/notification_service/notification_service.dart';
 import 'shared/utils/logger/global_logger.dart';
 
@@ -25,7 +27,16 @@ void main() async {
   // Awesome Notification
   await NotificationController.initializeLocalNotifications();
 
-  runApp(const ProviderScope(child: MyApp()));
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  runApp(
+    ProviderScope(
+      overrides: <Override>[
+        sharedPreferencesProvider.overrideWithValue(prefs),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 Future<void> initHive() async {
@@ -38,11 +49,9 @@ Future<void> initHive() async {
     ..registerAdapter(NoRushRemindersModelAdapter());
 
   // Order of openBox statements is crucial. Do not change.
-  await Hive.openBox(HiveBoxNames.individualValues.name);
-  await Hive.openBox(HiveBoxNames.reminders.name);
-  await Hive.openBox(HiveBoxNames.pendingRemovals.name);
-  await Hive.openBox(HiveBoxNames.archives.name);
-  await Hive.openBox(HiveBoxNames.settings.name);
+  await Hive.openBox<ReminderModel>(HiveBoxNames.reminders.name);
+  await Hive.openBox<ReminderModel>(HiveBoxNames.archives.name);
+  await Hive.openBox<dynamic>(HiveBoxNames.settings.name);
 
   await PendingRemovalsDB.clearPendingRemovals();
   gLogger.i('Initialized Hive');

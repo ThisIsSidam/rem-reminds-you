@@ -90,7 +90,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     // Show the what's new dialog
     WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      WhatsNewDialog.checkAndShowWhatsNewDialog(navigatorKey.currentContext!);
+      WhatsNewDialog.checkAndShowWhatsNewDialog(
+        navigatorKey.currentContext!,
+        ref,
+      );
     });
   }
 

@@ -1,9 +1,9 @@
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
-import '../../../../core/enums/hive_enums.dart';
+import '../../../../core/enums/storage_enums.dart';
 
 class SettingsDB {
-  static final _box = Hive.box(HiveBoxNames.settings.name);
+  static final Box<dynamic> _box = Hive.box(HiveBoxNames.settings.name);
 
   static dynamic getUserSetting(String key) {
     return _box.get(key);

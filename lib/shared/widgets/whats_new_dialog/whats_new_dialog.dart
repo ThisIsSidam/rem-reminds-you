@@ -1,21 +1,29 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/hive/UserDB.dart';
+import '../../../core/enums/storage_enums.dart';
+import '../../../core/providers/global_providers.dart';
 import '../../utils/logger/global_logger.dart';
 
 class WhatsNewDialog {
-  /// Check if app version stored in UsedDB match with current
+  /// Check if app version stored in SharedPrefs match with current
   /// version or not. If not, show the dialog and save the
   /// current version.
-  static Future<void> checkAndShowWhatsNewDialog(BuildContext context) async {
+  static Future<void> checkAndShowWhatsNewDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final String currentVersion = packageInfo.version;
-    final String storedVersion = UserDB.getStoredAppVersion() ?? '0.0.0';
+    final SharedPreferences prefs = ref.watch(sharedPreferencesProvider);
+    final String storedVersion =
+        prefs.getString(SharedKeys.appVersion.key) ?? '0.0.0';
     if (currentVersion != storedVersion) {
-      UserDB.storeAppVersion(currentVersion);
+      await prefs.setString(SharedKeys.appVersion.key, currentVersion);
       if (!context.mounted) return;
       await showWhatsNewDialog(context);
     }

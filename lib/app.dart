@@ -3,9 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_ce/hive.dart';
 
-import 'core/enums/hive_enums.dart';
 import 'core/theme/app_theme.dart';
 import 'feature/home/presentation/screens/dashboard_screen.dart';
 import 'feature/permissions/domain/app_permi_handler.dart';
@@ -67,9 +65,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             );
           },
           home: _buildPermissionScreenLayer(
-            child: _buildIndiValuesLayer(
-              child: const DashboardScreen(),
-            ),
+            child: const DashboardScreen(),
           ),
           themeMode: settings.$1,
           theme: ThemeData(
@@ -134,32 +130,6 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             stackTrace: snapshot.stackTrace,
           );
           return const Center(child: Text('Something went wrong'));
-        }
-      },
-    );
-  }
-
-  Widget _buildIndiValuesLayer({required Widget child}) {
-    return FutureBuilder(
-      future: Hive.openBox(HiveBoxNames.individualValues.name),
-      builder: (BuildContext context, AsyncSnapshot<Box> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          gLogger.i('Loading..');
-          return _loadingScreen();
-        } else if (snapshot.hasError) {
-          gLogger.i('Error while opening individual values box');
-          return const Center(
-            child: Text(
-              'Error while loading reminders',
-            ),
-          );
-        } else if (snapshot.hasData) {
-          return child;
-        } else {
-          gLogger.i('Something weird happened in individual values layer');
-          return const Center(
-            child: Text('Something went wrong'),
-          );
         }
       },
     );

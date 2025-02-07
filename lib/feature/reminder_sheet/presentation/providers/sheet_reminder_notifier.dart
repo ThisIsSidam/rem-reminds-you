@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/enums/storage_enums.dart';
 import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
-import '../../../../shared/utils/generate_id.dart';
+import '../../../../core/providers/global_providers.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 
@@ -130,14 +132,14 @@ class SheetReminderNotifier extends ChangeNotifier {
 
     if (_noRush) {
       return NoRushRemindersModel(
-        id: id ?? generateId(),
+        id: id ?? nextId,
         title: title,
         autoSnoozeInterval: autoSnooze,
         dateTime: NoRushRemindersModel.generateRandomFutureTime(),
       );
     } else if (_recurringInterval == RecurringInterval.none) {
       return ReminderModel(
-        id: id ?? generateId(),
+        id: id ?? nextId,
         dateTime: dateTime,
         title: title,
         preParsedTitle: preParsedTitle,
@@ -146,7 +148,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     } else {
       return RecurringReminderModel(
         title: title,
-        id: id ?? generateId(),
+        id: id ?? nextId,
         dateTime: dateTime,
         autoSnoozeInterval: autoSnoozeInterval,
         baseDateTime: baseDateTime,
@@ -155,6 +157,16 @@ class SheetReminderNotifier extends ChangeNotifier {
         paused: isPaused,
       );
     }
+  }
+
+  /// Generates a new ID for the reminder.
+  /// Kind of count of all reminders created since we're only
+  /// incrementing the value by 1 each time.
+  int get nextId {
+    final SharedPreferences prefs = ref.watch(sharedPreferencesProvider);
+    final int id = prefs.getInt(SharedKeys.reminderId.key) ?? 0;
+    prefs.setInt(SharedKeys.reminderId.key, id + 1);
+    return id;
   }
 }
 
