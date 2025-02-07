@@ -3,7 +3,7 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 
 class TimeOfDayAdapter extends TypeAdapter<TimeOfDay> {
   @override
-  final typeId = 101;
+  final int typeId = 101;
 
   @override
   void write(BinaryWriter writer, TimeOfDay obj) {
@@ -15,10 +15,11 @@ class TimeOfDayAdapter extends TypeAdapter<TimeOfDay> {
       ..write(obj.minute);
   }
 
+  @override
   TimeOfDay read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final int numOfFields = reader.readByte();
+    final Map<int, dynamic> fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TimeOfDay(hour: fields[0] as int, minute: fields[1] as int);
   }

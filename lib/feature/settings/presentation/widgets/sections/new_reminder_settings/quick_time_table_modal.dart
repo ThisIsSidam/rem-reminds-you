@@ -8,7 +8,7 @@ import '../../../../../../shared/widgets/save_close_buttons.dart';
 import '../../../providers/settings_provider.dart';
 
 class QuickTimeTableModal extends ConsumerStatefulWidget {
-  QuickTimeTableModal({super.key});
+  const QuickTimeTableModal({super.key});
 
   @override
   ConsumerState<QuickTimeTableModal> createState() =>
@@ -17,7 +17,8 @@ class QuickTimeTableModal extends ConsumerStatefulWidget {
 
 class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
   int selectedSettingOption = 0; // 0-3 for set options, 4-11 for edit options
-  final isNegativeDurationScrollController = FixedExtentScrollController();
+  final FixedExtentScrollController isNegativeDurationScrollController =
+      FixedExtentScrollController();
 
   // Helper maps to store temporary values
   late Map<int, DateTime> setDateTimes;
@@ -30,14 +31,14 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
   }
 
   void initializeValues() {
-    final settings = ref.read(userSettingsProvider);
-    setDateTimes = {
+    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
+    setDateTimes = <int, DateTime>{
       0: settings.quickTimeSetOption1,
       1: settings.quickTimeSetOption2,
       2: settings.quickTimeSetOption3,
       3: settings.quickTimeSetOption4,
     };
-    editDurations = {
+    editDurations = <int, Duration>{
       4: settings.quickTimeEditOption1,
       5: settings.quickTimeEditOption2,
       6: settings.quickTimeEditOption3,
@@ -67,21 +68,21 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
   }
 
   void onSave() {
-    final notifier = ref.read(userSettingsProvider.notifier);
-    // Update set options
-    notifier.quickTimeSetOption1 = setDateTimes[0]!;
-    notifier.quickTimeSetOption2 = setDateTimes[1]!;
-    notifier.quickTimeSetOption3 = setDateTimes[2]!;
-    notifier.quickTimeSetOption4 = setDateTimes[3]!;
-    // Update edit options
-    notifier.quickTimeEditOption1 = editDurations[4]!;
-    notifier.quickTimeEditOption2 = editDurations[5]!;
-    notifier.quickTimeEditOption3 = editDurations[6]!;
-    notifier.quickTimeEditOption4 = editDurations[7]!;
-    notifier.quickTimeEditOption5 = editDurations[8]!;
-    notifier.quickTimeEditOption6 = editDurations[9]!;
-    notifier.quickTimeEditOption7 = editDurations[10]!;
-    notifier.quickTimeEditOption8 = editDurations[11]!;
+    ref.read(userSettingsProvider.notifier)
+      // Update set options
+      ..quickTimeSetOption1 = setDateTimes[0]!
+      ..quickTimeSetOption2 = setDateTimes[1]!
+      ..quickTimeSetOption3 = setDateTimes[2]!
+      ..quickTimeSetOption4 = setDateTimes[3]!
+      // Update edit options
+      ..quickTimeEditOption1 = editDurations[4]!
+      ..quickTimeEditOption2 = editDurations[5]!
+      ..quickTimeEditOption3 = editDurations[6]!
+      ..quickTimeEditOption4 = editDurations[7]!
+      ..quickTimeEditOption5 = editDurations[8]!
+      ..quickTimeEditOption6 = editDurations[9]!
+      ..quickTimeEditOption7 = editDurations[10]!
+      ..quickTimeEditOption8 = editDurations[11]!;
     Navigator.pop(context);
   }
 
@@ -91,12 +92,12 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: <Widget>[
           Text(
-            "Quick Time Table",
+            'Quick Time Table',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          Divider(),
+          const Divider(),
           const SizedBox(height: 8),
           _buildButtonsTable(),
           getEditWidget(),
@@ -112,7 +113,7 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
     } else {
       return DHMSingleDurationPicker(
         allowNegative: true,
-        onDurationChanged: (dur) {
+        onDurationChanged: (Duration dur) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               setState(() {
@@ -134,7 +135,7 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
         mode: CupertinoDatePickerMode.time,
         itemExtent: 70,
         initialDateTime: setDateTimes[selectedSettingOption],
-        onDateTimeChanged: (dt) {
+        onDateTimeChanged: (DateTime dt) {
           setState(() {
             setDateTimes[selectedSettingOption] = dt;
           });
@@ -152,14 +153,18 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
         crossAxisCount: 4,
         shrinkWrap: true,
         childAspectRatio: 1.5,
-        children: [
+        children: <Widget>[
           ...setDateTimes.entries.map(
-            (entry) => _buildButton(
-                getFormattedTimeForTimeSetButton(entry.value), entry.key),
+            (MapEntry<int, DateTime> entry) => _buildButton(
+              getFormattedTimeForTimeSetButton(entry.value),
+              entry.key,
+            ),
           ),
           ...editDurations.entries.map(
-            (entry) => _buildButton(
-                getFormattedDurationForTimeEditButton(entry.value), entry.key),
+            (MapEntry<int, Duration> entry) => _buildButton(
+              getFormattedDurationForTimeEditButton(entry.value),
+              entry.key,
+            ),
           ),
         ],
       ),
@@ -169,16 +174,17 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
   Widget _buildButton(String label, int option) {
     return ElevatedButton(
       onPressed: () => setSelectedOption(option),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.zero,
+        backgroundColor: option == selectedSettingOption
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.secondaryContainer,
+        shape: const BeveledRectangleBorder(),
+      ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.titleMedium,
       ),
-      style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.zero,
-          backgroundColor: option == selectedSettingOption
-              ? Theme.of(context).colorScheme.primaryContainer
-              : Theme.of(context).colorScheme.secondaryContainer,
-          shape: BeveledRectangleBorder()),
     );
   }
 }

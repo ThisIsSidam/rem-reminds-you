@@ -1,27 +1,97 @@
-# This file configures the analyzer, which statically analyzes Dart code to
-# check for errors, warnings, and lints.
-#
-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
-# invoked from the command line by running `flutter analyze`.
+include: package:very_good_analysis/analysis_options.6.0.0.yaml
 
-# The following line activates a set of recommended lints for Flutter apps,
-# packages, and plugins designed to encourage good coding practices.
+analyzer:
+  plugins:
+    - custom_lint
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - lib/generated_plugin_registrant.dart
+  
+  errors:
+    unused_local_variable: warning
+    invalid_assignment: warning
+    close_sinks: warning
+    lines_longer_than_80_chars: warning
+    missing_required_param: error
+    invalid_annotation_target: ignore
+    missing_return: error
+    annotate_overrides: error
+    always_specify_types: warning
+    dead_code: warning
+    unnecessary_cast: warning
 
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at https://dart.dev/lints.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
-
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+    avoid_setters_without_getters: false
+    flutter_style_todos: false
+    avoid_positional_boolean_parameters: false
+    prefer_asserts_with_message: false
+    comment_references: false
+    only_throw_errors: false
+    lines_longer_than_80_chars: true
+    public_member_api_docs: false
+    overridden_fields: false
+    package_api_docs: false
+    prefer_constructors_over_static_methods: false
+    omit_local_variable_types: false
+    always_declare_return_types: true
+    annotate_overrides: true
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_is_not_empty: true
+    prefer_is_empty: true
+    prefer_single_quotes: true
+    prefer_is_not_operator : true
+    prefer_iterable_whereType : true
+    prefer_null_aware_method_calls : true
+    prefer_null_aware_operators : true
+    always_specify_types: true
+    avoid_init_to_null: true
+    prefer_if_null_operators: true
+    sort_constructors_first: true
+    avoid_private_typedef_functions: true
+    avoid_print: true
+    no_duplicate_case_values: true
+    no_default_cases: false
+    prefer_relative_imports: true
+    always_use_package_imports: false
+    constant_identifier_names: true
+    non_constant_identifier_names: true
+    avoid_type_to_string: true
+    camel_case_types: true
+    empty_constructor_bodies: true
+    avoid_empty_else: true
+    cancel_subscriptions: true
+    close_sinks: true
+    prefer_conditional_assignment: true
+    cast_nullable_to_non_nullable: true
+    avoid_returning_null_for_void: true
+    avoid_returning_this: true
+    avoid_void_async: true
+    unawaited_futures: true
+    await_only_futures: true
+    unnecessary_lambdas: true
+    unnecessary_await_in_return: true
+    throw_in_finally: true
+    prefer_void_to_null: true
+    unnecessary_null_aware_assignments: true
+    unnecessary_null_in_if_null_operators: true
+    prefer_spread_collections: true
+    prefer_int_literals: true
+    valid_regexps: true
+    use_rethrow_when_possible: true
+    sort_pub_dependencies: true
+    implementation_imports: true
+    eol_at_end_of_file: false
+    secure_pubspec_urls: true
+    use_string_buffers: true
+    use_colored_box : true
+    use_decorated_box : true
+    use_enums : true

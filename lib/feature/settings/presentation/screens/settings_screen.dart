@@ -1,54 +1,59 @@
-import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
-import 'package:Rem/feature/settings/presentation/widgets/sections/backup_restore_section/backup_restore_section.dart';
-import 'package:Rem/feature/settings/presentation/widgets/sections/gestures_section/gestures_section.dart';
-import 'package:Rem/feature/settings/presentation/widgets/sections/logs/logs_section.dart';
-import 'package:Rem/feature/settings/presentation/widgets/sections/new_reminder_settings/new_reminder_section.dart';
-import 'package:Rem/feature/settings/presentation/widgets/sections/other_section/other_section.dart';
-import 'package:Rem/feature/settings/presentation/widgets/sections/user_preferences_section/user_pref_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../shared/utils/logger/global_logger.dart';
+import '../providers/settings_provider.dart';
+import '../widgets/sections/backup_restore_section/backup_restore_section.dart';
+import '../widgets/sections/gestures_section/gestures_section.dart';
+import '../widgets/sections/logs/logs_section.dart';
+import '../widgets/sections/new_reminder_settings/new_reminder_section.dart';
+import '../widgets/sections/other_section/other_section.dart';
+import '../widgets/sections/user_preferences_section/user_pref_settings.dart';
 
 class SettingsScreen extends HookConsumerWidget {
+  const SettingsScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settingsNotifier = ref.watch(userSettingsProvider.notifier);
-    useEffect(() {
-      gLogger.i('Built Settings Screen');
-      return null;
-    }, []);
+    final UserSettingsNotifier settingsNotifier =
+        ref.watch(userSettingsProvider.notifier);
+    useEffect(
+      () {
+        gLogger.i('Built Settings Screen');
+        return null;
+      },
+      <Object?>[],
+    );
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          "Settings",
+          'Settings',
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        actions: [
+        actions: <Widget>[
           resetIcon(context, settingsNotifier),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            UserPreferenceSection(),
+          children: <Widget>[
+            const UserPreferenceSection(),
             _buildPaddedDivider(),
-            GesturesSection(),
+            const GesturesSection(),
             _buildPaddedDivider(),
-            NewReminderSection(),
+            const NewReminderSection(),
             _buildPaddedDivider(),
-            BackupRestoreSection(),
+            const BackupRestoreSection(),
             _buildPaddedDivider(),
-            LogsSection(),
+            const LogsSection(),
             _buildPaddedDivider(),
-            OtherSection(),
-            _buildVersionWidget()
+            const OtherSection(),
+            _buildVersionWidget(),
           ],
         ),
       ),
@@ -56,8 +61,10 @@ class SettingsScreen extends HookConsumerWidget {
   }
 
   Widget _buildPaddedDivider() {
-    return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16), child: Divider());
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Divider(),
+    );
   }
 
   Widget resetIcon(
@@ -65,64 +72,71 @@ class SettingsScreen extends HookConsumerWidget {
     UserSettingsNotifier notifier,
   ) {
     return IconButton(
-      icon: Icon(Icons.refresh),
+      icon: const Icon(Icons.refresh),
       onPressed: () {
         gLogger.i('Tapped reset icon');
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text(
-                  'Reset settings to default?',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                        onPressed: () {
-                          gLogger.i('Reset cancelled');
-                          Navigator.pop(context);
-                        },
-                        child: Text("No")),
-                    TextButton(
-                        onPressed: () {
-                          gLogger.i('Resetting settings');
-                          notifier.resetSettings();
-                          Navigator.pop(context);
-                        },
-                        child: Text("Yes"))
-                  ],
-                ),
-              );
-            });
+        showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                'Reset settings to default?',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      gLogger.i('Reset cancelled');
+                      Navigator.pop(context);
+                    },
+                    child: const Text('No'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      gLogger.i('Resetting settings');
+                      notifier.resetSettings();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Yes'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
       },
     );
   }
 
   Widget _buildVersionWidget() {
-    final packageInfo = PackageInfo.fromPlatform();
+    final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
     return Center(
-      child: FutureBuilder(
-          future: packageInfo,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: const Center(child: CircularProgressIndicator()));
-            }
+      child: FutureBuilder<PackageInfo>(
+        future: packageInfo,
+        builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox(
+              height: 24,
+              width: 24,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
 
-            if (snapshot.hasData) {
-              return Text("v${snapshot.data!.version}",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(color: Colors.grey));
-            }
+          if (snapshot.hasData) {
+            return Text(
+              'v${snapshot.data!.version}',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .copyWith(color: Colors.grey),
+            );
+          }
 
-            return SizedBox.shrink();
-          }),
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

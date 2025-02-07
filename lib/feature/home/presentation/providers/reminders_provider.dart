@@ -1,27 +1,29 @@
-import 'package:Rem/core/constants/const_strings.dart';
-import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
-import 'package:Rem/core/models/recurring_reminder/recurring_reminder.dart';
-import 'package:Rem/core/services/notification_service/notification_service.dart';
-import 'package:Rem/feature/archives/presentation/providers/archives_provider.dart';
-import 'package:Rem/feature/home/presentation/screens/home_screen.dart';
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/const_strings.dart';
+import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../archives/presentation/providers/archives_provider.dart';
 import '../../data/hive/reminders_db.dart';
+import '../screens/home_screen.dart';
 
 class RemindersNotifier extends ChangeNotifier {
-  Ref? ref;
-
   RemindersNotifier({this.ref}) {
     gLogger.i('RemindersNotifier initialized');
     loadReminders();
   }
+  Ref? ref;
 
-  Map<int, ReminderModel> _reminders = {};
-  Map<HomeScreenSection, List<ReminderModel>> _categorizedReminders = {};
+  Map<int, ReminderModel> _reminders = <int, ReminderModel>{};
+  Map<HomeScreenSection, List<ReminderModel>> _categorizedReminders =
+      <HomeScreenSection, List<ReminderModel>>{};
 
   Map<int, ReminderModel> get reminders => _reminders;
 
@@ -40,18 +42,21 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   void _updateCategorizedReminders() {
-    final now = DateTime.now();
-    final overdueList = <ReminderModel>[];
-    final todayList = <ReminderModel>[];
-    final tomorrowList = <ReminderModel>[];
-    final laterList = <ReminderModel>[];
-    final noRushList = <NoRushRemindersModel>[];
+    final DateTime now = DateTime.now();
+    final List<ReminderModel> overdueList = <ReminderModel>[];
+    final List<ReminderModel> todayList = <ReminderModel>[];
+    final List<ReminderModel> tomorrowList = <ReminderModel>[];
+    final List<ReminderModel> laterList = <ReminderModel>[];
+    final List<NoRushRemindersModel> noRushList = <NoRushRemindersModel>[];
 
-    final sortedReminders = _reminders.values.toList()
-      ..sort((a, b) => a.getDiffDuration().compareTo(b.getDiffDuration()));
+    final List<ReminderModel> sortedReminders = _reminders.values.toList()
+      ..sort(
+        (ReminderModel a, ReminderModel b) =>
+            a.getDiffDuration().compareTo(b.getDiffDuration()),
+      );
 
-    for (final reminder in sortedReminders) {
-      DateTime dateTime = reminder.dateTime;
+    for (final ReminderModel reminder in sortedReminders) {
+      final DateTime dateTime = reminder.dateTime;
       if (reminder is NoRushRemindersModel) {
         noRushList.add(reminder);
         continue;
@@ -71,7 +76,7 @@ class RemindersNotifier extends ChangeNotifier {
       }
     }
 
-    _categorizedReminders = {
+    _categorizedReminders = <HomeScreenSection, List<ReminderModel>>{
       HomeScreenSection.overdue: overdueList,
       HomeScreenSection.today: todayList,
       HomeScreenSection.tomorrow: tomorrowList,
@@ -97,7 +102,7 @@ class RemindersNotifier extends ChangeNotifier {
 
     _reminders[reminder.id] = reminder;
 
-    if (reminder is RecurringReminderModel ? !reminder.paused : true) {
+    if (reminder is! RecurringReminderModel || !reminder.paused) {
       // Only reschedule if reminder is NOT paused
       await NotificationController.scheduleNotification(reminder);
     }
@@ -109,7 +114,7 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<ReminderModel?> deleteReminder(int id) async {
-    final reminder = _reminders[id];
+    final ReminderModel? reminder = _reminders[id];
     if (reminder == null) return null;
 
     await NotificationController.cancelScheduledNotification(id.toString());
@@ -117,7 +122,7 @@ class RemindersNotifier extends ChangeNotifier {
 
     _reminders.remove(id);
     gLogger.i('Deleted Reminder from Database | ID: ${reminder.id}');
-    RemindersDatabaseController.updateReminders(_reminders);
+    await RemindersDatabaseController.updateReminders(_reminders);
 
     _updateCategorizedReminders();
     notifyListeners();
@@ -125,7 +130,7 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<void> markAsDone(int id) async {
-    final reminder = _reminders[id];
+    final ReminderModel? reminder = _reminders[id];
     if (reminder == null) return;
 
     gLogger.i('Marking Reminder as Done | ID: ${reminder.id}');
@@ -135,7 +140,8 @@ class RemindersNotifier extends ChangeNotifier {
       await moveToArchive(id);
     } else {
       gLogger.i(
-          'Moving Reminder to next occurrence | ID: ${reminder.id} | DT: ${reminder.dateTime}');
+        'Moving Reminder to next occurrence | ID: ${reminder.id} | DT: ${reminder.dateTime}',
+      );
       await moveToNextReminderOccurrence(id);
     }
 
@@ -145,18 +151,18 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<void> moveToArchive(int id) async {
-    final reminder = _reminders[id];
+    final ReminderModel? reminder = _reminders[id];
     if (reminder == null) return;
 
     await NotificationController.cancelScheduledNotification(id.toString());
     if (ref == null) {
-      ArchivesNotifier().addReminderToArchives(reminder);
+      await ArchivesNotifier().addReminderToArchives(reminder);
     } else {
-      ref?.read(archivesProvider).addReminderToArchives(reminder);
+      await ref?.read(archivesProvider).addReminderToArchives(reminder);
     }
 
     _reminders.remove(id);
-    RemindersDatabaseController.updateReminders(_reminders);
+    await RemindersDatabaseController.updateReminders(_reminders);
 
     gLogger.i('Moved Reminder to Archives | ID: ${reminder.id}');
     _updateCategorizedReminders();
@@ -164,7 +170,7 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<void> moveToNextReminderOccurrence(int id) async {
-    final reminder = _reminders[id];
+    final ReminderModel? reminder = _reminders[id];
     if (reminder == null || reminder is! RecurringReminderModel) {
       return;
     }
@@ -174,16 +180,17 @@ class RemindersNotifier extends ChangeNotifier {
     await NotificationController.scheduleNotification(reminder);
 
     _reminders[id] = reminder;
-    RemindersDatabaseController.updateReminders(_reminders);
+    await RemindersDatabaseController.updateReminders(_reminders);
 
     gLogger.i(
-        'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}');
+      'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
+    );
     _updateCategorizedReminders();
     notifyListeners();
   }
 
   Future<void> moveToPreviousReminderOccurrence(int id) async {
-    final reminder = _reminders[id];
+    final ReminderModel? reminder = _reminders[id];
     if (reminder == null || reminder is! RecurringReminderModel) return;
 
     await NotificationController.cancelScheduledNotification(id.toString());
@@ -191,10 +198,11 @@ class RemindersNotifier extends ChangeNotifier {
     await NotificationController.scheduleNotification(reminder);
 
     _reminders[id] = reminder;
-    RemindersDatabaseController.updateReminders(_reminders);
+    await RemindersDatabaseController.updateReminders(_reminders);
 
     gLogger.i(
-        'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}');
+      'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
+    );
     _updateCategorizedReminders();
     notifyListeners();
   }
@@ -211,7 +219,7 @@ class RemindersNotifier extends ChangeNotifier {
   Future<ReminderModel?> retrieveFromArchives(int id) async {
     ReminderModel? reminder;
 
-    gLogger.i('Retrieving reminder from Archives | ID : ${id}');
+    gLogger.i('Retrieving reminder from Archives | ID : $id');
     if (ref == null) {
       reminder = await ArchivesNotifier().deleteArchivedReminder(id);
     } else {
@@ -219,10 +227,10 @@ class RemindersNotifier extends ChangeNotifier {
     }
     if (reminder != null) {
       reminder = await saveReminder(reminder);
-      gLogger.i('Retrieved reminder from Archives | ID : ${id}');
+      gLogger.i('Retrieved reminder from Archives | ID : $id');
       return reminder;
     }
-    gLogger.w('Retrieval failed | ID : ${id}');
+    gLogger.w('Retrieval failed | ID : $id');
     return null;
   }
 
@@ -239,19 +247,19 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<void> pauseReminder(int id) async {
-    final reminder = _reminders[id];
+    final ReminderModel? reminder = _reminders[id];
     if (reminder is RecurringReminderModel &&
         reminder.recurringInterval != RecurringInterval.none) {
       reminder.paused = true;
       _reminders[id] = reminder;
-      NotificationController.cancelScheduledNotification(id.toString());
-      RemindersDatabaseController.updateReminders(_reminders);
+      await NotificationController.cancelScheduledNotification(id.toString());
+      await RemindersDatabaseController.updateReminders(_reminders);
       notifyListeners();
     }
   }
 
   Future<void> resumeReminder(int id) async {
-    final reminder = _reminders[id];
+    final ReminderModel? reminder = _reminders[id];
     if (reminder is RecurringReminderModel &&
         reminder.recurringInterval != RecurringInterval.none) {
       reminder.paused = false;
@@ -263,8 +271,8 @@ class RemindersNotifier extends ChangeNotifier {
       }
 
       _reminders[id] = reminder;
-      RemindersDatabaseController.updateReminders(_reminders);
-      NotificationController.scheduleNotification(reminder);
+      await RemindersDatabaseController.updateReminders(_reminders);
+      await NotificationController.scheduleNotification(reminder);
       notifyListeners();
     }
   }
@@ -276,6 +284,7 @@ class RemindersNotifier extends ChangeNotifier {
   }
 }
 
-final remindersProvider = ChangeNotifierProvider<RemindersNotifier>((ref) {
+final ChangeNotifierProvider<RemindersNotifier> remindersProvider =
+    ChangeNotifierProvider<RemindersNotifier>((Ref<RemindersNotifier> ref) {
   return RemindersNotifier(ref: ref);
 });

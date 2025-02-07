@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 
 class DHMSingleDurationPicker extends StatefulWidget {
+  const DHMSingleDurationPicker({
+    required this.onDurationChanged,
+    super.key,
+    this.allowNegative = false,
+  });
   final void Function(Duration) onDurationChanged;
   final bool allowNegative;
-  const DHMSingleDurationPicker(
-      {Key? key, required this.onDurationChanged, this.allowNegative = false})
-      : super(key: key);
 
   @override
   State<DHMSingleDurationPicker> createState() =>
@@ -17,9 +19,9 @@ class _DHMSingleDurationPickerState extends State<DHMSingleDurationPicker> {
   late FixedExtentScrollController numController;
   late FixedExtentScrollController modeController;
 
-  final List<int> days = List.generate(7, (i) => i + 1);
-  final List<int> hours = List.generate(23, (i) => i + 1);
-  final List<int> minutes = List.generate(59, (i) => i + 1);
+  final List<int> days = List<int>.generate(7, (int i) => i + 1);
+  final List<int> hours = List<int>.generate(23, (int i) => i + 1);
+  final List<int> minutes = List<int>.generate(59, (int i) => i + 1);
 
   late List<int> selectedNumList;
   int selectedModeIndex = 1; // Default to hours
@@ -30,44 +32,42 @@ class _DHMSingleDurationPickerState extends State<DHMSingleDurationPicker> {
     super.initState();
     modeController =
         FixedExtentScrollController(initialItem: selectedModeIndex);
-    numController = FixedExtentScrollController(initialItem: 0);
-    plusMinusController = FixedExtentScrollController(initialItem: 0);
+    numController = FixedExtentScrollController();
+    plusMinusController = FixedExtentScrollController();
     selectedNumList = hours; // Default to hours
   }
 
   void updateSelectedNumList(int modeIndex) {
     setState(() {
       selectedModeIndex = modeIndex;
-      if (modeIndex == 0)
+      if (modeIndex == 0) {
         selectedNumList = days;
-      else if (modeIndex == 1)
+      } else if (modeIndex == 1) {
         selectedNumList = hours;
-      else
+      } else {
         selectedNumList = minutes;
+      }
       numController.jumpToItem(0); // Reset the num picker position
     });
     updateDuration();
   }
 
   void updateDuration() {
-    int index = numController.selectedItem;
+    final int index = numController.selectedItem;
     if (index < 0 || index >= selectedNumList.length) {
       return; // Prevent out-of-range access
     }
 
-    int value = selectedNumList[index];
+    final int value = selectedNumList[index];
     Duration newDuration;
 
     switch (selectedModeIndex) {
       case 0:
         newDuration = Duration(days: value);
-        break;
       case 1:
         newDuration = Duration(hours: value);
-        break;
       case 2:
         newDuration = Duration(minutes: value);
-        break;
       default:
         newDuration = Duration.zero;
     }
@@ -83,47 +83,52 @@ class _DHMSingleDurationPickerState extends State<DHMSingleDurationPicker> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 200,
-      child: Row(children: [
-        if (widget.allowNegative) Expanded(child: plusMinusPicker()),
-        Expanded(child: numPicker()),
-        Expanded(child: modePicker())
-      ]),
+      child: Row(
+        children: <Widget>[
+          if (widget.allowNegative) Expanded(child: plusMinusPicker()),
+          Expanded(child: numPicker()),
+          Expanded(child: modePicker()),
+        ],
+      ),
     );
   }
 
   Widget plusMinusPicker() {
     return CupertinoPicker(
-        itemExtent: 70,
-        scrollController: plusMinusController,
-        onSelectedItemChanged: (i) {
-          setState(() {
-            isPositive = (i == 0);
-          });
-          updateDuration();
-        },
-        children: [_buildLabel("+"), _buildLabel("-")]);
+      itemExtent: 70,
+      scrollController: plusMinusController,
+      onSelectedItemChanged: (int i) {
+        setState(() {
+          isPositive = (i == 0);
+        });
+        updateDuration();
+      },
+      children: <Widget>[_buildLabel('+'), _buildLabel('-')],
+    );
   }
 
   Widget numPicker() {
     return CupertinoPicker(
       itemExtent: 70,
       scrollController: numController,
-      onSelectedItemChanged: (i) => updateDuration(),
-      children: selectedNumList.map((e) => _buildLabel(e.toString())).toList(),
+      onSelectedItemChanged: (int i) => updateDuration(),
       looping: true,
+      children:
+          selectedNumList.map((int e) => _buildLabel(e.toString())).toList(),
     );
   }
 
   Widget modePicker() {
     return CupertinoPicker(
-        itemExtent: 70,
-        scrollController: modeController,
-        onSelectedItemChanged: updateSelectedNumList,
-        children: [
-          _buildLabel("Days"),
-          _buildLabel("Hours"),
-          _buildLabel("Minutes")
-        ]);
+      itemExtent: 70,
+      scrollController: modeController,
+      onSelectedItemChanged: updateSelectedNumList,
+      children: <Widget>[
+        _buildLabel('Days'),
+        _buildLabel('Hours'),
+        _buildLabel('Minutes'),
+      ],
+    );
   }
 
   Widget _buildLabel(String text) {

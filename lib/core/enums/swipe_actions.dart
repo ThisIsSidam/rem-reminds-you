@@ -27,7 +27,8 @@ enum SwipeAction {
   static SwipeAction fromString(String value) {
     try {
       return SwipeAction.values.firstWhere(
-        (option) => option.toString().toLowerCase() == value.toLowerCase(),
+        (SwipeAction option) =>
+            option.toString().toLowerCase() == value.toLowerCase(),
       );
     } catch (e) {
       throw ArgumentError('Invalid setting option: $value');

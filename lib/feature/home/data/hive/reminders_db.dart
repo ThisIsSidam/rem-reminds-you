@@ -1,59 +1,83 @@
 import 'dart:convert';
 
-import 'package:Rem/core/enums/hive_enums.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
+import '../../../../core/enums/hive_enums.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
 
 class RemindersDatabaseController {
-  static final _remindersBox = Hive.box(HiveBoxNames.reminders.name);
+  static final Box<ReminderModel> _box = Hive.box<ReminderModel>(
+    HiveBoxNames.reminders.name,
+  );
 
   static Map<int, ReminderModel> getReminders() {
-    if (!_remindersBox.isOpen) {
-      Future(() {
-        Hive.openBox(HiveBoxNames.reminders.name);
+    if (!_box.isOpen) {
+      Future<void>(() {
+        Hive.openBox<ReminderModel>(HiveBoxNames.reminders.name);
       });
     }
 
-    return _remindersBox
-            .get(HiveKeys.remindersBoxKey.key)
-            ?.cast<int, ReminderModel>() ??
-        {};
+    return Map<int, ReminderModel>.fromEntries(
+      _box.keys.map(
+        (dynamic key) =>
+            MapEntry<int, ReminderModel>(key as int, _box.get(key)!),
+      ),
+    );
   }
 
-  static Future<void> updateReminders(Map<int, ReminderModel> reminders) async {
-    await _remindersBox.put(HiveKeys.remindersBoxKey.key, reminders);
+  static Future<void> removeReminder(int id) async {
+    await _box.delete(id);
   }
 
-  static void removeAllReminders() {
-    _remindersBox.put(HiveKeys.remindersBoxKey.key, {});
+  static Future<void> updateReminder(int id, ReminderModel reminder) async {
+    await _box.put(id, reminder);
+  }
+
+  static Future<void> updateReminders(
+    Map<int, ReminderModel> reminders,
+  ) async {
+    for (final MapEntry<int, ReminderModel> entry in reminders.entries) {
+      await _box.put(entry.key, entry.value);
+    }
+  }
+
+  static Future<void> removeAllReminders() async {
+    await _box.clear();
   }
 
   static Future<String> getBackup() async {
-    Map<int, ReminderModel> reminders = getReminders();
-    Map<String, dynamic> backupData = {
-      'reminders': reminders
-          .map((id, reminder) => MapEntry(id.toString(), reminder.toJson())),
+    final Map<int, ReminderModel> reminders = getReminders();
+    final Map<String, dynamic> backupData = <String, dynamic>{
+      'reminders': reminders.map(
+        (int id, ReminderModel reminder) =>
+            MapEntry<String, Map<String, String?>>(
+          id.toString(),
+          reminder.toJson(),
+        ),
+      ),
       'timestamp': DateTime.now().toIso8601String(),
       'version': '1.0',
     };
     return jsonEncode(backupData);
   }
 
-  static void restoreBackup(String jsonData) {
+  static Future<void> restoreBackup(String jsonData) async {
     try {
-      Map<String, dynamic> backupData = jsonDecode(jsonData);
-      Map<String, dynamic> remindersData = backupData['reminders'];
+      final Map<String, dynamic> backupData =
+          jsonDecode(jsonData) as Map<String, dynamic>;
+      final Map<String, dynamic> remindersData =
+          backupData['reminders'] as Map<String, dynamic>;
 
-      Map<int, ReminderModel> reminders = {};
-      remindersData.forEach((key, value) {
-        int id = int.parse(key);
-        value = value.cast<String, String?>();
-        reminders[id] = ReminderModel.fromJson(value);
+      final Map<int, ReminderModel> reminders = <int, ReminderModel>{};
+      remindersData.forEach((String key, dynamic value) {
+        final int id = int.parse(key);
+        reminders[id] = ReminderModel.fromJson(
+          Map<String, String?>.from(value as Map<dynamic, dynamic>),
+        );
       });
 
-      removeAllReminders();
-      updateReminders(reminders);
+      await removeAllReminders();
+      await updateReminders(reminders);
     } catch (e) {
       throw Exception('Failed to restore backup: $e');
     }

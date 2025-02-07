@@ -16,7 +16,7 @@ class NoRushRemindersModel extends ReminderModel {
       required super.autoSnoozeInterval,
       required super.dateTime})
       : super(
-          PreParsedTitle: title,
+          preParsedTitle: title,
         );
 
   // Will use fromJson and toJson methods of ReminderModel as the attributes

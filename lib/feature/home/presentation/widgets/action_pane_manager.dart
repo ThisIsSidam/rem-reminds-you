@@ -1,9 +1,9 @@
-import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../core/enums/swipe_actions.dart';
+import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
@@ -94,8 +94,9 @@ class ActionPaneManager {
     WidgetRef ref,
   ) {
     return ActionPane(
-        motion: const StretchMotion(),
-        children: [_doneSlidableAction(context, reminder, ref)]);
+      motion: const StretchMotion(),
+      children: <Widget>[_doneSlidableAction(context, reminder, ref)],
+    );
   }
 
   static ActionPane _deleteActionPane(
@@ -107,21 +108,24 @@ class ActionPaneManager {
     final ReminderModel reminder = remindersList[index];
 
     return ActionPane(
-        motion: const StretchMotion(),
-        dragDismissible: true,
-        dismissible: DismissiblePane(onDismissed: () {
+      motion: const StretchMotion(),
+      dismissible: DismissiblePane(
+        onDismissed: () {
           remindersList.removeAt(index);
           _slideAndRemoveReminder(context, reminder, ref);
-        }),
-        children: [
-          SlidableAction(
-              backgroundColor: Colors.red,
-              icon: Icons.delete_forever,
-              onPressed: (context) {
-                remindersList.removeAt(index);
-                _slideAndRemoveReminder(context, reminder, ref);
-              })
-        ]);
+        },
+      ),
+      children: <Widget>[
+        SlidableAction(
+          backgroundColor: Colors.red,
+          icon: Icons.delete_forever,
+          onPressed: (BuildContext context) {
+            remindersList.removeAt(index);
+            _slideAndRemoveReminder(context, reminder, ref);
+          },
+        ),
+      ],
+    );
   }
 
   static ActionPane _doneAndDeleteActionPane(
@@ -130,19 +134,22 @@ class ActionPaneManager {
     int index,
     WidgetRef ref,
   ) {
-    final reminder = remindersList[index];
+    final ReminderModel reminder = remindersList[index];
 
-    return ActionPane(motion: const StretchMotion(), children: [
-      SlidableAction(
-        backgroundColor: Colors.red,
-        icon: Icons.delete_forever,
-        onPressed: (context) {
-          remindersList.removeAt(index);
-          _slideAndRemoveReminder(context, reminder, ref);
-        },
-      ),
-      _doneSlidableAction(context, reminder, ref),
-    ]);
+    return ActionPane(
+      motion: const StretchMotion(),
+      children: <Widget>[
+        SlidableAction(
+          backgroundColor: Colors.red,
+          icon: Icons.delete_forever,
+          onPressed: (BuildContext context) {
+            remindersList.removeAt(index);
+            _slideAndRemoveReminder(context, reminder, ref);
+          },
+        ),
+        _doneSlidableAction(context, reminder, ref),
+      ],
+    );
   }
 
   static void _slideAndRemoveReminder(
@@ -151,11 +158,12 @@ class ActionPaneManager {
     WidgetRef ref,
   ) {
     // Store the provider reference before any potential disposal
-    final remindersProviderValue = ref.read(remindersProvider);
+    final RemindersNotifier remindersProviderValue =
+        ref.read(remindersProvider);
 
     if (reminder is RecurringReminderModel &&
         reminder.recurringInterval != RecurringInterval.none) {
-      showDialog(
+      showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -167,10 +175,11 @@ class ActionPaneManager {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             content: Text(
+              // ignore: lines_longer_than_80_chars
               'This is a recurring reminder. Do you really want to delete it? You can also archive it.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            actions: [
+            actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -184,23 +193,25 @@ class ActionPaneManager {
                 onPressed: () {
                   remindersProviderValue.moveToArchive(reminder.id);
 
-                  final ValueKey snackBarKey =
+                  final ValueKey<String> snackBarKey =
                       ValueKey<String>('archived-${reminder.id}');
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(buildCustomSnackBar(
-                          key: snackBarKey,
-                          content: Row(
-                            children: [
-                              Text("'${reminder.title}' Archived."),
-                              const Spacer(),
-                              OneTimeUndoButton(
-                                onPressed: () {
-                                  remindersProviderValue
-                                      .retrieveFromArchives(reminder.id);
-                                },
-                              )
-                            ],
-                          )));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    buildCustomSnackBar(
+                      key: snackBarKey,
+                      content: Row(
+                        children: <Widget>[
+                          Text("'${reminder.title}' Archived."),
+                          const Spacer(),
+                          OneTimeUndoButton(
+                            onPressed: () {
+                              remindersProviderValue
+                                  .retrieveFromArchives(reminder.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -212,19 +223,21 @@ class ActionPaneManager {
                 onPressed: () {
                   remindersProviderValue.deleteReminder(reminder.id);
 
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(buildCustomSnackBar(
-                          content: Row(
-                    children: [
-                      Text("'${reminder.title}' deleted"),
-                      const Spacer(),
-                      OneTimeUndoButton(
-                        onPressed: () {
-                          remindersProviderValue.saveReminder(reminder);
-                        },
-                      )
-                    ],
-                  )));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    buildCustomSnackBar(
+                      content: Row(
+                        children: <Widget>[
+                          Text("'${reminder.title}' deleted"),
+                          const Spacer(),
+                          OneTimeUndoButton(
+                            onPressed: () {
+                              remindersProviderValue.saveReminder(reminder);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -239,18 +252,21 @@ class ActionPaneManager {
     } else {
       remindersProviderValue.deleteReminder(reminder.id);
 
-      ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+        buildCustomSnackBar(
           content: Row(
-        children: [
-          Text("'${reminder.title}' deleted"),
-          const Spacer(),
-          OneTimeUndoButton(
-            onPressed: () {
-              remindersProviderValue.saveReminder(reminder);
-            },
-          )
-        ],
-      )));
+            children: <Widget>[
+              Text("'${reminder.title}' deleted"),
+              const Spacer(),
+              OneTimeUndoButton(
+                onPressed: () {
+                  remindersProviderValue.saveReminder(reminder);
+                },
+              ),
+            ],
+          ),
+        ),
+      );
     }
   }
 
@@ -262,35 +278,42 @@ class ActionPaneManager {
   ) {
     final Duration postponeDuration =
         ref.read(userSettingsProvider).defaultPostponeDuration;
-    final remindersProviderValue = ref.read(remindersProvider);
+    final RemindersNotifier remindersProviderValue =
+        ref.read(remindersProvider);
 
-    return ActionPane(motion: const StretchMotion(), children: [
-      SlidableAction(
-        icon: Icons.add,
-        onPressed: (context) {
-          reminder.dateTime = reminder.dateTime.add(postponeDuration);
-          remindersProviderValue.saveReminder(reminder);
+    return ActionPane(
+      motion: const StretchMotion(),
+      children: <Widget>[
+        SlidableAction(
+          icon: Icons.add,
+          onPressed: (BuildContext context) {
+            reminder.dateTime = reminder.dateTime.add(postponeDuration);
+            remindersProviderValue.saveReminder(reminder);
 
-          final ValueKey snackBarKey =
-              ValueKey<String>('postponed-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(buildCustomSnackBar(
-              key: snackBarKey,
-              content: Row(
-                children: [
-                  Text("'${reminder.title}' postponed."),
-                  const Spacer(),
-                  OneTimeUndoButton(
-                    onPressed: () {
-                      reminder.dateTime =
-                          reminder.dateTime.subtract(postponeDuration);
-                      remindersProviderValue.saveReminder(reminder);
-                    },
-                  )
-                ],
-              )));
-        },
-      )
-    ]);
+            final ValueKey<String> snackBarKey =
+                ValueKey<String>('postponed-${reminder.id}');
+            ScaffoldMessenger.of(context).showSnackBar(
+              buildCustomSnackBar(
+                key: snackBarKey,
+                content: Row(
+                  children: <Widget>[
+                    Text("'${reminder.title}' postponed."),
+                    const Spacer(),
+                    OneTimeUndoButton(
+                      onPressed: () {
+                        reminder.dateTime =
+                            reminder.dateTime.subtract(postponeDuration);
+                        remindersProviderValue.saveReminder(reminder);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
   }
 
   // Also fix _doneSlidableAction
@@ -299,41 +322,44 @@ class ActionPaneManager {
     ReminderModel reminder,
     WidgetRef ref,
   ) {
-    final remindersProviderValue = ref.read(remindersProvider);
+    final RemindersNotifier remindersProviderValue =
+        ref.read(remindersProvider);
 
     return SlidableAction(
       backgroundColor: Colors.green,
       icon: Icons.check,
-      onPressed: (context) {
+      onPressed: (BuildContext context) {
         remindersProviderValue.markAsDone(reminder.id);
 
         if (reminder is! RecurringReminderModel ||
             reminder.recurringInterval == RecurringInterval.none) {
-          final ValueKey snackBarKey =
+          final ValueKey<String> snackBarKey =
               ValueKey<String>('archived-${reminder.id}');
           ScaffoldMessenger.of(context).showSnackBar(
             buildCustomSnackBar(
               key: snackBarKey,
               content: Row(
-                children: [
+                children: <Widget>[
                   Text("'${reminder.title}' Archived."),
                   const Spacer(),
                   OneTimeUndoButton(
                     onPressed: () {
                       remindersProviderValue.retrieveFromArchives(reminder.id);
                     },
-                  )
+                  ),
                 ],
               ),
             ),
           );
         } else {
-          final ValueKey snackBarKey = ValueKey<String>('moved-${reminder.id}');
+          final ValueKey<String> snackBarKey = ValueKey<String>(
+            'moved-${reminder.id}',
+          );
           ScaffoldMessenger.of(context).showSnackBar(
             buildCustomSnackBar(
               key: snackBarKey,
               content: Row(
-                children: [
+                children: <Widget>[
                   Text("'${reminder.title}' moved to next occurrence."),
                   const Spacer(),
                   OneTimeUndoButton(
@@ -341,7 +367,7 @@ class ActionPaneManager {
                       remindersProviderValue
                           .moveToPreviousReminderOccurrence(reminder.id);
                     },
-                  )
+                  ),
                 ],
               ),
             ),

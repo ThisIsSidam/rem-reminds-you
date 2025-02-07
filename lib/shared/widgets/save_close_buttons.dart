@@ -1,44 +1,44 @@
 import 'package:flutter/material.dart';
 
 class SaveCloseButtons extends StatelessWidget {
-  final Function() onTapSave;
-  final Function()? onTapClose;
-
-  const SaveCloseButtons({super.key, required this.onTapSave, this.onTapClose});
+  const SaveCloseButtons({required this.onTapSave, super.key, this.onTapClose});
+  final void Function() onTapSave;
+  final void Function()? onTapClose;
 
   @override
   Widget build(
     BuildContext context,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
+        children: <Widget>[
           Expanded(
             child: SizedBox(
               height: 50,
               width: 100,
               child: ElevatedButton(
-                  child: Text(
-                    'Close',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSecondaryContainer,
-                        ),
-                  ),
-                  onPressed: onTapClose == null
-                      ? () {
-                          Navigator.pop(context);
-                        }
-                      : onTapClose!,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.secondaryContainer)),
+                onPressed: onTapClose == null
+                    ? () {
+                        Navigator.pop(context);
+                      }
+                    : onTapClose!,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                child: Text(
+                  'Close',
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
+                ),
+              ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Expanded(
@@ -47,15 +47,17 @@ class SaveCloseButtons extends StatelessWidget {
               height: 50,
               width: 100,
               child: ElevatedButton(
+                onPressed: onTapSave,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
+                ),
                 child: Text(
                   'Save',
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer),
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
                 ),
-                onPressed: onTapSave,
-                style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer),
               ),
             ),
           ),

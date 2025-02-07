@@ -1,7 +1,7 @@
-import 'package:Rem/core/hive/UserDB.dart';
+import '../../core/hive/UserDB.dart';
 
 int generateId() {
-  final currCount = UserDB.getNextId();
+  final int? currCount = UserDB.getNextId();
 
   if (currCount == null) {
     // In case this is the first time using this.

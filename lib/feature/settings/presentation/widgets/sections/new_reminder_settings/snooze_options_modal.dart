@@ -7,7 +7,7 @@ import '../../../../../../shared/widgets/save_close_buttons.dart';
 import '../../../providers/settings_provider.dart';
 
 class SnoozeOptionsModal extends ConsumerStatefulWidget {
-  SnoozeOptionsModal({super.key});
+  const SnoozeOptionsModal({super.key});
 
   @override
   ConsumerState<SnoozeOptionsModal> createState() => _SnoozeOptionsModalState();
@@ -24,8 +24,8 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
   }
 
   void initializeDurations() {
-    final settings = ref.read(userSettingsProvider);
-    durations = {
+    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
+    durations = <int, Duration>{
       0: settings.autoSnoozeOption1,
       1: settings.autoSnoozeOption2,
       2: settings.autoSnoozeOption3,
@@ -42,37 +42,42 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
   }
 
   void onSave() {
-    final notifier = ref.read(userSettingsProvider);
-    // Using direct setter assignment
-    notifier.autoSnoozeOption1 = durations[0]!;
-    notifier.autoSnoozeOption2 = durations[1]!;
-    notifier.autoSnoozeOption3 = durations[2]!;
-    notifier.autoSnoozeOption4 = durations[3]!;
-    notifier.autoSnoozeOption5 = durations[4]!;
-    notifier.autoSnoozeOption6 = durations[5]!;
+    ref.read(userSettingsProvider)
+      // Using direct setter assignment
+      ..autoSnoozeOption1 = durations[0]!
+      ..autoSnoozeOption2 = durations[1]!
+      ..autoSnoozeOption3 = durations[2]!
+      ..autoSnoozeOption4 = durations[3]!
+      ..autoSnoozeOption5 = durations[4]!
+      ..autoSnoozeOption6 = durations[5]!;
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("Snooze Options",
-                style: Theme.of(context).textTheme.titleMedium),
-            Divider(),
-            SizedBox(height: 10),
-            _buildButtonsGrid(),
-            HMDurationPicker(onDurationChange: (dur) {
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            'Snooze Options',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const Divider(),
+          const SizedBox(height: 10),
+          _buildButtonsGrid(),
+          HMDurationPicker(
+            onDurationChange: (Duration dur) {
               setState(() {
                 durations[selectedSettingOption] = dur;
               });
-            }),
-            SaveCloseButtons(onTapSave: onSave)
-          ],
-        ));
+            },
+          ),
+          SaveCloseButtons(onTapSave: onSave),
+        ],
+      ),
+    );
   }
 
   Widget _buildButtonsGrid() {
@@ -84,12 +89,14 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
         crossAxisCount: 3,
         shrinkWrap: true,
         childAspectRatio: 1.5,
-        children: [
-          for (var entry in durations.entries)
+        children: <Widget>[
+          for (final MapEntry<int, Duration> entry in durations.entries)
             _buildButton(
-                getFormattedDurationForTimeEditButton(entry.value,
-                    addPlusSymbol: false),
-                entry.key),
+              getFormattedDurationForTimeEditButton(
+                entry.value,
+              ),
+              entry.key,
+            ),
         ],
       ),
     );
@@ -98,16 +105,17 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
   Widget _buildButton(String label, int option) {
     return ElevatedButton(
       onPressed: () => setSelectedOption(option),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.zero,
+        backgroundColor: option == selectedSettingOption
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.secondaryContainer,
+        shape: const BeveledRectangleBorder(),
+      ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.titleMedium,
       ),
-      style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.zero,
-          backgroundColor: option == selectedSettingOption
-              ? Theme.of(context).colorScheme.primaryContainer
-              : Theme.of(context).colorScheme.secondaryContainer,
-          shape: BeveledRectangleBorder()),
     );
   }
 }

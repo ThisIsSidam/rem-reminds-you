@@ -7,32 +7,16 @@ part 'recurring_reminder.g.dart';
 
 @HiveType(typeId: 1)
 class RecurringReminderModel extends ReminderModel {
-  @HiveField(10)
-  RecurringInterval recurringInterval;
-  @HiveField(11)
-  DateTime baseDateTime;
-  @HiveField(12)
-  bool paused;
-
   RecurringReminderModel({
     required super.id,
     required super.title,
     required super.dateTime,
-    required super.PreParsedTitle,
+    required super.preParsedTitle,
     required super.autoSnoozeInterval,
     required this.recurringInterval,
     required this.baseDateTime,
     this.paused = false,
   });
-
-  @override
-  Map<String, String?> toJson() {
-    final data = super.toJson();
-    data['recurringInterval'] = recurringInterval.index.toString();
-    data['baseDateTime'] = baseDateTime.toIso8601String();
-    data['paused'] = paused.toString();
-    return data;
-  }
 
   factory RecurringReminderModel.fromJson(Map<String, String?> map) {
     return RecurringReminderModel(
@@ -41,12 +25,27 @@ class RecurringReminderModel extends ReminderModel {
       dateTime: DateTime.parse(map['dateTime']!),
       autoSnoozeInterval:
           Duration(milliseconds: int.parse(map['autoSnoozeInterval']!)),
-      PreParsedTitle: map['PreParsedTitle']!,
+      preParsedTitle: map['preParsedTitle']!,
       recurringInterval:
           RecurringInterval.values[int.parse(map['recurringInterval']!)],
       baseDateTime: DateTime.parse(map['baseDateTime']!),
       paused: map['paused']! == 'true',
     );
+  }
+  @HiveField(10)
+  RecurringInterval recurringInterval;
+  @HiveField(11)
+  DateTime baseDateTime;
+  @HiveField(12)
+  bool paused;
+
+  @override
+  Map<String, String?> toJson() {
+    final Map<String, String?> data = super.toJson();
+    data['recurringInterval'] = recurringInterval.index.toString();
+    data['baseDateTime'] = baseDateTime.toIso8601String();
+    data['paused'] = paused.toString();
+    return data;
   }
 
   RecurringReminderModel copyWithRecurring({
@@ -54,7 +53,7 @@ class RecurringReminderModel extends ReminderModel {
     String? title,
     DateTime? dateTime,
     Duration? autoSnoozeInterval,
-    String? PreParsedTitle,
+    String? preParsedTitle,
     RecurringInterval? recurringInterval,
     DateTime? baseDateTime,
     bool? paused,
@@ -64,7 +63,7 @@ class RecurringReminderModel extends ReminderModel {
       title: title ?? this.title,
       dateTime: dateTime ?? this.dateTime,
       autoSnoozeInterval: autoSnoozeInterval ?? this.autoSnoozeInterval,
-      PreParsedTitle: PreParsedTitle ?? this.PreParsedTitle,
+      preParsedTitle: preParsedTitle ?? this.preParsedTitle,
       recurringInterval: recurringInterval ?? this.recurringInterval,
       baseDateTime: baseDateTime ?? this.baseDateTime,
       paused: paused ?? this.paused,
@@ -82,7 +81,8 @@ class RecurringReminderModel extends ReminderModel {
   }
 
   void _incrementRecurDuration() {
-    final increment = recurringInterval.getRecurringIncrementDuration(dateTime);
+    final Duration? increment =
+        recurringInterval.getRecurringIncrementDuration(dateTime);
 
     if (increment != null) {
       baseDateTime = baseDateTime.add(increment);
@@ -90,7 +90,8 @@ class RecurringReminderModel extends ReminderModel {
   }
 
   void _decrementRecurDuration() {
-    final decrement = recurringInterval.getRecurringDecrementDuration(dateTime);
+    final Duration? decrement =
+        recurringInterval.getRecurringDecrementDuration(dateTime);
 
     if (decrement != null) {
       baseDateTime = baseDateTime.subtract(decrement);

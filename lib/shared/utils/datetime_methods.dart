@@ -1,6 +1,7 @@
-import 'package:Rem/core/models/reminder_model/reminder_model.dart';
 import 'package:duration/duration.dart';
 import 'package:intl/intl.dart';
+
+import '../../core/models/reminder_model/reminder_model.dart';
 
 String getFormattedDateTime(DateTime dateTime) {
   final DateFormat formatter = DateFormat('EEE, d MMM, hh:mm aaa');
@@ -19,39 +20,44 @@ String getFormattedDuration(ReminderModel reminder) {
 }
 
 String getPrettyDurationFromDateTime(DateTime dateTime) {
-  DateTime now = DateTime.now();
-  Duration dur = dateTime
+  final DateTime now = DateTime.now();
+  final Duration dur = dateTime
       .difference(DateTime(now.year, now.month, now.day, now.hour, now.minute));
   return dur.pretty(
-      tersity: DurationTersity.minute, maxUnits: 2, abbreviated: true);
+    tersity: DurationTersity.minute,
+    maxUnits: 2,
+    abbreviated: true,
+  );
 }
 
 String getFormattedTimeForTimeSetButton(DateTime time) {
-  String suffix = time.hour >= 12 ? "PM" : "AM";
+  final String suffix = time.hour >= 12 ? 'PM' : 'AM';
   int hour = time.hour % 12;
   hour = hour == 0 ? 12 : hour;
-  String formattedTime =
+  final String formattedTime =
       "$hour:${time.minute.toString().padLeft(2, '0')} $suffix";
   return formattedTime;
 }
 
-String getFormattedDurationForTimeEditButton(Duration dur,
-    {bool addPlusSymbol = false}) {
-  final minutes = dur.inMinutes;
-  String strDuration = "";
+String getFormattedDurationForTimeEditButton(
+  Duration dur, {
+  bool addPlusSymbol = false,
+}) {
+  final int minutes = dur.inMinutes;
+  String strDuration = '';
 
   if (addPlusSymbol) {
     if (minutes > 0) {
-      strDuration += "+";
+      strDuration += '+';
     }
   }
 
   if ((minutes < 59) && (minutes > -59)) {
-    strDuration += "${minutes.toString()} Min";
+    strDuration += '$minutes Min';
   } else if ((minutes < 1439) && (minutes > -1439)) {
-    strDuration += "${(minutes ~/ 60).toString()} Hr";
+    strDuration += '${minutes ~/ 60} Hr';
   } else {
-    strDuration += "${((minutes ~/ 60) ~/ 24).toString()} Day";
+    strDuration += '${(minutes ~/ 60) ~/ 24} Day';
   }
 
   return strDuration;

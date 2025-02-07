@@ -4,6 +4,25 @@ part 'reminder_model.g.dart';
 
 @HiveType(typeId: 0)
 class ReminderModel {
+  ReminderModel({
+    required this.id,
+    required this.title,
+    required this.dateTime,
+    required this.preParsedTitle,
+    this.autoSnoozeInterval,
+  });
+
+  factory ReminderModel.fromJson(Map<String, String?> json) {
+    return ReminderModel(
+      id: int.parse(json['id']!),
+      title: json['title']!,
+      dateTime: DateTime.parse(json['dateTime']!),
+      preParsedTitle: json['PreParsedTitle']!,
+      autoSnoozeInterval: json['autoSnoozeInterval'] != null
+          ? Duration(milliseconds: int.parse(json['autoSnoozeInterval']!))
+          : null,
+    );
+  }
   @HiveField(0)
   int id;
   @HiveField(1)
@@ -11,38 +30,18 @@ class ReminderModel {
   @HiveField(2)
   DateTime dateTime;
   @HiveField(3)
-  String PreParsedTitle;
+  String preParsedTitle;
   @HiveField(4)
   Duration? autoSnoozeInterval;
 
-  ReminderModel({
-    required this.id,
-    required this.title,
-    required this.dateTime,
-    required this.PreParsedTitle,
-    this.autoSnoozeInterval,
-  });
-
   Map<String, String?> toJson() {
-    return {
+    return <String, String?>{
       'id': id.toString(),
       'title': title,
       'dateTime': dateTime.toIso8601String(),
-      'PreParsedTitle': PreParsedTitle,
+      'PreParsedTitle': preParsedTitle,
       'autoSnoozeInterval': autoSnoozeInterval?.inMilliseconds.toString(),
     };
-  }
-
-  factory ReminderModel.fromJson(Map<String, String?> json) {
-    return ReminderModel(
-      id: int.parse(json['id']!),
-      title: json['title']!,
-      dateTime: DateTime.parse(json['dateTime']!),
-      PreParsedTitle: json['PreParsedTitle']!,
-      autoSnoozeInterval: json['autoSnoozeInterval'] != null
-          ? Duration(milliseconds: int.parse(json['autoSnoozeInterval']!))
-          : null,
-    );
   }
 
   ReminderModel copyWith({
@@ -56,7 +55,7 @@ class ReminderModel {
       id: id ?? this.id,
       title: title ?? this.title,
       dateTime: dateTime ?? this.dateTime,
-      PreParsedTitle: preParsedTitle ?? this.PreParsedTitle,
+      preParsedTitle: preParsedTitle ?? this.preParsedTitle,
       autoSnoozeInterval: autoSnoozeInterval ?? this.autoSnoozeInterval,
     );
   }
@@ -69,8 +68,9 @@ class ReminderModel {
     return dateTime.difference(DateTime.now());
   }
 
-  /// Check if the current date and time is before 5 seconds from the reminder's date and time.
+  /// Check if the current date and time is before 5 seconds from the
+  /// reminder's date and time.
   bool isTimesUp() {
-    return dateTime.isBefore(DateTime.now().add(Duration(seconds: 5)));
+    return dateTime.isBefore(DateTime.now().add(const Duration(seconds: 5)));
   }
 }

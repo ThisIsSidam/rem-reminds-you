@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:intl/intl.dart';
@@ -11,14 +12,15 @@ import '../../../core/enums/files_n_folders.dart';
 import 'global_logger.dart';
 
 class AppFileOutput extends LogOutput {
-  Directory? logs_directory;
-  final mutex = Mutex();
+  Directory? logsDirectory;
+  final Mutex mutex = Mutex();
 
+  @override
   Future<void> init() async {
-    logs_directory = Directory(await LogsManager.directoryPath);
+    logsDirectory = Directory(await LogsManager.directoryPath);
 
-    if (!await logs_directory!.exists()) {
-      await logs_directory!.create();
+    if (!logsDirectory!.existsSync()) {
+      await logsDirectory!.create();
     }
   }
 
@@ -29,26 +31,29 @@ class AppFileOutput extends LogOutput {
   }
 
   @override
-  void output(OutputEvent event) async {
-    if (logs_directory == null) {
+  Future<void> output(OutputEvent event) async {
+    if (logsDirectory == null) {
       await init();
     }
 
     final File file = File(
-        '${logs_directory?.path}/${FilesNFolders.logFilePrefix.name}${getDateAsString()}.txt');
+      '${logsDirectory?.path}/${FilesNFolders.logFilePrefix.name}${getDateAsString()}.txt',
+    );
 
-    if (!await file.exists()) {
+    if (!file.existsSync()) {
       await file.create();
     }
 
     // Use a mutex to ensure writes do not overlap
     await mutex.protect(
       () async {
-        for (var line in event.lines) {
+        for (final String line in event.lines) {
           final String formattedDateTime =
               DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(DateTime.now());
-          await file.writeAsString('$formattedDateTime  $line\n',
-              mode: FileMode.append);
+          await file.writeAsString(
+            '$formattedDateTime  $line\n',
+            mode: FileMode.append,
+          );
         }
       },
     );
@@ -57,24 +62,28 @@ class AppFileOutput extends LogOutput {
 
 class LogsManager {
   static Future<String> get directoryPath async {
-    final directory = await getApplicationDocumentsDirectory();
+    final Directory directory = await getApplicationDocumentsDirectory();
     return '${directory.path}/${FilesNFolders.logsFolder.name}';
   }
 
   static Future<List<int>?> createLogsZipData(
-      Directory srcFolder, File outputFile) async {
-    final encoder = ZipEncoder();
-    final archive = Archive();
+    Directory srcFolder,
+    File outputFile,
+  ) async {
+    final ZipEncoder encoder = ZipEncoder();
+    final Archive archive = Archive();
 
     // Get all files in the source directory
-    final entities = await srcFolder.list(recursive: true).toList();
+    final List<FileSystemEntity> entities =
+        await srcFolder.list(recursive: true).toList();
 
     // Add each file to the archive
-    for (var entity in entities) {
+    for (final FileSystemEntity entity in entities) {
       if (entity is File) {
-        final relativePath = p.relative(entity.path, from: srcFolder.path);
-        final data = await entity.readAsBytes();
-        final archiveFile = ArchiveFile(
+        final String relativePath =
+            p.relative(entity.path, from: srcFolder.path);
+        final Uint8List data = await entity.readAsBytes();
+        final ArchiveFile archiveFile = ArchiveFile(
           relativePath,
           data.length,
           data,
@@ -88,16 +97,16 @@ class LogsManager {
   }
 
   static Future<void> clearLogs() async {
-    Directory logs_directory = Directory(await directoryPath);
+    final Directory logsDirectory = Directory(await directoryPath);
 
-    if (!await logs_directory.exists()) {
+    if (!logsDirectory.existsSync()) {
       gLogger.i('Attempted to delete logs | Folder does not exist');
       return;
     }
 
-    await for (final FileSystemEntity entity in logs_directory.list()) {
+    await for (final FileSystemEntity entity in logsDirectory.list()) {
       try {
-        entity.delete(recursive: true);
+        await entity.delete(recursive: true);
       } catch (e) {
         gLogger.e('Error deleting log files');
       }

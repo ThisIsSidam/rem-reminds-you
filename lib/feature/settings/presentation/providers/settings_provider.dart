@@ -1,11 +1,11 @@
-import 'package:Rem/core/enums/swipe_actions.dart';
-import 'package:Rem/feature/settings/data/hive/settings_db.dart';
-import 'package:Rem/shared/utils/extensions/theme_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/enums/swipe_actions.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
+import '../../../../shared/utils/extensions/theme_mode.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
+import '../../data/hive/settings_db.dart';
 import 'default_settings.dart';
 
 class UserSettingsNotifier extends ChangeNotifier {
@@ -20,7 +20,7 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   void resetSettings() {
-    for (final entry in defaultSettings.entries) {
+    for (final MapEntry<String, dynamic> entry in defaultSettings.entries) {
       SettingsDB.setUserSetting(entry.key, entry.value);
     }
     notifyListeners();
@@ -30,7 +30,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'defaultLeadDuration';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -45,7 +45,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'defaultAutoSnoozeDuration';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -75,7 +75,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeSetOption1';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! DateTime) {
-      return defaultSettings[key];
+      return defaultSettings[key] as DateTime;
     }
     return value;
   }
@@ -90,7 +90,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeSetOption2';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! DateTime) {
-      return defaultSettings[key];
+      return defaultSettings[key] as DateTime;
     }
     return value;
   }
@@ -105,7 +105,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeSetOption3';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! DateTime) {
-      return defaultSettings[key];
+      return defaultSettings[key] as DateTime;
     }
     return value;
   }
@@ -120,7 +120,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeSetOption4';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! DateTime) {
-      return defaultSettings[key];
+      return defaultSettings[key] as DateTime;
     }
     return value;
   }
@@ -135,7 +135,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeEditOption1';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -150,7 +150,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeEditOption2';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -165,7 +165,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeEditOption3';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -180,7 +180,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeEditOption4';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -195,7 +195,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeEditOption5';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -210,7 +210,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeEditOption6';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -225,7 +225,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeEditOption7';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -240,7 +240,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quickTimeEditOption8';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -255,7 +255,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'autoSnoozeOption1';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -270,7 +270,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'autoSnoozeOption2';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -285,7 +285,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'autoSnoozeOption3';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -300,7 +300,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'autoSnoozeOption4';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -315,7 +315,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'autoSnoozeOption5';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -330,7 +330,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'autoSnoozeOption6';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -375,7 +375,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'defaultPostponeDuration';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! Duration) {
-      return defaultSettings[key];
+      return defaultSettings[key] as Duration;
     }
     return value;
   }
@@ -405,7 +405,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quietHoursStartTime';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! TimeOfDay) {
-      return defaultSettings[key];
+      return defaultSettings[key] as TimeOfDay;
     }
     return value;
   }
@@ -420,7 +420,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'quietHoursEndTime';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! TimeOfDay) {
-      return defaultSettings[key];
+      return defaultSettings[key] as TimeOfDay;
     }
     return value;
   }
@@ -435,7 +435,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'textScale';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! double) {
-      return defaultSettings[key];
+      return defaultSettings[key] as double;
     }
     return value;
   }
@@ -447,5 +447,7 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 }
 
-final userSettingsProvider =
-    ChangeNotifierProvider((ref) => UserSettingsNotifier());
+final ChangeNotifierProvider<UserSettingsNotifier> userSettingsProvider =
+    ChangeNotifierProvider<UserSettingsNotifier>(
+  (Ref<Object?> ref) => UserSettingsNotifier(),
+);

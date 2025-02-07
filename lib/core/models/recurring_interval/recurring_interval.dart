@@ -37,7 +37,8 @@ enum RecurringInterval {
 
   static RecurringInterval fromString(String value) {
     return RecurringInterval.values.firstWhere(
-      (interval) => interval.toString().toLowerCase() == value.toLowerCase(),
+      (RecurringInterval interval) =>
+          interval.toString().toLowerCase() == value.toLowerCase(),
       orElse: () => RecurringInterval.none,
     );
   }
@@ -109,7 +110,7 @@ Duration _getDurationForNextWeekend(DateTime dt) {
 }
 
 Duration _getDurationForNextMonth(DateTime dt) {
-  final updatedDateTime = dt.copyWith(
+  final DateTime updatedDateTime = dt.copyWith(
     month: dt.month + 1,
   );
 
@@ -144,7 +145,7 @@ Duration _getDurationForPreviousWeekend(DateTime dt) {
 }
 
 Duration _getDurationForPreviousMonth(DateTime dt) {
-  final updatedDateTime = dt.copyWith(
+  final DateTime updatedDateTime = dt.copyWith(
     month: dt.month - 1,
   );
 

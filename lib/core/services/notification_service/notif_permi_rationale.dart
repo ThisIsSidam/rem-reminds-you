@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 
 Future<bool> displayNotificationRationale(BuildContext context) async {
   bool userAuthorized = false;
-  await showDialog(
+  await showDialog<void>(
     context: context,
     builder: (BuildContext ctx) {
-      ThemeData theme = Theme.of(context);
+      final ThemeData theme = Theme.of(context);
       return AlertDialog(
         backgroundColor: theme.colorScheme.primaryContainer,
         title: Text(
@@ -16,14 +16,15 @@ Future<bool> displayNotificationRationale(BuildContext context) async {
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             Text(
-              "We can't remind you without notifications. Give us the permission. Pretty please.",
+              """
+We can't remind you without notifications. Give us the permission. Pretty please.""",
               style: theme.textTheme.bodyMedium,
             ),
           ],
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
             onPressed: () {
               SystemChannels.platform.invokeMethod('SystemNavigator.pop');

@@ -1,18 +1,18 @@
 import 'dart:isolate';
 import 'dart:ui';
 
-import 'package:Rem/core/constants/const_strings.dart';
-import 'package:Rem/core/services/notification_service/notification_service.dart';
-import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
-import 'package:Rem/feature/home/presentation/widgets/home_screen_lists.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
-import 'package:Rem/main.dart';
-import 'package:Rem/shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/const_strings.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/services/notification_service/notification_service.dart';
+import '../../../../main.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
+import '../../../reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
+import '../providers/reminders_provider.dart';
+import '../widgets/home_screen_lists.dart';
 
 enum HomeScreenSection {
   overdue('Overdue'),
@@ -22,9 +22,9 @@ enum HomeScreenSection {
   noRush('No Rush'),
   ;
 
-  final String title;
-
   const HomeScreenSection(this.title);
+
+  final String title;
 }
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -36,16 +36,17 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
-  Map<HomeScreenSection, List<ReminderModel>> remindersMap = {};
+  Map<HomeScreenSection, List<ReminderModel>> remindersMap =
+      <HomeScreenSection, List<ReminderModel>>{};
   final ReceivePort receivePort = ReceivePort();
-  SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bg_isolate_name);
+  SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bgIsolateName);
 
   @override
   void initState() {
     super.initState();
     gLogger.i('HomeScreen initState');
     remindersMap = ref.read(
-      remindersProvider.select((p) => p.categorizedReminders),
+      remindersProvider.select((RemindersNotifier p) => p.categorizedReminders),
     );
 
     WidgetsBinding.instance.addObserver(this);
@@ -59,22 +60,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
     receivePort.listen((dynamic message) {
       if (message is Map<String, dynamic>) {
-        final id = message['id'];
+        final dynamic id = message['id'];
 
-        if (message["action"] == 'done') {
+        if (message['action'] == 'done' && id is int) {
           gLogger.i('Received done action for $id');
           ref.read(remindersProvider).markAsDone(id);
         } else {
-          gLogger.w('Port message is not "done", discarding');
+          gLogger.w('Port message is not "done" or not int, discarding');
         }
       } else if (message is String) {
-        if (message == "ping") {
+        if (message == 'ping') {
           gLogger.i('Received ping from NotificationIsolate');
-          final notifPingPort =
+          final SendPort? notifPingPort =
               IsolateNameServer.lookupPortByName('NotificationIsolate');
           if (notifPingPort != null) {
             gLogger.i('Send back pong to notificationIsolate');
-            notifPingPort.send("pong");
+            notifPingPort.send('pong');
           } else {
             gLogger.w('notifPingPort is null');
           }
@@ -107,17 +108,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   Widget build(BuildContext context) {
     remindersMap = ref.watch(
-      remindersProvider.select((p) => p.categorizedReminders),
+      remindersProvider.select((RemindersNotifier p) => p.categorizedReminders),
     );
 
-    final isEmpty = ref.watch(remindersProvider).reminderCount == 0;
+    final bool isEmpty = ref.watch(remindersProvider).reminderCount == 0;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: CustomScrollView(
-        slivers: [
+        slivers: <Widget>[
           _buildAppBar(),
-          isEmpty ? getEmptyPage() : getListedReminderPage()
+          if (isEmpty) getEmptyPage() else getListedReminderPage(),
         ],
       ),
       floatingActionButton: isEmpty ? null : getFloatingActionButton(),
@@ -127,10 +128,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   // The appbar for the home page.
   SliverAppBar _buildAppBar() {
     return SliverAppBar(
-      surfaceTintColor: null,
       backgroundColor: Colors.transparent,
       title: Text(
-        "Reminders",
+        'Reminders',
         style: Theme.of(context).textTheme.titleLarge,
       ),
     );
@@ -143,12 +143,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             Text(
               "You currently don't have any reminders!",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             SizedBox(
@@ -159,18 +159,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   gLogger.i('Show new reminder sheet');
                   _showReminderSheet();
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Set a reminder",
-                      style: Theme.of(context).textTheme.bodyLarge),
-                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
                       Theme.of(context).colorScheme.primaryContainer,
                   surfaceTintColor: Colors.transparent,
                 ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    'Set a reminder',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -181,44 +183,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget getListedReminderPage() {
     return SliverList(
       delegate: SliverChildListDelegate(
-        [
+        <Widget>[
           HomeScreenReminderListSection(
             label: _buildHomeSectionButton(
               label: HomeScreenSection.overdue.title,
               color: Theme.of(context).colorScheme.error,
             ),
-            remindersList: remindersMap[HomeScreenSection.overdue] ?? [],
+            remindersList:
+                remindersMap[HomeScreenSection.overdue] ?? <ReminderModel>[],
             hideIfEmpty: true,
           ),
           HomeScreenReminderListSection(
             label: _buildHomeSectionButton(
-              onTap: () {
-                _showReminderSheet();
-              },
+              onTap: _showReminderSheet,
               label: HomeScreenSection.today.title,
               color: Theme.of(context).colorScheme.primary,
             ),
-            remindersList: remindersMap[HomeScreenSection.today] ?? [],
+            remindersList:
+                remindersMap[HomeScreenSection.today] ?? <ReminderModel>[],
           ),
           HomeScreenReminderListSection(
             label: _buildHomeSectionButton(
               onTap: () {
-                _showReminderSheet(duration: Duration(days: 1));
+                _showReminderSheet(duration: const Duration(days: 1));
               },
               label: HomeScreenSection.tomorrow.title,
               color: Theme.of(context).colorScheme.secondary,
             ),
-            remindersList: remindersMap[HomeScreenSection.tomorrow] ?? [],
+            remindersList:
+                remindersMap[HomeScreenSection.tomorrow] ?? <ReminderModel>[],
           ),
           HomeScreenReminderListSection(
             label: _buildHomeSectionButton(
               onTap: () {
-                _showReminderSheet(duration: Duration(days: 7));
+                _showReminderSheet(duration: const Duration(days: 7));
               },
               label: HomeScreenSection.later.title,
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
-            remindersList: remindersMap[HomeScreenSection.later] ?? [],
+            remindersList:
+                remindersMap[HomeScreenSection.later] ?? <ReminderModel>[],
           ),
           HomeScreenReminderListSection(
             label: _buildHomeSectionButton(
@@ -228,8 +232,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               label: HomeScreenSection.noRush.title,
               color: Theme.of(context).colorScheme.inverseSurface,
             ),
-            remindersList: remindersMap[HomeScreenSection.noRush] ?? [],
-          )
+            remindersList:
+                remindersMap[HomeScreenSection.noRush] ?? <ReminderModel>[],
+          ),
         ],
       ),
     );
@@ -240,7 +245,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return FloatingActionButton(
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      onPressed: () => _showReminderSheet(),
+      onPressed: _showReminderSheet,
       child: const Icon(
         Icons.add,
       ),
@@ -267,16 +272,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     VoidCallback? onTap,
   }) {
     return InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: color,
-                ),
-          ),
-        ));
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: color,
+              ),
+        ),
+      ),
+    );
   }
 }

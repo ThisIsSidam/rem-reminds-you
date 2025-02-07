@@ -1,17 +1,18 @@
-import 'package:Rem/core/enums/hive_enums.dart';
-import 'package:Rem/core/theme/app_theme.dart';
-import 'package:Rem/feature/permissions/domain/app_permi_handler.dart';
-import 'package:Rem/feature/permissions/presentation/screens/permissions_screen.dart';
-import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
-import 'package:Rem/main.dart';
-import 'package:Rem/shared/utils/logger/global_logger.dart';
-import 'package:Rem/shared/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce/hive.dart';
+
+import 'core/enums/hive_enums.dart';
+import 'core/theme/app_theme.dart';
+import 'feature/home/presentation/screens/dashboard_screen.dart';
+import 'feature/permissions/domain/app_permi_handler.dart';
+import 'feature/permissions/presentation/screens/permissions_screen.dart';
+import 'feature/settings/presentation/providers/settings_provider.dart';
+import 'main.dart';
+import 'shared/utils/logger/global_logger.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -37,79 +38,86 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     gLogger.i('App Built');
-    final (ThemeMode, double) settings = ref
-        .watch(userSettingsProvider.select((p) => (p.themeMode, p.textScale)));
+    final (ThemeMode, double) settings = ref.watch(
+      userSettingsProvider
+          .select((UserSettingsNotifier p) => (p.themeMode, p.textScale)),
+    );
 
-    return DynamicColorBuilder(builder: (lightDynamic, darkDynamic) {
-      ColorScheme lightColorScheme;
-      ColorScheme darkColorScheme;
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        ColorScheme lightColorScheme;
+        ColorScheme darkColorScheme;
 
-      if (lightDynamic != null && darkDynamic != null) {
-        lightColorScheme = lightDynamic.harmonized();
-        darkColorScheme = darkDynamic.harmonized();
-      } else {
-        lightColorScheme = appColorScheme;
-        darkColorScheme = appDarkColorScheme;
-      }
+        if (lightDynamic != null && darkDynamic != null) {
+          lightColorScheme = lightDynamic.harmonized();
+          darkColorScheme = darkDynamic.harmonized();
+        } else {
+          lightColorScheme = appColorScheme;
+          darkColorScheme = appDarkColorScheme;
+        }
 
-      return MaterialApp(
-        navigatorKey: navigatorKey,
-        builder: (context, child) {
-          return MediaQuery(
-            child: child!,
-            data: MediaQuery.of(context).copyWith(
-              textScaler: TextScaler.linear(settings.$2),
-            ),
-          );
-        },
-        home: _buildPermissionScreenLayer(
-          child: _buildIndiValuesLayer(
-            child: NavigationLayer(),
-          ),
-        ),
-        themeMode: settings.$1,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: lightColorScheme,
-          appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light, // for iOS
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          builder: (BuildContext context, Widget? child) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(settings.$2),
+              ),
+              child: child!,
+            );
+          },
+          home: _buildPermissionScreenLayer(
+            child: _buildIndiValuesLayer(
+              child: const DashboardScreen(),
             ),
           ),
-        ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: darkColorScheme,
-          appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: Brightness.light,
-              statusBarBrightness: Brightness.dark, // for iOS
+          themeMode: settings.$1,
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: lightColorScheme,
+            appBarTheme: const AppBarTheme(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light, // for iOS
+              ),
             ),
           ),
-          cupertinoOverrideTheme: CupertinoThemeData(
-            brightness: settings.$1 == ThemeMode.light
-                ? Brightness.light
-                : Brightness.dark,
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: darkColorScheme,
+            appBarTheme: const AppBarTheme(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark, // for iOS
+              ),
+            ),
+            cupertinoOverrideTheme: CupertinoThemeData(
+              brightness: settings.$1 == ThemeMode.light
+                  ? Brightness.light
+                  : Brightness.dark,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Widget _buildPermissionScreenLayer({required Widget child}) {
     return FutureBuilder<bool>(
       future: AppPermissionHandler.checkPermissions(),
-      builder: (context, snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         gLogger.i('Checking for permissions');
         if (snapshot.connectionState == ConnectionState.waiting) {
           gLogger.i('Loading..');
           return _loadingScreen();
         } else if (snapshot.hasError) {
-          gLogger.e('Go error checking for permissions',
-              error: snapshot.error, stackTrace: snapshot.stackTrace);
+          gLogger.e(
+            'Go error checking for permissions',
+            error: snapshot.error,
+            stackTrace: snapshot.stackTrace,
+          );
           return const Center(child: Text('Error while checking permissions'));
         } else if (snapshot.hasData) {
           if (snapshot.data!) {
@@ -117,11 +125,14 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             return child;
           } else {
             gLogger.i('Permissions not granted');
-            return PermissionScreen();
+            return const PermissionScreen();
           }
         } else {
-          gLogger.e('Something weird happened in permissionsLayer',
-              error: snapshot.error, stackTrace: snapshot.stackTrace);
+          gLogger.e(
+            'Something weird happened in permissionsLayer',
+            error: snapshot.error,
+            stackTrace: snapshot.stackTrace,
+          );
           return const Center(child: Text('Something went wrong'));
         }
       },
@@ -130,27 +141,28 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
   Widget _buildIndiValuesLayer({required Widget child}) {
     return FutureBuilder(
-        future: Hive.openBox(HiveBoxNames.individualValues.name),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            gLogger.i('Loading..');
-            return _loadingScreen();
-          } else if (snapshot.hasError) {
-            gLogger.i('Error while opening individual values box');
-            return const Center(
-              child: Text(
-                'Error while loading reminders',
-              ),
-            );
-          } else if (snapshot.hasData) {
-            return child;
-          } else {
-            gLogger.i('Something weird happened in individual values layer');
-            return const Center(
-              child: Text('Something went wrong'),
-            );
-          }
-        });
+      future: Hive.openBox(HiveBoxNames.individualValues.name),
+      builder: (BuildContext context, AsyncSnapshot<Box> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          gLogger.i('Loading..');
+          return _loadingScreen();
+        } else if (snapshot.hasError) {
+          gLogger.i('Error while opening individual values box');
+          return const Center(
+            child: Text(
+              'Error while loading reminders',
+            ),
+          );
+        } else if (snapshot.hasData) {
+          return child;
+        } else {
+          gLogger.i('Something weird happened in individual values layer');
+          return const Center(
+            child: Text('Something went wrong'),
+          );
+        }
+      },
+    );
   }
 
   Widget _loadingScreen() {

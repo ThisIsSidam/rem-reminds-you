@@ -1,16 +1,18 @@
-import 'package:Rem/feature/reminder_sheet/presentation/providers/central_widget_provider.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
-import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
-import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../../shared/utils/datetime_methods.dart';
+import '../../../../settings/presentation/providers/settings_provider.dart';
+import '../../providers/central_widget_provider.dart';
+import '../../providers/sheet_reminder_notifier.dart';
 
 class ReminderSnoozeOptionsWidget extends ConsumerWidget {
   const ReminderSnoozeOptionsWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(userSettingsProvider.notifier);
+    final UserSettingsNotifier settings =
+        ref.watch(userSettingsProvider.notifier);
 
     final List<Duration> repeatIntervalDurations = <Duration>[
       settings.autoSnoozeOption1,
@@ -29,8 +31,8 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
         crossAxisCount: 3,
         shrinkWrap: true,
         childAspectRatio: 1.5,
-        children: [
-          for (var dur in repeatIntervalDurations)
+        children: <Widget>[
+          for (final Duration dur in repeatIntervalDurations)
             intervalEditButton(dur, context, ref),
         ],
       ),
@@ -38,18 +40,22 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
   }
 
   Widget intervalEditButton(
-      Duration duration, BuildContext context, WidgetRef ref) {
-    final snoozeInterval = ref.read(sheetReminderNotifier).autoSnoozeInterval;
-    bool isPickedDuration = duration == snoozeInterval;
+    Duration duration,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final Duration? snoozeInterval =
+        ref.read(sheetReminderNotifier).autoSnoozeInterval;
+    final bool isPickedDuration = duration == snoozeInterval;
     return ElevatedButton(
       onPressed: () {
         ref.read(sheetReminderNotifier).updateAutoSnoozeInterval(duration);
         ref.read(centralWidgetNotifierProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         surfaceTintColor: Colors.transparent,
-        shape: BeveledRectangleBorder(),
+        shape: const BeveledRectangleBorder(),
         backgroundColor: isPickedDuration
             ? Theme.of(context).colorScheme.primaryContainer
             : Theme.of(context).colorScheme.secondaryContainer,
@@ -57,9 +63,10 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
       child: Text(
         getFormattedDurationForTimeEditButton(duration),
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: isPickedDuration
-                ? Theme.of(context).colorScheme.onPrimaryContainer
-                : Theme.of(context).colorScheme.onSecondaryContainer),
+              color: isPickedDuration
+                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                  : Theme.of(context).colorScheme.onSecondaryContainer,
+            ),
       ),
     );
   }

@@ -1,9 +1,9 @@
-import 'package:Rem/feature/permissions/domain/app_permi_handler.dart';
-import 'package:Rem/shared/widgets/bottom_nav/bottom_nav_bar.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../home/presentation/screens/dashboard_screen.dart';
+import '../../domain/app_permi_handler.dart';
 
 class PermissionScreen extends StatefulWidget {
   const PermissionScreen({super.key});
@@ -20,7 +20,8 @@ class _PermissionScreenState extends State<PermissionScreen>
     super.initState();
   }
 
-  dispose() {
+  @override
+  void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -41,13 +42,13 @@ class _PermissionScreenState extends State<PermissionScreen>
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Spacer(),
+          children: <Widget>[
+            const Spacer(),
             _buildNotificationSection(context),
             _buildAlarmPermissionSection(context),
             _buildBatterySection(context),
-            Spacer(),
-            _buildReturnButton(context)
+            const Spacer(),
+            _buildReturnButton(context),
           ],
         ),
       ),
@@ -55,164 +56,194 @@ class _PermissionScreenState extends State<PermissionScreen>
   }
 
   Widget _buildReturnButton(BuildContext context) {
-    return FutureBuilder(
-        future: AppPermissionHandler.checkPermissions(),
-        builder: (context, snapshot) {
-          return SizedBox(
-            height: 72,
-            width: double.infinity,
-            child: snapshot.hasData
-                ? ElevatedButton(
-                    onPressed: snapshot.data!
-                        ? () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NavigationLayer(),
-                              ),
-                            );
-                          }
-                        : null,
-                    child: Text(
-                      "Let's Go!",
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+    return FutureBuilder<bool>(
+      future: AppPermissionHandler.checkPermissions(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        return SizedBox(
+          height: 72,
+          width: double.infinity,
+          child: snapshot.hasData
+              ? ElevatedButton(
+                  onPressed: snapshot.data!
+                      ? () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext context) =>
+                                  const DashboardScreen(),
+                            ),
+                          );
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  child: Text(
+                    "Let's Go!",
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           color:
-                              Theme.of(context).colorScheme.onPrimaryContainer),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer),
-                  )
-                : SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
+                  ),
+                )
+              : const SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
                       ),
                     ),
                   ),
-          );
-        });
+                ),
+        );
+      },
+    );
   }
 
   Padding _buildNotificationSection(BuildContext context) {
-    Future<bool> permissionGiven =
+    final Future<bool> permissionGiven =
         AwesomeNotifications().isNotificationAllowed();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
       child: Column(
-        children: [
+        children: <Widget>[
           ListTile(
-            leading: Icon(Icons.notifications_active, color: Colors.white),
-            title: Text.rich(TextSpan(children: <InlineSpan>[
+            leading:
+                const Icon(Icons.notifications_active, color: Colors.white),
+            title: Text.rich(
               TextSpan(
-                  text: 'Notification Permission',
-                  style: Theme.of(context).textTheme.titleMedium),
-              TextSpan(
-                  text: ' (Required)',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontStyle: FontStyle.italic))
-            ])),
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: 'Notification Permission',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  TextSpan(
+                    text: ' (Required)',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
           ),
           Text(
-              'To help you stay organized and never miss an important task,'
-              ' we need access to your notifications. This allows us to send you'
-              ' timely notifications for your reminders.',
-              style: Theme.of(context).textTheme.bodyMedium),
-          SizedBox(height: 16),
+            'To help you stay organized and never miss an important task,'
+            ' we need access to your notifications. This allows us to send you'
+            ' timely notifications for your reminders.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16),
           _PermissionButton(
-              permission: permissionGiven,
-              onPressed: () async {
-                gLogger.i('Requesting notification permission');
-                await AwesomeNotifications()
-                    .requestPermissionToSendNotifications();
-              }),
+            permission: permissionGiven,
+            onPressed: () async {
+              gLogger.i('Requesting notification permission');
+              await AwesomeNotifications()
+                  .requestPermissionToSendNotifications();
+            },
+          ),
         ],
       ),
     );
   }
 
   Padding _buildAlarmPermissionSection(BuildContext context) {
-    Future<bool> permissionGiven = AppPermissionHandler.checkAlarmPermission();
+    final Future<bool> permissionGiven =
+        AppPermissionHandler.checkAlarmPermission();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
       child: Column(
-        children: [
+        children: <Widget>[
           ListTile(
-            leading: Icon(Icons.alarm, color: Colors.white),
-            title: Text.rich(TextSpan(children: <InlineSpan>[
+            leading: const Icon(Icons.alarm, color: Colors.white),
+            title: Text.rich(
               TextSpan(
-                  text: 'Alarms Permission',
-                  style: Theme.of(context).textTheme.titleMedium),
-              TextSpan(
-                  text: ' (Required)',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontStyle: FontStyle.italic))
-            ])),
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: 'Alarms Permission',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  TextSpan(
+                    text: ' (Required)',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
           ),
           Text(
-              "To deliver reminders and timely notifications, our app"
-              " needs access to your device’s alarms and reminders system."
-              " Without this permission, we won't be able to notify you when"
-              " reminders are due. This ensures the core functionality"
-              " of the app works as intended.",
-              style: Theme.of(context).textTheme.bodyMedium),
-          SizedBox(height: 16),
+            'To deliver reminders and timely notifications, our app'
+            ' needs access to your device’s alarms and reminders system.'
+            " Without this permission, we won't be able to notify you when"
+            ' reminders are due. This ensures the core functionality'
+            ' of the app works as intended.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16),
           _PermissionButton(
-              permission: permissionGiven,
-              onPressed: () async {
-                gLogger.i('Requesting alarms permissions');
-                await AppPermissionHandler.openAlarmSettings();
-              }),
+            permission: permissionGiven,
+            onPressed: () async {
+              gLogger.i('Requesting alarms permissions');
+              await AppPermissionHandler.openAlarmSettings();
+            },
+          ),
         ],
       ),
     );
   }
 
   Padding _buildBatterySection(BuildContext context) {
-    Future<bool> permissionGiven =
+    final Future<bool> permissionGiven =
         AppPermissionHandler.isIgnoringBatteryOptimizations();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
       child: Column(
-        children: [
+        children: <Widget>[
           ListTile(
-            leading: Icon(Icons.battery_saver_rounded, color: Colors.white),
-            title: Text.rich(TextSpan(children: <InlineSpan>[
+            leading:
+                const Icon(Icons.battery_saver_rounded, color: Colors.white),
+            title: Text.rich(
               TextSpan(
-                  text: 'Battery Permission',
-                  style: Theme.of(context).textTheme.titleMedium),
-              TextSpan(
-                text: ' (Recommended)',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(fontStyle: FontStyle.italic),
-              )
-            ])),
-            shape: BeveledRectangleBorder(),
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: 'Battery Permission',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  TextSpan(
+                    text: ' (Recommended)',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
+            shape: const BeveledRectangleBorder(),
           ),
           Text(
-            "The device may stop the app from showing you notifications to save power,"
-            " it is recommended that you keep the battery optimization unrestricted to"
-            " get your reminder notifications whenever you need them.",
+            // ignore: lines_longer_than_80_chars
+            'The device may stop the app from showing you notifications to save power,'
+            // ignore: lines_longer_than_80_chars
+            ' it is recommended that you keep the battery optimization unrestricted to'
+            ' get your reminder notifications whenever you need them.',
             style: Theme.of(context).textTheme.bodyMedium,
             softWrap: true,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _PermissionButton(
             permission: permissionGiven,
             onPressed: () async {
@@ -242,48 +273,46 @@ class _PermissionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: FutureBuilder(
-          future: permission,
-          builder: (context, snapshot) {
-            return ElevatedButton(
-                onPressed:
-                    snapshot.hasData && snapshot.data! ? null : onPressed,
-                child: snapshot.connectionState == ConnectionState.waiting
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
+      child: FutureBuilder<bool>(
+        future: permission,
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          return ElevatedButton(
+            onPressed: snapshot.hasData && snapshot.data! ? null : onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: snapshot.hasError
+                  ? Theme.of(context).colorScheme.onErrorContainer
+                  : Theme.of(context).colorScheme.primaryContainer,
+            ),
+            child: snapshot.connectionState == ConnectionState.waiting
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : snapshot.hasError
+                    ? const Text(
+                        'ERROR',
+                        style: TextStyle(
+                          color: Colors.black,
                         ),
                       )
-                    : snapshot.hasError
-                        ? Text(
-                            'ERROR',
-                            style: TextStyle(
-                              color: Colors.black,
+                    : Text(
+                        snapshot.hasData && snapshot.data!
+                            ? 'Done'
+                            : deniedLabel,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
                             ),
-                          )
-                        : Text(
-                            snapshot.hasData && snapshot.data!
-                                ? 'Done'
-                                : deniedLabel,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onPrimaryContainer,
-                                ),
-                          ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: snapshot.hasError
-                      ? Theme.of(context).colorScheme.onErrorContainer
-                      : Theme.of(context).colorScheme.primaryContainer,
-                ));
-          }),
+                      ),
+          );
+        },
+      ),
     );
   }
 }

@@ -1,22 +1,23 @@
-import 'package:Rem/core/services/notification_service/notification_service.dart';
-import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/services/notification_service/notification_service.dart';
+import '../../../shared/utils/logger/global_logger.dart';
+
 class AppPermissionHandler {
-  static const platform = MethodChannel('app_permission_channel');
+  static const MethodChannel platform = MethodChannel('app_permission_channel');
 
   static Future<bool> checkPermissions() async {
-    bool notifPermission =
+    final bool notifPermission =
         await NotificationController.checkNotificationPermissions();
-    bool alarmPermission = await checkAlarmPermission();
+    final bool alarmPermission = await checkAlarmPermission();
     return notifPermission && alarmPermission;
   }
 
   static Future<bool> checkAlarmPermission() async {
     try {
-      final bool isGranted =
+      final dynamic isGranted =
           await platform.invokeMethod('checkAlarmPermission');
-      return isGranted;
+      return isGranted is bool && isGranted;
     } on PlatformException catch (e) {
       gLogger.e('Failed to check Alarm permission', error: e);
       return false;
@@ -33,9 +34,9 @@ class AppPermissionHandler {
 
   static Future<bool> isIgnoringBatteryOptimizations() async {
     try {
-      final bool isIgnoring =
+      final dynamic isIgnoring =
           await platform.invokeMethod('isIgnoringBatteryOptimizations');
-      return isIgnoring;
+      return isIgnoring is bool && isIgnoring;
     } on PlatformException catch (e) {
       gLogger.e('Failed to check battery settings', error: e);
       return false;

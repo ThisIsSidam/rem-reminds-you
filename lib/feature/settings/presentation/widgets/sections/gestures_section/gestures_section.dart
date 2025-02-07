@@ -13,24 +13,24 @@ class GesturesSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         ListTile(
-          leading: Icon(Icons.near_me, color: Colors.transparent),
+          leading: const Icon(Icons.near_me, color: Colors.transparent),
           title: Text(
-            "Gestures",
+            'Gestures',
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
                 .copyWith(color: Theme.of(context).colorScheme.primary),
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Column(
-          children: [
+          children: <Widget>[
             _buildSlideToLeftActionsSetting(context),
             _buildSlideToRightActionsSetting(context),
           ],
-        )
+        ),
       ],
     );
   }
@@ -39,14 +39,14 @@ class GesturesSection extends ConsumerWidget {
     BuildContext context,
   ) {
     return Consumer(
-      builder: (context, ref, child) {
-        SwipeAction action =
+      builder: (BuildContext context, WidgetRef ref, Widget? child) {
+        final SwipeAction action =
             ref.watch(userSettingsProvider).homeTileSwipeActionLeft;
 
         return ListTile(
-          leading: Icon(Icons.swipe_left),
+          leading: const Icon(Icons.swipe_left),
           title: Text(
-            "Swipe to Left Actions",
+            'Swipe to Left Actions',
             style: Theme.of(context).textTheme.titleSmall,
           ),
           minVerticalPadding: 20,
@@ -55,12 +55,12 @@ class GesturesSection extends ConsumerWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
           onTap: () async {
-            await showModalBottomSheet(
+            await showModalBottomSheet<void>(
               isScrollControlled: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 5,
               context: context,
-              builder: (context) => SwipeToLeftActionSheet(),
+              builder: (BuildContext context) => SwipeToLeftActionSheet(),
             );
           },
         );
@@ -70,14 +70,14 @@ class GesturesSection extends ConsumerWidget {
 
   Widget _buildSlideToRightActionsSetting(BuildContext context) {
     return Consumer(
-      builder: (context, ref, child) {
-        SwipeAction action =
+      builder: (BuildContext context, WidgetRef ref, Widget? child) {
+        final SwipeAction action =
             ref.watch(userSettingsProvider).homeTileSwipeActionRight;
 
         return ListTile(
-          leading: Icon(Icons.swipe_right),
+          leading: const Icon(Icons.swipe_right),
           title: Text(
-            "Swipe to Right Actions",
+            'Swipe to Right Actions',
             style: Theme.of(context).textTheme.titleSmall,
           ),
           minVerticalPadding: 20,
@@ -86,12 +86,12 @@ class GesturesSection extends ConsumerWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
           onTap: () async {
-            await showModalBottomSheet(
+            await showModalBottomSheet<void>(
               isScrollControlled: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 5,
               context: context,
-              builder: (context) => SwipeToRightActionSheet(),
+              builder: (BuildContext context) => SwipeToRightActionSheet(),
             );
           },
         );

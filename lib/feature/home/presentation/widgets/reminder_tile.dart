@@ -1,28 +1,30 @@
-import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
-import 'package:Rem/core/models/recurring_interval/recurring_interval.dart';
-import 'package:Rem/core/models/recurring_reminder/recurring_reminder.dart';
-import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
-import 'package:Rem/shared/utils/datetime_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
+import '../../../../core/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../shared/utils/datetime_methods.dart';
+import '../../../reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
+import '../providers/reminders_provider.dart';
 
 class HomePageReminderEntryListTile extends StatelessWidget {
+  const HomePageReminderEntryListTile({
+    required this.reminder,
+    super.key,
+  });
   final ReminderModel reminder;
 
-  const HomePageReminderEntryListTile({
-    super.key,
-    required this.reminder,
-  });
-
+  @override
   Widget build(BuildContext context) {
     if (reminder is RecurringReminderModel) {
-      final recurringReminder = reminder as RecurringReminderModel;
+      final RecurringReminderModel recurringReminder =
+          reminder as RecurringReminderModel;
       return RecurringReminderListTile(reminder: recurringReminder);
     } else if (reminder is NoRushRemindersModel) {
-      final noRushReminder = reminder as NoRushRemindersModel;
+      final NoRushRemindersModel noRushReminder =
+          reminder as NoRushRemindersModel;
       return NoRushReminderListTile(reminder: noRushReminder);
     } else {
       return ReminderListTile(reminder: reminder);
@@ -31,12 +33,11 @@ class HomePageReminderEntryListTile extends StatelessWidget {
 }
 
 class ReminderListTile extends ConsumerWidget {
-  final ReminderModel reminder;
-
   const ReminderListTile({
-    super.key,
     required this.reminder,
+    super.key,
   });
+  final ReminderModel reminder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,18 +51,21 @@ class ReminderListTile extends ConsumerWidget {
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.10),
+          color: Theme.of(context).colorScheme.inversePrimary.withValues(
+                alpha: 0.10,
+              ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color:
-                Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
+            color: Theme.of(context).colorScheme.inversePrimary.withValues(
+                  alpha: 0.25,
+                ),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Text(
                 reminder.title,
                 style: Theme.of(context).textTheme.titleMedium,
@@ -70,7 +74,7 @@ class ReminderListTile extends ConsumerWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Text(
                     getFormattedDateTime(reminder.dateTime),
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -91,12 +95,11 @@ class ReminderListTile extends ConsumerWidget {
 }
 
 class RecurringReminderListTile extends ConsumerWidget {
-  final RecurringReminderModel reminder;
-
   const RecurringReminderListTile({
-    super.key,
     required this.reminder,
+    super.key,
   });
+  final RecurringReminderModel reminder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,22 +113,25 @@ class RecurringReminderListTile extends ConsumerWidget {
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.10),
+          color: Theme.of(context).colorScheme.inversePrimary.withValues(
+                alpha: 0.10,
+              ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color:
-                Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
+            color: Theme.of(context).colorScheme.inversePrimary.withValues(
+                  alpha: 0.25,
+                ),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: <Widget>[
                   Text(
                     reminder.title,
                     style: Theme.of(context).textTheme.titleMedium,
@@ -143,10 +149,10 @@ class RecurringReminderListTile extends ConsumerWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    if ((reminder).recurringInterval != RecurringInterval.none)
+                  children: <Widget>[
+                    if (reminder.recurringInterval != RecurringInterval.none)
                       Text(
-                        "⟳ ${(reminder).recurringInterval.toString()}",
+                        '⟳ ${reminder.recurringInterval}',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     Text(
@@ -176,10 +182,6 @@ class RecurringReminderListTile extends ConsumerWidget {
           ref.read(remindersProvider.notifier).pauseReminder(reminder.id);
         }
       },
-      child: Text(
-        isPaused ? 'Resume' : 'Pause',
-        style: Theme.of(context).textTheme.labelMedium,
-      ),
       style: OutlinedButton.styleFrom(
         backgroundColor:
             Theme.of(context).colorScheme.inversePrimary.withAlpha(100),
@@ -190,17 +192,20 @@ class RecurringReminderListTile extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
+      child: Text(
+        isPaused ? 'Resume' : 'Pause',
+        style: Theme.of(context).textTheme.labelMedium,
+      ),
     );
   }
 }
 
 class NoRushReminderListTile extends ConsumerWidget {
-  final NoRushRemindersModel reminder;
-
   const NoRushReminderListTile({
-    super.key,
     required this.reminder,
+    super.key,
   });
+  final NoRushRemindersModel reminder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -214,19 +219,22 @@ class NoRushReminderListTile extends ConsumerWidget {
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.10),
+          color: Theme.of(context).colorScheme.inversePrimary.withValues(
+                alpha: 0.10,
+              ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color:
-                Theme.of(context).colorScheme.inversePrimary.withOpacity(0.25),
+            color: Theme.of(context).colorScheme.inversePrimary.withValues(
+                  alpha: 0.25,
+                ),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Text(
                 reminder.title,
                 style: Theme.of(context).textTheme.titleMedium,

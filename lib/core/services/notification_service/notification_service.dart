@@ -1,19 +1,22 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
-import 'package:Rem/core/constants/const_strings.dart';
-import 'package:Rem/core/hive/pending_removals_db.dart';
-import 'package:Rem/core/models/reminder_model/reminder_model.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
-import 'package:Rem/main.dart';
-import 'package:Rem/shared/utils/generate_id.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
+import '../../../feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
+import '../../../main.dart';
+import '../../../shared/utils/generate_id.dart';
 import '../../../shared/utils/logger/global_logger.dart';
+import '../../constants/const_strings.dart';
 import '../../enums/hive_enums.dart';
+import '../../hive/pending_removals_db.dart';
+import '../../models/reminder_model/reminder_model.dart';
 
 class NotificationController {
   static ReceivedAction? initialAction;
@@ -23,23 +26,22 @@ class NotificationController {
 
     await AwesomeNotifications().initialize(
       null,
-      [
+      <NotificationChannel>[
         NotificationChannel(
           channelKey: '111',
           channelName: 'rem_channel',
           channelDescription: 'Shows Reminder Notification',
-        )
+        ),
       ],
     );
 
-    initialAction = await AwesomeNotifications()
-        .getInitialNotificationAction(removeFromActionEvents: false);
+    initialAction = await AwesomeNotifications().getInitialNotificationAction();
 
     gLogger.i('Initialized Notifications');
   }
 
   static Future<bool> checkNotificationPermissions() async {
-    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    final bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
 
     return isAllowed;
   }
@@ -69,7 +71,9 @@ class NotificationController {
 
   @pragma('vm:entry-point')
   static Future<void> showNotificationCallback(
-      int id, Map<String, dynamic> params) async {
+    int id,
+    Map<String, dynamic> params,
+  ) async {
     await initLogger();
     gLogger.i('Notification Callback Running | callBackId: $id');
 
@@ -77,41 +81,42 @@ class NotificationController {
     final ReminderModel reminder = ReminderModel.fromJson(strParams);
 
     // Should be different each time so that different notifications are shown.
-    int notificationId = generatedNotificationId(id);
+    final int notificationId = generatedNotificationId(id);
 
     gLogger.i('Showing notification | notificationID: $notificationId');
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-          id: notificationId,
-          channelKey: '111',
-          title: "Reminder: ${reminder.title}",
-          groupKey: reminder.id.toString(),
-          wakeUpScreen: true,
-          payload: reminder.toJson()),
+        id: notificationId,
+        channelKey: '111',
+        title: 'Reminder: ${reminder.title}',
+        groupKey: reminder.id.toString(),
+        wakeUpScreen: true,
+        payload: reminder.toJson(),
+      ),
       actionButtons: <NotificationActionButton>[
         NotificationActionButton(
           key: 'done',
           label: 'Done',
           actionType: ActionType.SilentBackgroundAction,
-        )
+        ),
       ],
     );
 
     // Handle recurring notifications
     if (reminder.autoSnoozeInterval == null) {
       gLogger.i(
-        'AutoSnoozeInterval Null | ID : ${reminder.id} | DT : ${reminder.dateTime}',
+        'noozeInterval Null | ID : ${reminder.id} | DT : ${reminder.dateTime}',
       );
       return;
     }
 
-    DateTime nextScheduledTime =
+    final DateTime nextScheduledTime =
         reminder.dateTime.add(reminder.autoSnoozeInterval!);
     reminder.dateTime = nextScheduledTime;
-    scheduleNotification(reminder);
+    await scheduleNotification(reminder);
     gLogger.i(
-      'Scheduled Next Notification | ID : ${reminder.id} | DT : ${reminder.dateTime}',
+      'Scheduled Next Notif | ID : ${reminder.id} | DT : ${reminder.dateTime}',
     );
   }
 
@@ -140,7 +145,7 @@ class NotificationController {
   }
 
   static Future<void> startListeningNotificationEvents() async {
-    AwesomeNotifications()
+    await AwesomeNotifications()
         .setListeners(onActionReceivedMethod: onActionReceivedMethod);
 
     gLogger.i('Started Listening to notification events');
@@ -152,58 +157,66 @@ class NotificationController {
   ) async {
     await initLogger();
     gLogger.i(
-        'Received notification action | Action : ${receivedAction.actionType}');
+      'Received notification action | Action : ${receivedAction.actionType}',
+    );
 
     if (receivedAction.actionType == ActionType.Default) {
-      final payload = receivedAction.payload;
+      final Map<String, String?>? payload = receivedAction.payload;
       if (payload == null) {
         gLogger.e(
-            'Received null payload through notification action | gKey : ${receivedAction.groupKey}');
+          'Received null payload through notification action | gKey : ${receivedAction.groupKey}',
+        );
         throw 'Received null payload through notification action | gKey : ${receivedAction.groupKey}';
       } else {
-        final context = navigatorKey.currentContext!;
+        final BuildContext context = navigatorKey.currentContext!;
         final ReminderModel reminder = ReminderModel.fromJson(payload);
         gLogger.i(
           'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}',
         );
 
-        ReminderSheetHelper.openSheet(
-          context: context,
-          reminder: reminder,
-        );
-        removeNotifications(receivedAction.groupKey);
+        if (context.mounted) {
+          ReminderSheetHelper.openSheet(
+            context: context,
+            reminder: reminder,
+          );
+        }
+        await removeNotifications(receivedAction.groupKey);
       }
     }
 
-    SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
+    final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
 
-    bool isMainActive = await isMainIsolateActive();
+    final bool isMainActive = await isMainIsolateActive();
 
     if (receivedAction.buttonKeyPressed == 'done') {
       gLogger.i('Notification action | Done Button Pressed');
-      cancelScheduledNotification(
-          receivedAction.groupKey ?? notificationNullGroupKey);
+      await cancelScheduledNotification(
+        receivedAction.groupKey ?? notificationNullGroupKey,
+      );
       if (isMainActive == true) {
-        final message = {
+        final Map<String, Object> message = <String, Object>{
           'action': 'done',
-          'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey)
+          'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey),
         };
         mainIsolate!.send(message);
         gLogger.i('Sent action message to main isolate | Message : $message');
       } else {
         await Hive.initFlutter();
 
-        await Hive.openBox(HiveBoxNames.pendingRemovals.name);
+        await Hive.openBox<int>(HiveBoxNames.pendingRemovals.name);
 
         if (receivedAction.groupKey == null) {
           gLogger.e(
-              'Received null groupKey in onActionReceivedMethod | gKey : ${receivedAction.groupKey}');
+            'Received null groupKey in onActionReceivedMethod | gKey : ${receivedAction.groupKey}',
+          );
           throw 'Received null groupKey in onActionReceivedMethod | gKey : ${receivedAction.groupKey}';
         }
-        PendingRemovalsDB.addPendingRemoval(
-            int.parse(receivedAction.groupKey!));
+        await PendingRemovalsDB.addPendingRemoval(
+          int.parse(receivedAction.groupKey!),
+        );
         gLogger.i(
-            'Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}');
+          'Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}',
+        );
       }
     }
   }
@@ -213,22 +226,25 @@ class NotificationController {
     gLogger.i('Checking main isolate status');
     final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
     if (mainIsolate != null) {
-      final receivePort = ReceivePort();
+      final ReceivePort receivePort = ReceivePort();
       IsolateNameServer.registerPortWithName(
-          receivePort.sendPort, 'NotificationIsolate');
+        receivePort.sendPort,
+        'NotificationIsolate',
+      );
       mainIsolate.send('ping');
       gLogger.i("Send 'ping' message to check for main isolate's existence.");
-      final timeout = Duration(seconds: 3);
+      const Duration timeout = Duration(seconds: 3);
       try {
-        final pong = await receivePort.first.timeout(timeout);
-        if (pong == 'pong') {
+        final dynamic pong = await receivePort.first.timeout(timeout);
+        if (pong is String && pong == 'pong') {
           gLogger.i("Message 'pong' received | Main isolate active");
           return true;
         }
       } catch (e) {
         if (e is TimeoutException) {
           gLogger.i(
-              "Timeout | 'pong' msg not received | Main Isolate not active.");
+            "Timeout | 'pong' msg not received | Main Isolate not active.",
+          );
           return false;
         }
       } finally {

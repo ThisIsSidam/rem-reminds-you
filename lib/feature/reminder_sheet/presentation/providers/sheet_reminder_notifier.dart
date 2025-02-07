@@ -1,15 +1,22 @@
-import 'package:Rem/core/models/no_rush_reminders/no_rush_reminders.dart';
-import 'package:Rem/feature/settings/presentation/providers/settings_provider.dart';
-import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/generate_id.dart';
+import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 
 class SheetReminderNotifier extends ChangeNotifier {
+  SheetReminderNotifier({required this.ref}) {
+    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
+    _dateTime = DateTime.now().add(settings.defaultLeadDuration);
+    _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
+
+    gLogger.i('SheetReminderNotifier initialized');
+  }
   Ref ref;
   int? _id;
   String _title = '';
@@ -20,14 +27,6 @@ class SheetReminderNotifier extends ChangeNotifier {
   RecurringInterval _recurringInterval = RecurringInterval.none;
   bool _noRush = false;
   bool _isPaused = false;
-
-  SheetReminderNotifier({required this.ref}) {
-    final settings = ref.read(userSettingsProvider);
-    _dateTime = DateTime.now().add(settings.defaultLeadDuration);
-    _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
-
-    gLogger.i('SheetReminderNotifier initialized');
-  }
 
   @override
   void dispose() {
@@ -93,7 +92,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   }
 
   void resetValuesWith({Duration? customDuration, bool isNoRush = false}) {
-    final settings = ref.read(userSettingsProvider);
+    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
     _id = null;
     _title = '';
     _preParsedTitle = '';
@@ -111,7 +110,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   void loadValues(ReminderModel reminder) {
     _id = reminder.id;
     _title = reminder.title;
-    _preParsedTitle = reminder.PreParsedTitle;
+    _preParsedTitle = reminder.preParsedTitle;
     _dateTime = reminder.dateTime;
     _baseDateTime = reminder is RecurringReminderModel
         ? reminder.baseDateTime
@@ -121,12 +120,13 @@ class SheetReminderNotifier extends ChangeNotifier {
         ? reminder.recurringInterval
         : RecurringInterval.none;
     if (reminder is NoRushRemindersModel) _noRush = true;
-    _isPaused = reminder is RecurringReminderModel ? reminder.paused : false;
+    _isPaused = reminder is RecurringReminderModel && reminder.paused;
     notifyListeners();
   }
 
   ReminderModel constructReminder() {
-    final autoSnooze = ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
+    final Duration autoSnooze =
+        ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
 
     if (_noRush) {
       return NoRushRemindersModel(
@@ -140,7 +140,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         id: id ?? generateId(),
         dateTime: dateTime,
         title: title,
-        PreParsedTitle: preParsedTitle,
+        preParsedTitle: preParsedTitle,
         autoSnoozeInterval: autoSnoozeInterval,
       );
     } else {
@@ -150,7 +150,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         dateTime: dateTime,
         autoSnoozeInterval: autoSnoozeInterval,
         baseDateTime: baseDateTime,
-        PreParsedTitle: preParsedTitle,
+        preParsedTitle: preParsedTitle,
         recurringInterval: recurringInterval,
         paused: isPaused,
       );
@@ -158,7 +158,8 @@ class SheetReminderNotifier extends ChangeNotifier {
   }
 }
 
-final sheetReminderNotifier =
-    ChangeNotifierProvider<SheetReminderNotifier>((ref) {
+final ChangeNotifierProvider<SheetReminderNotifier> sheetReminderNotifier =
+    ChangeNotifierProvider<SheetReminderNotifier>(
+        (Ref<SheetReminderNotifier> ref) {
   return SheetReminderNotifier(ref: ref);
 });

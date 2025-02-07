@@ -1,14 +1,14 @@
-import 'package:Rem/core/constants/const_strings.dart';
-import 'package:Rem/core/models/reminder_model/reminder_model.dart';
-import 'package:Rem/feature/home/presentation/providers/reminders_provider.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/providers/central_widget_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../../../core/constants/const_strings.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
+import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../archives/presentation/providers/archives_provider.dart';
+import '../../../home/presentation/providers/reminders_provider.dart';
+import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
 class KeyButtonsRow extends ConsumerWidget {
@@ -16,49 +16,53 @@ class KeyButtonsRow extends ConsumerWidget {
     super.key,
   });
 
-  void saveReminder(BuildContext context, WidgetRef ref) async {
+  Future<void> saveReminder(BuildContext context, WidgetRef ref) async {
     final ReminderModel reminder =
         ref.read(sheetReminderNotifier).constructReminder();
 
-    if (reminder.title == "No Title") {
-      Fluttertoast.showToast(msg: "Enter a title!");
+    if (reminder.title == 'No Title') {
+      await Fluttertoast.showToast(msg: 'Enter a title!');
       return;
     }
     if (reminder.dateTime.isBefore(DateTime.now())) {
-      Fluttertoast.showToast(
-          msg: "Time machine is broke. Can't remind you in the past!");
+      await Fluttertoast.showToast(
+        msg: "Time machine is broke. Can't remind you in the past!",
+      );
       return;
     }
 
-    if ((await ref.read(archivesProvider).isInArchives(reminder.id))) {
-      ref.read(remindersProvider).retrieveFromArchives(reminder.id);
+    if (await ref.read(archivesProvider).isInArchives(reminder.id)) {
+      await ref.read(remindersProvider).retrieveFromArchives(reminder.id);
     } else {
-      ref.read(remindersProvider).saveReminder(reminder);
+      await ref.read(remindersProvider).saveReminder(reminder);
     }
+
+    if (!context.mounted) return;
     Navigator.pop(context);
   }
 
-  void deleteReminder(
+  Future<void> deleteReminder(
     int id,
     BuildContext context,
     WidgetRef ref,
   ) async {
     if (await ref.read(archivesProvider).isInArchives(id)) {
-      ref.read(archivesProvider).deleteArchivedReminder(id);
+      await ref.read(archivesProvider).deleteArchivedReminder(id);
       return;
     }
 
-    void finalDelete({deleteAllRecurring = false}) {
+    void finalDelete({bool deleteAllRecurring = false}) {
       ref.read(remindersProvider).deleteReminder(
             id,
           );
       Navigator.pop(context);
     }
 
-    final recurringInterval = ref.read(sheetReminderNotifier).recurringInterval;
+    final RecurringInterval recurringInterval =
+        ref.read(sheetReminderNotifier).recurringInterval;
 
-    if (recurringInterval != RecurringInterval.none) {
-      showDialog(
+    if (recurringInterval != RecurringInterval.none && context.mounted) {
+      await showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return _RecurringReminderDeletionDialog(
@@ -73,15 +77,19 @@ class KeyButtonsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
-    final noRush = ref.watch(sheetReminderNotifier.select((p) => p.noRush));
-    final centralElement = ref.watch(centralWidgetNotifierProvider);
+    final int? id = ref
+        .watch(sheetReminderNotifier.select((SheetReminderNotifier p) => p.id));
+    final bool noRush = ref.watch(
+      sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
+    );
+    final CentralElement centralElement =
+        ref.watch(centralWidgetNotifierProvider);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
+        children: <Widget>[
           if (id != null) ...<Widget>[
             _buildButton(
               context: context,
@@ -90,12 +98,12 @@ class KeyButtonsRow extends ConsumerWidget {
               fillColor: Theme.of(context).colorScheme.errorContainer,
               onTap: () => deleteReminder(id, context, ref),
             ),
-            Spacer(),
+            const Spacer(),
           ],
           Row(
             spacing: 4,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: <Widget>[
               _buildButton(
                 context: context,
                 icon: Icons.close,
@@ -132,7 +140,7 @@ class KeyButtonsRow extends ConsumerWidget {
                   ref.read(sheetReminderNotifier.notifier).toggleNoRushSwitch();
                 },
               ),
-              _buildSaveButton(context, ref)
+              _buildSaveButton(context, ref),
             ],
           ),
         ],
@@ -143,13 +151,13 @@ class KeyButtonsRow extends ConsumerWidget {
   IconButton _buildButton({
     required BuildContext context,
     required IconData icon,
-    required active,
-    required onTap,
+    required bool active,
+    required VoidCallback onTap,
     Color? fillColor,
   }) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return IconButton.filled(
-      constraints: BoxConstraints(maxWidth: 64),
+      constraints: const BoxConstraints(maxWidth: 64),
       icon: Icon(
         icon,
         size: 24,
@@ -161,54 +169,61 @@ class KeyButtonsRow extends ConsumerWidget {
         backgroundColor: active
             ? fillColor ?? colorScheme.primaryContainer
             : colorScheme.onPrimaryContainer,
-        padding: EdgeInsets.all(8),
-        shape: CircleBorder(),
+        padding: const EdgeInsets.all(8),
+        shape: const CircleBorder(),
       ),
       onPressed: onTap,
     );
   }
 
   Widget _buildSaveButton(BuildContext context, WidgetRef ref) {
-    final reminder = ref.read(sheetReminderNotifier);
+    final SheetReminderNotifier reminder = ref.read(sheetReminderNotifier);
 
-    bool forAllCondition = reminder.id != newReminderID &&
+    final bool forAllCondition = reminder.id != newReminderID &&
         reminder is RecurringReminderModel &&
         reminder.recurringInterval != RecurringInterval.none &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
 
     return Row(
-      children: [
+      children: <Widget>[
         ElevatedButton(
+          onPressed: () => saveReminder(context, ref),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            surfaceTintColor: Colors.transparent,
+            shape: forAllCondition
+                ? const RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.horizontal(left: Radius.circular(25)),
+                  )
+                : null,
+          ),
           child: Text(
-            "Save",
+            'Save',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
           ),
-          onPressed: () => saveReminder(context, ref),
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              surfaceTintColor: Colors.transparent,
-              shape: forAllCondition
-                  ? RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.horizontal(left: Radius.circular(25)))
-                  : null),
         ),
         if (forAllCondition)
           ElevatedButton(
             onPressed: () {
               saveReminder(context, ref);
             },
-            child: Text("For All",
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.onErrorContainer)),
             style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.errorContainer,
-                surfaceTintColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.horizontal(right: Radius.circular(25)))),
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
+              surfaceTintColor: Colors.transparent,
+              shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.horizontal(right: Radius.circular(25)),
+              ),
+            ),
+            child: Text(
+              'For All',
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.onErrorContainer,
+                  ),
+            ),
           ),
       ],
     );
@@ -218,11 +233,12 @@ class KeyButtonsRow extends ConsumerWidget {
 class _RecurringReminderDeletionDialog extends ConsumerWidget {
   const _RecurringReminderDeletionDialog({required this.finalDelete});
 
-  final Function({bool deleteAllRecurring}) finalDelete;
+  final void Function({bool deleteAllRecurring}) finalDelete;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(sheetReminderNotifier.select((p) => p.id));
+    final int? id = ref
+        .watch(sheetReminderNotifier.select((SheetReminderNotifier p) => p.id));
     return AlertDialog(
       elevation: 5,
       surfaceTintColor: Colors.transparent,
@@ -232,10 +248,11 @@ class _RecurringReminderDeletionDialog extends ConsumerWidget {
         style: Theme.of(context).textTheme.titleMedium,
       ),
       content: Text(
+        // ignore: lines_longer_than_80_chars
         'This is a recurring reminder. Do you really want to delete it? You can also archive it.',
         style: Theme.of(context).textTheme.bodyMedium,
       ),
-      actions: [
+      actions: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog

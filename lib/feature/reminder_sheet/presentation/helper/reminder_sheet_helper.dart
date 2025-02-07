@@ -1,12 +1,13 @@
-import 'package:Rem/core/models/reminder_model/reminder_model.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/providers/central_widget_provider.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
-import 'package:Rem/feature/reminder_sheet/presentation/sheet/reminder_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../providers/central_widget_provider.dart';
+import '../providers/sheet_reminder_notifier.dart';
+import '../sheet/reminder_sheet.dart';
+
 class ReminderSheetHelper {
-  static openSheet({
+  static void openSheet({
     required BuildContext context,
     ReminderModel? reminder,
     WidgetRef? ref,
@@ -14,7 +15,7 @@ class ReminderSheetHelper {
     bool isNoRush = false,
   }) {
     if (ref == null) {
-      final container = ProviderContainer();
+      final ProviderContainer container = ProviderContainer();
       if (reminder != null) {
         container.read(sheetReminderNotifier).loadValues(reminder);
       } else {
@@ -38,10 +39,10 @@ class ReminderSheetHelper {
       ref.read(centralWidgetNotifierProvider.notifier).reset();
     }
 
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) => ReminderSheet(),
+      builder: (BuildContext context) => const ReminderSheet(),
     );
   }
 }

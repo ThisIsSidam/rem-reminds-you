@@ -1,9 +1,8 @@
 name: Rem
-description: "A reminder application which reminds you again and again until you finish the job."
-
+description: "A reminder application which reminds you again and again until you
+  finish the job."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-  
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -28,52 +27,49 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
-
 dependencies:
+  android_alarm_manager_plus: ^4.0.4
+  archive: ^3.6.1
+  awesome_notifications: ^0.10.0
+  crypto: ^3.0.3
+  cupertino_icons: ^1.0.2
+  double_back_to_close_app: ^2.1.0
+  duration: ^4.0.3
+  dynamic_color: ^1.7.0
+  file_picker: ^8.1.2
   flutter:
     sdk: flutter
-  intl: ^0.19.0
-  hive_ce: ^2.10.0
-  hive_ce_flutter: ^2.2.0
-  awesome_notifications: ^0.10.0
-  timezone: ^0.9.2
-  crypto: ^3.0.3
   flutter_background_service: ^5.0.5
   flutter_background_service_android: ^6.2.2
-  double_back_to_close_app: ^2.1.0
-  flutter_riverpod: ^2.5.1
-  hooks_riverpod: ^2.6.1
-  flutter_hooks: ^0.20.5
-  fluttertoast: ^8.2.6
-  flutter_slidable: ^3.1.1
-  dynamic_color: ^1.7.0
-  riverpod_annotation: ^2.6.1
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  android_alarm_manager_plus: ^4.0.4
-  permission_handler: ^11.3.1
-  path_provider: ^2.1.4
-  archive: ^3.6.1
-  file_picker: ^8.1.2
-  package_info_plus: ^8.0.3
-  duration: ^4.0.3
-  logger: ^2.4.0
-  path: ^1.9.0
-  mutex: ^3.1.0
-  random_datetime: ^1.0.3
   flutter_datetime_picker_plus: ^2.2.0
+  flutter_hooks: ^0.20.5
+  flutter_riverpod: ^2.5.1
+  flutter_slidable: ^3.1.1
+  fluttertoast: ^8.2.6
+  hive_ce: ^2.10.0
+  hive_ce_flutter: ^2.2.0
+  hooks_riverpod: ^2.6.1
+  intl: ^0.19.0
+  logger: ^2.4.0
+  mutex: ^3.1.0
+  package_info_plus: ^8.0.3
+  path: ^1.9.0
+  path_provider: ^2.1.4
+  permission_handler: ^11.3.1
+  random_datetime: ^1.0.3
+  riverpod_annotation: ^2.6.1
+  timezone: ^0.9.2
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  hive_ce_generator: ^1.8.2
   build_runner: ^2.1.11
   flutter_launcher_icons: ^0.14.1
+  flutter_test:
+    sdk: flutter
+  freezed: ^2.5.7
+  hive_ce_generator: ^1.8.2
   json_serializable: ^6.9.0
-  freezed: ^2.5.7  
   riverpod_generator: ^2.6.3
+  very_good_analysis: ^7.0.0
 
 flutter_launcher_icons:
   android: "icon"
@@ -90,25 +86,21 @@ flutter_lints: ^3.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter packages.
 flutter:
-# The following line ensures that the Material Icons font is
-# included with your application, so that you can use the icons in
-# the material Icons class.
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
   uses-material-design: true
 
 # To add assets to your application, add an assets section, like this:
 # assets:
 # - images/a_dot_burr.jpeg
 # - images/a_dot_ham.jpeg
-  
 # An image asset can refer to one or more resolution-specific "variants", see
 # https://flutter.dev/assets-and-images/#resolution-aware
-  
 # For details regarding adding assets from package dependencies, see
 # https://flutter.dev/assets-and-images/#from-packages
-  
 # To add custom fonts to your application, add a fonts section here,
 # in this "flutter" section. Each entry in this list should have a
 # "family" key with the font family name, and a "fonts" key with a

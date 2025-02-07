@@ -1,12 +1,12 @@
-import 'package:Rem/feature/reminder_sheet/presentation/providers/sheet_reminder_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../providers/central_widget_provider.dart';
+import '../../providers/sheet_reminder_notifier.dart';
 
 class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
-  ReminderRecurrenceOptionsWidget({super.key});
+  const ReminderRecurrenceOptionsWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,18 +18,22 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
         crossAxisCount: 3,
         shrinkWrap: true,
         childAspectRatio: 1.5,
-        children: [
+        children: <Widget>[
           for (final RecurringInterval interval in RecurringInterval.values)
-            intervalButton(interval, context, ref)
+            intervalButton(interval, context, ref),
         ],
       ),
     );
   }
 
   Widget intervalButton(
-      RecurringInterval interval, BuildContext context, WidgetRef ref) {
-    final recurringInterval = ref.read(sheetReminderNotifier).recurringInterval;
-    bool isPickedOption = interval == recurringInterval;
+    RecurringInterval interval,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final RecurringInterval recurringInterval =
+        ref.read(sheetReminderNotifier).recurringInterval;
+    final bool isPickedOption = interval == recurringInterval;
 
     return ElevatedButton(
       onPressed: () {
@@ -37,8 +41,8 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
         ref.read(centralWidgetNotifierProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.all(4),
-        shape: BeveledRectangleBorder(),
+        padding: const EdgeInsets.all(4),
+        shape: const BeveledRectangleBorder(),
         backgroundColor: isPickedOption
             ? Theme.of(context).colorScheme.primaryContainer
             : Theme.of(context).colorScheme.secondaryContainer,
@@ -46,9 +50,10 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
       child: Text(
         interval.toString(),
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: isPickedOption
-                ? Theme.of(context).colorScheme.onPrimaryContainer
-                : Theme.of(context).colorScheme.onSecondaryContainer),
+              color: isPickedOption
+                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                  : Theme.of(context).colorScheme.onSecondaryContainer,
+            ),
       ),
     );
   }
