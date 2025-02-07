@@ -52,8 +52,9 @@ class TitleParseHandler {
 
   /// Extracts the [DateTime] object from the [DateTime] string.
   DateTime? getParsedDateTime(String str) {
-    final RegExp durationRegExp =
-        RegExp(r'in\s(\d+)\s*(m(?:in(?:ute)?s?)?|h(?:(?:ou)?rs?)?|d(?:ays?)?)');
+    final RegExp durationRegExp = RegExp(
+      r'in\s(\d+)\s*(m(?:in(?:ute)?s?)?|h(?:ou?rs?)?|d(?:ays?)?)?',
+    );
     final RegExpMatch? match1 = durationRegExp.firstMatch(str);
     if (match1 != null) {
       return parseDurationInput(match1);
@@ -75,7 +76,10 @@ class TitleParseHandler {
   /// returns the [DateTime].
   DateTime parseDurationInput(RegExpMatch match) {
     final int value = int.parse(match.group(1)!);
-    final String unit = match.group(2)!.toLowerCase();
+    // Default to minutes
+    final String unit = (match.groupCount >= 2 && match.group(2) != null)
+        ? match.group(2)!.toLowerCase()
+        : 'm';
 
     Duration toAdd;
     if (unit.startsWith('m')) {
@@ -130,10 +134,10 @@ class TitleParseHandler {
         // Seconds should be 0
         updatedTime.year,
         updatedTime.month,
-        updatedTime.day + 1, // Change to tomorrow if in past
+        updatedTime.day,
         updatedTime.hour,
         updatedTime.minute,
-      );
+      ).add(const Duration(days: 1));
     }
     return DateTime(
       // Seconds should be 0
