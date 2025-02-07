@@ -86,11 +86,6 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<ReminderModel> saveReminder(ReminderModel reminder) async {
-    // if (reminder.id == newReminderID) {
-    //   reminder.id = generateId(reminder);
-    //   reminder.baseDateTime = reminder.dateTime;
-    // }
-
     if (reminder.id != newReminderID ||
         (await ref?.read(archivesProvider).isInArchives(reminder.id) ??
             false)) {
@@ -100,13 +95,12 @@ class RemindersNotifier extends ChangeNotifier {
       _reminders.remove(reminder.id);
     }
 
-    _reminders[reminder.id] = reminder;
-
     if (reminder is! RecurringReminderModel || !reminder.paused) {
       // Only reschedule if reminder is NOT paused
       await NotificationController.scheduleNotification(reminder);
     }
-    await RemindersDatabaseController.updateReminders(_reminders);
+    await RemindersDatabaseController.saveReminder(reminder.id, reminder);
+    _reminders = RemindersDatabaseController.getReminders();
     gLogger.i('Saved Reminder in Database | ID: ${reminder.id}');
     _updateCategorizedReminders();
     notifyListeners();
@@ -118,11 +112,10 @@ class RemindersNotifier extends ChangeNotifier {
     if (reminder == null) return null;
 
     await NotificationController.cancelScheduledNotification(id.toString());
-    await NotificationController.removeNotifications(id.toString());
 
-    _reminders.remove(id);
+    await RemindersDatabaseController.removeReminder(id);
+    _reminders = RemindersDatabaseController.getReminders();
     gLogger.i('Deleted Reminder from Database | ID: ${reminder.id}');
-    await RemindersDatabaseController.updateReminders(_reminders);
 
     _updateCategorizedReminders();
     notifyListeners();
@@ -161,8 +154,8 @@ class RemindersNotifier extends ChangeNotifier {
       await ref?.read(archivesProvider).addReminderToArchives(reminder);
     }
 
-    _reminders.remove(id);
-    await RemindersDatabaseController.updateReminders(_reminders);
+    await RemindersDatabaseController.removeReminder(id);
+    _reminders = RemindersDatabaseController.getReminders();
 
     gLogger.i('Moved Reminder to Archives | ID: ${reminder.id}');
     _updateCategorizedReminders();
@@ -179,8 +172,8 @@ class RemindersNotifier extends ChangeNotifier {
     reminder.moveToNextOccurrence();
     await NotificationController.scheduleNotification(reminder);
 
-    _reminders[id] = reminder;
-    await RemindersDatabaseController.updateReminders(_reminders);
+    await RemindersDatabaseController.saveReminder(reminder.id, reminder);
+    _reminders = RemindersDatabaseController.getReminders();
 
     gLogger.i(
       'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
@@ -197,8 +190,8 @@ class RemindersNotifier extends ChangeNotifier {
     reminder.moveToPreviousOccurrence();
     await NotificationController.scheduleNotification(reminder);
 
-    _reminders[id] = reminder;
-    await RemindersDatabaseController.updateReminders(_reminders);
+    await RemindersDatabaseController.saveReminder(reminder.id, reminder);
+    _reminders = RemindersDatabaseController.getReminders();
 
     gLogger.i(
       'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
@@ -209,7 +202,7 @@ class RemindersNotifier extends ChangeNotifier {
 
   Future<void> clearAllReminders() async {
     _reminders.clear();
-    RemindersDatabaseController.removeAllReminders();
+    await RemindersDatabaseController.removeAllReminders();
 
     gLogger.i('Cleared all Reminders | Len : ${_reminders.length}');
     _updateCategorizedReminders();
@@ -241,7 +234,7 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<void> restoreBackup(String jsonData) async {
-    RemindersDatabaseController.restoreBackup(jsonData);
+    await RemindersDatabaseController.restoreBackup(jsonData);
     await loadReminders();
     gLogger.i('Restored Database Backup');
   }

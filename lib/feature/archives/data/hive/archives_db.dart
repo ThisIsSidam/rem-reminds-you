@@ -29,7 +29,7 @@ class ArchivesDatabaseController {
     await _box.delete(id);
   }
 
-  static Future<void> updateReminder(int id, ReminderModel reminder) async {
+  static Future<void> saveReminder(int id, ReminderModel reminder) async {
     await _box.put(id, reminder);
   }
 

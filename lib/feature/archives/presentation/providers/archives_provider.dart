@@ -28,29 +28,25 @@ class ArchivesNotifier extends ChangeNotifier {
   }
 
   Future<void> addReminderToArchives(ReminderModel reminder) async {
-    _archivedReminders[reminder.id] = reminder;
-    await ArchivesDatabaseController.updateArchivedReminders(
-      _archivedReminders,
-    );
+    await ArchivesDatabaseController.saveReminder(reminder.id, reminder);
+    _archivedReminders = ArchivesDatabaseController.getArchivedReminders();
     gLogger.i('Added Reminder to Archives | ID : ${reminder.id}');
 
     notifyListeners();
   }
 
   Future<ReminderModel?> deleteArchivedReminder(int id) async {
-    if (_archivedReminders.containsKey(id)) {
-      final ReminderModel? reminder = _archivedReminders.remove(id);
-      await ArchivesDatabaseController.updateArchivedReminders(
-        _archivedReminders,
-      );
-      gLogger.i('Deleted Reminder from Archives | ID : $id');
-
-      notifyListeners();
-      return reminder;
-    } else {
+    final ReminderModel? reminder = _archivedReminders[id];
+    if (reminder == null) {
       gLogger.w('Deletion Failed | Reminder not found in Archives | Id : $id');
       return null;
     }
+    await ArchivesDatabaseController.removeReminder(reminder.id);
+    _archivedReminders = ArchivesDatabaseController.getArchivedReminders();
+    gLogger.i('Deleted Reminder from Archives | ID : $id');
+
+    notifyListeners();
+    return reminder;
   }
 
   Future<void> clearAllArchivedReminders() async {

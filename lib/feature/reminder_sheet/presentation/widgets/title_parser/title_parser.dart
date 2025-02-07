@@ -125,17 +125,23 @@ class TitleParseHandler {
 
   /// If the time to be updated is in the past, increase it by a day.
   DateTime moveTimeIfNeeded(DateTime updatedTime) {
-    late final DateTime movedTime;
     if (updatedTime.isBefore(DateTime.now())) {
-      movedTime = updatedTime.add(const Duration(days: 1));
+      return DateTime(
+        // Seconds should be 0
+        updatedTime.year,
+        updatedTime.month,
+        updatedTime.day + 1, // Change to tomorrow if in past
+        updatedTime.hour,
+        updatedTime.minute,
+      );
     }
     return DateTime(
       // Seconds should be 0
-      movedTime.year,
-      movedTime.month,
-      movedTime.day,
-      movedTime.hour,
-      movedTime.minute,
+      updatedTime.year,
+      updatedTime.month,
+      updatedTime.day,
+      updatedTime.hour,
+      updatedTime.minute,
     );
   }
 }

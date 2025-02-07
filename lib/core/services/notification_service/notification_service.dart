@@ -140,7 +140,8 @@ class NotificationController {
 
     // Cancelling through ALM coz AwesomeN is used to only send notification.
     // It has no hands in scheduling notifications.
-    await AndroidAlarmManager.cancel(int.parse(groupKey));
+    await AndroidAlarmManager.cancel(int.tryParse(groupKey) ?? -1);
+    await removeNotifications(groupKey);
     gLogger.i('Cancelled scheduled notifications | gKey : $groupKey');
   }
 
