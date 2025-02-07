@@ -34,15 +34,22 @@ class OtherSection extends StatelessWidget {
   }
 
   Widget _buildWhatsNewTile(BuildContext context) {
-    return ExpansionTile(
+    return ListTile(
       leading: const Icon(Icons.new_releases_outlined),
-      backgroundColor: Theme.of(context).cardColor,
+      tileColor: Theme.of(context).cardColor,
       title: Text(
         "What's New?",
         style: Theme.of(context).textTheme.titleSmall,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      children: WhatsNewDialog.getWhatsNewTileContent(context),
+      onTap: () {
+        showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return const WhatsNewDialog();
+          },
+        );
+      },
     );
   }
 }

@@ -1,62 +1,45 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/enums/storage_enums.dart';
-import '../../../core/providers/global_providers.dart';
 import '../../utils/logger/global_logger.dart';
 
-class WhatsNewDialog {
-  /// Check if app version stored in SharedPrefs match with current
-  /// version or not. If not, show the dialog and save the
-  /// current version.
-  static Future<void> checkAndShowWhatsNewDialog(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final String currentVersion = packageInfo.version;
-    final SharedPreferences prefs = ref.watch(sharedPreferencesProvider);
-    final String storedVersion =
-        prefs.getString(SharedKeys.appVersion.key) ?? '0.0.0';
-    if (currentVersion != storedVersion) {
-      await prefs.setString(SharedKeys.appVersion.key, currentVersion);
-      if (!context.mounted) return;
-      await showWhatsNewDialog(context);
-    }
-  }
+class WhatsNewDialog extends StatelessWidget {
+  const WhatsNewDialog({super.key});
 
-  static Future<void> showWhatsNewDialog(BuildContext context) async {
+  @override
+  Widget build(BuildContext context) {
     gLogger.i("Showing what's new dialog");
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Theme.of(context).cardColor,
-          title: ListTile(
-            leading: const Icon(Icons.new_releases_outlined),
-            title: Text(
-              "What's New",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+    return PopScope(
+      canPop: false,
+      child: AlertDialog(
+        backgroundColor: Theme.of(context).cardColor,
+        title: ListTile(
+          leading: const Icon(Icons.new_releases_outlined),
+          title: Text(
+            "What's New",
+            style: Theme.of(context).textTheme.titleLarge,
           ),
-          insetPadding: const EdgeInsets.symmetric(horizontal: 32),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: getWhatsNewTileContent(context),
-            ),
+          trailing: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-        );
-      },
+        ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: getWhatsNewTileContent(context),
+          ),
+        ),
+      ),
     );
   }
 
-  static List<Widget> getWhatsNewTileContent(BuildContext context) {
+  List<Widget> getWhatsNewTileContent(BuildContext context) {
     return <Widget>[
       Padding(
         padding: const EdgeInsets.all(16),

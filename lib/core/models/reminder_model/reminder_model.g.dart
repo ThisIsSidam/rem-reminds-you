@@ -20,7 +20,7 @@ class ReminderModelAdapter extends TypeAdapter<ReminderModel> {
       id: (fields[0] as num).toInt(),
       title: fields[1] as String,
       dateTime: fields[2] as DateTime,
-      PreParsedTitle: fields[3] as String,
+      preParsedTitle: fields[3] as String,
       autoSnoozeInterval: fields[4] as Duration?,
     );
   }
@@ -36,7 +36,7 @@ class ReminderModelAdapter extends TypeAdapter<ReminderModel> {
       ..writeByte(2)
       ..write(obj.dateTime)
       ..writeByte(3)
-      ..write(obj.PreParsedTitle)
+      ..write(obj.preParsedTitle)
       ..writeByte(4)
       ..write(obj.autoSnoozeInterval);
   }
