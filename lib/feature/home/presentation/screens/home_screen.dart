@@ -68,7 +68,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
         if (message['action'] == 'done' && id is int) {
           gLogger.i('Received done action for $id');
-          ref.read(remindersProvider).markAsDone(id);
+          ref.read(remindersProvider).markAsDone(<int>[id]);
         } else {
           gLogger.w('Port message is not "done" or not int, discarding');
         }

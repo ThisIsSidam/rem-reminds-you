@@ -15,11 +15,11 @@ import '../../data/hive/reminders_db.dart';
 import '../screens/home_screen.dart';
 
 class RemindersNotifier extends ChangeNotifier {
-  RemindersNotifier({this.ref}) {
+  RemindersNotifier({required this.ref}) {
     gLogger.i('RemindersNotifier initialized');
     loadReminders();
   }
-  Ref? ref;
+  Ref ref;
 
   Map<int, ReminderModel> _reminders = <int, ReminderModel>{};
   Map<HomeScreenSection, List<ReminderModel>> _categorizedReminders =
@@ -86,9 +86,9 @@ class RemindersNotifier extends ChangeNotifier {
   }
 
   Future<ReminderModel> saveReminder(ReminderModel reminder) async {
-    if (reminder.id != newReminderID ||
-        (await ref?.read(archivesProvider).isInArchives(reminder.id) ??
-            false)) {
+    final bool isArchived =
+        await ref.read(archivesProvider).isInArchives(reminder.id);
+    if (reminder.id != newReminderID || !isArchived) {
       await NotificationController.cancelScheduledNotification(
         reminder.id.toString(),
       );
@@ -122,23 +122,25 @@ class RemindersNotifier extends ChangeNotifier {
     return reminder;
   }
 
-  Future<void> markAsDone(int id) async {
-    final ReminderModel? reminder = _reminders[id];
-    if (reminder == null) return;
+  Future<void> markAsDone(List<int> ids) async {
+    for (final int id in ids) {
+      final ReminderModel? reminder = _reminders[id];
+      if (reminder == null) return;
 
-    gLogger.i('Marking Reminder as Done | ID: ${reminder.id}');
-    if (reminder is! RecurringReminderModel ||
-        reminder.recurringInterval == RecurringInterval.none) {
-      gLogger.i('Moving Reminder to Archives | ID: ${reminder.id}');
-      await moveToArchive(id);
-    } else {
-      gLogger.i(
-        'Moving Reminder to next occurrence | ID: ${reminder.id} | DT: ${reminder.dateTime}',
-      );
-      await moveToNextReminderOccurrence(id);
+      gLogger.i('Marking Reminder as Done | ID: ${reminder.id}');
+      if (reminder is! RecurringReminderModel ||
+          reminder.recurringInterval == RecurringInterval.none) {
+        gLogger.i('Moving Reminder to Archives | ID: ${reminder.id}');
+        await moveToArchive(id);
+      } else {
+        gLogger.i(
+          'Moving Reminder to next occurrence | ID: ${reminder.id} | DT: ${reminder.dateTime}',
+        );
+        await moveToNextReminderOccurrence(id);
+      }
+
+      await NotificationController.removeNotifications(id.toString());
     }
-
-    await NotificationController.removeNotifications(id.toString());
     _updateCategorizedReminders();
     notifyListeners();
   }
@@ -148,11 +150,7 @@ class RemindersNotifier extends ChangeNotifier {
     if (reminder == null) return;
 
     await NotificationController.cancelScheduledNotification(id.toString());
-    if (ref == null) {
-      await ArchivesNotifier().addReminderToArchives(reminder);
-    } else {
-      await ref?.read(archivesProvider).addReminderToArchives(reminder);
-    }
+    await ref.read(archivesProvider).addReminderToArchives(reminder);
 
     await RemindersDatabaseController.removeReminder(id);
     _reminders = RemindersDatabaseController.getReminders();
@@ -213,11 +211,7 @@ class RemindersNotifier extends ChangeNotifier {
     ReminderModel? reminder;
 
     gLogger.i('Retrieving reminder from Archives | ID : $id');
-    if (ref == null) {
-      reminder = await ArchivesNotifier().deleteArchivedReminder(id);
-    } else {
-      reminder = await ref?.read(archivesProvider).deleteArchivedReminder(id);
-    }
+    reminder = await ref.read(archivesProvider).deleteArchivedReminder(id);
     if (reminder != null) {
       reminder = await saveReminder(reminder);
       gLogger.i('Retrieved reminder from Archives | ID : $id');

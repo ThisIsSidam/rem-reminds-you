@@ -329,7 +329,7 @@ class ActionPaneManager {
       backgroundColor: Colors.green,
       icon: Icons.check,
       onPressed: (BuildContext context) {
-        remindersProviderValue.markAsDone(reminder.id);
+        remindersProviderValue.markAsDone(<int>[reminder.id]);
 
         if (reminder is! RecurringReminderModel ||
             reminder.recurringInterval == RecurringInterval.none) {

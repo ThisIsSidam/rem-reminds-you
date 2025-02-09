@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'core/enums/storage_enums.dart';
 import 'core/local_storage/hive_custom_adapters/time_of_day_adapter.dart';
-import 'core/local_storage/pending_removals_db.dart';
 import 'core/models/no_rush_reminders/no_rush_reminders.dart';
 import 'core/models/recurring_interval/recurring_interval.dart';
 import 'core/models/recurring_reminder/recurring_reminder.dart';
@@ -53,6 +52,5 @@ Future<void> initHive() async {
   await Hive.openBox<ReminderModel>(HiveBoxNames.archives.name);
   await Hive.openBox<dynamic>(HiveBoxNames.settings.name);
 
-  await PendingRemovalsDB.clearPendingRemovals();
   gLogger.i('Initialized Hive');
 }
