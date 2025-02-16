@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../../../../core/enums/files_n_folders.dart';
 import '../../../../../../shared/utils/logger/file_output.dart';
@@ -49,10 +50,9 @@ class LogsSection extends ConsumerWidget {
             await Permission.manageExternalStorage.request();
         if (!status2.isGranted) {
           if (!context.mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              content: const Text('Storage2 permission is required for backup'),
-            ),
+          AppUtils.showToast(
+            msg: 'Storage permission is required for backup',
+            type: ToastificationType.warning,
           );
           return;
         }
@@ -76,10 +76,10 @@ class LogsSection extends ConsumerWidget {
           }
 
           if (!context.mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              content: Text('Logs saved : ${outputFile.path}'),
-            ),
+          AppUtils.showToast(
+            msg: 'Logs saved',
+            description: outputFile.path,
+            type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
           gLogger.e(
@@ -88,11 +88,7 @@ class LogsSection extends ConsumerWidget {
             stackTrace: stackTrace,
           );
           if (!context.mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              content: Text('Backup failed: $e'),
-            ),
-          );
+          AppUtils.showToast(msg: "Couldn't export logs!");
         }
       },
     );
@@ -107,12 +103,7 @@ class LogsSection extends ConsumerWidget {
       ),
       onTap: () async {
         await LogsManager.clearLogs();
-        if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          buildCustomSnackBar(
-            content: const Text('Successfully deleted all logs'),
-          ),
-        );
+        AppUtils.showToast(msg: 'Successfully deleted all logs');
       },
     );
   }

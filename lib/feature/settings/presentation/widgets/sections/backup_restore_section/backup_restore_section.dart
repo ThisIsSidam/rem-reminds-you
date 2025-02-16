@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../../../../shared/utils/logger/global_logger.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
@@ -49,10 +50,9 @@ class BackupRestoreSection extends ConsumerWidget {
         final PermissionStatus status2 =
             await Permission.manageExternalStorage.request();
         if (!status2.isGranted && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              content: const Text('Storage2 permission is required for backup'),
-            ),
+          AppUtils.showToast(
+            msg: 'Storage permission is required for backup',
+            type: ToastificationType.warning,
           );
           return;
         }
@@ -95,18 +95,16 @@ class BackupRestoreSection extends ConsumerWidget {
 
           final File file = File(outputPath);
           await file.writeAsBytes(zipData);
-          if (!context.mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(content: Text('Backup created: $outputPath')),
+          AppUtils.showToast(
+            msg: 'Backup created',
+            description: outputPath,
+            type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
           gLogger.e('Error during backup', error: e, stackTrace: stackTrace);
-          if (!context.mounted) return;
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              content: Text('Backup failed: $e'),
-            ),
+          AppUtils.showToast(
+            msg: 'Backup failed!',
+            type: ToastificationType.error,
           );
         }
       },
@@ -121,10 +119,9 @@ class BackupRestoreSection extends ConsumerWidget {
         final PermissionStatus status =
             await Permission.manageExternalStorage.request();
         if (!status.isGranted && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              content: const Text('Storage permission is required for restore'),
-            ),
+          AppUtils.showToast(
+            msg: 'Storage permission is required for restore',
+            type: ToastificationType.warning,
           );
           return;
         }
@@ -137,8 +134,9 @@ class BackupRestoreSection extends ConsumerWidget {
 
           if (result == null) {
             if (!context.mounted) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              buildCustomSnackBar(content: const Text('No file selected')),
+            AppUtils.showToast(
+              msg: 'No file selected',
+              type: ToastificationType.warning,
             );
             return;
           }
@@ -174,19 +172,16 @@ class BackupRestoreSection extends ConsumerWidget {
             gLogger.e('File contents not found');
           }
 
-          if (!context.mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              content: const Text('Backup restored successfully'),
-            ),
+          AppUtils.showToast(
+            msg: 'Backup restored successfully',
+            type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
           gLogger.e('Error during restore', error: e, stackTrace: stackTrace);
           if (!context.mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              content: Text('Restore failed: $e'),
-            ),
+          AppUtils.showToast(
+            msg: 'Backup restore failed!',
+            type: ToastificationType.error,
           );
         }
       },

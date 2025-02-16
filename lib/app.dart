@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toastification/toastification.dart';
 
 import 'core/theme/app_theme.dart';
 import 'feature/home/presentation/screens/dashboard_screen.dart';
@@ -54,45 +55,47 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           darkColorScheme = appDarkColorScheme;
         }
 
-        return MaterialApp(
-          navigatorKey: navigatorKey,
-          builder: (BuildContext context, Widget? child) {
-            return MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                textScaler: TextScaler.linear(settings.$2),
-              ),
-              child: child!,
-            );
-          },
-          home: _buildPermissionScreenLayer(
-            child: const DashboardScreen(),
-          ),
-          themeMode: settings.$1,
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: lightColorScheme,
-            appBarTheme: const AppBarTheme(
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-                statusBarIconBrightness: Brightness.dark,
-                statusBarBrightness: Brightness.light, // for iOS
+        return ToastificationWrapper(
+          child: MaterialApp(
+            navigatorKey: navigatorKey,
+            builder: (BuildContext context, Widget? child) {
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaler: TextScaler.linear(settings.$2),
+                ),
+                child: child!,
+              );
+            },
+            home: _buildPermissionScreenLayer(
+              child: const DashboardScreen(),
+            ),
+            themeMode: settings.$1,
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: lightColorScheme,
+              appBarTheme: const AppBarTheme(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.light, // for iOS
+                ),
               ),
             ),
-          ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorScheme: darkColorScheme,
-            appBarTheme: const AppBarTheme(
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-                statusBarIconBrightness: Brightness.light,
-                statusBarBrightness: Brightness.dark, // for iOS
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              colorScheme: darkColorScheme,
+              appBarTheme: const AppBarTheme(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.light,
+                  statusBarBrightness: Brightness.dark, // for iOS
+                ),
               ),
-            ),
-            cupertinoOverrideTheme: CupertinoThemeData(
-              brightness: settings.$1 == ThemeMode.light
-                  ? Brightness.light
-                  : Brightness.dark,
+              cupertinoOverrideTheme: CupertinoThemeData(
+                brightness: settings.$1 == ThemeMode.light
+                    ? Brightness.light
+                    : Brightness.dark,
+              ),
             ),
           ),
         );

@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../shared/utils/logger/global_logger.dart';
-import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../archives/presentation/screens/archive_screen.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import 'home_screen.dart';
@@ -29,15 +28,15 @@ class DashboardScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ValueNotifier<int> currentScreen = useState<int>(1);
-    gLogger.i('Build navigation layer');
+    gLogger.i('Built dashboard screen');
     return Scaffold(
       body: DoubleBackToCloseApp(
-        snackBar: buildCustomSnackBar(
-          content: Align(
-            child: Text(
-              'Tap back again to leave',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
+        snackBar: SnackBar(
+          content: const Text('Tap back again to leave'),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: AnimatedSwitcher(
