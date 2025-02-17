@@ -1,15 +1,17 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../router/app_routes.dart';
+
 part 'initial_screen_provider.g.dart';
 
 @riverpod
-class InitialScreenNotifier extends _$InitialScreenNotifier {
+class InitialRoute extends _$InitialRoute {
   @override
-  String? build() {
+  AppRoute? build() {
     return null;
   }
 
-  set setRoute(String newRoute) {
+  set setRoute(AppRoute newRoute) {
     state = newRoute;
   }
 }

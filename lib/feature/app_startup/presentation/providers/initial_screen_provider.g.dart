@@ -6,22 +6,20 @@ part of 'initial_screen_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$initialScreenNotifierHash() =>
-    r'a9e5f408c9f258277d0cd6d84f50f48939ec03d4';
+String _$initialRouteHash() => r'9b12241c3ca2c4f96988d74c7acefdc8e07bb184';
 
-/// See also [InitialScreenNotifier].
-@ProviderFor(InitialScreenNotifier)
-final initialScreenNotifierProvider =
-    AutoDisposeNotifierProvider<InitialScreenNotifier, String?>.internal(
-  InitialScreenNotifier.new,
-  name: r'initialScreenNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$initialScreenNotifierHash,
+/// See also [InitialRoute].
+@ProviderFor(InitialRoute)
+final initialRouteProvider =
+    AutoDisposeNotifierProvider<InitialRoute, AppRoute?>.internal(
+  InitialRoute.new,
+  name: r'initialRouteProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$initialRouteHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$InitialScreenNotifier = AutoDisposeNotifier<String?>;
+typedef _$InitialRoute = AutoDisposeNotifier<AppRoute?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
