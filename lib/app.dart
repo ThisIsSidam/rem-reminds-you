@@ -6,6 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import 'core/theme/app_theme.dart';
+import 'feature/app_startup/presentation/providers/app_startup_provider.dart';
+import 'feature/app_startup/presentation/providers/initial_screen_provider.dart';
+import 'feature/app_startup/presentation/screens/splash_screen.dart';
+import 'feature/app_startup/presentation/widgets/splash_error.dart';
 import 'feature/home/presentation/screens/dashboard_screen.dart';
 import 'feature/permissions/domain/app_permi_handler.dart';
 import 'feature/permissions/presentation/screens/permissions_screen.dart';
@@ -36,6 +40,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(appStartupProvider, (_, __) {});
     gLogger.i('App Built');
     final (ThemeMode, double) settings = ref.watch(
       userSettingsProvider
@@ -66,8 +71,19 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                 child: child!,
               );
             },
-            home: _buildPermissionScreenLayer(
-              child: const DashboardScreen(),
+            home: Consumer(
+              builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                final String? screen = ref.watch(initialScreenNotifierProvider);
+                if (screen == null) {
+                  return const SplashScreen();
+                } else if (screen == 'Home') {
+                  return const DashboardScreen();
+                } else if (screen == 'Permissions') {
+                  return const PermissionScreen();
+                } else {
+                  return const SplashErrorWidget();
+                }
+              },
             ),
             themeMode: settings.$1,
             theme: ThemeData(
@@ -100,49 +116,6 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildPermissionScreenLayer({required Widget child}) {
-    return FutureBuilder<bool>(
-      future: AppPermissionHandler.checkPermissions(),
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        gLogger.i('Checking for permissions');
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          gLogger.i('Loading..');
-          return _loadingScreen();
-        } else if (snapshot.hasError) {
-          gLogger.e(
-            'Go error checking for permissions',
-            error: snapshot.error,
-            stackTrace: snapshot.stackTrace,
-          );
-          return const Center(child: Text('Error while checking permissions'));
-        } else if (snapshot.hasData) {
-          if (snapshot.data!) {
-            gLogger.i('Permissions granted');
-            return child;
-          } else {
-            gLogger.i('Permissions not granted');
-            return const PermissionScreen();
-          }
-        } else {
-          gLogger.e(
-            'Something weird happened in permissionsLayer',
-            error: snapshot.error,
-            stackTrace: snapshot.stackTrace,
-          );
-          return const Center(child: Text('Something went wrong'));
-        }
-      },
-    );
-  }
-
-  Widget _loadingScreen() {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
     );
   }
 }
