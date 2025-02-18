@@ -9,35 +9,21 @@ import '../sheet/reminder_sheet.dart';
 class ReminderSheetHelper {
   static void openSheet({
     required BuildContext context,
+    required WidgetRef ref,
     ReminderModel? reminder,
-    WidgetRef? ref,
     Duration? customDuration,
     bool isNoRush = false,
   }) {
-    if (ref == null) {
-      final ProviderContainer container = ProviderContainer();
-      if (reminder != null) {
-        container.read(sheetReminderNotifier).loadValues(reminder);
-      } else {
-        container.read(sheetReminderNotifier).resetValuesWith(
-              customDuration: customDuration,
-              isNoRush: isNoRush,
-            );
-      }
-
-      container.read(centralWidgetNotifierProvider.notifier).reset();
+    if (reminder != null) {
+      ref.read(sheetReminderNotifier).loadValues(reminder);
     } else {
-      if (reminder != null) {
-        ref.read(sheetReminderNotifier).loadValues(reminder);
-      } else {
-        ref.read(sheetReminderNotifier).resetValuesWith(
-              customDuration: customDuration,
-              isNoRush: isNoRush,
-            );
-      }
-
-      ref.read(centralWidgetNotifierProvider.notifier).reset();
+      ref.read(sheetReminderNotifier).resetValuesWith(
+            customDuration: customDuration,
+            isNoRush: isNoRush,
+          );
     }
+
+    ref.read(centralWidgetNotifierProvider.notifier).reset();
 
     showModalBottomSheet<void>(
       context: context,
