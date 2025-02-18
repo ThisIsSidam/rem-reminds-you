@@ -7,7 +7,6 @@ import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
-import '../../../../shared/widgets/one_time_undo_button/one_time_undo_button.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/reminders_provider.dart';
@@ -192,26 +191,14 @@ class ActionPaneManager {
               TextButton(
                 onPressed: () {
                   remindersProviderValue.moveToArchive(reminder.id);
-
-                  final ValueKey<String> snackBarKey =
-                      ValueKey<String>('archived-${reminder.id}');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    buildCustomSnackBar(
-                      key: snackBarKey,
-                      content: Row(
-                        children: <Widget>[
-                          Text("'${reminder.title}' Archived."),
-                          const Spacer(),
-                          OneTimeUndoButton(
-                            onPressed: () {
-                              remindersProviderValue
-                                  .retrieveFromArchives(reminder.id);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                  AppUtils.showToast(
+                    msg: "'${reminder.title}' Archived.",
+                    description: 'Tap to undo',
+                    onTap: () {
+                      remindersProviderValue.retrieveFromArchives(reminder.id);
+                    },
                   );
+
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -222,22 +209,14 @@ class ActionPaneManager {
               TextButton(
                 onPressed: () {
                   remindersProviderValue.deleteReminder(reminder.id);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    buildCustomSnackBar(
-                      content: Row(
-                        children: <Widget>[
-                          Text("'${reminder.title}' deleted"),
-                          const Spacer(),
-                          OneTimeUndoButton(
-                            onPressed: () {
-                              remindersProviderValue.saveReminder(reminder);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                  AppUtils.showToast(
+                    msg: "'${reminder.title}' deleted",
+                    description: 'Tap to undo',
+                    onTap: () {
+                      remindersProviderValue.saveReminder(reminder);
+                    },
                   );
+
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -251,21 +230,12 @@ class ActionPaneManager {
       );
     } else {
       remindersProviderValue.deleteReminder(reminder.id);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        buildCustomSnackBar(
-          content: Row(
-            children: <Widget>[
-              Text("'${reminder.title}' deleted"),
-              const Spacer(),
-              OneTimeUndoButton(
-                onPressed: () {
-                  remindersProviderValue.saveReminder(reminder);
-                },
-              ),
-            ],
-          ),
-        ),
+      AppUtils.showToast(
+        msg: "'${reminder.title}' deleted",
+        description: 'Tap to undo',
+        onTap: () {
+          remindersProviderValue.saveReminder(reminder);
+        },
       );
     }
   }
@@ -290,25 +260,14 @@ class ActionPaneManager {
             reminder.dateTime = reminder.dateTime.add(postponeDuration);
             remindersProviderValue.saveReminder(reminder);
 
-            final ValueKey<String> snackBarKey =
-                ValueKey<String>('postponed-${reminder.id}');
-            ScaffoldMessenger.of(context).showSnackBar(
-              buildCustomSnackBar(
-                key: snackBarKey,
-                content: Row(
-                  children: <Widget>[
-                    Text("'${reminder.title}' postponed."),
-                    const Spacer(),
-                    OneTimeUndoButton(
-                      onPressed: () {
-                        reminder.dateTime =
-                            reminder.dateTime.subtract(postponeDuration);
-                        remindersProviderValue.saveReminder(reminder);
-                      },
-                    ),
-                  ],
-                ),
-              ),
+            AppUtils.showToast(
+              msg: "'${reminder.title}' postponed.",
+              description: 'Tap to undo',
+              onTap: () {
+                reminder.dateTime =
+                    reminder.dateTime.subtract(postponeDuration);
+                remindersProviderValue.saveReminder(reminder);
+              },
             );
           },
         ),
@@ -333,44 +292,21 @@ class ActionPaneManager {
 
         if (reminder is! RecurringReminderModel ||
             reminder.recurringInterval == RecurringInterval.none) {
-          final ValueKey<String> snackBarKey =
-              ValueKey<String>('archived-${reminder.id}');
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              key: snackBarKey,
-              content: Row(
-                children: <Widget>[
-                  Text("'${reminder.title}' Archived."),
-                  const Spacer(),
-                  OneTimeUndoButton(
-                    onPressed: () {
-                      remindersProviderValue.retrieveFromArchives(reminder.id);
-                    },
-                  ),
-                ],
-              ),
-            ),
+          AppUtils.showToast(
+            msg: "'${reminder.title}' Archived.",
+            description: 'Tap to undo',
+            onTap: () {
+              remindersProviderValue.retrieveFromArchives(reminder.id);
+            },
           );
         } else {
-          final ValueKey<String> snackBarKey = ValueKey<String>(
-            'moved-${reminder.id}',
-          );
-          ScaffoldMessenger.of(context).showSnackBar(
-            buildCustomSnackBar(
-              key: snackBarKey,
-              content: Row(
-                children: <Widget>[
-                  Text("'${reminder.title}' moved to next occurrence."),
-                  const Spacer(),
-                  OneTimeUndoButton(
-                    onPressed: () {
-                      remindersProviderValue
-                          .moveToPreviousReminderOccurrence(reminder.id);
-                    },
-                  ),
-                ],
-              ),
-            ),
+          AppUtils.showToast(
+            msg: "'${reminder.title}' moved to next occurrence.",
+            description: 'Tap to undo',
+            onTap: () {
+              remindersProviderValue
+                  .moveToPreviousReminderOccurrence(reminder.id);
+            },
           );
         }
       },

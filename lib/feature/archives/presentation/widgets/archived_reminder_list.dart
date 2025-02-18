@@ -26,22 +26,12 @@ class ArchiveEntryLists extends ConsumerWidget {
       ..deleteArchivedReminder(
         reminder.id,
       );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      buildCustomSnackBar(
-        content: Row(
-          children: <Widget>[
-            Text("'${reminder.title}' deleted"),
-            const Spacer(),
-            TextButton(
-              child: const Text('Undo'),
-              onPressed: () {
-                archivesNotifier.addReminderToArchives(reminder);
-              },
-            ),
-          ],
-        ),
-      ),
+    AppUtils.showToast(
+      msg: "'${reminder.title}' deleted",
+      description: 'Tap to undo',
+      onTap: () {
+        archivesNotifier.addReminderToArchives(reminder);
+      },
     );
   }
 

@@ -1,18 +1,19 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/utils/logger/global_logger.dart';
-import '../../../home/presentation/screens/dashboard_screen.dart';
+import '../../../app_startup/presentation/providers/app_startup_provider.dart';
 import '../../domain/app_permi_handler.dart';
 
-class PermissionScreen extends StatefulWidget {
+class PermissionScreen extends ConsumerStatefulWidget {
   const PermissionScreen({super.key});
 
   @override
-  State<PermissionScreen> createState() => _PermissionScreenState();
+  ConsumerState<PermissionScreen> createState() => _PermissionScreenState();
 }
 
-class _PermissionScreenState extends State<PermissionScreen>
+class _PermissionScreenState extends ConsumerState<PermissionScreen>
     with WidgetsBindingObserver {
   @override
   void initState() {
@@ -66,13 +67,7 @@ class _PermissionScreenState extends State<PermissionScreen>
               ? ElevatedButton(
                   onPressed: snapshot.data!
                       ? () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) =>
-                                  const DashboardScreen(),
-                            ),
-                          );
+                          ref.invalidate(appStartupProvider);
                         }
                       : null,
                   style: ElevatedButton.styleFrom(

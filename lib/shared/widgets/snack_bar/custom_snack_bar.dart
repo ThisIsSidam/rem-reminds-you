@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 
-SnackBar buildCustomSnackBar(
-    {Key? key,
-    required Widget content,
-    Duration duration = const Duration(seconds: 5)}) {
-  return SnackBar(
-    elevation: 2,
-    behavior: SnackBarBehavior.floating,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-    duration: duration,
-    key: key,
-    content: content,
-  );
+class AppUtils {
+  static void showToast({
+    required String msg,
+    String? description,
+    ToastificationType? type,
+    VoidCallback? onTap,
+  }) {
+    int tapCount = 0; // To stop the action from being initiated twice
+    toastification.show(
+      alignment: Alignment.topCenter,
+      showProgressBar: false,
+      type: type,
+      autoCloseDuration: const Duration(seconds: 3),
+      title: Text(
+        msg,
+      ),
+      closeOnClick: true,
+      description: description != null ? Text(description) : null,
+      callbacks: ToastificationCallbacks(
+        onTap: (ToastificationItem item) {
+          if (tapCount == 0) {
+            onTap?.call();
+            toastification.dismissById(item.id);
+            tapCount++;
+          }
+        },
+      ),
+    );
+  }
 }
