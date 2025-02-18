@@ -93,6 +93,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     });
 
     Future<void>.delayed(Duration.zero, _checkAndShowWhatsNewDialog);
+    Future<void>.delayed(
+      Duration.zero,
+      () async {
+        await NotificationController.handleInitialCallback(ref);
+        return;
+      },
+    );
   }
 
   /// Check if app version stored in SharedPrefs match with current

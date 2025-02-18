@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import '../../../feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
@@ -19,8 +20,6 @@ import '../../local_storage/pending_removals_db.dart';
 import '../../models/reminder_model/reminder_model.dart';
 
 class NotificationController {
-  static ReceivedAction? initialAction;
-
   static Future<void> initializeLocalNotifications() async {
     await AndroidAlarmManager.initialize();
 
@@ -34,8 +33,6 @@ class NotificationController {
         ),
       ],
     );
-
-    initialAction = await AwesomeNotifications().getInitialNotificationAction();
 
     gLogger.i('Initialized Notifications');
   }
@@ -161,32 +158,7 @@ class NotificationController {
       'Received notification action | Action : ${receivedAction.actionType}',
     );
 
-    if (receivedAction.actionType == ActionType.Default) {
-      final Map<String, String?>? payload = receivedAction.payload;
-      if (payload == null) {
-        gLogger.e(
-          'Received null payload through notification action | gKey : ${receivedAction.groupKey}',
-        );
-        throw 'Received null payload through notification action | gKey : ${receivedAction.groupKey}';
-      } else {
-        final BuildContext context = navigatorKey.currentContext!;
-        final ReminderModel reminder = ReminderModel.fromJson(payload);
-        gLogger.i(
-          'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${receivedAction.groupKey}',
-        );
-
-        if (context.mounted) {
-          ReminderSheetHelper.openSheet(
-            context: context,
-            reminder: reminder,
-          );
-        }
-        await removeNotifications(receivedAction.groupKey);
-      }
-    }
-
     final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-
     final bool isMainActive = await isMainIsolateActive();
 
     if (receivedAction.buttonKeyPressed == 'done') {
@@ -256,5 +228,36 @@ class NotificationController {
     }
     gLogger.i('Main Isolate not found');
     return false;
+  }
+
+  static Future<void> handleInitialCallback(WidgetRef ref) async {
+    final ReceivedAction? initialAction =
+        await AwesomeNotifications().getInitialNotificationAction();
+
+    if (initialAction == null) return;
+    if (initialAction.actionType != ActionType.Default) return;
+
+    final Map<String, String?>? payload = initialAction.payload;
+    if (payload == null) {
+      gLogger.e(
+        'Received null payload through notification action | gKey : ${initialAction.groupKey}',
+      );
+      throw 'Received null payload through notification action | gKey : ${initialAction.groupKey}';
+    }
+
+    final BuildContext context = navigatorKey.currentContext!;
+    final ReminderModel reminder = ReminderModel.fromJson(payload);
+
+    if (context.mounted) {
+      gLogger.i(
+        'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${initialAction.groupKey}',
+      );
+      ReminderSheetHelper.openSheet(
+        context: context,
+        ref: ref,
+        reminder: reminder,
+      );
+    }
+    await removeNotifications(initialAction.groupKey);
   }
 }
