@@ -199,8 +199,10 @@ class CentralWidget extends ConsumerWidget {
       child: CupertinoDatePicker(
         initialDateTime: dateTime,
         itemExtent: 75,
-        onDateTimeChanged: (DateTime dt) =>
-            ref.read(sheetReminderNotifier).updateDateTime(dt),
+        onDateTimeChanged: (DateTime dt) {
+          ref.read(sheetReminderNotifier).cleanTitle();
+          ref.read(sheetReminderNotifier).updateDateTime(dt);
+        },
         backgroundColor: Colors.transparent,
       ),
     );

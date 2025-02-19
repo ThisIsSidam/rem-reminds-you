@@ -34,7 +34,7 @@ class TitleField extends HookConsumerWidget {
       <Object?>[],
     );
 
-    titleController.text = ref.read(
+    titleController.text = ref.watch(
       sheetReminderNotifier
           .select((SheetReminderNotifier p) => p.preParsedTitle),
     );

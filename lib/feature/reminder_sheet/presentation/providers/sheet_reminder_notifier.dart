@@ -97,6 +97,13 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void cleanTitle() {
+    if (_preParsedTitle != _title) {
+      _preParsedTitle = _title;
+    }
+    notifyListeners();
+  }
+
   void resetValuesWith({Duration? customDuration, bool isNoRush = false}) {
     final UserSettingsNotifier settings = ref.read(userSettingsProvider);
     _id = null;

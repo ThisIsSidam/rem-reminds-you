@@ -40,7 +40,7 @@ class TimeSetButton extends ConsumerWidget {
           dateTime.hour,
           dateTime.minute,
         );
-
+        ref.read(sheetReminderNotifier).cleanTitle();
         ref.read(sheetReminderNotifier).updateDateTime(updatedTime);
       },
       child: getChild(context),
@@ -89,6 +89,8 @@ class TimeEditButton extends ConsumerWidget {
       ),
       onPressed: () {
         final DateTime reminderTime = ref.read(sheetReminderNotifier).dateTime;
+
+        ref.read(sheetReminderNotifier).cleanTitle();
         ref
             .read(sheetReminderNotifier)
             .updateDateTime(reminderTime.add(duration));
