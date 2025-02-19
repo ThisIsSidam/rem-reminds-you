@@ -75,7 +75,8 @@ class SaveButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final SheetReminderNotifier reminder = ref.watch(sheetReminderNotifier);
 
-    final bool forAllCondition = reminder.id != newReminderID &&
+    final bool forAllCondition = reminder.id != null &&
+        reminder.id != newReminderID &&
         reminder.recurringInterval != RecurringInterval.none &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
 
@@ -107,6 +108,7 @@ class SaveButton extends ConsumerWidget {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
+                ref.read(sheetReminderNotifier.notifier).refreshBaseDateTime();
                 saveReminder(context, ref);
               },
               style: ElevatedButton.styleFrom(

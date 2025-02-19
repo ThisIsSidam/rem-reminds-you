@@ -73,6 +73,10 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refreshBaseDateTime() {
+    _baseDateTime = _dateTime;
+  }
+
   void updateAutoSnoozeInterval(Duration? newInterval) {
     _autoSnoozeInterval = newInterval;
     notifyListeners();
