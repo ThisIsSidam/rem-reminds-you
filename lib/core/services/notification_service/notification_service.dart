@@ -6,11 +6,11 @@ import 'dart:ui';
 
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
-import '../../../feature/reminder_sheet/presentation/helper/reminder_sheet_helper.dart';
+import '../../../feature/reminder_sheet/presentation/sheet/reminder_sheet.dart';
 import '../../../main.dart';
 import '../../../shared/utils/generate_id.dart';
 import '../../../shared/utils/logger/global_logger.dart';
@@ -252,10 +252,12 @@ class NotificationController {
       gLogger.i(
         'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${initialAction.groupKey}',
       );
-      ReminderSheetHelper.openSheet(
+      await showModalBottomSheet<void>(
         context: context,
-        ref: ref,
-        reminder: reminder,
+        isScrollControlled: true,
+        builder: (BuildContext context) => ReminderSheet(
+          reminder: reminder,
+        ),
       );
     }
     await removeNotifications(initialAction.groupKey);
