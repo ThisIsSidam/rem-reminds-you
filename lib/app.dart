@@ -5,13 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
-import 'core/local_storage/pending_removals_db.dart';
 import 'core/theme/app_theme.dart';
 import 'feature/app_startup/presentation/providers/app_startup_provider.dart';
 import 'feature/app_startup/presentation/providers/initial_screen_provider.dart';
 import 'feature/app_startup/presentation/screens/splash_screen.dart';
 import 'feature/app_startup/presentation/widgets/splash_error.dart';
-import 'feature/home/presentation/providers/reminders_provider.dart';
 import 'feature/home/presentation/screens/dashboard_screen.dart';
 import 'feature/permissions/domain/app_permi_handler.dart';
 import 'feature/permissions/presentation/screens/permissions_screen.dart';
@@ -34,10 +32,6 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     AppPermissionHandler.checkAlarmPermission();
-    Future<void>.delayed(const Duration(seconds: 1), () async {
-      final List<int> toRemove = await PendingRemovalsDB.clearPendingRemovals();
-      await ref.read(remindersProvider.notifier).markAsDone(toRemove);
-    });
   }
 
   @override
