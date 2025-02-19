@@ -6,8 +6,8 @@ import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 import '../widgets/bottom_buttons.dart';
 import '../widgets/central_section.dart';
-import '../widgets/key_buttons_row.dart';
 import '../widgets/title_field.dart';
+import '../widgets/top_buttons.dart';
 
 class ReminderSheet extends ConsumerStatefulWidget {
   const ReminderSheet({
@@ -84,7 +84,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        const KeyButtonsRow(),
+        const TopButtons(),
         AnimatedContainer(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           decoration: BoxDecoration(

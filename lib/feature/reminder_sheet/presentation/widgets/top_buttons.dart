@@ -7,8 +7,8 @@ import '../../../home/presentation/providers/reminders_provider.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
-class KeyButtonsRow extends ConsumerWidget {
-  const KeyButtonsRow({
+class TopButtons extends ConsumerWidget {
+  const TopButtons({
     super.key,
   });
 
