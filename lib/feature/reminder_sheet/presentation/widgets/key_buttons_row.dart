@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../../../core/constants/const_strings.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../archives/presentation/providers/archives_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
 import '../providers/central_widget_provider.dart';
@@ -15,31 +11,6 @@ class KeyButtonsRow extends ConsumerWidget {
   const KeyButtonsRow({
     super.key,
   });
-
-  Future<void> saveReminder(BuildContext context, WidgetRef ref) async {
-    final ReminderModel reminder =
-        ref.read(sheetReminderNotifier).constructReminder();
-
-    if (reminder.title == 'No Title') {
-      await Fluttertoast.showToast(msg: 'Enter a title!');
-      return;
-    }
-    if (reminder.dateTime.isBefore(DateTime.now())) {
-      await Fluttertoast.showToast(
-        msg: "Time machine is broke. Can't remind you in the past!",
-      );
-      return;
-    }
-
-    if (await ref.read(archivesProvider).isInArchives(reminder.id)) {
-      await ref.read(remindersProvider).retrieveFromArchives(reminder.id);
-    } else {
-      await ref.read(remindersProvider).saveReminder(reminder);
-    }
-
-    if (!context.mounted) return;
-    Navigator.pop(context);
-  }
 
   Future<void> deleteReminder(
     int id,
@@ -88,6 +59,7 @@ class KeyButtonsRow extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Row(
+        spacing: 8,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           if (id != null) ...<Widget>[
@@ -100,48 +72,35 @@ class KeyButtonsRow extends ConsumerWidget {
             ),
             const Spacer(),
           ],
-          Row(
-            spacing: 4,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _buildButton(
-                context: context,
-                icon: Icons.close,
-                active: true,
-                onTap: () => Navigator.pop(context),
-              ),
-              if (!noRush) ...<Widget>[
-                _buildButton(
-                  context: context,
-                  icon: Icons.snooze,
-                  active: centralElement == CentralElement.snoozeOptions,
-                  onTap: () {
-                    ref
-                        .read(centralWidgetNotifierProvider.notifier)
-                        .switchTo(CentralElement.snoozeOptions);
-                  },
-                ),
-                _buildButton(
-                  context: context,
-                  icon: Icons.event_repeat,
-                  active: centralElement == CentralElement.recurrenceOptions,
-                  onTap: () {
-                    ref
-                        .read(centralWidgetNotifierProvider.notifier)
-                        .switchTo(CentralElement.recurrenceOptions);
-                  },
-                ),
-              ],
-              _buildButton(
-                context: context,
-                icon: Icons.event_busy,
-                active: noRush,
-                onTap: () {
-                  ref.read(sheetReminderNotifier.notifier).toggleNoRushSwitch();
-                },
-              ),
-              _buildSaveButton(context, ref),
-            ],
+          if (!noRush) ...<Widget>[
+            _buildButton(
+              context: context,
+              icon: Icons.snooze,
+              active: centralElement == CentralElement.snoozeOptions,
+              onTap: () {
+                ref
+                    .read(centralWidgetNotifierProvider.notifier)
+                    .switchTo(CentralElement.snoozeOptions);
+              },
+            ),
+            _buildButton(
+              context: context,
+              icon: Icons.event_repeat,
+              active: centralElement == CentralElement.recurrenceOptions,
+              onTap: () {
+                ref
+                    .read(centralWidgetNotifierProvider.notifier)
+                    .switchTo(CentralElement.recurrenceOptions);
+              },
+            ),
+          ],
+          _buildButton(
+            context: context,
+            icon: Icons.event_busy,
+            active: noRush,
+            onTap: () {
+              ref.read(sheetReminderNotifier.notifier).toggleNoRushSwitch();
+            },
           ),
         ],
       ),
@@ -160,7 +119,7 @@ class KeyButtonsRow extends ConsumerWidget {
       constraints: const BoxConstraints(maxWidth: 64),
       icon: Icon(
         icon,
-        size: 24,
+        size: 28,
         color: active
             ? colorScheme.onPrimaryContainer
             : colorScheme.primaryContainer,
@@ -170,62 +129,11 @@ class KeyButtonsRow extends ConsumerWidget {
             ? fillColor ?? colorScheme.primaryContainer
             : colorScheme.onPrimaryContainer,
         padding: const EdgeInsets.all(8),
-        shape: const CircleBorder(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
       ),
       onPressed: onTap,
-    );
-  }
-
-  Widget _buildSaveButton(BuildContext context, WidgetRef ref) {
-    final SheetReminderNotifier reminder = ref.read(sheetReminderNotifier);
-
-    final bool forAllCondition = reminder.id != newReminderID &&
-        reminder is RecurringReminderModel &&
-        reminder.recurringInterval != RecurringInterval.none &&
-        !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
-
-    return Row(
-      children: <Widget>[
-        ElevatedButton(
-          onPressed: () => saveReminder(context, ref),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            surfaceTintColor: Colors.transparent,
-            shape: forAllCondition
-                ? const RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.horizontal(left: Radius.circular(25)),
-                  )
-                : null,
-          ),
-          child: Text(
-            'Save',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
-          ),
-        ),
-        if (forAllCondition)
-          ElevatedButton(
-            onPressed: () {
-              saveReminder(context, ref);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.errorContainer,
-              surfaceTintColor: Colors.transparent,
-              shape: const RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.horizontal(right: Radius.circular(25)),
-              ),
-            ),
-            child: Text(
-              'For All',
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.onErrorContainer,
-                  ),
-            ),
-          ),
-      ],
     );
   }
 }

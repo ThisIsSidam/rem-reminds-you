@@ -6,7 +6,7 @@ import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/datetime_methods.dart';
-import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
+import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../providers/reminders_provider.dart';
 
 class HomePageReminderEntryListTile extends StatelessWidget {
@@ -43,12 +43,9 @@ class ReminderListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          builder: (BuildContext context) => ReminderSheet(
-            reminder: reminder,
-          ),
+        SheetHelper().openReminderSheet(
+          context,
+          reminder: reminder,
         );
       },
       child: DecoratedBox(
@@ -107,12 +104,9 @@ class RecurringReminderListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          builder: (BuildContext context) => ReminderSheet(
-            reminder: reminder,
-          ),
+        SheetHelper().openReminderSheet(
+          context,
+          reminder: reminder,
         );
       },
       child: DecoratedBox(
@@ -215,12 +209,9 @@ class NoRushReminderListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          builder: (BuildContext context) => ReminderSheet(
-            reminder: reminder,
-          ),
+        SheetHelper().openReminderSheet(
+          context,
+          reminder: reminder,
         );
       },
       child: DecoratedBox(

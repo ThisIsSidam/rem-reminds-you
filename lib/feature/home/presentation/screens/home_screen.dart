@@ -14,7 +14,7 @@ import '../../../../core/services/notification_service/notification_service.dart
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../../shared/utils/misc_methods.dart';
 import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
-import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
+import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../providers/reminders_provider.dart';
 import '../widgets/home_screen_lists.dart';
 
@@ -286,14 +286,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     Duration? duration,
     bool isNoRush = false,
   }) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) => ReminderSheet(
-        reminder: reminder,
-        customDuration: duration,
-        isNoRush: isNoRush,
-      ),
+    SheetHelper().openReminderSheet(
+      context,
+      reminder: reminder,
+      customDuration: duration,
+      isNoRush: isNoRush,
     );
   }
 

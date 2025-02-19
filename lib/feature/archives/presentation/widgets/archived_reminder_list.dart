@@ -7,7 +7,7 @@ import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/datetime_methods.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
-import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
+import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../providers/archives_provider.dart';
 
 class ArchiveEntryLists extends ConsumerWidget {
@@ -114,12 +114,9 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
     return InkWell(
       onTap: () {
         gLogger.i('Show archived reminderSheet | ID: ${reminder.id}');
-        showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          builder: (BuildContext context) => ReminderSheet(
-            reminder: reminder,
-          ),
+        SheetHelper().openReminderSheet(
+          context,
+          reminder: reminder,
         );
       },
       child: DecoratedBox(

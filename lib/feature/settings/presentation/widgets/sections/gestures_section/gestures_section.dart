@@ -60,7 +60,7 @@ class GesturesSection extends ConsumerWidget {
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 5,
               context: context,
-              builder: (BuildContext context) => SwipeToLeftActionSheet(),
+              builder: (BuildContext context) => const SwipeToLeftActionSheet(),
             );
           },
         );
@@ -91,7 +91,8 @@ class GesturesSection extends ConsumerWidget {
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 5,
               context: context,
-              builder: (BuildContext context) => SwipeToRightActionSheet(),
+              builder: (BuildContext context) =>
+                  const SwipeToRightActionSheet(),
             );
           },
         );
