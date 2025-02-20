@@ -93,7 +93,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
                 ? theme.colorScheme.errorContainer
                 : theme.colorScheme.surfaceContainer,
           ),
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 500),
           child: const Column(
             children: <Widget>[
               TitleField(),

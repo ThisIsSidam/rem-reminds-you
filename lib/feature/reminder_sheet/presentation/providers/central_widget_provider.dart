@@ -1,6 +1,7 @@
-import 'package:Rem/shared/utils/logger/global_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../../shared/utils/logger/global_logger.dart';
 
 part 'central_widget_provider.g.dart';
 
@@ -14,7 +15,7 @@ enum CentralElement {
 @riverpod
 class CentralWidgetNotifier extends _$CentralWidgetNotifier
     with ChangeNotifier {
-  static final CentralElement _default = CentralElement.dateTimeGrid;
+  static const CentralElement _default = CentralElement.dateTimeGrid;
 
   @override
   CentralElement build() {

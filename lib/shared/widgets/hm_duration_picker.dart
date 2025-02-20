@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 /// [HMDurationPicker] is a widget being used at multiple
 /// places in the app. It uses a [CupertinoTimerPicker] widget.
 class HMDurationPicker extends StatelessWidget {
+  const HMDurationPicker({required this.onDurationChange, super.key});
   final void Function(Duration) onDurationChange;
-
-  const HMDurationPicker({super.key, required this.onDurationChange});
 
   @override
   Widget build(BuildContext context) {

@@ -125,7 +125,7 @@ class NewReminderSection extends ConsumerWidget {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 5,
           context: context,
-          builder: (BuildContext context) => QuickTimeTableModal(),
+          builder: (BuildContext context) => const QuickTimeTableModal(),
         );
       },
     );
@@ -145,7 +145,7 @@ class NewReminderSection extends ConsumerWidget {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 5,
           context: context,
-          builder: (BuildContext context) => SnoozeOptionsModal(),
+          builder: (BuildContext context) => const SnoozeOptionsModal(),
         );
       },
     );

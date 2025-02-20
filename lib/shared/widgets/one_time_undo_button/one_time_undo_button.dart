@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// is not working. This is a temporary solution for not letting the button
 /// being pressed multiple times.
 class OneTimeUndoButton extends StatefulWidget {
-  const OneTimeUndoButton({super.key, required this.onPressed});
+  const OneTimeUndoButton({required this.onPressed, super.key});
 
   final VoidCallback onPressed;
 
@@ -23,19 +23,23 @@ class _OneTimeUndoButtonState extends State<OneTimeUndoButton> {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-        onPressed: hasBeenPressed
-            ? null
-            : () {
-                setState(() {
-                  hasBeenPressed = true;
-                  widget.onPressed();
-                });
-              },
-        child: Text("Undo",
-            style: TextStyle(
-                fontSize: 16,
-                color: hasBeenPressed
-                    ? Colors.grey
-                    : Theme.of(context).colorScheme.primary)));
+      onPressed: hasBeenPressed
+          ? null
+          : () {
+              setState(() {
+                hasBeenPressed = true;
+                widget.onPressed();
+              });
+            },
+      child: Text(
+        'Undo',
+        style: TextStyle(
+          fontSize: 16,
+          color: hasBeenPressed
+              ? Colors.grey
+              : Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
   }
 }

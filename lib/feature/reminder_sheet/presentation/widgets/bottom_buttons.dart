@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../../core/constants/const_strings.dart';
 import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../archives/presentation/providers/archives_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
@@ -50,13 +51,17 @@ class SaveButton extends ConsumerWidget {
     final ReminderModel reminder =
         ref.read(sheetReminderNotifier).constructReminder();
 
-    if (reminder.title == 'No Title') {
-      await Fluttertoast.showToast(msg: 'Enter a title!');
+    if (reminder.title == '') {
+      AppUtils.showToast(
+        msg: 'Enter a title!',
+        style: ToastificationStyle.simple,
+      );
       return;
     }
     if (reminder.dateTime.isBefore(DateTime.now())) {
-      await Fluttertoast.showToast(
-        msg: "Time machine is broke. Can't remind you in the past!",
+      AppUtils.showToast(
+        msg: "Can't remind you in the past!",
+        style: ToastificationStyle.simple,
       );
       return;
     }

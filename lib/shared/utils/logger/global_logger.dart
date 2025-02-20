@@ -24,26 +24,19 @@ Future<void> initLogger() async {
     printer: HybridPrinter(
       LogfmtPrinter(),
       error: PrettyPrinter(
-        methodCount: 2,
-        errorMethodCount: 8,
         lineLength: 30,
-        colors: true,
         printEmojis: false,
         dateTimeFormat: DateTimeFormat.dateAndTime,
       ),
       fatal: PrettyPrinter(
-        methodCount: 2,
         errorMethodCount: 12,
         lineLength: 30,
-        colors: true,
         printEmojis: false,
         dateTimeFormat: DateTimeFormat.dateAndTime,
       ),
       warning: PrettyPrinter(
-        methodCount: 2,
         errorMethodCount: 6,
         lineLength: 30,
-        colors: true,
         printEmojis: false,
         dateTimeFormat: DateTimeFormat.dateAndTime,
       ),

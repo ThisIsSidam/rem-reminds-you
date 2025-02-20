@@ -6,11 +6,13 @@ class AppUtils {
     required String msg,
     String? description,
     ToastificationType? type,
+    ToastificationStyle? style,
     VoidCallback? onTap,
   }) {
     int tapCount = 0; // To stop the action from being initiated twice
     toastification.show(
       alignment: Alignment.topCenter,
+      style: style,
       showProgressBar: false,
       type: type,
       autoCloseDuration: const Duration(seconds: 3),
