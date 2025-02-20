@@ -1,6 +1,8 @@
 import 'package:logger/logger.dart';
 
-import 'file_output.dart';
+import '../../../core/enums/files_n_folders.dart';
+import 'app_console_output.dart';
+import 'logs_manager.dart';
 
 /// Global instance of [Logger].
 /// Needs to be called [initLogger] for it to work.
@@ -16,35 +18,25 @@ bool get isLoggerInitialized {
 }
 
 Future<void> initLogger() async {
-  final AppFileOutput fileOutput = AppFileOutput();
-  await fileOutput.init();
+  final AdvancedFileOutput fileOutput = AdvancedFileOutput(
+    path: await LogsManager().directoryPath,
+    fileNameFormatter: (DateTime timestamp) =>
+        '${FilesNFolders.logFilePrefix}${timestamp.millisecondsSinceEpoch}.log',
+  );
 
   if (isLoggerInitialized) return;
   gLogger = Logger(
-    printer: HybridPrinter(
-      LogfmtPrinter(),
-      error: PrettyPrinter(
-        lineLength: 30,
-        printEmojis: false,
-        dateTimeFormat: DateTimeFormat.dateAndTime,
-      ),
-      fatal: PrettyPrinter(
-        errorMethodCount: 12,
-        lineLength: 30,
-        printEmojis: false,
-        dateTimeFormat: DateTimeFormat.dateAndTime,
-      ),
-      warning: PrettyPrinter(
-        errorMethodCount: 6,
-        lineLength: 30,
-        printEmojis: false,
-        dateTimeFormat: DateTimeFormat.dateAndTime,
-      ),
-      info: SimplePrinter(),
-      debug: SimplePrinter(),
+    printer: PrettyPrinter(
+      dateTimeFormat: DateTimeFormat.dateAndTime,
+      lineLength: 30,
+      excludeBox: <Level, bool>{
+        Level.info: true,
+        Level.debug: true,
+        Level.trace: true,
+      },
     ),
     output: MultiOutput(
-      <LogOutput>[ConsoleOutput(), fileOutput],
+      <LogOutput>[AppConsoleOutput(), fileOutput],
     ),
   );
 }

@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../../../core/enums/files_n_folders.dart';
-import '../../../../../../shared/utils/logger/file_output.dart';
 import '../../../../../../shared/utils/logger/global_logger.dart';
+import '../../../../../../shared/utils/logger/logs_manager.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 
 class LogsSection extends ConsumerWidget {
@@ -59,17 +60,23 @@ class LogsSection extends ConsumerWidget {
 
         try {
           final Directory storage = await getApplicationDocumentsDirectory();
-          final Directory srcFolder =
-              Directory('${storage.path}/${FilesNFolders.logsFolder.name}');
+          final Directory srcFolder = Directory(
+            path.join(storage.path, FilesNFolders.logsFolder.name),
+          );
 
           final Directory extStorage = Directory('storage/emulated/0/Download');
           if (extStorage.existsSync() == false) {
             extStorage.createSync();
           }
 
-          final File outputFile = File('${extStorage.path}/rem_logs.zip');
+          final File outputFile = File(
+            path.join(
+              extStorage.path,
+              '${FilesNFolders.logsFolder.name}.zip',
+            ),
+          );
           final List<int>? zipData =
-              await LogsManager.createLogsZipData(srcFolder, outputFile);
+              await LogsManager().createLogsZipData(srcFolder, outputFile);
 
           if (zipData != null) {
             await outputFile.writeAsBytes(zipData);
@@ -83,7 +90,7 @@ class LogsSection extends ConsumerWidget {
           );
         } catch (e, stackTrace) {
           gLogger.e(
-            'Error during exporting logs',
+            'Error exporting logs',
             error: e,
             stackTrace: stackTrace,
           );
@@ -102,7 +109,7 @@ class LogsSection extends ConsumerWidget {
         style: Theme.of(context).textTheme.titleSmall,
       ),
       onTap: () async {
-        await LogsManager.clearLogs();
+        await LogsManager().clearLogs();
         AppUtils.showToast(msg: 'Successfully deleted all logs');
       },
     );

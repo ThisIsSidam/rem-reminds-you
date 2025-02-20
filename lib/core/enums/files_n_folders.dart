@@ -1,6 +1,6 @@
 enum FilesNFolders {
-  logsFolder('rem_logs'),
-  logFilePrefix('rem_log_');
+  logsFolder('rem-logs'),
+  logFilePrefix('rem-log-');
 
   const FilesNFolders(this.name);
   final String name;
