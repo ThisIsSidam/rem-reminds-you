@@ -141,6 +141,11 @@ class SheetReminderNotifier extends ChangeNotifier {
     final Duration autoSnooze =
         ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
 
+    // First time constructing, baseDatetime and dateTime would be same
+    if (id == null) {
+      refreshBaseDateTime();
+    }
+
     if (_noRush) {
       return NoRushRemindersModel(
         id: id ?? nextId,
