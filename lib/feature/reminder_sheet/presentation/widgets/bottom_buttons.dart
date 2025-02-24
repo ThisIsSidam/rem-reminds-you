@@ -67,10 +67,13 @@ class SaveButton extends ConsumerWidget {
     }
 
     if (await ref.read(archivesProvider).isInArchives(reminder.id)) {
-      await ref.read(remindersProvider).retrieveFromArchives(reminder.id);
-    } else {
-      await ref.read(remindersProvider).saveReminder(reminder);
+      // If the reminder was present in archives, we just remove it from there
+      // As all the reminder data has already been sent to sheetReminderProvider
+      // And the newly constructred one has all fields with changes done in
+      // the sheet
+      await ref.read(archivesProvider).deleteArchivedReminder(reminder.id);
     }
+    await ref.read(remindersProvider).saveReminder(reminder);
 
     if (!context.mounted) return;
     Navigator.pop(context);
