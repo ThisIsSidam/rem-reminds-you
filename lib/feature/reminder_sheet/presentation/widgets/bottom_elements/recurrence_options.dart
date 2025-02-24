@@ -15,12 +15,17 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
       child: GridView.count(
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
-        crossAxisCount: 3,
+        crossAxisCount: 2,
         shrinkWrap: true,
-        childAspectRatio: 1.5,
+        childAspectRatio: 2,
         children: <Widget>[
-          for (final RecurringInterval interval in RecurringInterval.values)
-            intervalButton(interval, context, ref),
+          // TODO : Implement proper semi weekly recurrence and add this back
+          // for (final RecurringInterval interval in RecurringInterval.values)
+          //   intervalButton(interval, context, ref),
+          intervalButton(RecurringInterval.none, context, ref),
+          intervalButton(RecurringInterval.daily, context, ref),
+          intervalButton(RecurringInterval.weekly, context, ref),
+          intervalButton(RecurringInterval.monthly, context, ref),
         ],
       ),
     );
