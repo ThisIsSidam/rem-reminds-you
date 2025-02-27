@@ -14,124 +14,84 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
-import 'core/data/entities/no_rush_reminders/no_rush_reminders.dart';
-import 'core/data/entities/recurring_reminder/recurring_reminder.dart';
-import 'core/data/entities/reminder_model/reminder_model.dart';
+import 'core/data/entities/no_rush_entitiy/no_rush_reminders.dart';
+import 'core/data/entities/reminder_entitiy/reminder_entity.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(4, 268263672593273972),
+      id: const obx_int.IdUid(8, 6237569017989530320),
+      name: 'NoRushReminderEntity',
+      lastPropertyId: const obx_int.IdUid(5, 8494757883436516760),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 8257624207738063144),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 2717254745021550974),
+            name: 'title',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 32260334609097224),
+            name: 'dateTime',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 8494757883436516760),
+            name: 'autoSnoozeInterval',
+            type: 6,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(10, 892633009722074988),
       name: 'ReminderEntity',
-      lastPropertyId: const obx_int.IdUid(6, 1544358514997996340),
+      lastPropertyId: const obx_int.IdUid(8, 4345127216394472894),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 1025189440874542108),
+            id: const obx_int.IdUid(1, 2760819148445478241),
             name: 'id',
             type: 6,
             flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 2855691709863330135),
+            id: const obx_int.IdUid(2, 5909350572122277918),
             name: 'title',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 249868595503815938),
+            id: const obx_int.IdUid(3, 5444262542359832019),
             name: 'dateTime',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 5676139623633541131),
+            id: const obx_int.IdUid(4, 1924806997432525637),
             name: 'preParsedTitle',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 1544358514997996340),
-            name: 'autoSnoozeInterval',
-            type: 6,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
-  obx_int.ModelEntity(
-      id: const obx_int.IdUid(5, 4840859013511977672),
-      name: 'NoRushRemindersEntity',
-      lastPropertyId: const obx_int.IdUid(5, 3735516397491070890),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 6008919051029956758),
-            name: 'id',
-            type: 6,
-            flags: 1),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 8486124092323286650),
-            name: 'title',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 5219953638694943532),
-            name: 'dateTime',
-            type: 10,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 4624309884248202165),
-            name: 'preParsedTitle',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 3735516397491070890),
-            name: 'autoSnoozeInterval',
-            type: 6,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
-  obx_int.ModelEntity(
-      id: const obx_int.IdUid(6, 7739694852120535916),
-      name: 'RecurringReminderEntity',
-      lastPropertyId: const obx_int.IdUid(8, 3626559438390925580),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 1116781742369601602),
-            name: 'id',
-            type: 6,
-            flags: 1),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 7367685740951274989),
-            name: 'title',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 8282219586971521579),
-            name: 'dateTime',
-            type: 10,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 9050536571541624987),
-            name: 'preParsedTitle',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 8332886381302781866),
+            id: const obx_int.IdUid(5, 4956558985884055002),
             name: 'autoSnoozeInterval',
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 7886303450114993415),
+            id: const obx_int.IdUid(6, 5609171531274537385),
             name: 'recurringInterval',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 7702171401591030994),
+            id: const obx_int.IdUid(7, 4727474671676314883),
             name: 'baseDateTime',
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 3626559438390925580),
+            id: const obx_int.IdUid(8, 4345127216394472894),
             name: 'paused',
             type: 1,
             flags: 0)
@@ -175,14 +135,19 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(6, 7739694852120535916),
+      lastEntityId: const obx_int.IdUid(10, 892633009722074988),
       lastIndexId: const obx_int.IdUid(0, 0),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [
         3625908549104202617,
         8211713074442004802,
-        8941930276315872972
+        8941930276315872972,
+        268263672593273972,
+        4840859013511977672,
+        5441219623501745120,
+        7739694852120535916,
+        7214179195723285189
       ],
       retiredIndexUids: const [],
       retiredPropertyUids: const [
@@ -204,7 +169,39 @@ obx_int.ModelDefinition getObjectBoxModel() {
         7581427573856782103,
         5606450117075112675,
         2835586303574756228,
-        1480614120101961392
+        1480614120101961392,
+        1025189440874542108,
+        2855691709863330135,
+        249868595503815938,
+        5676139623633541131,
+        1544358514997996340,
+        6008919051029956758,
+        8486124092323286650,
+        5219953638694943532,
+        4624309884248202165,
+        3735516397491070890,
+        4719147293995412599,
+        6444478691348325790,
+        3407513129089321565,
+        7220806404392456179,
+        3359964144908672142,
+        1116781742369601602,
+        7367685740951274989,
+        8282219586971521579,
+        9050536571541624987,
+        8332886381302781866,
+        7886303450114993415,
+        7702171401591030994,
+        3626559438390925580,
+        6766619202780093873,
+        219328190845508493,
+        6872021618620702719,
+        8796930399564014030,
+        8979106112292007288,
+        1507783008778342833,
+        2382171237630720458,
+        8568959839442512513,
+        1142172424439389718
       ],
       retiredRelationUids: const [],
       modelVersion: 5,
@@ -212,65 +209,20 @@ obx_int.ModelDefinition getObjectBoxModel() {
       version: 1);
 
   final bindings = <Type, obx_int.EntityDefinition>{
-    ReminderEntity: obx_int.EntityDefinition<ReminderEntity>(
+    NoRushReminderEntity: obx_int.EntityDefinition<NoRushReminderEntity>(
         model: _entities[0],
-        toOneRelations: (ReminderEntity object) => [],
-        toManyRelations: (ReminderEntity object) => {},
-        getId: (ReminderEntity object) => object.id,
-        setId: (ReminderEntity object, int id) {
+        toOneRelations: (NoRushReminderEntity object) => [],
+        toManyRelations: (NoRushReminderEntity object) => {},
+        getId: (NoRushReminderEntity object) => object.id,
+        setId: (NoRushReminderEntity object, int id) {
           object.id = id;
         },
-        objectToFB: (ReminderEntity object, fb.Builder fbb) {
+        objectToFB: (NoRushReminderEntity object, fb.Builder fbb) {
           final titleOffset = fbb.writeString(object.title);
-          final preParsedTitleOffset = fbb.writeString(object.preParsedTitle);
-          fbb.startTable(7);
-          fbb.addInt64(1, object.id);
-          fbb.addOffset(2, titleOffset);
-          fbb.addInt64(3, object.dateTime.millisecondsSinceEpoch);
-          fbb.addOffset(4, preParsedTitleOffset);
-          fbb.addInt64(5, object.autoSnoozeInterval);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
-          final titleParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 8, '');
-          final dateTimeParam = DateTime.fromMillisecondsSinceEpoch(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
-          final preParsedTitleParam =
-              const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 12, '');
-          final autoSnoozeIntervalParam =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 14);
-          final object = ReminderEntity(
-              id: idParam,
-              title: titleParam,
-              dateTime: dateTimeParam,
-              preParsedTitle: preParsedTitleParam,
-              autoSnoozeInterval: autoSnoozeIntervalParam);
-
-          return object;
-        }),
-    NoRushRemindersEntity: obx_int.EntityDefinition<NoRushRemindersEntity>(
-        model: _entities[1],
-        toOneRelations: (NoRushRemindersEntity object) => [],
-        toManyRelations: (NoRushRemindersEntity object) => {},
-        getId: (NoRushRemindersEntity object) => object.id,
-        setId: (NoRushRemindersEntity object, int id) {
-          object.id = id;
-        },
-        objectToFB: (NoRushRemindersEntity object, fb.Builder fbb) {
-          final titleOffset = fbb.writeString(object.title);
-          final preParsedTitleOffset = fbb.writeString(object.preParsedTitle);
           fbb.startTable(6);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, titleOffset);
           fbb.addInt64(2, object.dateTime.millisecondsSinceEpoch);
-          fbb.addOffset(3, preParsedTitleOffset);
           fbb.addInt64(4, object.autoSnoozeInterval);
           fbb.finish(fbb.endTable());
           return object.id;
@@ -283,28 +235,26 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final titleParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, '');
           final autoSnoozeIntervalParam =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 12);
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
           final dateTimeParam = DateTime.fromMillisecondsSinceEpoch(
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
-          final object = NoRushRemindersEntity(
+          final object = NoRushReminderEntity(
               id: idParam,
               title: titleParam,
               autoSnoozeInterval: autoSnoozeIntervalParam,
-              dateTime: dateTimeParam)
-            ..preParsedTitle = const fb.StringReader(asciiOptimization: true)
-                .vTableGet(buffer, rootOffset, 10, '');
+              dateTime: dateTimeParam);
 
           return object;
         }),
-    RecurringReminderEntity: obx_int.EntityDefinition<RecurringReminderEntity>(
-        model: _entities[2],
-        toOneRelations: (RecurringReminderEntity object) => [],
-        toManyRelations: (RecurringReminderEntity object) => {},
-        getId: (RecurringReminderEntity object) => object.id,
-        setId: (RecurringReminderEntity object, int id) {
+    ReminderEntity: obx_int.EntityDefinition<ReminderEntity>(
+        model: _entities[1],
+        toOneRelations: (ReminderEntity object) => [],
+        toManyRelations: (ReminderEntity object) => {},
+        getId: (ReminderEntity object) => object.id,
+        setId: (ReminderEntity object, int id) {
           object.id = id;
         },
-        objectToFB: (RecurringReminderEntity object, fb.Builder fbb) {
+        objectToFB: (ReminderEntity object, fb.Builder fbb) {
           final titleOffset = fbb.writeString(object.title);
           final preParsedTitleOffset = fbb.writeString(object.preParsedTitle);
           final recurringIntervalOffset =
@@ -334,7 +284,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 10, '');
           final autoSnoozeIntervalParam =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 12);
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
           final recurringIntervalParam =
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 14, '');
@@ -342,7 +292,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
           final pausedParam =
               const fb.BoolReader().vTableGet(buffer, rootOffset, 18, false);
-          final object = RecurringReminderEntity(
+          final object = ReminderEntity(
               id: idParam,
               title: titleParam,
               dateTime: dateTimeParam,
@@ -359,87 +309,57 @@ obx_int.ModelDefinition getObjectBoxModel() {
   return obx_int.ModelDefinition(model, bindings);
 }
 
+/// [NoRushReminderEntity] entity fields to define ObjectBox queries.
+class NoRushReminderEntity_ {
+  /// See [NoRushReminderEntity.id].
+  static final id = obx.QueryIntegerProperty<NoRushReminderEntity>(
+      _entities[0].properties[0]);
+
+  /// See [NoRushReminderEntity.title].
+  static final title =
+      obx.QueryStringProperty<NoRushReminderEntity>(_entities[0].properties[1]);
+
+  /// See [NoRushReminderEntity.dateTime].
+  static final dateTime =
+      obx.QueryDateProperty<NoRushReminderEntity>(_entities[0].properties[2]);
+
+  /// See [NoRushReminderEntity.autoSnoozeInterval].
+  static final autoSnoozeInterval =
+      obx.QueryIntegerProperty<NoRushReminderEntity>(
+          _entities[0].properties[3]);
+}
+
 /// [ReminderEntity] entity fields to define ObjectBox queries.
 class ReminderEntity_ {
   /// See [ReminderEntity.id].
   static final id =
-      obx.QueryIntegerProperty<ReminderEntity>(_entities[0].properties[0]);
+      obx.QueryIntegerProperty<ReminderEntity>(_entities[1].properties[0]);
 
   /// See [ReminderEntity.title].
   static final title =
-      obx.QueryStringProperty<ReminderEntity>(_entities[0].properties[1]);
+      obx.QueryStringProperty<ReminderEntity>(_entities[1].properties[1]);
 
   /// See [ReminderEntity.dateTime].
   static final dateTime =
-      obx.QueryDateProperty<ReminderEntity>(_entities[0].properties[2]);
+      obx.QueryDateProperty<ReminderEntity>(_entities[1].properties[2]);
 
   /// See [ReminderEntity.preParsedTitle].
   static final preParsedTitle =
-      obx.QueryStringProperty<ReminderEntity>(_entities[0].properties[3]);
+      obx.QueryStringProperty<ReminderEntity>(_entities[1].properties[3]);
 
   /// See [ReminderEntity.autoSnoozeInterval].
   static final autoSnoozeInterval =
-      obx.QueryIntegerProperty<ReminderEntity>(_entities[0].properties[4]);
-}
+      obx.QueryIntegerProperty<ReminderEntity>(_entities[1].properties[4]);
 
-/// [NoRushRemindersEntity] entity fields to define ObjectBox queries.
-class NoRushRemindersEntity_ {
-  /// See [NoRushRemindersEntity.id].
-  static final id = obx.QueryIntegerProperty<NoRushRemindersEntity>(
-      _entities[1].properties[0]);
-
-  /// See [NoRushRemindersEntity.title].
-  static final title = obx.QueryStringProperty<NoRushRemindersEntity>(
-      _entities[1].properties[1]);
-
-  /// See [NoRushRemindersEntity.dateTime].
-  static final dateTime =
-      obx.QueryDateProperty<NoRushRemindersEntity>(_entities[1].properties[2]);
-
-  /// See [NoRushRemindersEntity.preParsedTitle].
-  static final preParsedTitle = obx.QueryStringProperty<NoRushRemindersEntity>(
-      _entities[1].properties[3]);
-
-  /// See [NoRushRemindersEntity.autoSnoozeInterval].
-  static final autoSnoozeInterval =
-      obx.QueryIntegerProperty<NoRushRemindersEntity>(
-          _entities[1].properties[4]);
-}
-
-/// [RecurringReminderEntity] entity fields to define ObjectBox queries.
-class RecurringReminderEntity_ {
-  /// See [RecurringReminderEntity.id].
-  static final id = obx.QueryIntegerProperty<RecurringReminderEntity>(
-      _entities[2].properties[0]);
-
-  /// See [RecurringReminderEntity.title].
-  static final title = obx.QueryStringProperty<RecurringReminderEntity>(
-      _entities[2].properties[1]);
-
-  /// See [RecurringReminderEntity.dateTime].
-  static final dateTime = obx.QueryDateProperty<RecurringReminderEntity>(
-      _entities[2].properties[2]);
-
-  /// See [RecurringReminderEntity.preParsedTitle].
-  static final preParsedTitle =
-      obx.QueryStringProperty<RecurringReminderEntity>(
-          _entities[2].properties[3]);
-
-  /// See [RecurringReminderEntity.autoSnoozeInterval].
-  static final autoSnoozeInterval =
-      obx.QueryIntegerProperty<RecurringReminderEntity>(
-          _entities[2].properties[4]);
-
-  /// See [RecurringReminderEntity.recurringInterval].
+  /// See [ReminderEntity.recurringInterval].
   static final recurringInterval =
-      obx.QueryStringProperty<RecurringReminderEntity>(
-          _entities[2].properties[5]);
+      obx.QueryStringProperty<ReminderEntity>(_entities[1].properties[5]);
 
-  /// See [RecurringReminderEntity.baseDateTime].
-  static final baseDateTime = obx.QueryDateProperty<RecurringReminderEntity>(
-      _entities[2].properties[6]);
+  /// See [ReminderEntity.baseDateTime].
+  static final baseDateTime =
+      obx.QueryDateProperty<ReminderEntity>(_entities[1].properties[6]);
 
-  /// See [RecurringReminderEntity.paused].
-  static final paused = obx.QueryBooleanProperty<RecurringReminderEntity>(
-      _entities[2].properties[7]);
+  /// See [ReminderEntity.paused].
+  static final paused =
+      obx.QueryBooleanProperty<ReminderEntity>(_entities[1].properties[7]);
 }

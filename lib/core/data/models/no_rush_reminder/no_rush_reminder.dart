@@ -3,52 +3,41 @@ import 'package:random_datetime/random_datetime.dart';
 import 'package:random_datetime/random_dt_options.dart';
 
 import '../../../../feature/settings/presentation/providers/settings_provider.dart';
-import '../reminder_model/reminder_model.dart';
+import '../../entities/no_rush_entitiy/no_rush_entity.dart';
 
-class NoRushRemindersModel implements ReminderModel {
-  NoRushRemindersModel({
+class NoRushReminderModel {
+  NoRushReminderModel({
     required this.id,
     required this.title,
     required this.autoSnoozeInterval,
     required this.dateTime,
-  }) : preParsedTitle = title;
+  });
 
-  @override
   int id;
-  @override
   String title;
-  @override
   DateTime dateTime;
-  @override
-  String preParsedTitle;
-  @override
-  Duration? autoSnoozeInterval;
+  Duration autoSnoozeInterval;
 
-  @override
-  ReminderModel copyWith({
+  NoRushReminderModel copyWith({
     int? id,
     String? title,
     DateTime? dateTime,
-    String? preParsedTitle,
     Duration? autoSnoozeInterval,
   }) {
-    return ReminderModel(
+    return NoRushReminderModel(
       id: id ?? this.id,
       title: title ?? this.title,
       dateTime: dateTime ?? this.dateTime,
-      preParsedTitle: preParsedTitle ?? this.preParsedTitle,
       autoSnoozeInterval: autoSnoozeInterval ?? this.autoSnoozeInterval,
     );
   }
 
-  @override
   Map<String, String?> toJson() {
     return <String, String?>{
       'id': id.toString(),
       'title': title,
       'dateTime': dateTime.toIso8601String(),
-      'PreParsedTitle': preParsedTitle,
-      'autoSnoozeInterval': autoSnoozeInterval?.inMilliseconds.toString(),
+      'autoSnoozeInterval': autoSnoozeInterval.inMilliseconds.toString(),
     };
   }
 
@@ -83,4 +72,11 @@ class NoRushRemindersModel implements ReminderModel {
 
     return randomTime.random();
   }
+
+  NoRushReminderEntity get toEntity => NoRushReminderEntity(
+        id: id,
+        title: title,
+        dateTime: dateTime,
+        autoSnoozeInterval: autoSnoozeInterval.inSeconds,
+      );
 }

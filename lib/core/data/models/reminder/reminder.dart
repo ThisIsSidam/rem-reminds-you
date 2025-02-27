@@ -1,8 +1,8 @@
+import '../../entities/reminder_entitiy/reminder_entity.dart';
 import '../recurring_interval/recurring_interval.dart';
-import '../reminder_model/reminder_model.dart';
 
-class RecurringReminderModel implements ReminderModel {
-  RecurringReminderModel({
+class ReminderModel {
+  ReminderModel({
     required this.id,
     required this.title,
     required this.dateTime,
@@ -13,8 +13,8 @@ class RecurringReminderModel implements ReminderModel {
     this.paused = false,
   });
 
-  factory RecurringReminderModel.fromJson(Map<String, String?> map) {
-    return RecurringReminderModel(
+  factory ReminderModel.fromJson(Map<String, String?> map) {
+    return ReminderModel(
       id: int.parse(map['id']!),
       title: map['title'] ?? '',
       dateTime: DateTime.parse(map['dateTime']!),
@@ -29,36 +29,29 @@ class RecurringReminderModel implements ReminderModel {
     );
   }
 
-  @override
   int id;
-  @override
   String title;
-  @override
   DateTime dateTime;
-  @override
   String preParsedTitle;
-  @override
-  Duration? autoSnoozeInterval;
+  Duration autoSnoozeInterval;
   RecurringInterval recurringInterval;
   DateTime baseDateTime;
   bool paused;
 
-  @override
   Map<String, String?> toJson() {
     return <String, String?>{
       'id': id.toString(),
       'title': title,
       'dateTime': dateTime.toIso8601String(),
       'preParsedTitle': preParsedTitle,
-      'autoSnoozeInterval': autoSnoozeInterval?.inMilliseconds.toString(),
+      'autoSnoozeInterval': autoSnoozeInterval.inMilliseconds.toString(),
       'recurringInterval': recurringInterval.toString(),
       'baseDateTime': baseDateTime.toIso8601String(),
       'paused': paused.toString(),
     };
   }
 
-  @override
-  RecurringReminderModel copyWith({
+  ReminderModel copyWith({
     int? id,
     String? title,
     DateTime? dateTime,
@@ -68,7 +61,7 @@ class RecurringReminderModel implements ReminderModel {
     DateTime? baseDateTime,
     bool? paused,
   }) {
-    return RecurringReminderModel(
+    return ReminderModel(
       id: id ?? this.id,
       title: title ?? this.title,
       dateTime: dateTime ?? this.dateTime,
@@ -104,5 +97,32 @@ class RecurringReminderModel implements ReminderModel {
     if (decrement != null) {
       baseDateTime = baseDateTime.subtract(decrement);
     }
+  }
+
+  ReminderEntity get toEntity => ReminderEntity(
+        id: id,
+        title: title,
+        dateTime: dateTime,
+        preParsedTitle: preParsedTitle,
+        autoSnoozeInterval: autoSnoozeInterval.inSeconds,
+        recurringInterval: recurringInterval.toString(),
+        baseDateTime: baseDateTime,
+        paused: paused,
+      );
+}
+
+extension ReminderX on ReminderModel {
+  int compareTo(ReminderModel other) {
+    return dateTime.compareTo(other.dateTime);
+  }
+
+  Duration getDiffDuration() {
+    return dateTime.difference(DateTime.now());
+  }
+
+  /// Check if the current date and time is before 5 seconds from the
+  /// reminder's date and time.
+  bool isTimesUp() {
+    return dateTime.isBefore(DateTime.now().add(const Duration(seconds: 5)));
   }
 }

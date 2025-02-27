@@ -32,6 +32,10 @@ class RecurringInterval {
 
   int type;
 
+  bool get isNone => type == 99;
+  bool get isDaily => type == 101;
+  bool get isWeekly => type == 707;
+
   Duration? toNext() {
     switch (type) {
       case 99:
