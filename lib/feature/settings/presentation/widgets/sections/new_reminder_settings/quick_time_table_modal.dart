@@ -68,7 +68,7 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
   }
 
   void onSave() {
-    ref.read(userSettingsProvider.notifier)
+    ref.read(userSettingsProvider)
       // Update set options
       ..quickTimeSetOption1 = setDateTimes[0]!
       ..quickTimeSetOption2 = setDateTimes[1]!

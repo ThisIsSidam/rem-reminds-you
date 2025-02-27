@@ -35,7 +35,7 @@ class UserPreferenceSection extends HookWidget {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         final UserSettingsNotifier settingsNotifier =
-            ref.read(userSettingsProvider.notifier);
+            ref.read(userSettingsProvider);
         final ThemeMode themeMode = ref.watch(userSettingsProvider).themeMode;
         return MenuAnchor(
           controller: controller,

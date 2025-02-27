@@ -10,7 +10,7 @@ import 'package:toastification/toastification.dart';
 
 import '../../../../../../shared/utils/logger/global_logger.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
-import '../../../../../archives/presentation/providers/archives_provider.dart';
+import '../../../../../home/presentation/providers/no_rush_provider.dart';
 import '../../../../../home/presentation/providers/reminders_provider.dart';
 
 class BackupRestoreSection extends ConsumerWidget {
@@ -59,9 +59,10 @@ class BackupRestoreSection extends ConsumerWidget {
 
         try {
           final String remindersJsonData =
-              await ref.read(remindersProvider).getBackup();
-          final String archivesJsonData =
-              await ref.read(archivesProvider).getBackup();
+              await ref.read(remindersNotifierProvider.notifier).getBackup();
+          final String noRushJsonData = await ref
+              .read(noRushRemindersNotifierProvider.notifier)
+              .getBackup();
 
           // Create a temporary zip file in memory
           final Archive archive = Archive()
@@ -75,8 +76,8 @@ class BackupRestoreSection extends ConsumerWidget {
             ..addFile(
               ArchiveFile(
                 'archives_backup.json',
-                archivesJsonData.length,
-                utf8.encode(archivesJsonData),
+                noRushJsonData.length,
+                utf8.encode(noRushJsonData),
               ),
             );
           final List<int>? zipData = ZipEncoder().encode(archive);
@@ -153,7 +154,7 @@ class BackupRestoreSection extends ConsumerWidget {
           } else if (remindersJsonFile.content is List<int>) {
             final String remindersJsonContent =
                 utf8.decode(remindersJsonFile.content as List<int>);
-            await ref.read(remindersProvider).restoreBackup(
+            await ref.read(remindersNotifierProvider.notifier).restoreBackup(
                   remindersJsonContent,
                 );
           } else {
@@ -161,13 +162,17 @@ class BackupRestoreSection extends ConsumerWidget {
           }
 
           final ArchiveFile? archivesJsonFile =
-              archive.findFile('archives_backup.json');
+              archive.findFile('no_rush_reminders_backup.json');
           if (archivesJsonFile == null) {
-            gLogger.e("File 'archives_backup.json' not found in the zip file");
+            gLogger.e(
+              "File 'no_rush_reminders_backup.json' not found in the zip file",
+            );
           } else if (archivesJsonFile.content is List<int>) {
             final String archivesJsonContent =
                 utf8.decode(archivesJsonFile.content as List<int>);
-            await ref.read(archivesProvider).restoreBackup(archivesJsonContent);
+            await ref
+                .read(noRushRemindersNotifierProvider.notifier)
+                .restoreBackup(archivesJsonContent);
           } else {
             gLogger.e('File contents not found');
           }

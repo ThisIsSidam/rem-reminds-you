@@ -145,8 +145,7 @@ class QuietHoursSheet extends HookWidget {
       height: 125,
       child: Consumer(
         builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          final UserSettingsNotifier settings =
-              ref.watch(userSettingsProvider.notifier);
+          final UserSettingsNotifier settings = ref.watch(userSettingsProvider);
           return CupertinoDatePicker(
             mode: CupertinoDatePickerMode.time,
             use24hFormat: true,

@@ -17,7 +17,7 @@ class SettingsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final UserSettingsNotifier settingsNotifier =
-        ref.watch(userSettingsProvider.notifier);
+        ref.watch(userSettingsProvider);
     useEffect(
       () {
         gLogger.i('Built Settings Screen');
