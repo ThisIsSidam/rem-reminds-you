@@ -12,7 +12,7 @@ import '../../data/repositories/reminders_repo.dart';
 part 'no_rush_provider.g.dart';
 
 @riverpod
-class RemindersNotifier extends _$RemindersNotifier {
+class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   @override
   List<NoRushReminderModel> build() {
     gLogger.i('RemindersNotifier initialized');

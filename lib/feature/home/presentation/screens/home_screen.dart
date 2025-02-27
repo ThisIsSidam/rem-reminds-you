@@ -7,7 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/constants/const_strings.dart';
-import '../../../../core/data/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/enums/storage_enums.dart';
 import '../../../../core/providers/global_providers.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
@@ -49,48 +49,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void initState() {
     super.initState();
     gLogger.i('HomeScreen initState');
-    remindersMap = ref.read(
-      remindersProvider.select((RemindersNotifier p) => p.categorizedReminders),
-    );
 
     WidgetsBinding.instance.addObserver(this);
 
     // Starts the listener for notification button click
     NotificationController.startListeningNotificationEvents();
-
-    // Listening for an app side task request sent upon click on
-    // notification button.
-    gLogger.i('Registering main port');
-    IsolateNameServer.registerPortWithName(receivePort.sendPort, 'main');
-    receivePort.listen((dynamic message) {
-      if (message is Map<String, dynamic>) {
-        final dynamic id = message['id'];
-
-        if (message['action'] == 'done' && id is int) {
-          gLogger.i('Received done action for $id');
-          ref.read(remindersProvider).markAsDone(<int>[id]);
-        } else {
-          gLogger.w('Port message is not "done" or not int, discarding');
-        }
-      } else if (message is String) {
-        if (message == 'ping') {
-          gLogger.i('Received ping from NotificationIsolate');
-          final SendPort? notifPingPort =
-              IsolateNameServer.lookupPortByName('NotificationIsolate');
-          if (notifPingPort != null) {
-            gLogger.i('Send back pong to notificationIsolate');
-            notifPingPort.send('pong');
-          } else {
-            gLogger.w('notifPingPort is null');
-          }
-        } else {
-          gLogger
-              .w('[homepageListener] Unknown string message received $message');
-        }
-      } else {
-        gLogger.w('[homepageListener] Unknown message received $message');
-      }
-    });
 
     Future<void>.delayed(Duration.zero, _checkAndShowWhatsNewDialog);
     Future<void>.delayed(
@@ -126,8 +89,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void dispose() {
     gLogger.i('HomeScreen dispose');
-    receivePort.close();
-    IsolateNameServer.removePortNameMapping('main');
 
     if (mounted) {
       super.dispose();
@@ -136,11 +97,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    remindersMap = ref.watch(
-      remindersProvider.select((RemindersNotifier p) => p.categorizedReminders),
-    );
-
-    final bool isEmpty = ref.watch(remindersProvider).reminderCount == 0;
+    remindersMap = ref.watch(remindersNotifierProvider);
+    final bool isEmpty = remindersMap.isEmpty;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/data/models/reminder/recurring_reminder.dart';
-import '../../../../core/data/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/enums/swipe_actions.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
@@ -158,10 +156,19 @@ class ActionPaneManager {
   ) {
     // Store the provider reference before any potential disposal
     final RemindersNotifier remindersProviderValue =
-        ref.read(remindersProvider);
+        ref.read(remindersNotifierProvider.notifier);
 
-    if (reminder is RecurringReminderModel &&
-        reminder.recurringInterval != RecurringInterval.isNone) {
+    if (!reminder.isRecurring) {
+      remindersProviderValue.deleteReminder(reminder);
+      AppUtils.showToast(
+        msg: "'${reminder.title}' deleted",
+        description: 'Tap to undo',
+        onTap: () {
+          remindersProviderValue.saveReminder(reminder);
+        },
+      );
+      return;
+    } else {
       showDialog<void>(
         context: context,
         builder: (BuildContext context) {
@@ -190,7 +197,7 @@ class ActionPaneManager {
               ),
               TextButton(
                 onPressed: () {
-                  remindersProviderValue.deleteReminder(reminder.id);
+                  remindersProviderValue.deleteReminder(reminder);
                   AppUtils.showToast(
                     msg: "'${reminder.title}' deleted",
                     description: 'Tap to undo',
@@ -210,15 +217,6 @@ class ActionPaneManager {
           );
         },
       );
-    } else {
-      remindersProviderValue.deleteReminder(reminder.id);
-      AppUtils.showToast(
-        msg: "'${reminder.title}' deleted",
-        description: 'Tap to undo',
-        onTap: () {
-          remindersProviderValue.saveReminder(reminder);
-        },
-      );
     }
   }
 
@@ -231,7 +229,7 @@ class ActionPaneManager {
     final Duration postponeDuration =
         ref.read(userSettingsProvider).defaultPostponeDuration;
     final RemindersNotifier remindersProviderValue =
-        ref.read(remindersProvider);
+        ref.read(remindersNotifierProvider.notifier);
 
     return ActionPane(
       motion: const StretchMotion(),
@@ -264,7 +262,7 @@ class ActionPaneManager {
     WidgetRef ref,
   ) {
     final RemindersNotifier remindersProviderValue =
-        ref.read(remindersProvider);
+        ref.read(remindersNotifierProvider.notifier);
 
     return SlidableAction(
       backgroundColor: Colors.green,
@@ -272,13 +270,12 @@ class ActionPaneManager {
       onPressed: (BuildContext context) {
         remindersProviderValue.markAsDone(<int>[reminder.id]);
 
-        if (reminder is! RecurringReminderModel ||
-            reminder.recurringInterval == RecurringInterval.isNone) {
+        if (reminder.isRecurring) {
           AppUtils.showToast(
-            msg: "'${reminder.title}' Archived.",
+            msg: "'${reminder.title}' Deleted",
             description: 'Tap to undo',
             onTap: () {
-              remindersProviderValue.retrieveFromArchives(reminder.id);
+              remindersProviderValue.deleteReminder(reminder);
             },
           );
         } else {

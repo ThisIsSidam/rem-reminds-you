@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/data/models/reminder/recurring_reminder.dart';
-import '../../../../core/data/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../shared/utils/datetime_methods.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../providers/reminders_provider.dart';
@@ -18,17 +16,10 @@ class HomePageReminderEntryListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (reminder is RecurringReminderModel) {
-      final RecurringReminderModel recurringReminder =
-          reminder as RecurringReminderModel;
-      return RecurringReminderListTile(reminder: recurringReminder);
-    } else if (reminder is NoRushReminderModel) {
-      final NoRushReminderModel noRushReminder =
-          reminder as NoRushReminderModel;
-      return NoRushReminderListTile(reminder: noRushReminder);
-    } else {
-      return ReminderListTile(reminder: reminder);
+    if (reminder.isRecurring) {
+      return RecurringReminderListTile(reminder: reminder);
     }
+    return ReminderListTile(reminder: reminder);
   }
 }
 
@@ -98,7 +89,7 @@ class RecurringReminderListTile extends ConsumerWidget {
     required this.reminder,
     super.key,
   });
-  final RecurringReminderModel reminder;
+  final ReminderModel reminder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -148,11 +139,10 @@ class RecurringReminderListTile extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    if (reminder.recurringInterval != RecurringInterval.isNone)
-                      Text(
-                        '⟳ ${reminder.recurringInterval}',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
+                    Text(
+                      '⟳ ${reminder.recurringInterval}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                     Text(
                       getFormattedDuration(reminder),
                       style: Theme.of(context).textTheme.bodySmall,
@@ -175,9 +165,13 @@ class RecurringReminderListTile extends ConsumerWidget {
     return OutlinedButton(
       onPressed: () {
         if (isPaused) {
-          ref.read(remindersProvider.notifier).resumeReminder(reminder.id);
+          ref
+              .read(remindersNotifierProvider.notifier)
+              .resumeReminder(reminder.id);
         } else {
-          ref.read(remindersProvider.notifier).pauseReminder(reminder.id);
+          ref
+              .read(remindersNotifierProvider.notifier)
+              .pauseReminder(reminder.id);
         }
       },
       style: OutlinedButton.styleFrom(

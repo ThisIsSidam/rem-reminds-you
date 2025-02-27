@@ -6,21 +6,23 @@ part of 'no_rush_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$remindersNotifierHash() => r'be00df67ae353453420ef0d043067c4bc5841c8e';
+String _$noRushRemindersNotifierHash() =>
+    r'e081f210c5e1566b77dc1f0a336e5a404444c855';
 
-/// See also [RemindersNotifier].
-@ProviderFor(RemindersNotifier)
-final remindersNotifierProvider = AutoDisposeNotifierProvider<RemindersNotifier,
-    List<NoRushReminderModel>>.internal(
-  RemindersNotifier.new,
-  name: r'remindersNotifierProvider',
+/// See also [NoRushRemindersNotifier].
+@ProviderFor(NoRushRemindersNotifier)
+final noRushRemindersNotifierProvider = AutoDisposeNotifierProvider<
+    NoRushRemindersNotifier, List<NoRushReminderModel>>.internal(
+  NoRushRemindersNotifier.new,
+  name: r'noRushRemindersNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$remindersNotifierHash,
+      : _$noRushRemindersNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$RemindersNotifier = AutoDisposeNotifier<List<NoRushReminderModel>>;
+typedef _$NoRushRemindersNotifier
+    = AutoDisposeNotifier<List<NoRushReminderModel>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
