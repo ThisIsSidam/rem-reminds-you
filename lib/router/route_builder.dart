@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../feature/app_startup/presentation/screens/splash_screen.dart';
-import '../feature/archives/presentation/screens/archive_screen.dart';
 import '../feature/home/presentation/screens/dashboard_screen.dart';
 import '../feature/home/presentation/screens/home_screen.dart';
 import '../feature/permissions/presentation/screens/permissions_screen.dart';
@@ -16,6 +15,5 @@ Map<String, WidgetBuilder> routeBuilder() {
         const PermissionScreen(),
     AppRoute.splash.path: (BuildContext context) => const SplashScreen(),
     AppRoute.settings.path: (BuildContext context) => const SettingsScreen(),
-    AppRoute.archives.path: (BuildContext context) => const ArchiveScreen(),
   };
 }

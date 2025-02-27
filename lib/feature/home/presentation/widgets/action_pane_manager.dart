@@ -190,24 +190,6 @@ class ActionPaneManager {
               ),
               TextButton(
                 onPressed: () {
-                  remindersProviderValue.moveToArchive(reminder.id);
-                  AppUtils.showToast(
-                    msg: "'${reminder.title}' Archived.",
-                    description: 'Tap to undo',
-                    onTap: () {
-                      remindersProviderValue.retrieveFromArchives(reminder.id);
-                    },
-                  );
-
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Archive',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
                   remindersProviderValue.deleteReminder(reminder.id);
                   AppUtils.showToast(
                     msg: "'${reminder.title}' deleted",

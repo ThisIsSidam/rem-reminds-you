@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../shared/utils/logger/global_logger.dart';
-import '../../../archives/presentation/screens/archive_screen.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import 'home_screen.dart';
 
@@ -14,8 +13,6 @@ class DashboardScreen extends HookConsumerWidget {
 
   Widget _currentScreen(int index) {
     switch (index) {
-      case 0:
-        return const ArchiveScreen();
       case 1:
         return const HomeScreen();
       case 2:

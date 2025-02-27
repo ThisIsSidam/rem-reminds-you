@@ -4,9 +4,7 @@ import 'package:toastification/toastification.dart';
 
 import '../../../../core/constants/const_strings.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
-import '../../../archives/presentation/providers/archives_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
@@ -64,14 +62,6 @@ class SaveButton extends ConsumerWidget {
         style: ToastificationStyle.simple,
       );
       return;
-    }
-
-    if (await ref.read(archivesProvider).isInArchives(reminder.id)) {
-      // If the reminder was present in archives, we just remove it from there
-      // As all the reminder data has already been sent to sheetReminderProvider
-      // And the newly constructred one has all fields with changes done in
-      // the sheet
-      await ref.read(archivesProvider).deleteArchivedReminder(reminder.id);
     }
     await ref.read(remindersProvider).saveReminder(reminder);
 

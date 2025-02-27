@@ -4,7 +4,6 @@ enum AppRoute {
   permissions('/permissions'),
   splash('splash'),
   settings('settings'),
-  archives('archives'),
   ;
 
   const AppRoute(this.path);

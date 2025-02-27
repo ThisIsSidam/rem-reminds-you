@@ -104,7 +104,7 @@ class RemindersNotifier extends _$RemindersNotifier {
         return;
       }
       if (!reminder.isRecurring) {
-        gLogger.i('Moving Reminder to Archives | ID: ${reminder.id}');
+        gLogger.i('Deleting reminder | ID: ${reminder.id}');
         await deleteReminder(reminder);
       } else {
         gLogger.i(
