@@ -83,14 +83,13 @@ class RemindersNotifier extends _$RemindersNotifier {
     return reminder;
   }
 
-  Future<ReminderModel?> deleteReminder(ReminderModel reminder) async {
+  Future<void> deleteReminder(int id) async {
     await NotificationController.cancelScheduledNotification(
-      reminder.id.toString(),
+      id.toString(),
     );
 
-    ref.read(remindersRepositoryProvider.notifier).removeReminder(reminder.id);
-    gLogger.i('Deleted Reminder from Database | ID: ${reminder.id}');
-    return reminder;
+    ref.read(remindersRepositoryProvider.notifier).removeReminder(id);
+    gLogger.i('Deleted Reminder from Database | ID: $id');
   }
 
   Future<void> markAsDone(List<int> ids) async {
@@ -105,7 +104,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       }
       if (!reminder.isRecurring) {
         gLogger.i('Deleting reminder | ID: ${reminder.id}');
-        await deleteReminder(reminder);
+        await deleteReminder(reminder.id);
       } else {
         gLogger.i(
           'Moving Reminder to next occurrence | ID: ${reminder.id} | DT: ${reminder.dateTime}',

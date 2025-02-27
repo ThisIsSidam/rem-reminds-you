@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../core/constants/const_strings.dart';
-import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
+import '../../../../core/data/models/reminder/reminder.dart';
+import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
+import '../../../home/presentation/providers/no_rush_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
@@ -46,7 +49,7 @@ class SaveButton extends ConsumerWidget {
   const SaveButton({super.key});
 
   Future<void> saveReminder(BuildContext context, WidgetRef ref) async {
-    final ReminderModel reminder =
+    final ReminderBase reminder =
         ref.read(sheetReminderNotifier).constructReminder();
 
     if (reminder.title == '') {
@@ -63,7 +66,13 @@ class SaveButton extends ConsumerWidget {
       );
       return;
     }
-    await ref.read(remindersProvider).saveReminder(reminder);
+    if (reminder is NoRushReminderModel) {
+      await ref
+          .read(noRushRemindersNotifierProvider.notifier)
+          .saveReminder(reminder);
+    } else if (reminder is ReminderModel) {
+      await ref.read(remindersNotifierProvider.notifier).saveReminder(reminder);
+    }
 
     if (!context.mounted) return;
     Navigator.pop(context);
@@ -75,7 +84,7 @@ class SaveButton extends ConsumerWidget {
 
     final bool forAllCondition = reminder.id != null &&
         reminder.id != newReminderID &&
-        reminder.recurringInterval != RecurringInterval.isNone &&
+        !reminder.recurringInterval.isNone &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
 
     return Row(

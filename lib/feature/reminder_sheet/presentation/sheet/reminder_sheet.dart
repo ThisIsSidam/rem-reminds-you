@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/data/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 import '../widgets/bottom_buttons.dart';
@@ -17,7 +17,7 @@ class ReminderSheet extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final ReminderModel? reminder;
+  final ReminderBase? reminder;
   final Duration? customDuration;
   final bool isNoRush;
 
@@ -34,7 +34,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
 
     Future<void>.delayed(Duration.zero, () {
       if (widget.reminder != null) {
-        ref.read(sheetReminderNotifier).loadValues(widget.reminder!);
+        ref.read(sheetReminderNotifier.notifier).loadValues(widget.reminder!);
       } else {
         ref.read(sheetReminderNotifier).resetValuesWith(
               customDuration: widget.customDuration,

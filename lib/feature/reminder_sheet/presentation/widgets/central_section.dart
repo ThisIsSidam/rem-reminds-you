@@ -7,8 +7,8 @@ import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
-import 'bottom_elements/recurrence_options.dart';
-import 'bottom_elements/snooze_options.dart';
+import 'central_elements/recurrence_options.dart';
+import 'central_elements/snooze_options.dart';
 import 'time_button.dart';
 
 class CentralSection extends HookConsumerWidget {

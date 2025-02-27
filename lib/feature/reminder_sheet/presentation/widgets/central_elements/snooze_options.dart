@@ -11,8 +11,7 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final UserSettingsNotifier settings =
-        ref.watch(userSettingsProvider.notifier);
+    final UserSettingsNotifier settings = ref.watch(userSettingsProvider);
 
     final List<Duration> repeatIntervalDurations = <Duration>[
       settings.autoSnoozeOption1,
@@ -44,7 +43,7 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final Duration? snoozeInterval =
+    final Duration snoozeInterval =
         ref.read(sheetReminderNotifier).autoSnoozeInterval;
     final bool isPickedDuration = duration == snoozeInterval;
     return ElevatedButton(

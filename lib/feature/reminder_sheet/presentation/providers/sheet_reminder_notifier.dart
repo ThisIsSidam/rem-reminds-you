@@ -4,8 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/data/models/reminder/recurring_reminder.dart';
-import '../../../../core/data/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder/reminder.dart';
+import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../../../../core/enums/storage_enums.dart';
 import '../../../../core/providers/global_providers.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
@@ -25,8 +25,8 @@ class SheetReminderNotifier extends ChangeNotifier {
   String _preParsedTitle = '';
   DateTime _dateTime = DateTime.now();
   DateTime _baseDateTime = DateTime.now();
-  Duration? _autoSnoozeInterval;
-  RecurringInterval _recurringInterval = RecurringInterval.isNone;
+  Duration _autoSnoozeInterval = Duration.zero;
+  RecurringInterval _recurringInterval = RecurringInterval();
   bool _noRush = false;
   bool _isPaused = false;
 
@@ -42,7 +42,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   String get preParsedTitle => _preParsedTitle;
   DateTime get dateTime => _dateTime;
   DateTime get baseDateTime => _baseDateTime;
-  Duration? get autoSnoozeInterval => _autoSnoozeInterval;
+  Duration get autoSnoozeInterval => _autoSnoozeInterval;
   RecurringInterval get recurringInterval => _recurringInterval;
   bool get noRush => _noRush;
   bool get isPaused => _isPaused;
@@ -77,7 +77,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     _baseDateTime = _dateTime;
   }
 
-  void updateAutoSnoozeInterval(Duration? newInterval) {
+  void updateAutoSnoozeInterval(Duration newInterval) {
     _autoSnoozeInterval = newInterval;
     notifyListeners();
   }
@@ -114,30 +114,48 @@ class SheetReminderNotifier extends ChangeNotifier {
     _baseDateTime = DateTime.now();
     _autoSnoozeInterval =
         _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
-    _recurringInterval = RecurringInterval.isNone;
+    _recurringInterval = RecurringInterval();
     _noRush = isNoRush;
     _isPaused = false;
     notifyListeners();
   }
 
-  void loadValues(ReminderModel reminder) {
+  void loadValues(ReminderBase reminder) {
+    if (reminder is NoRushReminderModel) {
+      loadNoRush(reminder);
+    } else if (reminder is ReminderModel) {
+      loadReminder(reminder);
+    }
+  }
+
+  void loadReminder(ReminderModel reminder) {
     _id = reminder.id;
     _title = reminder.title;
     _preParsedTitle = reminder.preParsedTitle;
     _dateTime = reminder.dateTime;
-    _baseDateTime = reminder is RecurringReminderModel
-        ? reminder.baseDateTime
-        : DateTime.now();
+    _baseDateTime =
+        reminder.isRecurring ? reminder.baseDateTime : DateTime.now();
     _autoSnoozeInterval = reminder.autoSnoozeInterval;
-    _recurringInterval = reminder is RecurringReminderModel
-        ? reminder.recurringInterval
-        : RecurringInterval.isNone;
-    if (reminder is NoRushReminderModel) _noRush = true;
-    _isPaused = reminder is RecurringReminderModel && reminder.paused;
+    _recurringInterval = reminder.recurringInterval;
+    _noRush = false;
+    _isPaused = reminder.paused;
     notifyListeners();
   }
 
-  ReminderModel constructReminder() {
+  void loadNoRush(NoRushReminderModel noRush) {
+    _id = noRush.id;
+    _title = noRush.title;
+    _preParsedTitle = noRush.title;
+    _dateTime = noRush.dateTime;
+    _baseDateTime = noRush.dateTime;
+    _autoSnoozeInterval = Duration.zero;
+    _recurringInterval = RecurringInterval();
+    _noRush = true;
+    _isPaused = false;
+    notifyListeners();
+  }
+
+  ReminderBase constructReminder() {
     final Duration autoSnooze =
         ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
 
@@ -151,28 +169,19 @@ class SheetReminderNotifier extends ChangeNotifier {
         id: id ?? nextId,
         title: title,
         autoSnoozeInterval: autoSnooze,
-        dateTime: NoRushReminderModel.generateRandomFutureTime(),
-      );
-    } else if (_recurringInterval == RecurringInterval.isNone) {
-      return ReminderModel(
-        id: id ?? nextId,
-        dateTime: dateTime,
-        title: title,
-        preParsedTitle: preParsedTitle,
-        autoSnoozeInterval: autoSnoozeInterval,
-      );
-    } else {
-      return RecurringReminderModel(
-        title: title,
-        id: id ?? nextId,
-        dateTime: dateTime,
-        autoSnoozeInterval: autoSnoozeInterval,
-        baseDateTime: baseDateTime,
-        preParsedTitle: preParsedTitle,
-        interval: recurringInterval,
-        paused: isPaused,
+        dateTime: NoRushReminderModel.generateRandomFutureTime(ref),
       );
     }
+    return ReminderModel(
+      title: title,
+      id: id ?? nextId,
+      dateTime: dateTime,
+      autoSnoozeInterval: autoSnoozeInterval,
+      baseDateTime: baseDateTime,
+      preParsedTitle: preParsedTitle,
+      recurringInterval: recurringInterval,
+      paused: isPaused,
+    );
   }
 
   /// Generates a new ID for the reminder.

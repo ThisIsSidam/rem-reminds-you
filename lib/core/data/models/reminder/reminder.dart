@@ -1,7 +1,8 @@
 import '../../entities/reminder_entitiy/reminder_entity.dart';
 import '../recurring_interval/recurring_interval.dart';
+import '../reminder_base/reminder_base.dart';
 
-class ReminderModel {
+class ReminderModel implements ReminderBase {
   ReminderModel({
     required this.id,
     required this.title,
@@ -30,7 +31,9 @@ class ReminderModel {
   }
 
   int id;
+  @override
   String title;
+  @override
   DateTime dateTime;
   String preParsedTitle;
   Duration autoSnoozeInterval;

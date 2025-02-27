@@ -19,13 +19,9 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
         shrinkWrap: true,
         childAspectRatio: 2,
         children: <Widget>[
-          // TODO : Implement proper semi weekly recurrence and add this back
-          // for (final RecurringInterval interval in RecurringInterval.values)
-          //   intervalButton(interval, context, ref),
-          intervalButton(RecurringInterval.isNone, context, ref),
-          intervalButton(RecurringInterval.daily, context, ref),
-          intervalButton(RecurringInterval.weekly, context, ref),
-          intervalButton(RecurringInterval.monthly, context, ref),
+          intervalButton(RecurringInterval(), context, ref),
+          intervalButton(RecurringInterval.daily(), context, ref),
+          intervalButton(RecurringInterval.weekly(), context, ref),
         ],
       ),
     );

@@ -16,13 +16,8 @@ class TopButtons extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
-    if (await ref.read(archivesProvider).isInArchives(id)) {
-      await ref.read(archivesProvider).deleteArchivedReminder(id);
-      return;
-    }
-
     void finalDelete({bool deleteAllRecurring = false}) {
-      ref.read(remindersProvider).deleteReminder(
+      ref.read(remindersNotifierProvider.notifier).deleteReminder(
             id,
           );
       Navigator.pop(context);
@@ -31,7 +26,7 @@ class TopButtons extends ConsumerWidget {
     final RecurringInterval recurringInterval =
         ref.read(sheetReminderNotifier).recurringInterval;
 
-    if (recurringInterval != RecurringInterval.isNone && context.mounted) {
+    if (!recurringInterval.isNone && context.mounted) {
       await showDialog<void>(
         context: context,
         builder: (BuildContext context) {
@@ -144,8 +139,6 @@ class _RecurringReminderDeletionDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final int? id = ref
-        .watch(sheetReminderNotifier.select((SheetReminderNotifier p) => p.id));
     return AlertDialog(
       elevation: 5,
       surfaceTintColor: Colors.transparent,
@@ -166,17 +159,6 @@ class _RecurringReminderDeletionDialog extends ConsumerWidget {
           },
           child: Text(
             'Cancel',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            ref.read(remindersProvider).moveToArchive(id!);
-            Navigator.of(context).pop(); // Close the dialog
-            Navigator.pop(context);
-          },
-          child: Text(
-            'Archive',
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),

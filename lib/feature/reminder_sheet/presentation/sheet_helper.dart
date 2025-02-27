@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/models/reminder_model/reminder_model.dart';
+import '../../../core/data/models/reminder_base/reminder_base.dart';
 import 'sheet/reminder_sheet.dart';
 
 class SheetHelper {
   void openReminderSheet(
     BuildContext context, {
-    ReminderModel? reminder,
+    ReminderBase? reminder,
     Duration? customDuration,
     bool isNoRush = false,
   }) {
