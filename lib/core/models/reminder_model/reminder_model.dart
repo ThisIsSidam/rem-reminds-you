@@ -15,9 +15,9 @@ class ReminderModel {
   factory ReminderModel.fromJson(Map<String, String?> json) {
     return ReminderModel(
       id: int.parse(json['id']!),
-      title: json['title']!,
+      title: json['title'] ?? '',
       dateTime: DateTime.parse(json['dateTime']!),
-      preParsedTitle: json['PreParsedTitle']!,
+      preParsedTitle: json['PreParsedTitle'] ?? '',
       autoSnoozeInterval: json['autoSnoozeInterval'] != null
           ? Duration(milliseconds: int.parse(json['autoSnoozeInterval']!))
           : null,
@@ -59,7 +59,9 @@ class ReminderModel {
       autoSnoozeInterval: autoSnoozeInterval ?? this.autoSnoozeInterval,
     );
   }
+}
 
+extension ReminderX on ReminderModel {
   bool compareTo(ReminderModel other) {
     return dateTime.isBefore(other.dateTime);
   }

@@ -9,15 +9,57 @@ import '../reminder_model/reminder_model.dart';
 part 'no_rush_reminders.g.dart';
 
 @HiveType(typeId: 3)
-class NoRushRemindersModel extends ReminderModel {
+class NoRushRemindersModel implements ReminderModel {
   NoRushRemindersModel({
-    required super.id,
-    required super.title,
-    required super.autoSnoozeInterval,
-    required super.dateTime,
-  }) : super(
-          preParsedTitle: title,
-        );
+    required this.id,
+    required this.title,
+    required this.autoSnoozeInterval,
+    required this.dateTime,
+  }) : preParsedTitle = title;
+
+  @override
+  @HiveField(0)
+  int id;
+  @override
+  @HiveField(1)
+  String title;
+  @override
+  @HiveField(2)
+  DateTime dateTime;
+  @override
+  @HiveField(3)
+  String preParsedTitle;
+  @override
+  @HiveField(4)
+  Duration? autoSnoozeInterval;
+
+  @override
+  ReminderModel copyWith({
+    int? id,
+    String? title,
+    DateTime? dateTime,
+    String? preParsedTitle,
+    Duration? autoSnoozeInterval,
+  }) {
+    return ReminderModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      dateTime: dateTime ?? this.dateTime,
+      preParsedTitle: preParsedTitle ?? this.preParsedTitle,
+      autoSnoozeInterval: autoSnoozeInterval ?? this.autoSnoozeInterval,
+    );
+  }
+
+  @override
+  Map<String, String?> toJson() {
+    return <String, String?>{
+      'id': id.toString(),
+      'title': title,
+      'dateTime': dateTime.toIso8601String(),
+      'PreParsedTitle': preParsedTitle,
+      'autoSnoozeInterval': autoSnoozeInterval?.inMilliseconds.toString(),
+    };
+  }
 
   // Will use fromJson and toJson methods of ReminderModel as the attributes
   // are same

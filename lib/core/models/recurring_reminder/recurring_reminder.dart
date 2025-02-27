@@ -6,13 +6,13 @@ import '../reminder_model/reminder_model.dart';
 part 'recurring_reminder.g.dart';
 
 @HiveType(typeId: 1)
-class RecurringReminderModel extends ReminderModel {
+class RecurringReminderModel implements ReminderModel {
   RecurringReminderModel({
-    required super.id,
-    required super.title,
-    required super.dateTime,
-    required super.preParsedTitle,
-    required super.autoSnoozeInterval,
+    required this.id,
+    required this.title,
+    required this.dateTime,
+    required this.preParsedTitle,
+    required this.autoSnoozeInterval,
     required this.recurringInterval,
     required this.baseDateTime,
     this.paused = false,
@@ -21,17 +21,32 @@ class RecurringReminderModel extends ReminderModel {
   factory RecurringReminderModel.fromJson(Map<String, String?> map) {
     return RecurringReminderModel(
       id: int.parse(map['id']!),
-      title: map['title']!,
+      title: map['title'] ?? '',
       dateTime: DateTime.parse(map['dateTime']!),
       autoSnoozeInterval:
           Duration(milliseconds: int.parse(map['autoSnoozeInterval']!)),
-      preParsedTitle: map['preParsedTitle']!,
+      preParsedTitle: map['preParsedTitle'] ?? '',
       recurringInterval:
           RecurringInterval.values[int.parse(map['recurringInterval']!)],
       baseDateTime: DateTime.parse(map['baseDateTime']!),
       paused: map['paused']! == 'true',
     );
   }
+  @override
+  @HiveField(0)
+  int id;
+  @override
+  @HiveField(1)
+  String title;
+  @override
+  @HiveField(2)
+  DateTime dateTime;
+  @override
+  @HiveField(3)
+  String preParsedTitle;
+  @override
+  @HiveField(4)
+  Duration? autoSnoozeInterval;
   @HiveField(10)
   RecurringInterval recurringInterval;
   @HiveField(11)
@@ -41,14 +56,20 @@ class RecurringReminderModel extends ReminderModel {
 
   @override
   Map<String, String?> toJson() {
-    final Map<String, String?> data = super.toJson();
-    data['recurringInterval'] = recurringInterval.index.toString();
-    data['baseDateTime'] = baseDateTime.toIso8601String();
-    data['paused'] = paused.toString();
-    return data;
+    return <String, String?>{
+      'id': id.toString(),
+      'title': title,
+      'dateTime': dateTime.toIso8601String(),
+      'preParsedTitle': preParsedTitle,
+      'autoSnoozeInterval': autoSnoozeInterval?.inMilliseconds.toString(),
+      'recurringInterval': recurringInterval.index.toString(),
+      'baseDateTime': baseDateTime.toIso8601String(),
+      'paused': paused.toString(),
+    };
   }
 
-  RecurringReminderModel copyWithRecurring({
+  @override
+  RecurringReminderModel copyWith({
     int? id,
     String? title,
     DateTime? dateTime,
