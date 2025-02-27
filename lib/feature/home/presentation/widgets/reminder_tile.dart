@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/data/models/no_rush_reminders/no_rush_reminders.dart';
+import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/data/models/recurring_reminder/recurring_reminder.dart';
+import '../../../../core/data/models/reminder/recurring_reminder.dart';
 import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/datetime_methods.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
@@ -22,9 +22,9 @@ class HomePageReminderEntryListTile extends StatelessWidget {
       final RecurringReminderModel recurringReminder =
           reminder as RecurringReminderModel;
       return RecurringReminderListTile(reminder: recurringReminder);
-    } else if (reminder is NoRushRemindersModel) {
-      final NoRushRemindersModel noRushReminder =
-          reminder as NoRushRemindersModel;
+    } else if (reminder is NoRushReminderModel) {
+      final NoRushReminderModel noRushReminder =
+          reminder as NoRushReminderModel;
       return NoRushReminderListTile(reminder: noRushReminder);
     } else {
       return ReminderListTile(reminder: reminder);
@@ -148,7 +148,7 @@ class RecurringReminderListTile extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    if (reminder.recurringInterval != RecurringInterval.none)
+                    if (reminder.recurringInterval != RecurringInterval.isNone)
                       Text(
                         '⟳ ${reminder.recurringInterval}',
                         style: Theme.of(context).textTheme.bodySmall,
@@ -203,7 +203,7 @@ class NoRushReminderListTile extends ConsumerWidget {
     required this.reminder,
     super.key,
   });
-  final NoRushRemindersModel reminder;
+  final NoRushReminderModel reminder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

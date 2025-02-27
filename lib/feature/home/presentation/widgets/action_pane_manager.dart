@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../core/data/models/no_rush_reminders/no_rush_reminders.dart';
+import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/data/models/recurring_reminder/recurring_reminder.dart';
+import '../../../../core/data/models/reminder/recurring_reminder.dart';
 import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../core/enums/swipe_actions.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
@@ -39,7 +39,7 @@ class ActionPaneManager {
           ref,
         );
       case SwipeAction.postpone:
-        return reminder is NoRushRemindersModel
+        return reminder is NoRushReminderModel
             ? null
             : _postponeActionPane(
                 context,
@@ -161,7 +161,7 @@ class ActionPaneManager {
         ref.read(remindersProvider);
 
     if (reminder is RecurringReminderModel &&
-        reminder.recurringInterval != RecurringInterval.none) {
+        reminder.recurringInterval != RecurringInterval.isNone) {
       showDialog<void>(
         context: context,
         builder: (BuildContext context) {
@@ -291,7 +291,7 @@ class ActionPaneManager {
         remindersProviderValue.markAsDone(<int>[reminder.id]);
 
         if (reminder is! RecurringReminderModel ||
-            reminder.recurringInterval == RecurringInterval.none) {
+            reminder.recurringInterval == RecurringInterval.isNone) {
           AppUtils.showToast(
             msg: "'${reminder.title}' Archived.",
             description: 'Tap to undo',

@@ -60,7 +60,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'recurringIntervalFieldValue';
     final dynamic value = SettingsDB.getUserSetting(key);
     if (value == null || value is! String) {
-      return RecurringInterval.none;
+      return RecurringInterval.isNone;
     }
     return RecurringInterval.fromString(value);
   }

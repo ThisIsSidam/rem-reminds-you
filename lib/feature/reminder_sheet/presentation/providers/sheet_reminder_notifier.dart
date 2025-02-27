@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/data/models/no_rush_reminders/no_rush_reminders.dart';
+import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/data/models/recurring_reminder/recurring_reminder.dart';
+import '../../../../core/data/models/reminder/recurring_reminder.dart';
 import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../core/enums/storage_enums.dart';
 import '../../../../core/providers/global_providers.dart';
@@ -26,7 +26,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   DateTime _dateTime = DateTime.now();
   DateTime _baseDateTime = DateTime.now();
   Duration? _autoSnoozeInterval;
-  RecurringInterval _recurringInterval = RecurringInterval.none;
+  RecurringInterval _recurringInterval = RecurringInterval.isNone;
   bool _noRush = false;
   bool _isPaused = false;
 
@@ -114,7 +114,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     _baseDateTime = DateTime.now();
     _autoSnoozeInterval =
         _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
-    _recurringInterval = RecurringInterval.none;
+    _recurringInterval = RecurringInterval.isNone;
     _noRush = isNoRush;
     _isPaused = false;
     notifyListeners();
@@ -131,8 +131,8 @@ class SheetReminderNotifier extends ChangeNotifier {
     _autoSnoozeInterval = reminder.autoSnoozeInterval;
     _recurringInterval = reminder is RecurringReminderModel
         ? reminder.recurringInterval
-        : RecurringInterval.none;
-    if (reminder is NoRushRemindersModel) _noRush = true;
+        : RecurringInterval.isNone;
+    if (reminder is NoRushReminderModel) _noRush = true;
     _isPaused = reminder is RecurringReminderModel && reminder.paused;
     notifyListeners();
   }
@@ -147,13 +147,13 @@ class SheetReminderNotifier extends ChangeNotifier {
     }
 
     if (_noRush) {
-      return NoRushRemindersModel(
+      return NoRushReminderModel(
         id: id ?? nextId,
         title: title,
         autoSnoozeInterval: autoSnooze,
-        dateTime: NoRushRemindersModel.generateRandomFutureTime(),
+        dateTime: NoRushReminderModel.generateRandomFutureTime(),
       );
-    } else if (_recurringInterval == RecurringInterval.none) {
+    } else if (_recurringInterval == RecurringInterval.isNone) {
       return ReminderModel(
         id: id ?? nextId,
         dateTime: dateTime,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../core/data/models/no_rush_reminders/no_rush_reminders.dart';
+import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/datetime_methods.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
@@ -145,7 +145,7 @@ class _ArchiveReminderEntryListTile extends ConsumerWidget {
                   softWrap: true,
                 ),
               ),
-              if (reminder is! NoRushRemindersModel)
+              if (reminder is! NoRushReminderModel)
                 Text(
                   getFormattedDateTime(reminder.dateTime),
                   style: Theme.of(context).textTheme.bodyMedium,

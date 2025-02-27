@@ -153,7 +153,7 @@ class PauseButton extends ConsumerWidget {
       ),
     );
 
-    if (id == null || interval == RecurringInterval.none) {
+    if (id == null || interval == RecurringInterval.isNone) {
       return const SizedBox.shrink();
     }
 

@@ -14,7 +14,7 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
-import 'core/data/entities/no_rush_entitiy/no_rush_reminders.dart';
+import 'core/data/entities/no_rush_entitiy/no_rush_entity.dart';
 import 'core/data/entities/reminder_entitiy/reminder_entity.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file

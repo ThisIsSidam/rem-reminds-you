@@ -85,7 +85,7 @@ class SaveButton extends ConsumerWidget {
 
     final bool forAllCondition = reminder.id != null &&
         reminder.id != newReminderID &&
-        reminder.recurringInterval != RecurringInterval.none &&
+        reminder.recurringInterval != RecurringInterval.isNone &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
 
     return Row(

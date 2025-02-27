@@ -1,6 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 
-import '../../models/no_rush_reminder/no_rush_reminders.dart';
+import '../../models/no_rush_reminder/no_rush_reminder.dart';
 
 @Entity()
 class NoRushReminderEntity {

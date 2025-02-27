@@ -38,6 +38,8 @@ class ReminderModel {
   DateTime baseDateTime;
   bool paused;
 
+  bool get isRecurring => recurringInterval.isNone;
+
   Map<String, String?> toJson() {
     return <String, String?>{
       'id': id.toString(),

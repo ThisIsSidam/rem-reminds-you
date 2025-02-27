@@ -32,7 +32,7 @@ class TopButtons extends ConsumerWidget {
     final RecurringInterval recurringInterval =
         ref.read(sheetReminderNotifier).recurringInterval;
 
-    if (recurringInterval != RecurringInterval.none && context.mounted) {
+    if (recurringInterval != RecurringInterval.isNone && context.mounted) {
       await showDialog<void>(
         context: context,
         builder: (BuildContext context) {
