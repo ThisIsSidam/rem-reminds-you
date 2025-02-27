@@ -1,23 +1,22 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:async';
-import 'dart:isolate';
-import 'dart:ui';
+import 'dart:io';
 
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 import '../../../feature/reminder_sheet/presentation/sheet_helper.dart';
 import '../../../main.dart';
+import '../../../objectbox.g.dart';
 import '../../../shared/utils/generate_id.dart';
 import '../../../shared/utils/logger/global_logger.dart';
 import '../../constants/const_strings.dart';
-import '../../data/models/reminder_model/reminder_model.dart';
-import '../../enums/storage_enums.dart';
-import '../../local_storage/pending_removals_db.dart';
+import '../../data/models/reminder/reminder.dart';
 
 class NotificationController {
   static Future<void> initializeLocalNotifications() async {
@@ -100,16 +99,8 @@ class NotificationController {
       ],
     );
 
-    // Handle recurring notifications
-    if (reminder.autoSnoozeInterval == null) {
-      gLogger.i(
-        'noozeInterval Null | ID : ${reminder.id} | DT : ${reminder.dateTime}',
-      );
-      return;
-    }
-
     final DateTime nextScheduledTime =
-        reminder.dateTime.add(reminder.autoSnoozeInterval!);
+        reminder.dateTime.add(reminder.autoSnoozeInterval);
     reminder.dateTime = nextScheduledTime;
     await scheduleNotification(reminder);
     gLogger.i(
@@ -157,77 +148,26 @@ class NotificationController {
     gLogger.i(
       'Received notification action | Action : ${receivedAction.actionType}',
     );
-
-    final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-    final bool isMainActive = await isMainIsolateActive();
+    if (receivedAction.payload == null) return;
 
     if (receivedAction.buttonKeyPressed == 'done') {
       gLogger.i('Notification action | Done Button Pressed');
       await cancelScheduledNotification(
         receivedAction.groupKey ?? notificationNullGroupKey,
       );
-      if (isMainActive == true) {
-        final Map<String, Object> message = <String, Object>{
-          'action': 'done',
-          'id': int.parse(receivedAction.groupKey ?? notificationNullGroupKey),
-        };
-        mainIsolate!.send(message);
-        gLogger.i('Sent action message to main isolate | Message : $message');
-      } else {
-        await Hive.initFlutter();
-
-        await Hive.openBox<int>(HiveBoxNames.pendingRemovals.name);
-
-        if (receivedAction.groupKey == null) {
-          gLogger.e(
-            'Received null groupKey in onActionReceivedMethod | gKey : ${receivedAction.groupKey}',
-          );
-          throw 'Received null groupKey in onActionReceivedMethod | gKey : ${receivedAction.groupKey}';
-        }
-        await PendingRemovalsDB.addPendingRemoval(
-          int.parse(receivedAction.groupKey!),
-        );
-        gLogger.i(
-          'Added group key to pending removals list: ${receivedAction.groupKey ?? notificationNullGroupKey}',
-        );
-      }
-    }
-  }
-
-  @pragma('vm:entry-point')
-  static Future<bool> isMainIsolateActive() async {
-    gLogger.i('Checking main isolate status');
-    final SendPort? mainIsolate = IsolateNameServer.lookupPortByName('main');
-    if (mainIsolate != null) {
-      final ReceivePort receivePort = ReceivePort();
-      IsolateNameServer.registerPortWithName(
-        receivePort.sendPort,
-        'NotificationIsolate',
+      final Directory dir = await getApplicationDocumentsDirectory();
+      final Store store = Store(
+        getObjectBoxModel(),
+        directory: path.join(
+          dir.path,
+          'objectbox-activity-store',
+        ),
       );
-      mainIsolate.send('ping');
-      gLogger.i("Send 'ping' message to check for main isolate's existence.");
-      const Duration timeout = Duration(seconds: 3);
-      try {
-        final dynamic pong = await receivePort.first.timeout(timeout);
-        if (pong is String && pong == 'pong') {
-          gLogger.i("Message 'pong' received | Main isolate active");
-          return true;
-        }
-      } catch (e) {
-        if (e is TimeoutException) {
-          gLogger.i(
-            "Timeout | 'pong' msg not received | Main Isolate not active.",
-          );
-          return false;
-        }
-      } finally {
-        receivePort.close();
-        IsolateNameServer.removePortNameMapping('NotificationIsolate');
-        gLogger.i('Closed notification receivePort');
-      }
+      final Box<ReminderModel> box = store.box<ReminderModel>();
+      final bool deleted =
+          box.remove(receivedAction.payload!['id'] as int? ?? 0);
+      gLogger.i('Reminder deletion status: $deleted');
     }
-    gLogger.i('Main Isolate not found');
-    return false;
   }
 
   static Future<void> handleInitialCallback(WidgetRef ref) async {
