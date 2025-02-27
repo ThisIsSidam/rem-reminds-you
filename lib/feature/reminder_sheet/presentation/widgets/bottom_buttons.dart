@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../core/constants/const_strings.dart';
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../archives/presentation/providers/archives_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';

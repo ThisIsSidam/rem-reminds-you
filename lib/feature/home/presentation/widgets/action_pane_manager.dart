@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../core/data/models/no_rush_reminders/no_rush_reminders.dart';
+import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/recurring_reminder/recurring_reminder.dart';
+import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../core/enums/swipe_actions.dart';
-import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/reminders_provider.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
 import '../../../archives/presentation/providers/archives_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
 import '../providers/central_widget_provider.dart';

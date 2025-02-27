@@ -7,8 +7,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/constants/const_strings.dart';
+import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../core/enums/storage_enums.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
 import '../../../../core/providers/global_providers.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../shared/utils/logger/global_logger.dart';

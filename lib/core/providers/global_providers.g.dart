@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'central_widget_provider.dart';
+part of 'global_providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$centralWidgetNotifierHash() =>
-    r'd5a9d5f4080645b6ff55f7ced78145e2fc40665f';
+String _$objectboxStoreHash() => r'b708c4669a4b71ba7535ba711773529439e42553';
 
-/// See also [CentralWidgetNotifier].
-@ProviderFor(CentralWidgetNotifier)
-final centralWidgetNotifierProvider =
-    AutoDisposeNotifierProvider<CentralWidgetNotifier, CentralElement>.internal(
-  CentralWidgetNotifier.new,
-  name: r'centralWidgetNotifierProvider',
+/// See also [objectboxStore].
+@ProviderFor(objectboxStore)
+final objectboxStoreProvider = AutoDisposeProvider<Store>.internal(
+  objectboxStore,
+  name: r'objectboxStoreProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$centralWidgetNotifierHash,
+      : _$objectboxStoreHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$CentralWidgetNotifier = AutoDisposeNotifier<CentralElement>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ObjectboxStoreRef = AutoDisposeProviderRef<Store>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

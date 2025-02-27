@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/enums/swipe_actions.dart';
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
 import '../../../../shared/utils/extensions/theme_mode.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../data/hive/settings_db.dart';

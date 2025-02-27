@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import 'action_pane_manager.dart';
 import 'reminder_tile.dart';
 

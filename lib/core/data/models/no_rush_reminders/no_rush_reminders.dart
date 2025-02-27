@@ -1,25 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:random_datetime/random_datetime.dart';
 import 'package:random_datetime/random_dt_options.dart';
 
-import '../../../feature/settings/presentation/providers/settings_provider.dart';
+import '../../../../feature/settings/presentation/providers/settings_provider.dart';
 import '../reminder_model/reminder_model.dart';
 
-part 'no_rush_reminders.g.dart';
-
-@Entity()
 class NoRushRemindersModel implements ReminderModel {
   NoRushRemindersModel({
     required this.id,
     required this.title,
     required this.autoSnoozeInterval,
     required this.dateTime,
-    this.objectId = 0,
   }) : preParsedTitle = title;
 
-  @override
-  int objectId;
   @override
   int id;
   @override

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/no_rush_reminders/no_rush_reminders.dart';
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
-import '../../../../core/models/recurring_reminder/recurring_reminder.dart';
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/no_rush_reminders/no_rush_reminders.dart';
+import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/recurring_reminder/recurring_reminder.dart';
+import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/datetime_methods.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../providers/reminders_provider.dart';

@@ -1,8 +1,3 @@
-import 'package:objectbox/objectbox.dart';
-
-part 'reminder_model.g.dart';
-
-@Entity()
 class ReminderModel {
   ReminderModel({
     required this.id,
@@ -10,7 +5,6 @@ class ReminderModel {
     required this.dateTime,
     required this.preParsedTitle,
     this.autoSnoozeInterval,
-    this.objectId = 0,
   });
 
   factory ReminderModel.fromJson(Map<String, String?> json) {
@@ -24,8 +18,6 @@ class ReminderModel {
           : null,
     );
   }
-
-  int objectId;
   int id;
   String title;
   DateTime dateTime;

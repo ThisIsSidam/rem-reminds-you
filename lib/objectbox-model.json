@@ -1,0 +1,159 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "4:268263672593273972",
+      "lastPropertyId": "6:1544358514997996340",
+      "name": "ReminderEntity",
+      "properties": [
+        {
+          "id": "2:1025189440874542108",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "3:2855691709863330135",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "4:249868595503815938",
+          "name": "dateTime",
+          "type": 10
+        },
+        {
+          "id": "5:5676139623633541131",
+          "name": "preParsedTitle",
+          "type": 9
+        },
+        {
+          "id": "6:1544358514997996340",
+          "name": "autoSnoozeInterval",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:4840859013511977672",
+      "lastPropertyId": "5:3735516397491070890",
+      "name": "NoRushRemindersEntity",
+      "properties": [
+        {
+          "id": "1:6008919051029956758",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8486124092323286650",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "3:5219953638694943532",
+          "name": "dateTime",
+          "type": 10
+        },
+        {
+          "id": "4:4624309884248202165",
+          "name": "preParsedTitle",
+          "type": 9
+        },
+        {
+          "id": "5:3735516397491070890",
+          "name": "autoSnoozeInterval",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "6:7739694852120535916",
+      "lastPropertyId": "8:3626559438390925580",
+      "name": "RecurringReminderEntity",
+      "properties": [
+        {
+          "id": "1:1116781742369601602",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7367685740951274989",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "3:8282219586971521579",
+          "name": "dateTime",
+          "type": 10
+        },
+        {
+          "id": "4:9050536571541624987",
+          "name": "preParsedTitle",
+          "type": 9
+        },
+        {
+          "id": "5:8332886381302781866",
+          "name": "autoSnoozeInterval",
+          "type": 6
+        },
+        {
+          "id": "6:7886303450114993415",
+          "name": "recurringInterval",
+          "type": 9
+        },
+        {
+          "id": "7:7702171401591030994",
+          "name": "baseDateTime",
+          "type": 10
+        },
+        {
+          "id": "8:3626559438390925580",
+          "name": "paused",
+          "type": 1
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "6:7739694852120535916",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [
+    3625908549104202617,
+    8211713074442004802,
+    8941930276315872972
+  ],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    6977646995440858326,
+    1531304016251776350,
+    7945510971215839368,
+    7000575314104298846,
+    3979468743669662873,
+    7976902006372581072,
+    8807213509197030047,
+    3504029547535205335,
+    5311481799135740747,
+    3738896508229720795,
+    1210521688872764162,
+    3675743748536825778,
+    3474081413374303710,
+    759599050117485925,
+    2738553416516986335,
+    7581427573856782103,
+    5606450117075112675,
+    2835586303574756228,
+    1480614120101961392
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}

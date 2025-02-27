@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../providers/archives_provider.dart';
 import '../widgets/archived_reminder_list.dart';

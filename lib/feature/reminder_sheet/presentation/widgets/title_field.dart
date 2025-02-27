@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/constants/const_strings.dart';
-import '../../../../core/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 import 'title_parser/title_parser.dart';

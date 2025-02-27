@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../data/hive/archives_db.dart';
 

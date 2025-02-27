@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/reminder_model/reminder_model.dart';
+import '../../../../core/data/models/reminder_model/reminder_model.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 import '../widgets/bottom_buttons.dart';

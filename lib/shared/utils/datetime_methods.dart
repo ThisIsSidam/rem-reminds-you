@@ -1,7 +1,7 @@
 import 'package:duration/duration.dart';
 import 'package:intl/intl.dart';
 
-import '../../core/models/reminder_model/reminder_model.dart';
+import '../../core/data/models/reminder_model/reminder_model.dart';
 
 String getFormattedDateTime(DateTime dateTime) {
   final DateFormat formatter = DateFormat('EEE, d MMM, hh:mm aaa');
