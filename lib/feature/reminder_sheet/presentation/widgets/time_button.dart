@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/utils/datetime_methods.dart';
+import '../../../../core/extensions/datetime_ext.dart';
+import '../../../../core/extensions/duration_ext.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
 class TimeSetButton extends ConsumerWidget {
@@ -49,7 +50,7 @@ class TimeSetButton extends ConsumerWidget {
 
   Widget getChild(BuildContext context) {
     late String text;
-    text = getFormattedTimeForTimeSetButton(dateTime);
+    text = dateTime.formattedHS;
 
     return Text(
       text,
@@ -100,8 +101,7 @@ class TimeEditButton extends ConsumerWidget {
   }
 
   Widget getChild(BuildContext context) {
-    final String text =
-        getFormattedDurationForTimeEditButton(duration, addPlusSymbol: true);
+    final String text = duration.friendly(addPlusSymbol: true);
 
     return Text(
       text,

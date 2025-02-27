@@ -30,6 +30,7 @@ class ReminderModel implements ReminderBase {
     );
   }
 
+  @override
   int id;
   @override
   String title;

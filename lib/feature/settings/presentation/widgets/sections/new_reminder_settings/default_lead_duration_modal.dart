@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../../shared/utils/datetime_methods.dart';
+import '../../../../../../core/extensions/datetime_ext.dart';
 import '../../../../../../shared/widgets/hm_duration_picker.dart';
 import '../../../providers/settings_provider.dart';
 
@@ -13,8 +13,8 @@ class DefaultLeadDurationModal extends ConsumerWidget {
     final Duration currentSelectedDuration =
         ref.watch(userSettingsProvider).defaultLeadDuration;
     final DateTime dateTime = DateTime.now().add(currentSelectedDuration);
-    final String dateTimeString = getFormattedDateTime(dateTime);
-    final String diffString = getPrettyDurationFromDateTime(dateTime);
+    final String dateTimeString = dateTime.friendly;
+    final String diffString = dateTime.prettyDuration;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

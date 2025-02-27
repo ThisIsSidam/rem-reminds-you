@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
-import '../../../../shared/utils/datetime_methods.dart';
+import '../../../../core/extensions/datetime_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../providers/reminders_provider.dart';
 
@@ -66,11 +66,11 @@ class ReminderListTile extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    getFormattedDateTime(reminder.dateTime),
+                    reminder.dateTime.friendly,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Text(
-                    getFormattedDuration(reminder),
+                    reminder.dateTime.formattedDuration,
                     style: Theme.of(context).textTheme.bodySmall,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -127,7 +127,7 @@ class RecurringReminderListTile extends ConsumerWidget {
                     softWrap: true,
                   ),
                   Text(
-                    getFormattedDateTime(reminder.dateTime),
+                    reminder.dateTime.friendly,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -144,7 +144,7 @@ class RecurringReminderListTile extends ConsumerWidget {
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
-                      getFormattedDuration(reminder),
+                      reminder.dateTime.formattedDuration,
                       style: Theme.of(context).textTheme.bodySmall,
                       overflow: TextOverflow.ellipsis,
                     ),

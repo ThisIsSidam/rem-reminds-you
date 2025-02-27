@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../../shared/utils/datetime_methods.dart';
+import '../../../../../../core/extensions/datetime_ext.dart';
+import '../../../../../../core/extensions/duration_ext.dart';
 import '../../../../../../shared/widgets/dhm_single_duration_picker.dart';
 import '../../../../../../shared/widgets/save_close_buttons.dart';
 import '../../../providers/settings_provider.dart';
@@ -156,13 +157,13 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
         children: <Widget>[
           ...setDateTimes.entries.map(
             (MapEntry<int, DateTime> entry) => _buildButton(
-              getFormattedTimeForTimeSetButton(entry.value),
+              entry.value.formattedHS,
               entry.key,
             ),
           ),
           ...editDurations.entries.map(
             (MapEntry<int, Duration> entry) => _buildButton(
-              getFormattedDurationForTimeEditButton(entry.value),
+              entry.value.friendly(),
               entry.key,
             ),
           ),

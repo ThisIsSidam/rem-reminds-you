@@ -159,7 +159,7 @@ class ActionPaneManager {
         ref.read(remindersNotifierProvider.notifier);
 
     if (!reminder.isRecurring) {
-      remindersProviderValue.deleteReminder(reminder);
+      remindersProviderValue.deleteReminder(reminder.id);
       AppUtils.showToast(
         msg: "'${reminder.title}' deleted",
         description: 'Tap to undo',
@@ -197,7 +197,7 @@ class ActionPaneManager {
               ),
               TextButton(
                 onPressed: () {
-                  remindersProviderValue.deleteReminder(reminder);
+                  remindersProviderValue.deleteReminder(reminder.id);
                   AppUtils.showToast(
                     msg: "'${reminder.title}' deleted",
                     description: 'Tap to undo',
@@ -275,7 +275,7 @@ class ActionPaneManager {
             msg: "'${reminder.title}' Deleted",
             description: 'Tap to undo',
             onTap: () {
-              remindersProviderValue.deleteReminder(reminder);
+              remindersProviderValue.deleteReminder(reminder.id);
             },
           );
         } else {

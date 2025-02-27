@@ -17,6 +17,7 @@ import '../../../shared/utils/generate_id.dart';
 import '../../../shared/utils/logger/global_logger.dart';
 import '../../constants/const_strings.dart';
 import '../../data/models/reminder/reminder.dart';
+import '../../data/models/reminder_base/reminder_base.dart';
 
 class NotificationController {
   static Future<void> initializeLocalNotifications() async {
@@ -43,7 +44,7 @@ class NotificationController {
   }
 
   static Future<bool> scheduleNotification(
-    ReminderModel reminder,
+    ReminderBase reminder,
   ) async {
     final int id = reminder.id;
 
@@ -59,7 +60,7 @@ class NotificationController {
       exact: true,
       wakeup: true,
       rescheduleOnReboot: true,
-      params: reminder.toJson(),
+      params: <String, String>{'id': reminder.id.toString()},
     );
 
     return true;

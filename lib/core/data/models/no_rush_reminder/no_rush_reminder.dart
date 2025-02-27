@@ -15,6 +15,7 @@ class NoRushReminderModel implements ReminderBase {
     required this.dateTime,
   });
 
+  @override
   int id;
   @override
   String title;

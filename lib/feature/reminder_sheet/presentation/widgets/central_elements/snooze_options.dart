@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../shared/utils/datetime_methods.dart';
+import '../../../../../core/extensions/duration_ext.dart';
 import '../../../../settings/presentation/providers/settings_provider.dart';
 import '../../providers/central_widget_provider.dart';
 import '../../providers/sheet_reminder_notifier.dart';
@@ -60,7 +60,7 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
             : Theme.of(context).colorScheme.secondaryContainer,
       ),
       child: Text(
-        getFormattedDurationForTimeEditButton(duration),
+        duration.friendly(),
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
               color: isPickedDuration
                   ? Theme.of(context).colorScheme.onPrimaryContainer

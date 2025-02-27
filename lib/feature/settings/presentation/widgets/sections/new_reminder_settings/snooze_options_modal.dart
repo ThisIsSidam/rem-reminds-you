@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../../shared/utils/datetime_methods.dart';
+import '../../../../../../core/extensions/duration_ext.dart';
 import '../../../../../../shared/widgets/hm_duration_picker.dart';
 import '../../../../../../shared/widgets/save_close_buttons.dart';
 import '../../../providers/settings_provider.dart';
@@ -92,9 +92,7 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
         children: <Widget>[
           for (final MapEntry<int, Duration> entry in durations.entries)
             _buildButton(
-              getFormattedDurationForTimeEditButton(
-                entry.value,
-              ),
+              entry.value.friendly(),
               entry.key,
             ),
         ],
