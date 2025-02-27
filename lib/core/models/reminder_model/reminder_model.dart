@@ -1,8 +1,8 @@
-import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:objectbox/objectbox.dart';
 
 part 'reminder_model.g.dart';
 
-@HiveType(typeId: 0)
+@Entity()
 class ReminderModel {
   ReminderModel({
     required this.id,
@@ -10,6 +10,7 @@ class ReminderModel {
     required this.dateTime,
     required this.preParsedTitle,
     this.autoSnoozeInterval,
+    this.objectId = 0,
   });
 
   factory ReminderModel.fromJson(Map<String, String?> json) {
@@ -23,15 +24,12 @@ class ReminderModel {
           : null,
     );
   }
-  @HiveField(0)
+
+  int objectId;
   int id;
-  @HiveField(1)
   String title;
-  @HiveField(2)
   DateTime dateTime;
-  @HiveField(3)
   String preParsedTitle;
-  @HiveField(4)
   Duration? autoSnoozeInterval;
 
   Map<String, String?> toJson() {

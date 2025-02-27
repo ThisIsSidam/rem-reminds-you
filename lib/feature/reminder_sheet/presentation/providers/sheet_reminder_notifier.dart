@@ -169,7 +169,7 @@ class SheetReminderNotifier extends ChangeNotifier {
         autoSnoozeInterval: autoSnoozeInterval,
         baseDateTime: baseDateTime,
         preParsedTitle: preParsedTitle,
-        recurringInterval: recurringInterval,
+        interval: recurringInterval,
         paused: isPaused,
       );
     }

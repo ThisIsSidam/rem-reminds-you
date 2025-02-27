@@ -1,153 +1,71 @@
-import 'package:hive_ce_flutter/hive_flutter.dart';
+// Using type codes instead of string so we can
+// change constructor names without hindering type names
+// Otherwise, if I wanted to change 'weekly' to something
+// else, I would want to also change the type string
+// 'weekly', hence ints instead.
+import 'dart:convert';
 
-part 'recurring_interval.g.dart';
+class RecurringInterval {
+  RecurringInterval() : type = 99;
+  RecurringInterval.daily() : type = 101;
+  RecurringInterval.weekly() : type = 707;
 
-@HiveType(typeId: 2)
-enum RecurringInterval {
-  @HiveField(0)
-  none,
-  @HiveField(1)
-  daily,
-  @HiveField(2)
-  weekly,
-  @HiveField(3)
-  weekdays,
-  @HiveField(4)
-  weekends,
-  @HiveField(5)
-  monthly;
-
-  @override
-  String toString() {
-    switch (this) {
-      case none:
-        return 'None';
-      case daily:
-        return 'Daily';
-      case weekly:
-        return 'Weekly';
-      case weekdays:
-        return 'Weekdays';
-      case weekends:
-        return 'Weekends';
-      case monthly:
-        return 'Monthly';
+  factory RecurringInterval.fromJson(Map<String, dynamic> json) {
+    final int type = json['type'] as int? ?? 0;
+    switch (type) {
+      case 99:
+        return RecurringInterval();
+      case 101:
+        return RecurringInterval.daily();
+      case 707:
+        return RecurringInterval.weekly();
+      default:
+        return RecurringInterval();
     }
   }
 
-  static RecurringInterval fromString(String value) {
-    return RecurringInterval.values.firstWhere(
-      (RecurringInterval interval) =>
-          interval.toString().toLowerCase() == value.toLowerCase(),
-      orElse: () => RecurringInterval.none,
+  factory RecurringInterval.fromString(String encoded) {
+    return RecurringInterval.fromJson(
+      jsonDecode(encoded) as Map<String, dynamic>,
     );
   }
 
-  static RecurringInterval fromIndex(int value) {
-    return RecurringInterval.values[value];
-  }
+  int type;
 
-  Duration? getRecurringIncrementDuration(DateTime dt) {
-    switch (this) {
-      case daily:
+  Duration? toNext() {
+    switch (type) {
+      case 99:
+        return null;
+      case 101:
         return const Duration(days: 1);
-      case weekly:
+      case 707:
         return const Duration(days: 7);
-      case weekdays:
-        return _getDurationForNextWeekday(dt);
-      case weekends:
-        return _getDurationForNextWeekend(dt);
-      case monthly:
-        return _getDurationForNextMonth(dt);
-      case none:
+      default:
         return null;
     }
   }
 
-  Duration? getRecurringDecrementDuration(DateTime dt) {
-    switch (this) {
-      case daily:
+  Duration? toPrevious() {
+    switch (type) {
+      case 99:
+        return null;
+      case 101:
         return const Duration(days: 1);
-      case weekly:
+      case 707:
         return const Duration(days: 7);
-      case weekdays:
-        return _getDurationForPreviousWeekday(dt);
-      case weekends:
-        return _getDurationForPreviousWeekend(dt);
-      case monthly:
-        return _getDurationForPreviousMonth(dt);
-      case none:
+      default:
         return null;
     }
   }
-}
 
-Duration _getDurationForNextWeekday(DateTime dt) {
-  int daysToAdd = 1;
-  if (dt.weekday == DateTime.friday) {
-    daysToAdd = 3;
-  } else if (dt.weekday == DateTime.saturday) {
-    daysToAdd = 2;
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'type': type,
+    };
   }
 
-  return Duration(days: daysToAdd);
-}
-
-Duration _getDurationForNextWeekend(DateTime dt) {
-  int daysToAdd = 1;
-
-  if (dt.weekday == DateTime.friday) {
-    daysToAdd = 1;
-  } else if (dt.weekday == DateTime.saturday) {
-    daysToAdd = 1;
-  } else if (dt.weekday == DateTime.sunday) {
-    daysToAdd = 6;
-  } else {
-    daysToAdd = DateTime.saturday - dt.weekday;
+  @override
+  String toString() {
+    return jsonEncode(toJson);
   }
-
-  return Duration(days: daysToAdd);
-}
-
-Duration _getDurationForNextMonth(DateTime dt) {
-  final DateTime updatedDateTime = dt.copyWith(
-    month: dt.month + 1,
-  );
-
-  return updatedDateTime.difference(dt);
-}
-
-Duration _getDurationForPreviousWeekday(DateTime dt) {
-  int daysToSubtract = 1;
-  if (dt.weekday == DateTime.monday) {
-    daysToSubtract = 3;
-  } else if (dt.weekday == DateTime.sunday) {
-    daysToSubtract = 2;
-  }
-
-  return Duration(days: daysToSubtract);
-}
-
-Duration _getDurationForPreviousWeekend(DateTime dt) {
-  int daysToSubtract = 1;
-
-  if (dt.weekday == DateTime.monday) {
-    daysToSubtract = 1;
-  } else if (dt.weekday == DateTime.sunday) {
-    daysToSubtract = 1;
-  } else if (dt.weekday == DateTime.saturday) {
-    daysToSubtract = 6;
-  } else {
-    daysToSubtract = dt.weekday - DateTime.saturday;
-  }
-
-  return Duration(days: daysToSubtract);
-}
-
-Duration _getDurationForPreviousMonth(DateTime dt) {
-  final DateTime updatedDateTime = dt.copyWith(
-    month: dt.month - 1,
-  );
-
-  return dt.difference(updatedDateTime);
 }
