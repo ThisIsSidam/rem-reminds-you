@@ -16,6 +16,7 @@ import '../../../objectbox.g.dart';
 import '../../../shared/utils/generate_id.dart';
 import '../../../shared/utils/logger/global_logger.dart';
 import '../../constants/const_strings.dart';
+import '../../data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../data/models/reminder/reminder.dart';
 import '../../data/models/reminder_base/reminder_base.dart';
 
@@ -60,7 +61,7 @@ class NotificationController {
       exact: true,
       wakeup: true,
       rescheduleOnReboot: true,
-      params: <String, String>{'id': reminder.id.toString()},
+      params: reminder.toJson(),
     );
 
     return true;
@@ -75,7 +76,7 @@ class NotificationController {
     gLogger.i('Notification Callback Running | callBackId: $id');
 
     final Map<String, String> strParams = params.cast<String, String>();
-    final ReminderModel reminder = ReminderModel.fromJson(strParams);
+    final ReminderBase reminder = ReminderBase.fromJson(strParams);
 
     // Should be different each time so that different notifications are shown.
     final int notificationId = generatedNotificationId(id);
@@ -150,24 +151,20 @@ class NotificationController {
       'Received notification action | Action : ${receivedAction.actionType}',
     );
     if (receivedAction.payload == null) return;
+    final ReminderBase reminder =
+        ReminderBase.fromJson(receivedAction.payload!);
 
     if (receivedAction.buttonKeyPressed == 'done') {
       gLogger.i('Notification action | Done Button Pressed');
       await cancelScheduledNotification(
         receivedAction.groupKey ?? notificationNullGroupKey,
       );
-      final Directory dir = await getApplicationDocumentsDirectory();
-      final Store store = Store(
-        getObjectBoxModel(),
-        directory: path.join(
-          dir.path,
-          'objectbox-activity-store',
-        ),
-      );
-      final Box<ReminderModel> box = store.box<ReminderModel>();
-      final bool deleted =
-          box.remove(receivedAction.payload!['id'] as int? ?? 0);
+      final Store store = await getObjectboxStore();
+
+      final Box<ReminderEntity> box = store.box<ReminderEntity>();
+      final bool deleted = box.remove(reminder.id);
       gLogger.i('Reminder deletion status: $deleted');
+      store.close();
     }
   }
 
@@ -199,5 +196,26 @@ class NotificationController {
       );
     }
     await removeNotifications(initialAction.groupKey);
+  }
+
+  @pragma('vm:entry-point')
+  static Future<Store> getObjectboxStore() async {
+    final Directory dir = await getApplicationDocumentsDirectory();
+    if (Store.isOpen(
+      path.join(
+        dir.path,
+        'objectbox-activity-store',
+      ),
+    )) {
+      return Store.attach(
+        getObjectBoxModel(),
+        path.join(dir.path, 'objectbox-activity-store'),
+      );
+    } else {
+      return Store(
+        getObjectBoxModel(),
+        directory: path.join(dir.path, 'objectbox-activity-store'),
+      );
+    }
   }
 }

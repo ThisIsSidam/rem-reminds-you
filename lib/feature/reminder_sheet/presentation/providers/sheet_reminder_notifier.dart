@@ -1,13 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
-import '../../../../core/enums/storage_enums.dart';
-import '../../../../core/providers/global_providers.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 
@@ -166,7 +163,7 @@ class SheetReminderNotifier extends ChangeNotifier {
 
     if (_noRush) {
       return NoRushReminderModel(
-        id: id ?? nextId,
+        id: id ?? 0,
         title: title,
         autoSnoozeInterval: autoSnooze,
         dateTime: NoRushReminderModel.generateRandomFutureTime(ref),
@@ -174,7 +171,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     }
     return ReminderModel(
       title: title,
-      id: id ?? nextId,
+      id: id ?? 0,
       dateTime: dateTime,
       autoSnoozeInterval: autoSnoozeInterval,
       baseDateTime: baseDateTime,
@@ -182,16 +179,6 @@ class SheetReminderNotifier extends ChangeNotifier {
       recurringInterval: recurringInterval,
       paused: isPaused,
     );
-  }
-
-  /// Generates a new ID for the reminder.
-  /// Kind of count of all reminders created since we're only
-  /// incrementing the value by 1 each time.
-  int get nextId {
-    final SharedPreferences prefs = ref.watch(sharedPreferencesProvider);
-    final int id = prefs.getInt(SharedKeys.reminderId.key) ?? 0;
-    prefs.setInt(SharedKeys.reminderId.key, id + 1);
-    return id;
   }
 }
 

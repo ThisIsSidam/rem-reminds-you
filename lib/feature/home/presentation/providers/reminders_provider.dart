@@ -2,7 +2,6 @@
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/constants/const_strings.dart';
 import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
@@ -65,21 +64,21 @@ class RemindersNotifier extends _$RemindersNotifier {
   }
 
   Future<ReminderModel> saveReminder(ReminderModel reminder) async {
-    if (reminder.id != newReminderID) {
-      await NotificationController.cancelScheduledNotification(
-        reminder.id.toString(),
-      );
-      // _reminders.remove(reminder.id);
-    }
+    await NotificationController.cancelScheduledNotification(
+      reminder.id.toString(),
+    );
+
+    final int id = ref
+        .read(remindersRepositoryProvider.notifier)
+        .saveReminder(reminder.toEntity);
 
     if (!reminder.paused) {
       // Only reschedule if reminder is NOT paused
-      await NotificationController.scheduleNotification(reminder);
+      await NotificationController.scheduleNotification(
+        reminder.copyWith(id: id),
+      );
     }
-    ref
-        .read(remindersRepositoryProvider.notifier)
-        .saveReminder(reminder.toEntity);
-    gLogger.i('Saved Reminder in Database | ID: ${reminder.id}');
+    gLogger.i('Saved Reminder in Database | ID: $id');
     return reminder;
   }
 
