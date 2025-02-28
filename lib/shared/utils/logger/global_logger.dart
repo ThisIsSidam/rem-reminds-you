@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
 import '../../../core/enums/files_n_folders.dart';
@@ -27,7 +28,10 @@ Future<void> initLogger() async {
   if (isLoggerInitialized) return;
   gLogger = Logger(
     printer: PrettyPrinter(
-      dateTimeFormat: DateTimeFormat.dateAndTime,
+      methodCount: 0,
+      dateTimeFormat:
+          // ignore: avoid_redundant_argument_values
+          kDebugMode ? DateTimeFormat.none : DateTimeFormat.dateAndTime,
       lineLength: 30,
       excludeBox: <Level, bool>{
         Level.info: true,
@@ -36,7 +40,10 @@ Future<void> initLogger() async {
       },
     ),
     output: MultiOutput(
-      <LogOutput>[AppConsoleOutput(), fileOutput],
+      <LogOutput>[
+        if (kDebugMode) ConsoleOutput() else AppConsoleOutput(),
+        fileOutput,
+      ],
     ),
   );
 }
