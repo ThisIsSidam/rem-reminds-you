@@ -36,8 +36,20 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug {
-            applicationIdSuffix ".debug"
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        dev {
+            dimension "default"
+            applicationIdSuffix ".dev"
+            manifestPlaceholders = [appName: "[Dev] Rem"]
+        }
+
+        prod {
+            dimension "default"
+            applicationIdSuffix ""
+            manifestPlaceholders = [appName: "Rem"]
         }
     }
 }
