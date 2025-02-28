@@ -140,7 +140,7 @@ class RecurringReminderListTile extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Text(
-                      '⟳ ${reminder.recurringInterval}',
+                      '⟳ ${reminder.recurringInterval.name}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(

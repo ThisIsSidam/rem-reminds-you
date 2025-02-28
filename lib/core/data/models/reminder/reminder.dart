@@ -43,7 +43,7 @@ class ReminderModel implements ReminderBase {
   DateTime baseDateTime;
   bool paused;
 
-  bool get isRecurring => recurringInterval.isNone;
+  bool get isRecurring => !recurringInterval.isNone;
 
   @override
   Map<String, String?> toJson() {

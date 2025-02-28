@@ -13,11 +13,14 @@ part 'reminders_provider.g.dart';
 
 @riverpod
 class RemindersNotifier extends _$RemindersNotifier {
+  bool isEmpty = false;
+
   @override
   Map<HomeScreenSection, List<ReminderModel>> build() {
     gLogger.i('RemindersNotifier initialized');
     final List<ReminderEntity> entities =
         ref.watch(remindersRepositoryProvider);
+    isEmpty = entities.isEmpty;
     final List<ReminderModel> reminders =
         entities.map((ReminderEntity val) => val.toModel).toList();
     return _updateCategorizedReminders(reminders);

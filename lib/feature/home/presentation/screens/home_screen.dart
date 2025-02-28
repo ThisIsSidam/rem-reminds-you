@@ -98,7 +98,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   Widget build(BuildContext context) {
     remindersMap = ref.watch(remindersNotifierProvider);
-    final bool isEmpty = remindersMap.isEmpty;
+    final bool isEmpty = ref.read(remindersNotifierProvider.notifier).isEmpty;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -132,7 +132,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "You currently don't have any reminders!",
+              "You don't have any reminders!",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(

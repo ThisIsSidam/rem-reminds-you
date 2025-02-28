@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 extension DateTimeX on DateTime {
   String get friendly {
-    final DateFormat format = DateFormat('yyyy-MM-dd-HH:mm:ss');
+    final DateFormat format = DateFormat('EEE, d MMM, hh:mm aaa');
     return format.format(this);
   }
 

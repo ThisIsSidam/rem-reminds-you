@@ -15,7 +15,7 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
       child: GridView.count(
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
-        crossAxisCount: 2,
+        crossAxisCount: 3,
         shrinkWrap: true,
         childAspectRatio: 2,
         children: <Widget>[
@@ -49,7 +49,7 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
             : Theme.of(context).colorScheme.secondaryContainer,
       ),
       child: Text(
-        interval.toString(),
+        interval.name,
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
               color: isPickedOption
                   ? Theme.of(context).colorScheme.onPrimaryContainer

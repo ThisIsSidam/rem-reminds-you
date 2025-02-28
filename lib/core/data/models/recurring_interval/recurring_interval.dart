@@ -62,6 +62,19 @@ class RecurringInterval {
     }
   }
 
+  String get name {
+    switch (type) {
+      case 99:
+        return 'none';
+      case 101:
+        return 'daily';
+      case 707:
+        return 'weekly';
+      default:
+        return 'none';
+    }
+  }
+
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'type': type,
