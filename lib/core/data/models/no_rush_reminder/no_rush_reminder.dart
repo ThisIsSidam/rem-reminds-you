@@ -21,6 +21,7 @@ class NoRushReminderModel implements ReminderBase {
   String title;
   @override
   DateTime dateTime;
+  @override
   Duration autoSnoozeInterval;
 
   NoRushReminderModel copyWith({
@@ -37,8 +38,9 @@ class NoRushReminderModel implements ReminderBase {
     );
   }
 
+  @override
   Map<String, String?> toJson() {
-    return <String, String?>{
+    return <String, String>{
       'id': id.toString(),
       'title': title,
       'dateTime': dateTime.toIso8601String(),

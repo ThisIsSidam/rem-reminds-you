@@ -37,6 +37,7 @@ class ReminderModel implements ReminderBase {
   @override
   DateTime dateTime;
   String preParsedTitle;
+  @override
   Duration autoSnoozeInterval;
   RecurringInterval recurringInterval;
   DateTime baseDateTime;
@@ -44,8 +45,9 @@ class ReminderModel implements ReminderBase {
 
   bool get isRecurring => recurringInterval.isNone;
 
+  @override
   Map<String, String?> toJson() {
-    return <String, String?>{
+    return <String, String>{
       'id': id.toString(),
       'title': title,
       'dateTime': dateTime.toIso8601String(),

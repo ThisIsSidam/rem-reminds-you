@@ -70,6 +70,6 @@ class RecurringInterval {
 
   @override
   String toString() {
-    return jsonEncode(toJson);
+    return jsonEncode(toJson());
   }
 }

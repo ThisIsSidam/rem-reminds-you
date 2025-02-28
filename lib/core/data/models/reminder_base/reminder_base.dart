@@ -3,16 +3,30 @@ interface class ReminderBase {
     required this.id,
     required this.title,
     required this.dateTime,
+    required this.autoSnoozeInterval,
   });
+
+  factory ReminderBase.fromJson(Map<String, String?> json) {
+    return ReminderBase(
+      id: int.parse(json['id']!),
+      title: json['title']!,
+      dateTime: DateTime.parse(json['dateTime']!),
+      autoSnoozeInterval:
+          Duration(seconds: int.parse(json['autoSnoozeInterval']!)),
+    );
+  }
+
   int id;
   String title;
   DateTime dateTime;
+  Duration autoSnoozeInterval;
+
+  Map<String, String?> toJson() {
+    return <String, String>{
+      'id': id.toString(),
+      'title': title,
+      'dateTime': dateTime.toIso8601String(),
+      'autoSnoozeInterval': autoSnoozeInterval.inSeconds.toString(),
+    };
+  }
 }
-
-// Not putting anything else here since I only wanted an
-// interface so that I can pass both reminder and no-rush
-// through the method calls using a single parameter type
-
-// And if I add more types here, I would just have to add
-// @override on each in the other class definitions, so I've
-// only added those which I am using on ReminderBase instances
