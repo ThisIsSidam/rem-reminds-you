@@ -79,7 +79,7 @@ class ActionPaneManager {
             _slideAndRemoveReminder(context, ref);
           },
         ),
-        _doneSlidableAction(ref),
+        if (reminder.isRecurring) _doneSlidableAction(ref),
       ],
     );
   }
