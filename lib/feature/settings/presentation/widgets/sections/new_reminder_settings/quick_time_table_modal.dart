@@ -68,23 +68,22 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
     }
   }
 
-  void onSave() {
-    ref.read(userSettingsProvider)
-      // Update set options
-      ..quickTimeSetOption1 = setDateTimes[0]!
-      ..quickTimeSetOption2 = setDateTimes[1]!
-      ..quickTimeSetOption3 = setDateTimes[2]!
-      ..quickTimeSetOption4 = setDateTimes[3]!
-      // Update edit options
-      ..quickTimeEditOption1 = editDurations[4]!
-      ..quickTimeEditOption2 = editDurations[5]!
-      ..quickTimeEditOption3 = editDurations[6]!
-      ..quickTimeEditOption4 = editDurations[7]!
-      ..quickTimeEditOption5 = editDurations[8]!
-      ..quickTimeEditOption6 = editDurations[9]!
-      ..quickTimeEditOption7 = editDurations[10]!
-      ..quickTimeEditOption8 = editDurations[11]!;
-    Navigator.pop(context);
+  Future<void> onSave() async {
+    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
+    // Update set options
+    await settings.setQuickTimeSetOption1(setDateTimes[0]!);
+    await settings.setQuickTimeSetOption2(setDateTimes[1]!);
+    await settings.setQuickTimeSetOption3(setDateTimes[2]!);
+    await settings.setQuickTimeSetOption4(setDateTimes[3]!);
+    // Update edit options
+    await settings.setQuickTimeEditOption1(editDurations[4]!);
+    await settings.setQuickTimeEditOption2(editDurations[5]!);
+    await settings.setQuickTimeEditOption3(editDurations[6]!);
+    await settings.setQuickTimeEditOption4(editDurations[7]!);
+    await settings.setQuickTimeEditOption5(editDurations[8]!);
+    await settings.setQuickTimeEditOption6(editDurations[9]!);
+    await settings.setQuickTimeEditOption7(editDurations[10]!);
+    await settings.setQuickTimeEditOption8(editDurations[11]!);
   }
 
   @override
@@ -102,7 +101,14 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
           const SizedBox(height: 8),
           _buildButtonsTable(),
           getEditWidget(),
-          SaveCloseButtons(onTapSave: onSave),
+          SaveCloseButtons(
+            onTapSave: () async {
+              await onSave();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+          ),
         ],
       ),
     );

@@ -6,7 +6,7 @@ part of 'reminders_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$remindersNotifierHash() => r'039efce186ef54968b5b40368a38512dc01f407c';
+String _$remindersNotifierHash() => r'e0bf16ef296af39563f06867760585640010d5aa';
 
 /// See also [RemindersNotifier].
 @ProviderFor(RemindersNotifier)

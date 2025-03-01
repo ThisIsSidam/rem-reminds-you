@@ -73,7 +73,7 @@ class SwipeToLeftActionSheet extends ConsumerWidget {
 
     return ElevatedButton(
       onPressed: () {
-        ref.read(userSettingsProvider).homeTileSwipeActionLeft = action;
+        ref.read(userSettingsProvider).setHomeTileSwipeActionLeft(action);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(4),

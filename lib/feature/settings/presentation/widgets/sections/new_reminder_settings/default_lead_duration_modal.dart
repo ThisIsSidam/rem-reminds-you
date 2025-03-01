@@ -29,8 +29,8 @@ class DefaultLeadDurationModal extends ConsumerWidget {
           const SizedBox(height: 10),
           dateTimeWidget(context, dateTimeString, diffString),
           HMDurationPicker(
-            onDurationChange: (Duration dur) {
-              ref.read(userSettingsProvider).defaultLeadDuration = dur;
+            onDurationChange: (Duration dur) async {
+              await ref.read(userSettingsProvider).setDefaultLeadDuration(dur);
             },
           ),
         ],

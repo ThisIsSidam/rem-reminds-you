@@ -151,14 +151,18 @@ class QuietHoursSheet extends HookWidget {
             use24hFormat: true,
             onDateTimeChanged: (DateTime dt) {
               if (selectedTime == SelectedTime.start) {
-                settings.quietHoursStartTime = TimeOfDay(
-                  hour: dt.hour,
-                  minute: dt.minute,
+                settings.setQuietHoursStartTime(
+                  TimeOfDay(
+                    hour: dt.hour,
+                    minute: dt.minute,
+                  ),
                 );
               } else {
-                settings.quietHoursEndTime = TimeOfDay(
-                  hour: dt.hour,
-                  minute: dt.minute,
+                settings.setQuietHoursEndTime(
+                  TimeOfDay(
+                    hour: dt.hour,
+                    minute: dt.minute,
+                  ),
                 );
               }
             },

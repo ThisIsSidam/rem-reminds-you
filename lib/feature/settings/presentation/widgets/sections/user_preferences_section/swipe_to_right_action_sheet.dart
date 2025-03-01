@@ -73,7 +73,7 @@ class SwipeToRightActionSheet extends ConsumerWidget {
 
     return ElevatedButton(
       onPressed: () {
-        ref.read(userSettingsProvider).homeTileSwipeActionRight = action;
+        ref.read(userSettingsProvider).setHomeTileSwipeActionRight(action);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(4),

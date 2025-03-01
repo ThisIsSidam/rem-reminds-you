@@ -44,7 +44,7 @@ class UserPreferenceSection extends HookWidget {
               MenuItemButton(
                 child: Text(mode.name.capitalize()),
                 onPressed: () {
-                  settingsNotifier.themeMode = mode;
+                  settingsNotifier.setThemeMode(mode);
                 },
               ),
           ],
@@ -87,10 +87,9 @@ class UserPreferenceSection extends HookWidget {
                   value: textScale,
                   min: 0.8,
                   max: 1.4,
-                  label: '${textScale}x',
                   divisions: 6,
                   onChanged: (double val) {
-                    ref.read(userSettingsProvider).textScale = val;
+                    ref.read(userSettingsProvider).setTextScale(val);
                   },
                   inactiveColor: Theme.of(context).colorScheme.secondary,
                   activeColor: Theme.of(context).colorScheme.primary,
@@ -150,7 +149,7 @@ class UserPreferenceSection extends HookWidget {
             ],
             onChanged: (Duration? value) {
               value ??= currentDuration;
-              ref.read(userSettingsProvider).defaultPostponeDuration = value;
+              ref.read(userSettingsProvider).setDefaultPostponeDuration(value);
             },
           );
         },

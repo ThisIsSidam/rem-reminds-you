@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/enums/swipe_actions.dart';
@@ -9,13 +8,13 @@ import '../../../../core/providers/global_providers.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import 'default_settings.dart';
 
-part 'settings_provider.g.dart';
-
-@riverpod
-UserSettingsNotifier userSettings(Ref ref) {
-  final SharedPreferences prefs = ref.watch(sharedPreferencesProvider);
-  return UserSettingsNotifier(prefs: prefs);
-}
+final ChangeNotifierProvider<UserSettingsNotifier> userSettingsProvider =
+    ChangeNotifierProvider<UserSettingsNotifier>(
+  (Ref<Object?> ref) {
+    final SharedPreferences prefs = ref.watch(sharedPreferencesProvider);
+    return UserSettingsNotifier(prefs: prefs);
+  },
+);
 
 class UserSettingsNotifier extends ChangeNotifier {
   UserSettingsNotifier({required this.prefs}) {
@@ -63,9 +62,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set defaultLeadDuration(Duration value) {
+  Future<void> setDefaultLeadDuration(Duration value) async {
     const String key = 'defaultLeadDuration';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -78,9 +77,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set defaultAutoSnoozeDuration(Duration value) {
+  Future<void> setDefaultAutoSnoozeDuration(Duration value) async {
     const String key = 'defaultAutoSnoozeDuration';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -93,9 +92,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeSetOption1(DateTime value) {
+  Future<void> setQuickTimeSetOption1(DateTime value) async {
     const String key = 'quickTimeSetOption1';
-    prefs.setDateTime(key, value);
+    await prefs.setDateTime(key, value);
     notifyListeners();
   }
 
@@ -108,9 +107,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeSetOption2(DateTime value) {
+  Future<void> setQuickTimeSetOption2(DateTime value) async {
     const String key = 'quickTimeSetOption2';
-    prefs.setDateTime(key, value);
+    await prefs.setDateTime(key, value);
     notifyListeners();
   }
 
@@ -123,9 +122,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeSetOption3(DateTime value) {
+  Future<void> setQuickTimeSetOption3(DateTime value) async {
     const String key = 'quickTimeSetOption3';
-    prefs.setDateTime(key, value);
+    await prefs.setDateTime(key, value);
     notifyListeners();
   }
 
@@ -138,9 +137,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeSetOption4(DateTime value) {
+  Future<void> setQuickTimeSetOption4(DateTime value) async {
     const String key = 'quickTimeSetOption4';
-    prefs.setDateTime(key, value);
+    await prefs.setDateTime(key, value);
     notifyListeners();
   }
 
@@ -153,9 +152,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeEditOption1(Duration value) {
+  Future<void> setQuickTimeEditOption1(Duration value) async {
     const String key = 'quickTimeEditOption1';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -168,9 +167,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeEditOption2(Duration value) {
+  Future<void> setQuickTimeEditOption2(Duration value) async {
     const String key = 'quickTimeEditOption2';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -183,9 +182,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeEditOption3(Duration value) {
+  Future<void> setQuickTimeEditOption3(Duration value) async {
     const String key = 'quickTimeEditOption3';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -198,9 +197,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeEditOption4(Duration value) {
+  Future<void> setQuickTimeEditOption4(Duration value) async {
     const String key = 'quickTimeEditOption4';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -213,9 +212,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeEditOption5(Duration value) {
+  Future<void> setQuickTimeEditOption5(Duration value) async {
     const String key = 'quickTimeEditOption5';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -228,9 +227,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeEditOption6(Duration value) {
+  Future<void> setQuickTimeEditOption6(Duration value) async {
     const String key = 'quickTimeEditOption6';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -243,9 +242,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeEditOption7(Duration value) {
+  Future<void> setQuickTimeEditOption7(Duration value) async {
     const String key = 'quickTimeEditOption7';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -258,9 +257,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quickTimeEditOption8(Duration value) {
+  Future<void> setQuickTimeEditOption8(Duration value) async {
     const String key = 'quickTimeEditOption8';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -273,9 +272,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set autoSnoozeOption1(Duration value) {
+  Future<void> setAutoSnoozeOption1(Duration value) async {
     const String key = 'autoSnoozeOption1';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -288,9 +287,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set autoSnoozeOption2(Duration value) {
+  Future<void> setAutoSnoozeOption2(Duration value) async {
     const String key = 'autoSnoozeOption2';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -303,9 +302,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set autoSnoozeOption3(Duration value) {
+  Future<void> setAutoSnoozeOption3(Duration value) async {
     const String key = 'autoSnoozeOption3';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -318,9 +317,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set autoSnoozeOption4(Duration value) {
+  Future<void> setAutoSnoozeOption4(Duration value) async {
     const String key = 'autoSnoozeOption4';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -333,9 +332,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set autoSnoozeOption5(Duration value) {
+  Future<void> setAutoSnoozeOption5(Duration value) async {
     const String key = 'autoSnoozeOption5';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -348,9 +347,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set autoSnoozeOption6(Duration value) {
+  Future<void> setAutoSnoozeOption6(Duration value) async {
     const String key = 'autoSnoozeOption6';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -363,9 +362,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return SwipeAction.fromString(value);
   }
 
-  set homeTileSwipeActionLeft(SwipeAction value) {
+  Future<void> setHomeTileSwipeActionLeft(SwipeAction value) async {
     const String key = 'homeTileSwipeActionLeft';
-    prefs.setSwipeAction(key, value);
+    await prefs.setSwipeAction(key, value);
     notifyListeners();
   }
 
@@ -378,9 +377,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return SwipeAction.fromString(value);
   }
 
-  set homeTileSwipeActionRight(SwipeAction value) {
+  Future<void> setHomeTileSwipeActionRight(SwipeAction value) async {
     const String key = 'homeTileSwipeActionRight';
-    prefs.setSwipeAction(key, value);
+    await prefs.setSwipeAction(key, value);
     notifyListeners();
   }
 
@@ -393,9 +392,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set defaultPostponeDuration(Duration value) {
+  Future<void> setDefaultPostponeDuration(Duration value) async {
     const String key = 'defaultPostponeDuration';
-    prefs.setDuration(key, value);
+    await prefs.setDuration(key, value);
     notifyListeners();
   }
 
@@ -408,9 +407,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set themeMode(ThemeMode value) {
+  Future<void> setThemeMode(ThemeMode value) async {
     const String key = 'themeMode';
-    prefs.setThemeMode(key, value);
+    await prefs.setThemeMode(key, value);
     notifyListeners();
   }
 
@@ -423,9 +422,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quietHoursStartTime(TimeOfDay value) {
+  Future<void> setQuietHoursStartTime(TimeOfDay value) async {
     const String key = 'quietHoursStartTime';
-    prefs.setTimeOfDay(key, value);
+    await prefs.setTimeOfDay(key, value);
     notifyListeners();
   }
 
@@ -438,9 +437,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set quietHoursEndTime(TimeOfDay value) {
+  Future<void> setQuietHoursEndTime(TimeOfDay value) async {
     const String key = 'quietHoursEndTime';
-    prefs.setTimeOfDay(key, value);
+    await prefs.setTimeOfDay(key, value);
     notifyListeners();
   }
 
@@ -453,9 +452,9 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  set textScale(double value) {
+  Future<void> setTextScale(double value) async {
     const String key = 'textScale';
-    prefs.setDouble(key, value);
+    await prefs.setDouble(key, value);
     notifyListeners();
   }
 }

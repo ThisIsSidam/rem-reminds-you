@@ -41,16 +41,15 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
     });
   }
 
-  void onSave() {
-    ref.read(userSettingsProvider)
-      // Using direct setter assignment
-      ..autoSnoozeOption1 = durations[0]!
-      ..autoSnoozeOption2 = durations[1]!
-      ..autoSnoozeOption3 = durations[2]!
-      ..autoSnoozeOption4 = durations[3]!
-      ..autoSnoozeOption5 = durations[4]!
-      ..autoSnoozeOption6 = durations[5]!;
-    Navigator.pop(context);
+  Future<void> onSave() async {
+    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
+
+    await settings.setAutoSnoozeOption1(durations[0]!);
+    await settings.setAutoSnoozeOption2(durations[1]!);
+    await settings.setAutoSnoozeOption3(durations[2]!);
+    await settings.setAutoSnoozeOption4(durations[3]!);
+    await settings.setAutoSnoozeOption5(durations[4]!);
+    await settings.setAutoSnoozeOption6(durations[5]!);
   }
 
   @override
@@ -74,7 +73,14 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
               });
             },
           ),
-          SaveCloseButtons(onTapSave: onSave),
+          SaveCloseButtons(
+            onTapSave: () async {
+              await onSave();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+          ),
         ],
       ),
     );

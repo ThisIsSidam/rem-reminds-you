@@ -25,8 +25,10 @@ class DefaultAutoSnoozeDurationModal extends ConsumerWidget {
           const SizedBox(height: 10),
           dateTimeWidget(context, currentSelectedDuration),
           HMDurationPicker(
-            onDurationChange: (Duration dur) {
-              ref.read(userSettingsProvider).defaultAutoSnoozeDuration = dur;
+            onDurationChange: (Duration dur) async {
+              await ref
+                  .read(userSettingsProvider)
+                  .setDefaultAutoSnoozeDuration(dur);
             },
           ),
         ],
