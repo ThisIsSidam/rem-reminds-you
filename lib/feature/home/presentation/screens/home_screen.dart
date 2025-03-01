@@ -1,12 +1,8 @@
-import 'dart:isolate';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/constants/const_strings.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/enums/storage_enums.dart';
 import '../../../../core/providers/global_providers.dart';
@@ -42,8 +38,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
   Map<HomeScreenSection, List<ReminderModel>> remindersMap =
       <HomeScreenSection, List<ReminderModel>>{};
-  final ReceivePort receivePort = ReceivePort();
-  SendPort? bgIsolate = IsolateNameServer.lookupPortByName(bgIsolateName);
 
   @override
   void initState() {

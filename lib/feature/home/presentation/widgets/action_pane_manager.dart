@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/enums/swipe_actions.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
@@ -10,106 +9,49 @@ import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/reminders_provider.dart';
 
 class ActionPaneManager {
-  static ActionPane? getActionToLeft(
-    WidgetRef ref,
-    List<ReminderModel> remindersList,
-    int index,
-    BuildContext context,
-  ) {
-    final SwipeAction action =
-        ref.read(userSettingsProvider).homeTileSwipeActionLeft;
-    final ReminderModel reminder = remindersList[index];
+  const ActionPaneManager({
+    required this.context,
+    required this.ref,
+    required this.remove,
+    required this.reminder,
+  });
 
+  final BuildContext context;
+  final WidgetRef ref;
+  final VoidCallback remove;
+  final ReminderModel reminder;
+
+  ActionPane? getActionPane(SwipeAction action) {
     switch (action) {
       case SwipeAction.none:
         return null;
       case SwipeAction.done:
-        return _doneActionPane(
-          context,
-          reminder,
-          ref,
-        );
+        return reminder.isRecurring ? _doneActionPane(ref) : null;
       case SwipeAction.delete:
-        return _deleteActionPane(
-          remindersList,
-          index,
-          context,
-          ref,
-        );
+        return _deleteActionPane(context, ref);
       case SwipeAction.postpone:
-        return reminder is NoRushReminderModel
-            ? null
-            : _postponeActionPane(
-                context,
-                reminder,
-                ref,
-              );
+        return _postponeActionPane(ref);
       case SwipeAction.doneAndDelete:
-        return _doneAndDeleteActionPane(context, remindersList, index, ref);
+        return _doneAndDeleteActionPane(context, ref);
     }
   }
 
-  static ActionPane? getActionToRight(
-    WidgetRef ref,
-    List<ReminderModel> remindersList,
-    int index,
-    BuildContext context,
-  ) {
-    final SwipeAction action =
-        ref.read(userSettingsProvider).homeTileSwipeActionRight;
-
-    switch (action) {
-      case SwipeAction.none:
-        return null;
-      case SwipeAction.done:
-        return _doneActionPane(
-          context,
-          remindersList[index],
-          ref,
-        );
-      case SwipeAction.delete:
-        return _deleteActionPane(
-          remindersList,
-          index,
-          context,
-          ref,
-        );
-      case SwipeAction.postpone:
-        return _postponeActionPane(
-          context,
-          remindersList[index],
-          ref,
-        );
-      case SwipeAction.doneAndDelete:
-        return _doneAndDeleteActionPane(context, remindersList, index, ref);
-    }
-  }
-
-  static ActionPane _doneActionPane(
-    BuildContext context,
-    ReminderModel reminder,
-    WidgetRef ref,
-  ) {
+  ActionPane _doneActionPane(WidgetRef ref) {
     return ActionPane(
       motion: const StretchMotion(),
-      children: <Widget>[_doneSlidableAction(context, reminder, ref)],
+      children: <Widget>[
+        _doneSlidableAction(ref),
+      ],
     );
   }
 
-  static ActionPane _deleteActionPane(
-    List<ReminderModel> remindersList,
-    int index,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    final ReminderModel reminder = remindersList[index];
-
+  ActionPane _deleteActionPane(BuildContext context, WidgetRef ref) {
     return ActionPane(
       motion: const StretchMotion(),
       dismissible: DismissiblePane(
         onDismissed: () {
-          remindersList.removeAt(index);
-          _slideAndRemoveReminder(context, reminder, ref);
+          remove.call();
+          _slideAndRemoveReminder(context, ref);
         },
       ),
       children: <Widget>[
@@ -117,22 +59,15 @@ class ActionPaneManager {
           backgroundColor: Colors.red,
           icon: Icons.delete_forever,
           onPressed: (BuildContext context) {
-            remindersList.removeAt(index);
-            _slideAndRemoveReminder(context, reminder, ref);
+            remove.call();
+            _slideAndRemoveReminder(context, ref);
           },
         ),
       ],
     );
   }
 
-  static ActionPane _doneAndDeleteActionPane(
-    BuildContext context,
-    List<ReminderModel> remindersList,
-    int index,
-    WidgetRef ref,
-  ) {
-    final ReminderModel reminder = remindersList[index];
-
+  ActionPane _doneAndDeleteActionPane(BuildContext context, WidgetRef ref) {
     return ActionPane(
       motion: const StretchMotion(),
       children: <Widget>[
@@ -140,92 +75,30 @@ class ActionPaneManager {
           backgroundColor: Colors.red,
           icon: Icons.delete_forever,
           onPressed: (BuildContext context) {
-            remindersList.removeAt(index);
-            _slideAndRemoveReminder(context, reminder, ref);
+            remove.call();
+            _slideAndRemoveReminder(context, ref);
           },
         ),
-        _doneSlidableAction(context, reminder, ref),
+        _doneSlidableAction(ref),
       ],
     );
   }
 
-  static void _slideAndRemoveReminder(
-    BuildContext context,
-    ReminderModel reminder,
-    WidgetRef ref,
-  ) {
+  void _slideAndRemoveReminder(BuildContext context, WidgetRef ref) {
     // Store the provider reference before any potential disposal
-    final RemindersNotifier remindersProviderValue =
-        ref.read(remindersNotifierProvider.notifier);
-
-    if (!reminder.isRecurring) {
-      remindersProviderValue.deleteReminder(reminder.id);
-      AppUtils.showToast(
-        msg: "'${reminder.title}' deleted",
-        description: 'Tap to undo',
-        onTap: () {
-          remindersProviderValue.saveReminder(reminder);
-        },
-      );
-      return;
-    } else {
-      showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            elevation: 5,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Theme.of(context).cardColor,
-            title: Text(
-              'Recurring Reminder',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            content: Text(
-              // ignore: lines_longer_than_80_chars
-              'This is a recurring reminder. Do you really want to delete it? You can also archive it.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Cancel',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  remindersProviderValue.deleteReminder(reminder.id);
-                  AppUtils.showToast(
-                    msg: "'${reminder.title}' deleted",
-                    description: 'Tap to undo',
-                    onTap: () {
-                      remindersProviderValue.saveReminder(reminder);
-                    },
-                  );
-
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Delete',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
-            ],
-          );
-        },
-      );
-    }
+    final RemindersNotifier remindersProviderValue = ref
+        .read(remindersNotifierProvider.notifier)
+      ..deleteReminder(reminder.id);
+    AppUtils.showToast(
+      msg: "'${reminder.title}' deleted",
+      description: 'Tap to undo',
+      onTap: () {
+        remindersProviderValue.saveReminder(reminder);
+      },
+    );
   }
 
-  // We should also fix the same issue in _postponeActionPane
-  static ActionPane _postponeActionPane(
-    BuildContext context,
-    ReminderModel reminder,
-    WidgetRef ref,
-  ) {
+  ActionPane _postponeActionPane(WidgetRef ref) {
     final Duration postponeDuration =
         ref.read(userSettingsProvider).defaultPostponeDuration;
     final RemindersNotifier remindersProviderValue =
@@ -237,15 +110,16 @@ class ActionPaneManager {
         SlidableAction(
           icon: Icons.add,
           onPressed: (BuildContext context) {
-            reminder.dateTime = reminder.dateTime.add(postponeDuration);
-            remindersProviderValue.saveReminder(reminder);
+            remindersProviderValue.saveReminder(
+              reminder.copyWith(
+                dateTime: reminder.dateTime.add(postponeDuration),
+              ),
+            );
 
             AppUtils.showToast(
               msg: "'${reminder.title}' postponed.",
               description: 'Tap to undo',
               onTap: () {
-                reminder.dateTime =
-                    reminder.dateTime.subtract(postponeDuration);
                 remindersProviderValue.saveReminder(reminder);
               },
             );
@@ -255,12 +129,7 @@ class ActionPaneManager {
     );
   }
 
-  // Also fix _doneSlidableAction
-  static Widget _doneSlidableAction(
-    BuildContext context,
-    ReminderModel reminder,
-    WidgetRef ref,
-  ) {
+  Widget _doneSlidableAction(WidgetRef ref) {
     final RemindersNotifier remindersProviderValue =
         ref.read(remindersNotifierProvider.notifier);
 
@@ -270,14 +139,8 @@ class ActionPaneManager {
       onPressed: (BuildContext context) {
         remindersProviderValue.markAsDone(<int>[reminder.id]);
 
-        if (reminder.isRecurring) {
-          AppUtils.showToast(
-            msg: "'${reminder.title}' Deleted",
-            description: 'Tap to undo',
-            onTap: () {
-              remindersProviderValue.deleteReminder(reminder.id);
-            },
-          );
+        if (reminder.isNotRecurring) {
+          return;
         } else {
           AppUtils.showToast(
             msg: "'${reminder.title}' moved to next occurrence.",

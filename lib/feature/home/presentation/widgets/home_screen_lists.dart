@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../core/data/models/reminder/reminder.dart';
+import '../../../../core/enums/swipe_actions.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 import 'action_pane_manager.dart';
 import 'reminder_tile.dart';
 
@@ -22,6 +24,12 @@ class HomeScreenReminderListSection extends ConsumerWidget {
     if (hideIfEmpty && remindersList.isEmpty) {
       return const SizedBox.shrink();
     }
+    final (SwipeAction, SwipeAction) actions = ref.watch(
+      userSettingsProvider.select(
+        (UserSettingsNotifier p) =>
+            (p.homeTileSwipeActionRight, p.homeTileSwipeActionLeft),
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -37,23 +45,25 @@ class HomeScreenReminderListSection extends ConsumerWidget {
             children: <Widget>[
               for (int i = 0; i < remindersList.length; i++) ...<Widget>[
                 const SizedBox(height: 4),
-                Slidable(
-                  key: ValueKey<int>(remindersList[i].id),
-                  startActionPane: ActionPaneManager.getActionToRight(
-                    ref,
-                    remindersList,
-                    i,
-                    context,
-                  ),
-                  endActionPane: ActionPaneManager.getActionToLeft(
-                    ref,
-                    remindersList,
-                    i,
-                    context,
-                  ),
-                  child: HomePageReminderEntryListTile(
-                    reminder: remindersList[i],
-                  ),
+                Builder(
+                  builder: (BuildContext context) {
+                    final ActionPaneManager paneManager = ActionPaneManager(
+                      reminder: remindersList[i],
+                      remove: () {
+                        remindersList.removeAt(i);
+                      },
+                      context: context,
+                      ref: ref,
+                    );
+                    return Slidable(
+                      key: ValueKey<int>(remindersList[i].id),
+                      startActionPane: paneManager.getActionPane(actions.$1),
+                      endActionPane: paneManager.getActionPane(actions.$2),
+                      child: HomePageReminderEntryListTile(
+                        reminder: remindersList[i],
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 4),
               ],
