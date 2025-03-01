@@ -15,7 +15,7 @@ class SwipeToRightActionSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            'Swipe to Left Actions',
+            'Swipe to Right Actions',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const Divider(),
