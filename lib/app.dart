@@ -10,7 +10,7 @@ import 'feature/app_startup/presentation/providers/app_startup_provider.dart';
 import 'feature/app_startup/presentation/providers/initial_screen_provider.dart';
 import 'feature/app_startup/presentation/screens/splash_screen.dart';
 import 'feature/app_startup/presentation/widgets/splash_error.dart';
-import 'feature/home/presentation/screens/dashboard_screen.dart';
+import 'feature/home/presentation/screens/home_screen.dart';
 import 'feature/permissions/domain/app_permi_handler.dart';
 import 'feature/permissions/presentation/screens/permissions_screen.dart';
 import 'feature/settings/presentation/providers/settings_provider.dart';
@@ -118,8 +118,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     late Widget screenWidget;
     if (screen == null) {
       screenWidget = const SplashScreen();
-    } else if (screen == AppRoute.dashboard) {
-      screenWidget = const DashboardScreen();
+    } else if (screen == AppRoute.home) {
+      screenWidget = const HomeScreen();
     } else if (screen == AppRoute.permissions) {
       screenWidget = const PermissionScreen();
     } else {
