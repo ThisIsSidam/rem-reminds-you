@@ -777,10 +777,10 @@ packages:
     dependency: "direct main"
     description:
       name: random_datetime
-      sha256: "9bab1ded12de6d3b33f8819986d4f182732351caca49b47f759f0548394ba37b"
+      sha256: f017de9a45056f77f814f0c5719cf3276b9f693c6018ce2c28a98c3a555ebe3a
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   riverpod:
     dependency: transitive
     description:

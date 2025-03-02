@@ -37,31 +37,25 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
     return reminder;
   }
 
-  Future<NoRushReminderModel?> deleteReminder(
-    NoRushReminderModel reminder,
+  Future<bool> deleteReminder(
+    int id,
   ) async {
     await NotificationController.cancelScheduledNotification(
-      reminder.id.toString(),
+      id.toString(),
     );
 
-    ref
-        .read(noRushRemindersRepositoryProvider.notifier)
-        .removeReminder(reminder.id);
-    gLogger.i('Deleted Reminder from Database | ID: ${reminder.id}');
-    return reminder;
+    final bool removed =
+        ref.read(noRushRemindersRepositoryProvider.notifier).removeReminder(id);
+    gLogger.i('Deleted reminder from database | ID: $id | Status: $removed');
+    return removed;
   }
 
-  Future<void> markAsDone(List<int> ids) async {
-    for (final int id in ids) {
-      final NoRushReminderModel? reminder =
-          ref.read(noRushRemindersRepositoryProvider.notifier).getReminder(id);
-      gLogger.i('Marking Reminder as Done');
-      if (reminder == null) return;
-
-      await deleteReminder(reminder);
-
-      await NotificationController.removeNotifications(id.toString());
-    }
+  Future<void> postponeReminder(NoRushReminderModel reminder) async {
+    await saveReminder(
+      reminder.copyWith(
+        dateTime: NoRushReminderModel.generateRandomFutureTime(ref),
+      ),
+    );
   }
 
   Future<String> getBackup() async {

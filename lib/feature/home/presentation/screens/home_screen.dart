@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/enums/storage_enums.dart';
 import '../../../../core/providers/global_providers.dart';
@@ -12,6 +13,7 @@ import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../../shared/utils/misc_methods.dart';
 import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
+import '../providers/no_rush_provider.dart';
 import '../providers/reminders_provider.dart';
 import '../widgets/home_screen_lists.dart';
 
@@ -39,6 +41,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
   Map<HomeScreenSection, List<ReminderModel>> remindersMap =
       <HomeScreenSection, List<ReminderModel>>{};
+  List<NoRushReminderModel> noRushReminders = <NoRushReminderModel>[];
 
   @override
   void initState() {
@@ -93,6 +96,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   Widget build(BuildContext context) {
     remindersMap = ref.watch(remindersNotifierProvider);
+    noRushReminders = ref.watch(noRushRemindersNotifierProvider);
     final bool isEmpty = ref.read(remindersNotifierProvider.notifier).isEmpty;
 
     return Scaffold(
@@ -174,7 +178,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return SliverList(
       delegate: SliverChildListDelegate(
         <Widget>[
-          HomeScreenReminderListSection(
+          ListedReminderSection(
             label: _buildHomeSectionButton(
               label: HomeScreenSection.overdue.title,
               color: Theme.of(context).colorScheme.error,
@@ -183,7 +187,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 remindersMap[HomeScreenSection.overdue] ?? <ReminderModel>[],
             hideIfEmpty: true,
           ),
-          HomeScreenReminderListSection(
+          ListedReminderSection(
             label: _buildHomeSectionButton(
               onTap: _showReminderSheet,
               label: HomeScreenSection.today.title,
@@ -192,7 +196,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             remindersList:
                 remindersMap[HomeScreenSection.today] ?? <ReminderModel>[],
           ),
-          HomeScreenReminderListSection(
+          ListedReminderSection(
             label: _buildHomeSectionButton(
               onTap: () {
                 _showReminderSheet(duration: const Duration(days: 1));
@@ -203,7 +207,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             remindersList:
                 remindersMap[HomeScreenSection.tomorrow] ?? <ReminderModel>[],
           ),
-          HomeScreenReminderListSection(
+          ListedReminderSection(
             label: _buildHomeSectionButton(
               onTap: () {
                 _showReminderSheet(duration: const Duration(days: 7));
@@ -214,7 +218,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             remindersList:
                 remindersMap[HomeScreenSection.later] ?? <ReminderModel>[],
           ),
-          HomeScreenReminderListSection(
+          ListedNoRushSection(
             label: _buildHomeSectionButton(
               onTap: () {
                 _showReminderSheet(isNoRush: true);
@@ -222,8 +226,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               label: HomeScreenSection.noRush.title,
               color: Theme.of(context).colorScheme.inverseSurface,
             ),
-            remindersList:
-                remindersMap[HomeScreenSection.noRush] ?? <ReminderModel>[],
+            remindersList: noRushReminders,
           ),
         ],
       ),
