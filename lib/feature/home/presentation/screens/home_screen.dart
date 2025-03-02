@@ -97,7 +97,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget build(BuildContext context) {
     remindersMap = ref.watch(remindersNotifierProvider);
     noRushReminders = ref.watch(noRushRemindersNotifierProvider);
-    final bool isEmpty = ref.read(remindersNotifierProvider.notifier).isEmpty;
+    final bool isEmpty = ref.read(remindersNotifierProvider.notifier).isEmpty &&
+        noRushReminders.isEmpty;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

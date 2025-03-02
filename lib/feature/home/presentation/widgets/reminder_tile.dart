@@ -222,16 +222,14 @@ class NoRushReminderListTile extends ConsumerWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                reminder.title,
-                style: Theme.of(context).textTheme.titleMedium,
-                softWrap: true,
-              ),
-            ],
+          child: SizedBox(
+            width: double.maxFinite,
+            height: 36,
+            child: Text(
+              reminder.title,
+              style: Theme.of(context).textTheme.titleMedium,
+              softWrap: true,
+            ),
           ),
         ),
       ),

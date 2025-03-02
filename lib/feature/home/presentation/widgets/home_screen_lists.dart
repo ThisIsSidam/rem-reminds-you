@@ -9,6 +9,9 @@ import '../../../settings/presentation/providers/settings_provider.dart';
 import 'action_pane_manager.dart';
 import 'reminder_tile.dart';
 
+// [ListedReminderSection] and [ListedNoRushSection] are identical
+// But keep separate and synced
+
 class ListedReminderSection extends ConsumerWidget {
   const ListedReminderSection({
     required this.label,

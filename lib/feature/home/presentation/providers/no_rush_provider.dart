@@ -26,14 +26,16 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
       await NotificationController.cancelScheduledNotification(
         reminder.id.toString(),
       );
-      // _reminders.remove(reminder.id);
     }
-    await NotificationController.scheduleNotification(reminder);
-
-    ref
+    final int id = ref
         .read(noRushRemindersRepositoryProvider.notifier)
         .saveReminder(reminder.toEntity);
-    gLogger.i('Saved Reminder in Database | ID: ${reminder.id}');
+
+    await NotificationController.scheduleNotification(
+      reminder.copyWith(id: id),
+    );
+
+    gLogger.i('Saved Reminder in Database | ID: $id');
     return reminder;
   }
 
