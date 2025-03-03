@@ -102,6 +102,11 @@ class NotificationController {
           label: 'Done',
           actionType: ActionType.SilentBackgroundAction,
         ),
+        NotificationActionButton(
+          key: 'postpone',
+          label: 'Postpone',
+          actionType: ActionType.SilentBackgroundAction,
+        ),
       ],
     );
 
@@ -169,6 +174,8 @@ class NotificationController {
 
     if (receivedAction.buttonKeyPressed == 'done') {
       actionHandler.donePressed();
+    } else if (receivedAction.buttonKeyPressed == 'postpone') {
+      await actionHandler.postponePressed();
     }
     store.close();
   }
