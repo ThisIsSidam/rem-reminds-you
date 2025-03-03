@@ -7,8 +7,8 @@ import '../../../providers/settings_provider.dart';
 
 enum SelectedTime { none, start, end }
 
-class QuietHoursSheet extends HookWidget {
-  const QuietHoursSheet({super.key});
+class NoRushHoursSheet extends HookWidget {
+  const NoRushHoursSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class QuietHoursSheet extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  'Quiet Hours',
+                  'No rush hours',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const Divider(),
@@ -51,10 +51,9 @@ class QuietHoursSheet extends HookWidget {
   ) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
-        final (TimeOfDay, TimeOfDay) quietHours = ref.watch(
+        final (TimeOfDay, TimeOfDay) noRushHours = ref.watch(
           userSettingsProvider.select(
-            (UserSettingsNotifier p) =>
-                (p.quietHoursStartTime, p.quietHoursEndTime),
+            (UserSettingsNotifier p) => (p.noRushStartTime, p.noRushEndTime),
           ),
         );
         return Row(
@@ -82,7 +81,7 @@ class QuietHoursSheet extends HookWidget {
                   ),
                   child: Text(
                     // ignore: lines_longer_than_80_chars
-                    '${quietHours.$1.hour.toString().padLeft(2, '0')}:${quietHours.$1.minute.toString().padLeft(2, '0')}',
+                    '${noRushHours.$1.hour.toString().padLeft(2, '0')}:${noRushHours.$1.minute.toString().padLeft(2, '0')}',
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: timeType == SelectedTime.start
                               ? FontWeight.bold
@@ -124,7 +123,7 @@ class QuietHoursSheet extends HookWidget {
                   ),
                   child: Text(
                     // ignore: lines_longer_than_80_chars
-                    '${quietHours.$2.hour.toString().padLeft(2, '0')}:${quietHours.$2.minute.toString().padLeft(2, '0')}',
+                    '${noRushHours.$2.hour.toString().padLeft(2, '0')}:${noRushHours.$2.minute.toString().padLeft(2, '0')}',
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: timeType == SelectedTime.end
                               ? FontWeight.bold
@@ -151,14 +150,14 @@ class QuietHoursSheet extends HookWidget {
             use24hFormat: true,
             onDateTimeChanged: (DateTime dt) {
               if (selectedTime == SelectedTime.start) {
-                settings.setQuietHoursStartTime(
+                settings.setNoRushStartTime(
                   TimeOfDay(
                     hour: dt.hour,
                     minute: dt.minute,
                   ),
                 );
               } else {
-                settings.setQuietHoursEndTime(
+                settings.setNoRushEndTime(
                   TimeOfDay(
                     hour: dt.hour,
                     minute: dt.minute,

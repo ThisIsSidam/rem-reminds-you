@@ -413,8 +413,8 @@ class UserSettingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  TimeOfDay get quietHoursStartTime {
-    const String key = 'quietHoursStartTime';
+  TimeOfDay get noRushStartTime {
+    const String key = 'noRushHoursStartTime';
     final TimeOfDay? value = prefs.getTimeOfDay(key);
     if (value == null) {
       return defaultSettings[key] as TimeOfDay;
@@ -422,14 +422,14 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  Future<void> setQuietHoursStartTime(TimeOfDay value) async {
-    const String key = 'quietHoursStartTime';
+  Future<void> setNoRushStartTime(TimeOfDay value) async {
+    const String key = 'noRushHoursStartTime';
     await prefs.setTimeOfDay(key, value);
     notifyListeners();
   }
 
-  TimeOfDay get quietHoursEndTime {
-    const String key = 'quietHoursEndTime';
+  TimeOfDay get noRushEndTime {
+    const String key = 'noRushHoursEndTime';
     final TimeOfDay? value = prefs.getTimeOfDay(key);
     if (value == null) {
       return defaultSettings[key] as TimeOfDay;
@@ -437,8 +437,8 @@ class UserSettingsNotifier extends ChangeNotifier {
     return value;
   }
 
-  Future<void> setQuietHoursEndTime(TimeOfDay value) async {
-    const String key = 'quietHoursEndTime';
+  Future<void> setNoRushEndTime(TimeOfDay value) async {
+    const String key = 'noRushHoursEndTime';
     await prefs.setTimeOfDay(key, value);
     notifyListeners();
   }

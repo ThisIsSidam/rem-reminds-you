@@ -55,8 +55,8 @@ class NoRushReminderModel implements ReminderBase {
   /// Is used in the provider, when creating the new noRush reminder
   static DateTime generateRandomFutureTime(Ref ref) {
     final UserSettingsNotifier settings = ref.read(userSettingsProvider);
-    final TimeOfDay startTime = settings.quietHoursStartTime;
-    final TimeOfDay endTime = settings.quietHoursEndTime;
+    final TimeOfDay startTime = settings.noRushStartTime;
+    final TimeOfDay endTime = settings.noRushEndTime;
 
     final DateTime now = DateTime.now();
     final DateTime startDate = now.add(const Duration(days: 3));
@@ -67,10 +67,8 @@ class NoRushReminderModel implements ReminderBase {
         yearRange: TimeRange(start: startDate.year, end: endDate.year),
         monthRange: TimeRange(start: startDate.month, end: endDate.month),
         dayRange: TimeRange(start: startDate.day, end: endDate.day),
-
-        // start is end and vice versa because time range is of quiet hours
-        hourRange: TimeRange(start: endTime.hour, end: startTime.hour),
-        minuteRange: TimeRange(start: endTime.minute, end: startTime.minute),
+        hourRange: TimeRange(start: startTime.hour, end: endTime.hour),
+        minuteRange: TimeRange(start: startTime.minute, end: endTime.minute),
         secondRange: const TimeRange(start: 0, end: 0),
         millisecondRange: const TimeRange(start: 0, end: 0),
         microsecondRange: const TimeRange(start: 0, end: 0),

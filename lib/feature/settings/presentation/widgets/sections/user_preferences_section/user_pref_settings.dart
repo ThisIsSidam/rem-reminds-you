@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../shared/utils/extensions/string_ext.dart';
 import '../../../providers/settings_provider.dart';
-import 'quiet_hours_sheet.dart';
+import 'no_rush_hours_sheet.dart';
 
 class UserPreferenceSection extends HookWidget {
   const UserPreferenceSection({
@@ -24,7 +24,7 @@ class UserPreferenceSection extends HookWidget {
             _buildThemeSetting(context, controller),
             _buildTextScaleSetting(context),
             _buildQuickPostponeDurationSetting(context),
-            _buildQuietHoursSetting(context),
+            _buildNoRushHoursSettings(context),
           ],
         ),
       ],
@@ -157,7 +157,7 @@ class UserPreferenceSection extends HookWidget {
     );
   }
 
-  Widget _buildQuietHoursSetting(BuildContext context) {
+  Widget _buildNoRushHoursSettings(BuildContext context) {
     return ListTile(
       onTap: () async {
         await showModalBottomSheet<void>(
@@ -165,23 +165,23 @@ class UserPreferenceSection extends HookWidget {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 5,
           context: context,
-          builder: (BuildContext context) => const QuietHoursSheet(),
+          builder: (BuildContext context) => const NoRushHoursSheet(),
         );
       },
       leading: const Icon(Icons.nightlight),
       title: Text(
-        'Quiet Hours',
+        'No rush hours',
         style: Theme.of(context).textTheme.titleSmall,
       ),
       subtitle: Consumer(
         builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          final TimeOfDay quietHoursStartTime =
-              ref.watch(userSettingsProvider).quietHoursStartTime;
-          final TimeOfDay quietHoursEndTime =
-              ref.watch(userSettingsProvider).quietHoursEndTime;
+          final TimeOfDay noRushStartTime =
+              ref.watch(userSettingsProvider).noRushStartTime;
+          final TimeOfDay noRushEndTime =
+              ref.watch(userSettingsProvider).noRushEndTime;
           return Text(
             // ignore: lines_longer_than_80_chars
-            '${quietHoursStartTime.hour.toString().padLeft(2, '0')}:${quietHoursStartTime.minute.toString().padLeft(2, '0')} - ${quietHoursEndTime.hour.toString().padLeft(2, '0')}:${quietHoursEndTime.minute.toString().padLeft(2, '0')}',
+            '${noRushStartTime.hour.toString().padLeft(2, '0')}:${noRushStartTime.minute.toString().padLeft(2, '0')} - ${noRushEndTime.hour.toString().padLeft(2, '0')}:${noRushEndTime.minute.toString().padLeft(2, '0')}',
             style: Theme.of(context).textTheme.bodySmall,
           );
         },
