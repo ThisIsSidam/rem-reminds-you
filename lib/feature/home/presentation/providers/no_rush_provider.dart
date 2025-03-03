@@ -1,5 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
 
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/constants/const_strings.dart';
@@ -7,6 +8,7 @@ import '../../../../core/data/entities/no_rush_entitiy/no_rush_entity.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../data/repositories/reminders_repo.dart';
 
 part 'no_rush_provider.g.dart';
@@ -53,9 +55,13 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   }
 
   Future<void> postponeReminder(NoRushReminderModel reminder) async {
+    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
+    final TimeOfDay startTime = settings.noRushStartTime;
+    final TimeOfDay endTime = settings.noRushEndTime;
     await saveReminder(
       reminder.copyWith(
-        dateTime: NoRushReminderModel.generateRandomFutureTime(ref),
+        dateTime:
+            NoRushReminderModel.generateRandomFutureTime(startTime, endTime),
       ),
     );
   }

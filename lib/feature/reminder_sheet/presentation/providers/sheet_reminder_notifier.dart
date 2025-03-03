@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
@@ -162,11 +162,15 @@ class SheetReminderNotifier extends ChangeNotifier {
     }
 
     if (_noRush) {
+      final UserSettingsNotifier settings = ref.read(userSettingsProvider);
+      final TimeOfDay startTime = settings.noRushStartTime;
+      final TimeOfDay endTime = settings.noRushEndTime;
       return NoRushReminderModel(
         id: id ?? 0,
         title: title,
         autoSnoozeInterval: autoSnooze,
-        dateTime: NoRushReminderModel.generateRandomFutureTime(ref),
+        dateTime:
+            NoRushReminderModel.generateRandomFutureTime(startTime, endTime),
       );
     }
     return ReminderModel(

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:random_datetime/random_datetime.dart';
 import 'package:random_datetime/random_dt_options.dart';
 
-import '../../../../feature/settings/presentation/providers/settings_provider.dart';
 import '../../entities/no_rush_entitiy/no_rush_entity.dart';
 import '../reminder_base/reminder_base.dart';
 
@@ -53,11 +51,10 @@ class NoRushReminderModel implements ReminderBase {
 
   /// Generate DateTime for this new noRush reminder.
   /// Is used in the provider, when creating the new noRush reminder
-  static DateTime generateRandomFutureTime(Ref ref) {
-    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
-    final TimeOfDay startTime = settings.noRushStartTime;
-    final TimeOfDay endTime = settings.noRushEndTime;
-
+  static DateTime generateRandomFutureTime(
+    TimeOfDay startTime,
+    TimeOfDay endTime,
+  ) {
     final DateTime now = DateTime.now();
     final DateTime startDate = now.add(const Duration(days: 3));
     final DateTime endDate = now.add(const Duration(days: 14));
