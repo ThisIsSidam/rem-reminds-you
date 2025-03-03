@@ -16,9 +16,9 @@ import '../../../objectbox.g.dart';
 import '../../../shared/utils/generate_id.dart';
 import '../../../shared/utils/logger/global_logger.dart';
 import '../../constants/const_strings.dart';
-import '../../data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../data/models/reminder/reminder.dart';
 import '../../data/models/reminder_base/reminder_base.dart';
+import 'notification_action_handler.dart';
 
 class NotificationController {
   static Future<void> initializeLocalNotifications() async {
@@ -52,6 +52,8 @@ class NotificationController {
     final DateTime scheduledTime = reminder.dateTime;
 
     gLogger.i('Notification Scheduled | ID: $id | DT : $scheduledTime');
+    final Map<String, String?> params = reminder.toJson();
+    params['type'] = reminder.runtimeType.toString();
 
     await AndroidAlarmManager.oneShotAt(
       scheduledTime,
@@ -61,7 +63,7 @@ class NotificationController {
       exact: true,
       wakeup: true,
       rescheduleOnReboot: true,
-      params: reminder.toJson(),
+      params: params,
     );
 
     return true;
@@ -80,6 +82,8 @@ class NotificationController {
 
     // Should be different each time so that different notifications are shown.
     final int notificationId = generatedNotificationId(id);
+    final Map<String, String?> payload = reminder.toJson();
+    payload['type'] = strParams['type'];
 
     gLogger.i('Showing notification | notificationID: $notificationId');
 
@@ -90,7 +94,7 @@ class NotificationController {
         title: 'Reminder: ${reminder.title}',
         groupKey: reminder.id.toString(),
         wakeUpScreen: true,
-        payload: reminder.toJson(),
+        payload: payload,
       ),
       actionButtons: <NotificationActionButton>[
         NotificationActionButton(
@@ -153,19 +157,20 @@ class NotificationController {
     if (receivedAction.payload == null) return;
     final ReminderBase reminder =
         ReminderBase.fromJson(receivedAction.payload!);
+    await cancelScheduledNotification(
+      receivedAction.groupKey ?? notificationNullGroupKey,
+    );
+    final Store store = await getObjectboxStore();
+    final NotificationActionHandler actionHandler = NotificationActionHandler(
+      reminder: reminder,
+      store: store,
+      type: receivedAction.payload!['type'] ?? '',
+    );
 
     if (receivedAction.buttonKeyPressed == 'done') {
-      gLogger.i('Notification action | Done Button Pressed');
-      await cancelScheduledNotification(
-        receivedAction.groupKey ?? notificationNullGroupKey,
-      );
-      final Store store = await getObjectboxStore();
-
-      final Box<ReminderEntity> box = store.box<ReminderEntity>();
-      final bool deleted = box.remove(reminder.id);
-      gLogger.i('Reminder deletion status: $deleted');
-      store.close();
+      actionHandler.donePressed();
     }
+    store.close();
   }
 
   static Future<void> handleInitialCallback(WidgetRef ref) async {
