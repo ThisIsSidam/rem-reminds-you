@@ -53,6 +53,7 @@ class NoRushReminderModel implements ReminderBase {
       'title': title,
       'dateTime': dateTime.toIso8601String(),
       'autoSnoozeInterval': autoSnoozeInterval.inSeconds.toString(),
+      'type': '2',
     };
   }
 

@@ -15,23 +15,21 @@ class NotificationActionHandler {
   const NotificationActionHandler({
     required this.reminder,
     required this.store,
-    required this.type,
   });
 
   final ReminderBase reminder;
   final Store store;
-  final String type;
 
   /// Redirects to specific done handler based on the type attribute
   void donePressed() {
     gLogger.i('Notification action | Done Button Pressed');
 
-    if (type == 'NoRushReminderModel') {
-      _noRushDonePressed();
-      return;
-    }
-    if (type == 'ReminderModel') {
+    if (reminder is ReminderModel) {
       _normalDonePressed();
+    } else if (reminder is NoRushReminderModel) {
+      _noRushDonePressed();
+    } else {
+      throw 'Unhandled reminder type';
     }
   }
 
@@ -39,12 +37,12 @@ class NotificationActionHandler {
   Future<void> postponePressed() async {
     gLogger.i('Notification action | Done Button Pressed');
 
-    if (type == 'NoRushReminderModel') {
-      await _noRushPostponePressed();
-      return;
-    }
-    if (type == 'ReminderModel') {
+    if (reminder is ReminderModel) {
       await _normalPostponePressed();
+    } else if (reminder is NoRushReminderModel) {
+      await _noRushPostponePressed();
+    } else {
+      throw 'Unhandled reminder type';
     }
   }
 

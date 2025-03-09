@@ -167,7 +167,6 @@ class NotificationController {
     final NotificationActionHandler actionHandler = NotificationActionHandler(
       reminder: reminder,
       store: store,
-      type: receivedAction.payload!['type'] ?? '',
     );
 
     if (receivedAction.buttonKeyPressed == 'done') {

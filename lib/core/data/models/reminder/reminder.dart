@@ -57,6 +57,7 @@ class ReminderModel implements ReminderBase {
       'recurringInterval': recurringInterval.toString(),
       'baseDateTime': baseDateTime.toIso8601String(),
       'paused': paused.toString(),
+      'type': '1',
     };
   }
 
