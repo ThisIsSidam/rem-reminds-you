@@ -53,7 +53,7 @@ class ReminderModel implements ReminderBase {
       'title': title,
       'dateTime': dateTime.toIso8601String(),
       'preParsedTitle': preParsedTitle,
-      'autoSnoozeInterval': autoSnoozeInterval.inMilliseconds.toString(),
+      'autoSnoozeInterval': autoSnoozeInterval.inSeconds.toString(),
       'recurringInterval': recurringInterval.toString(),
       'baseDateTime': baseDateTime.toIso8601String(),
       'paused': paused.toString(),
