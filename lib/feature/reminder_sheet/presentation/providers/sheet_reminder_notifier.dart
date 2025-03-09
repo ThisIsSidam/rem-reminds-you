@@ -6,6 +6,8 @@ import '../../../../core/data/models/recurring_interval/recurring_interval.dart'
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../home/presentation/providers/no_rush_provider.dart';
+import '../../../home/presentation/providers/reminders_provider.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 
 class SheetReminderNotifier extends ChangeNotifier {
@@ -16,6 +18,7 @@ class SheetReminderNotifier extends ChangeNotifier {
 
     gLogger.i('SheetReminderNotifier initialized');
   }
+
   Ref ref;
   int? _id;
   String _title = '';
@@ -99,6 +102,14 @@ class SheetReminderNotifier extends ChangeNotifier {
       _preParsedTitle = _title;
     }
     notifyListeners();
+  }
+
+  void deleteReminder(int id) {
+    if (_noRush) {
+      ref.read(noRushRemindersNotifierProvider.notifier).deleteReminder(id);
+    } else {
+      ref.read(remindersNotifierProvider.notifier).deleteReminder(id);
+    }
   }
 
   void resetValuesWith({Duration? customDuration, bool isNoRush = false}) {
