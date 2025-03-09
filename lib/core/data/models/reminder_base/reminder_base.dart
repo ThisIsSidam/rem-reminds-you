@@ -1,4 +1,7 @@
-interface class ReminderBase {
+import '../no_rush_reminder/no_rush_reminder.dart';
+import '../reminder/reminder.dart';
+
+abstract interface class ReminderBase {
   ReminderBase({
     required this.id,
     required this.title,
@@ -6,14 +9,17 @@ interface class ReminderBase {
     required this.autoSnoozeInterval,
   });
 
+  // type-id 1 refers to normal reminders while 2 refers to no-rush reminders
+  // Do not change these ids
   factory ReminderBase.fromJson(Map<String, String?> json) {
-    return ReminderBase(
-      id: int.parse(json['id']!),
-      title: json['title']!,
-      dateTime: DateTime.parse(json['dateTime']!),
-      autoSnoozeInterval:
-          Duration(seconds: int.parse(json['autoSnoozeInterval']!)),
-    );
+    final String? type = json['type'];
+    if (type == null || type == '1') {
+      return ReminderModel.fromJson(json);
+    } else if (type == '2') {
+      return NoRushReminderModel.fromJson(json);
+    } else {
+      throw 'Unhandled reminder type: $type';
+    }
   }
 
   int id;
@@ -21,12 +27,7 @@ interface class ReminderBase {
   DateTime dateTime;
   Duration autoSnoozeInterval;
 
-  Map<String, String?> toJson() {
-    return <String, String>{
-      'id': id.toString(),
-      'title': title,
-      'dateTime': dateTime.toIso8601String(),
-      'autoSnoozeInterval': autoSnoozeInterval.inSeconds.toString(),
-    };
-  }
+  // type-id 1 refers to normal reminders while 2 refers to no-rush reminders
+  // Do not change these ids
+  Map<String, String?> toJson();
 }

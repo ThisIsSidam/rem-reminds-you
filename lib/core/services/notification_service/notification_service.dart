@@ -53,7 +53,6 @@ class NotificationController {
 
     gLogger.i('Notification Scheduled | ID: $id | DT : $scheduledTime');
     final Map<String, String?> params = reminder.toJson();
-    params['type'] = reminder.runtimeType.toString();
 
     await AndroidAlarmManager.oneShotAt(
       scheduledTime,
@@ -83,7 +82,6 @@ class NotificationController {
     // Should be different each time so that different notifications are shown.
     final int notificationId = generatedNotificationId(id);
     final Map<String, String?> payload = reminder.toJson();
-    payload['type'] = strParams['type'];
 
     gLogger.i('Showing notification | notificationID: $notificationId');
 

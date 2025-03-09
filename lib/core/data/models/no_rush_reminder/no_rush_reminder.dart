@@ -13,6 +13,16 @@ class NoRushReminderModel implements ReminderBase {
     required this.dateTime,
   });
 
+  factory NoRushReminderModel.fromJson(Map<String, String?> map) {
+    return NoRushReminderModel(
+      id: int.parse(map['id']!),
+      title: map['title'] ?? '',
+      dateTime: DateTime.parse(map['dateTime']!),
+      autoSnoozeInterval:
+          Duration(seconds: int.parse(map['autoSnoozeInterval']!)),
+    );
+  }
+
   @override
   int id;
   @override
@@ -42,7 +52,7 @@ class NoRushReminderModel implements ReminderBase {
       'id': id.toString(),
       'title': title,
       'dateTime': dateTime.toIso8601String(),
-      'autoSnoozeInterval': autoSnoozeInterval.inMilliseconds.toString(),
+      'autoSnoozeInterval': autoSnoozeInterval.inSeconds.toString(),
     };
   }
 

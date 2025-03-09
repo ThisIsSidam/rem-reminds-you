@@ -20,12 +20,12 @@ class ReminderModel implements ReminderBase {
       title: map['title'] ?? '',
       dateTime: DateTime.parse(map['dateTime']!),
       autoSnoozeInterval:
-          Duration(milliseconds: int.parse(map['autoSnoozeInterval']!)),
+          Duration(seconds: int.parse(map['autoSnoozeInterval']!)),
       preParsedTitle: map['preParsedTitle'] ?? '',
       recurringInterval: RecurringInterval.fromString(
         map['recurringInterval'] ?? '',
       ),
-      baseDateTime: DateTime.parse(map['baseDateTime']!),
+      baseDateTime: DateTime.parse(map['baseDateTime'] ?? map['dateTime']!),
       paused: map['paused']! == 'true',
     );
   }
