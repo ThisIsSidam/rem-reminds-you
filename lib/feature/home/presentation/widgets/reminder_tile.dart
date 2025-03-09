@@ -224,7 +224,6 @@ class NoRushReminderListTile extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: SizedBox(
             width: double.maxFinite,
-            height: 36,
             child: Text(
               reminder.title,
               style: Theme.of(context).textTheme.titleMedium,
