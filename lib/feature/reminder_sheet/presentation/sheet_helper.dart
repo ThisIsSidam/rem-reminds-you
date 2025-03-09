@@ -17,6 +17,8 @@ class SheetHelper {
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) => ReminderSheet(
         reminder: reminder,
+        isNoRush: isNoRush,
+        customDuration: customDuration,
       ),
     );
   }
