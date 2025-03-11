@@ -1,11 +1,10 @@
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
-import 'core/theme/app_theme.dart';
+import 'core/theme/color_schemes.dart';
+import 'core/theme/theme.dart';
 import 'feature/app_startup/presentation/providers/app_startup_provider.dart';
 import 'feature/app_startup/presentation/providers/initial_screen_provider.dart';
 import 'feature/app_startup/presentation/screens/splash_screen.dart';
@@ -81,39 +80,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               },
             ),
             themeMode: settings.$1,
-            theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: lightColorScheme,
-              bottomSheetTheme: const BottomSheetThemeData(
-                modalBarrierColor: Colors.black38,
-              ),
-              appBarTheme: const AppBarTheme(
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent,
-                  statusBarIconBrightness: Brightness.dark,
-                  statusBarBrightness: Brightness.light, // for iOS
-                ),
-              ),
-            ),
-            darkTheme: ThemeData(
-              useMaterial3: true,
-              colorScheme: darkColorScheme,
-              bottomSheetTheme: const BottomSheetThemeData(
-                modalBarrierColor: Colors.white38,
-              ),
-              appBarTheme: const AppBarTheme(
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent,
-                  statusBarIconBrightness: Brightness.light,
-                  statusBarBrightness: Brightness.dark, // for iOS
-                ),
-              ),
-              cupertinoOverrideTheme: CupertinoThemeData(
-                brightness: settings.$1 == ThemeMode.light
-                    ? Brightness.light
-                    : Brightness.dark,
-              ),
-            ),
+            theme: getLightTheme(lightColorScheme),
+            darkTheme: getDarkTheme(darkColorScheme, settings.$1),
           ),
         );
       },
