@@ -84,6 +84,9 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             theme: ThemeData(
               useMaterial3: true,
               colorScheme: lightColorScheme,
+              bottomSheetTheme: const BottomSheetThemeData(
+                modalBarrierColor: Colors.black38,
+              ),
               appBarTheme: const AppBarTheme(
                 systemOverlayStyle: SystemUiOverlayStyle(
                   statusBarColor: Colors.transparent,
@@ -95,6 +98,9 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             darkTheme: ThemeData(
               useMaterial3: true,
               colorScheme: darkColorScheme,
+              bottomSheetTheme: const BottomSheetThemeData(
+                modalBarrierColor: Colors.white38,
+              ),
               appBarTheme: const AppBarTheme(
                 systemOverlayStyle: SystemUiOverlayStyle(
                   statusBarColor: Colors.transparent,

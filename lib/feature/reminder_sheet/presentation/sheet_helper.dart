@@ -13,7 +13,6 @@ class SheetHelper {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      barrierColor: Colors.white38,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) => ReminderSheet(
         reminder: reminder,
