@@ -44,13 +44,15 @@ class TimeSetButton extends ConsumerWidget {
         ref.read(sheetReminderNotifier).cleanTitle();
         ref.read(sheetReminderNotifier).updateDateTime(updatedTime);
       },
-      child: getChild(context),
+      child: getChild(context, ref),
     );
   }
 
-  Widget getChild(BuildContext context) {
+  Widget getChild(BuildContext context, WidgetRef ref) {
     late String text;
-    text = dateTime.formattedHS;
+    text = dateTime.formattedHM(
+      is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
+    );
 
     return Text(
       text,

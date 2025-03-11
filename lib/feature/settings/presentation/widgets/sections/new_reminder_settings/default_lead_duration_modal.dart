@@ -13,7 +13,9 @@ class DefaultLeadDurationModal extends ConsumerWidget {
     final Duration currentSelectedDuration =
         ref.watch(userSettingsProvider).defaultLeadDuration;
     final DateTime dateTime = DateTime.now().add(currentSelectedDuration);
-    final String dateTimeString = dateTime.friendly;
+    final String dateTimeString = dateTime.friendly(
+      is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
+    );
     final String diffString = dateTime.prettyDuration;
 
     return Padding(

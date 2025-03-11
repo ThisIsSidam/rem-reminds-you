@@ -2,8 +2,10 @@ import 'package:duration/duration.dart';
 import 'package:intl/intl.dart';
 
 extension DateTimeX on DateTime {
-  String get friendly {
-    final DateFormat format = DateFormat('EEE, d MMM, hh:mm aaa');
+  String friendly({bool is24Hour = false}) {
+    final DateFormat format = is24Hour
+        ? DateFormat('EEE, d MMM, HH:mm')
+        : DateFormat('EEE, d MMM, hh:mm aaa');
     return format.format(this);
   }
 
@@ -27,12 +29,15 @@ extension DateTimeX on DateTime {
     );
   }
 
-  String get formattedHS {
-    final String suffix = hour >= 12 ? 'PM' : 'AM';
-    int hour12Base = hour % 12;
-    hour12Base = hour12Base == 0 ? 12 : hour12Base;
-    final String formattedTime =
-        "$hour12Base:${minute.toString().padLeft(2, '0')} $suffix";
-    return formattedTime;
+  String formattedHM({bool is24Hour = false}) {
+    if (is24Hour) {
+      // ignore: lines_longer_than_80_chars
+      return "${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}";
+    } else {
+      final String suffix = hour >= 12 ? 'PM' : 'AM';
+      int hour12Base = hour % 12;
+      hour12Base = hour12Base == 0 ? 12 : hour12Base;
+      return "$hour12Base:${minute.toString().padLeft(2, '0')} $suffix";
+    }
   }
 }

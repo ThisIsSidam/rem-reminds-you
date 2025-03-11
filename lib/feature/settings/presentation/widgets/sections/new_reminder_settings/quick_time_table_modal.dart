@@ -139,6 +139,7 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
       height: 200,
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: CupertinoDatePicker(
+        use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
         mode: CupertinoDatePickerMode.time,
         itemExtent: 70,
         initialDateTime: setDateTimes[selectedSettingOption],
@@ -163,7 +164,9 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
         children: <Widget>[
           ...setDateTimes.entries.map(
             (MapEntry<int, DateTime> entry) => _buildButton(
-              entry.value.formattedHS,
+              entry.value.formattedHM(
+                is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
+              ),
               entry.key,
             ),
           ),

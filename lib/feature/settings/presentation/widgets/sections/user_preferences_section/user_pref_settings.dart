@@ -181,7 +181,7 @@ class UserPreferenceSection extends HookWidget {
               ref.watch(userSettingsProvider).noRushEndTime;
           return Text(
             // ignore: lines_longer_than_80_chars
-            '${noRushStartTime.hour.toString().padLeft(2, '0')}:${noRushStartTime.minute.toString().padLeft(2, '0')} - ${noRushEndTime.hour.toString().padLeft(2, '0')}:${noRushEndTime.minute.toString().padLeft(2, '0')}',
+            '${noRushStartTime.format(context)} - ${noRushEndTime.format(context)}',
             style: Theme.of(context).textTheme.bodySmall,
           );
         },

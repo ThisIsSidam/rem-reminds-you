@@ -11,6 +11,7 @@ import 'central_elements/recurrence_options.dart';
 import 'central_elements/snooze_options.dart';
 import 'time_button.dart';
 
+/// Includes the dateTime field and the control widget below it
 class CentralSection extends HookConsumerWidget {
   const CentralSection({super.key});
 
@@ -59,7 +60,9 @@ class CentralSection extends HookConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      dateTime.friendly,
+                      dateTime.friendly(
+                        is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
+                      ),
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: textColor,
                           ),
@@ -93,6 +96,7 @@ class CentralSection extends HookConsumerWidget {
   }
 }
 
+/// The main widget at the center which performs actions.
 class CentralWidget extends ConsumerWidget {
   const CentralWidget({super.key});
 
@@ -134,6 +138,7 @@ class CentralWidget extends ConsumerWidget {
               return _buildTimeButtonsGrid(settings);
             case CentralElement.timePicker:
               return _buildTimePicker(
+                context,
                 ref,
                 dateTime,
               );
@@ -193,11 +198,16 @@ class CentralWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildTimePicker(WidgetRef ref, DateTime dateTime) {
+  Widget _buildTimePicker(
+    BuildContext context,
+    WidgetRef ref,
+    DateTime dateTime,
+  ) {
     return SizedBox(
       height: 175,
       child: CupertinoDatePicker(
         initialDateTime: dateTime,
+        use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
         itemExtent: 75,
         onDateTimeChanged: (DateTime dt) {
           ref.read(sheetReminderNotifier).cleanTitle();

@@ -66,7 +66,9 @@ class ReminderListTile extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    reminder.dateTime.friendly,
+                    reminder.dateTime.friendly(
+                      is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
+                    ),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Text(
@@ -127,7 +129,9 @@ class RecurringReminderListTile extends ConsumerWidget {
                     softWrap: true,
                   ),
                   Text(
-                    reminder.dateTime.friendly,
+                    reminder.dateTime.friendly(
+                      is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
+                    ),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
