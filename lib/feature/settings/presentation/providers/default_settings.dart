@@ -26,7 +26,7 @@ final Map<String, dynamic> defaultSettings = <String, dynamic>{
   'homeTileSwipeActionRight': 'done', // SwipeAction.done.toString()
   'defaultPostponeDuration': const Duration(minutes: 30),
   'themeMode': 'system', // ThemeMode.system.toString()
-  'noRushHoursStartTime': const TimeOfDay(hour: 23, minute: 0),
-  'noRushHoursEndTime': const TimeOfDay(hour: 7, minute: 0),
+  'noRushHoursStartTime': const TimeOfDay(hour: 7, minute: 0),
+  'noRushHoursEndTime': const TimeOfDay(hour: 23, minute: 0),
   'textScale': 1.0,
 };

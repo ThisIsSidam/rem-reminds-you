@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../providers/settings_provider.dart';
 
-enum SelectedTime { none, start, end }
+enum SelectedTime { start, end }
 
 class NoRushHoursSheet extends HookWidget {
   const NoRushHoursSheet({super.key});
@@ -13,7 +13,7 @@ class NoRushHoursSheet extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final ValueNotifier<SelectedTime> selectedTimeNotifier =
-        ValueNotifier<SelectedTime>(SelectedTime.none);
+        ValueNotifier<SelectedTime>(SelectedTime.start);
 
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
@@ -31,12 +31,22 @@ class NoRushHoursSheet extends HookWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 32,
+                  ),
+                  child: Text(
+                    // ignore: lines_longer_than_80_chars
+                    'No rush reminders are shown only within this time range, so that you only get notified when you want to.',
+                    style: Theme.of(context).textTheme.labelSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
                 _buildTimeButtonsRow(selectedTime, selectedTimeNotifier),
                 const SizedBox(height: 40),
-                if (selectedTime != SelectedTime.none) ...<Widget>[
-                  _buildTimePicker(selectedTime),
-                  const SizedBox(height: 40),
-                ],
+                _buildTimePicker(selectedTime),
+                const SizedBox(height: 40),
               ],
             );
           },
