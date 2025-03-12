@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
-import '../../../../core/enums/storage_enums.dart';
-import '../../../../core/providers/global_providers.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
-import '../../../../shared/utils/misc_methods.dart';
-import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../providers/no_rush_provider.dart';
 import '../providers/reminders_provider.dart';
@@ -53,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     // Starts the listener for notification button click
     NotificationController.startListeningNotificationEvents();
 
-    Future<void>.delayed(Duration.zero, _checkAndShowWhatsNewDialog);
+    // Future<void>.delayed(Duration.zero, _checkAndShowWhatsNewDialog);
     Future<void>.delayed(
       Duration.zero,
       () async {
@@ -66,23 +60,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   /// Check if app version stored in SharedPrefs match with current
   /// version or not. If not, show the dialog and save the
   /// current version.
-  Future<void> _checkAndShowWhatsNewDialog() async {
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final String currentVersion = packageInfo.version;
-    final SharedPreferences prefs = ref.read(sharedPreferencesProvider);
-    final String storedVersion =
-        prefs.getString(SharedKeys.appVersion.key) ?? '0.0.0';
-    if (MiscMethods.compareVersions(storedVersion, currentVersion) < 0) {
-      await prefs.setString(SharedKeys.appVersion.key, currentVersion);
-      if (!mounted) return;
-      await showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return const WhatsNewDialog();
-        },
-      );
-    }
-  }
+  // Future<void> _checkAndShowWhatsNewDialog() async {
+  //   final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  //   final String currentVersion = packageInfo.version;
+  //   final SharedPreferences prefs = ref.read(sharedPreferencesProvider);
+  //   final String storedVersion =
+  //       prefs.getString(SharedKeys.appVersion.key) ?? '0.0.0';
+  //   if (MiscMethods.compareVersions(storedVersion, currentVersion) < 0) {
+  //     await prefs.setString(SharedKeys.appVersion.key, currentVersion);
+  //     if (!mounted) return;
+  //     await showDialog<void>(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return const WhatsNewDialog();
+  //       },
+  //     );
+  //   }
+  // }
 
   @override
   void dispose() {
