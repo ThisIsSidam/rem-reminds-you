@@ -22,8 +22,8 @@ final Map<String, dynamic> defaultSettings = <String, dynamic>{
   'autoSnoozeOption4': const Duration(minutes: 30),
   'autoSnoozeOption5': const Duration(hours: 1),
   'autoSnoozeOption6': const Duration(hours: 2),
-  'homeTileSwipeActionLeft': 'postpone', // SwipeAction.postpone.toString()
-  'homeTileSwipeActionRight': 'done', // SwipeAction.done.toString()
+  'homeTileSwipeActionLeft': 'Postpone', // SwipeAction.postpone.toString()
+  'homeTileSwipeActionRight': 'Done/Delete', // SwipeAction.done.toString()
   'defaultPostponeDuration': const Duration(minutes: 30),
   'themeMode': 'system', // ThemeMode.system.toString()
   'noRushHoursStartTime': const TimeOfDay(hour: 7, minute: 0),

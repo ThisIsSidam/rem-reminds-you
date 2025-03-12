@@ -357,7 +357,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'homeTileSwipeActionLeft';
     final SwipeAction? value = prefs.getSwipeAction(key);
     if (value == null) {
-      return SwipeAction.postpone;
+      return SwipeAction.fromString(defaultSettings[key] as String);
     }
     return value;
   }
@@ -372,7 +372,7 @@ class UserSettingsNotifier extends ChangeNotifier {
     const String key = 'homeTileSwipeActionRight';
     final SwipeAction? value = prefs.getSwipeAction(key);
     if (value == null) {
-      return SwipeAction.done;
+      return SwipeAction.fromString(defaultSettings[key] as String);
     }
     return value;
   }
