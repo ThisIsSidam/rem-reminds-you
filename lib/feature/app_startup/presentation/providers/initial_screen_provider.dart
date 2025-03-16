@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../router/app_routes.dart';
 
-part 'initial_screen_provider.g.dart';
+part 'generated/initial_screen_provider.g.dart';
 
 @riverpod
 class InitialRoute extends _$InitialRoute {

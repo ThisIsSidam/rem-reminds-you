@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../shared/utils/logger/global_logger.dart';
 
-part 'central_widget_provider.g.dart';
+part 'generated/central_widget_provider.g.dart';
 
 enum CentralElement {
   dateTimeGrid,

@@ -7,7 +7,7 @@ import '../../../../router/app_routes.dart';
 import '../../../permissions/domain/app_permi_handler.dart';
 import 'initial_screen_provider.dart';
 
-part 'app_startup_provider.g.dart';
+part 'generated/app_startup_provider.g.dart';
 
 @riverpod
 Future<String?> appStartup(Ref ref) async {

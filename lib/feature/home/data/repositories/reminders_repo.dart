@@ -7,7 +7,7 @@ import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/providers/global_providers.dart';
 
-part 'reminders_repo.g.dart';
+part 'generated/reminders_repo.g.dart';
 
 @riverpod
 class RemindersRepository extends _$RemindersRepository {

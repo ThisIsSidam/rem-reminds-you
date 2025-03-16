@@ -9,7 +9,7 @@ import '../../../../shared/utils/logger/global_logger.dart';
 import '../../data/repositories/reminders_repo.dart';
 import '../screens/home_screen.dart';
 
-part 'reminders_provider.g.dart';
+part 'generated/reminders_provider.g.dart';
 
 @riverpod
 class RemindersNotifier extends _$RemindersNotifier {

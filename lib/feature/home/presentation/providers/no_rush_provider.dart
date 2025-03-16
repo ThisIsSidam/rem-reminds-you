@@ -11,7 +11,7 @@ import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../data/repositories/reminders_repo.dart';
 
-part 'no_rush_provider.g.dart';
+part 'generated/no_rush_provider.g.dart';
 
 @riverpod
 class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {

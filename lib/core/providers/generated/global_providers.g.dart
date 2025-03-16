@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'reminders_provider.dart';
+part of '../global_providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$remindersNotifierHash() => r'e0bf16ef296af39563f06867760585640010d5aa';
+String _$objectboxStoreHash() => r'b708c4669a4b71ba7535ba711773529439e42553';
 
-/// See also [RemindersNotifier].
-@ProviderFor(RemindersNotifier)
-final remindersNotifierProvider = AutoDisposeNotifierProvider<RemindersNotifier,
-    Map<HomeScreenSection, List<ReminderModel>>>.internal(
-  RemindersNotifier.new,
-  name: r'remindersNotifierProvider',
+/// See also [objectboxStore].
+@ProviderFor(objectboxStore)
+final objectboxStoreProvider = AutoDisposeProvider<Store>.internal(
+  objectboxStore,
+  name: r'objectboxStoreProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$remindersNotifierHash,
+      : _$objectboxStoreHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$RemindersNotifier
-    = AutoDisposeNotifier<Map<HomeScreenSection, List<ReminderModel>>>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ObjectboxStoreRef = AutoDisposeProviderRef<Store>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'reminders_repo.dart';
+part of '../reminders_repo.dart';
 
 // **************************************************************************
 // RiverpodGenerator

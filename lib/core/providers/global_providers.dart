@@ -3,7 +3,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'global_providers.g.dart';
+part 'generated/global_providers.g.dart';
 
 // SharedPreferences provider
 final Provider<SharedPreferences> sharedPreferencesProvider =
