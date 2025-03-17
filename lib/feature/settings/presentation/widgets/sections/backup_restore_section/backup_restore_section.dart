@@ -87,10 +87,16 @@ class BackupRestoreSection extends ConsumerWidget {
             return;
           }
 
-          final Directory dir = Directory('storage/emulated/0/Download');
-          if (dir.existsSync() == false) {
-            dir.createSync();
+          final String? selectedDirectory =
+              await FilePicker.platform.getDirectoryPath();
+          if (selectedDirectory == null) {
+            AppUtils.showToast(
+              msg: 'No directory selected',
+              type: ToastificationType.warning,
+            );
+            return;
           }
+          final Directory dir = Directory(selectedDirectory)..createSync();
 
           final String outputPath = '${dir.path}/reminders_backup.zip';
 
