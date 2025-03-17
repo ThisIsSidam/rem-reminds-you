@@ -98,7 +98,8 @@ class BackupRestoreSection extends ConsumerWidget {
           }
           final Directory dir = Directory(selectedDirectory)..createSync();
 
-          final String outputPath = '${dir.path}/reminders_backup.zip';
+          final String outputPath =
+              '${dir.path}/rem-backup-${DateTime.now().millisecondsSinceEpoch}.zip';
 
           final File file = File(outputPath);
           await file.writeAsBytes(zipData);
