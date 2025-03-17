@@ -75,7 +75,7 @@ class BackupRestoreSection extends ConsumerWidget {
             )
             ..addFile(
               ArchiveFile(
-                'archives_backup.json',
+                'no_rush_backup.json',
                 noRushJsonData.length,
                 utf8.encode(noRushJsonData),
               ),
@@ -162,7 +162,7 @@ class BackupRestoreSection extends ConsumerWidget {
           }
 
           final ArchiveFile? archivesJsonFile =
-              archive.findFile('no_rush_reminders_backup.json');
+              archive.findFile('no_rush_backup.json');
           if (archivesJsonFile == null) {
             gLogger.e(
               "File 'no_rush_reminders_backup.json' not found in the zip file",

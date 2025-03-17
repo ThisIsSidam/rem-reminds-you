@@ -16,6 +16,24 @@ class ReminderEntity {
     this.paused = false,
   });
 
+  /// Like a normal fromJson.
+  /// [asNew] property shows whether the entity should be treated as a new
+  /// entity or not, new entities would be given hardcoded id 0
+  factory ReminderEntity.fromJson(
+    Map<String, dynamic> json, {
+    bool asNew = false,
+  }) =>
+      ReminderEntity(
+        id: asNew ? 0 : json['id'] as int,
+        title: json['title'] as String,
+        dateTime: DateTime.parse(json['dateTime'] as String),
+        preParsedTitle: json['preParsedTitle'] as String,
+        autoSnoozeInterval: json['autoSnoozeInterval'] as int,
+        recurringInterval: json['recurringInterval'] as String,
+        baseDateTime: DateTime.parse(json['baseDateTime'] as String),
+        paused: json['paused'] as bool,
+      );
+
   int id;
   String title;
   DateTime dateTime;
@@ -38,4 +56,15 @@ class ReminderEntity {
       paused: paused,
     );
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'title': title,
+        'dateTime': dateTime.toIso8601String(),
+        'preParsedTitle': preParsedTitle,
+        'autoSnoozeInterval': autoSnoozeInterval,
+        'recurringInterval': recurringInterval,
+        'baseDateTime': baseDateTime.toIso8601String(),
+        'paused': paused,
+      };
 }
