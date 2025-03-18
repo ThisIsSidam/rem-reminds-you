@@ -68,7 +68,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final int currentBuild = int.tryParse(packageInfo.buildNumber) ?? 1;
     final SharedPreferences prefs = ref.read(sharedPreferencesProvider);
-    final int storedBuild = prefs.getInt('storedBuildNumber') ?? 0;
+    final int storedBuild = prefs.getInt('storedBuildNumber') ?? 1;
     if (currentBuild > storedBuild) {
       await prefs.setInt('storedBuildNumber', currentBuild);
       if (!mounted) return;
