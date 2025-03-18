@@ -1,4 +1,4 @@
-name: Rem
+name: rem
 description: "A reminder application which reminds you again and again until you finish the job."
 
 publish_to: 'none' 
