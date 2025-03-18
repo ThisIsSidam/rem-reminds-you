@@ -164,26 +164,19 @@ class SheetReminderNotifier extends ChangeNotifier {
   }
 
   ReminderBase constructReminder() {
-    final Duration autoSnooze =
-        ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
+    if (_noRush) {
+      return constructNoRush();
+    } else {
+      return constructNormal();
+    }
+  }
 
+  ReminderModel constructNormal() {
     // First time constructing, baseDatetime and dateTime would be same
     if (id == null) {
       refreshBaseDateTime();
     }
 
-    if (_noRush) {
-      final UserSettingsNotifier settings = ref.read(userSettingsProvider);
-      final TimeOfDay startTime = settings.noRushStartTime;
-      final TimeOfDay endTime = settings.noRushEndTime;
-      return NoRushReminderModel(
-        id: id ?? 0,
-        title: title,
-        autoSnoozeInterval: autoSnooze,
-        dateTime:
-            NoRushReminderModel.generateRandomFutureTime(startTime, endTime),
-      );
-    }
     return ReminderModel(
       title: title,
       id: id ?? 0,
@@ -193,6 +186,23 @@ class SheetReminderNotifier extends ChangeNotifier {
       preParsedTitle: preParsedTitle,
       recurringInterval: recurringInterval,
       paused: isPaused,
+    );
+  }
+
+  NoRushReminderModel constructNoRush({bool newDateTime = false}) {
+    final Duration autoSnooze =
+        ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
+
+    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
+    final TimeOfDay startTime = settings.noRushStartTime;
+    final TimeOfDay endTime = settings.noRushEndTime;
+    return NoRushReminderModel(
+      id: id ?? 0,
+      title: title,
+      autoSnoozeInterval: autoSnooze,
+      dateTime: id == null || newDateTime
+          ? NoRushReminderModel.generateRandomFutureTime(startTime, endTime)
+          : _dateTime,
     );
   }
 }

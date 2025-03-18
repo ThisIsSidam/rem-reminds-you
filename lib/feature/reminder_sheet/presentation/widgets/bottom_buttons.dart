@@ -52,20 +52,7 @@ class SaveButton extends ConsumerWidget {
     final ReminderBase reminder =
         ref.read(sheetReminderNotifier).constructReminder();
 
-    if (reminder.title == '') {
-      AppUtils.showToast(
-        msg: 'Enter a title!',
-        style: ToastificationStyle.simple,
-      );
-      return;
-    }
-    if (reminder.dateTime.isBefore(DateTime.now())) {
-      AppUtils.showToast(
-        msg: "Can't remind you in the past!",
-        style: ToastificationStyle.simple,
-      );
-      return;
-    }
+    if (_hasProblem(reminder)) return;
     if (reminder is NoRushReminderModel) {
       await ref
           .read(noRushRemindersNotifierProvider.notifier)
@@ -78,6 +65,24 @@ class SaveButton extends ConsumerWidget {
     Navigator.pop(context);
   }
 
+  bool _hasProblem(ReminderBase reminder) {
+    if (reminder.title == '') {
+      AppUtils.showToast(
+        msg: 'Enter a title!',
+        style: ToastificationStyle.simple,
+      );
+      return true;
+    }
+    if (reminder.dateTime.isBefore(DateTime.now())) {
+      AppUtils.showToast(
+        msg: "Can't remind you in the past!",
+        style: ToastificationStyle.simple,
+      );
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final SheetReminderNotifier reminder = ref.watch(sheetReminderNotifier);
@@ -86,8 +91,10 @@ class SaveButton extends ConsumerWidget {
         reminder.id != newReminderID &&
         !reminder.recurringInterval.isNone &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
+    final bool showPostpone = reminder.noRush && reminder.id != null;
 
     return Row(
+      spacing: 8,
       children: <Widget>[
         Expanded(
           child: ElevatedButton(
@@ -96,12 +103,6 @@ class SaveButton extends ConsumerWidget {
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               padding: EdgeInsets.zero,
               surfaceTintColor: Colors.transparent,
-              shape: forAllCondition
-                  ? const RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.horizontal(left: Radius.circular(18)),
-                    )
-                  : null,
             ),
             child: Text(
               'Save',
@@ -121,13 +122,35 @@ class SaveButton extends ConsumerWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.errorContainer,
                 surfaceTintColor: Colors.transparent,
-                shape: const RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.horizontal(right: Radius.circular(18)),
-                ),
               ),
               child: Text(
                 'For All',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onErrorContainer,
+                    ),
+              ),
+            ),
+          ),
+        if (showPostpone)
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () async {
+                final NoRushReminderModel noRush = ref
+                    .read(sheetReminderNotifier.notifier)
+                    .constructNoRush(newDateTime: true);
+                if (_hasProblem(noRush)) return;
+                await ref
+                    .read(noRushRemindersNotifierProvider.notifier)
+                    .saveReminder(noRush);
+                if (context.mounted) Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                surfaceTintColor: Colors.transparent,
+              ),
+              child: Text(
+                'Postpone',
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onErrorContainer,
                     ),
