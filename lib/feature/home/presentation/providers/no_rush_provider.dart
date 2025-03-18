@@ -74,7 +74,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   }
 
   Future<void> restoreBackup(String jsonData) async {
-    ref
+    await ref
         .read(noRushRemindersRepositoryProvider.notifier)
         .restoreBackup(jsonData);
     gLogger.i('Restored Database Backup');

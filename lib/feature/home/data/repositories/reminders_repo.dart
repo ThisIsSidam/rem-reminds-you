@@ -8,6 +8,7 @@ import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/providers/global_providers.dart';
+import '../../../../core/services/notification_service/notification_service.dart';
 
 part 'generated/reminders_repo.g.dart';
 
@@ -53,7 +54,7 @@ class RemindersRepository extends _$RemindersRepository {
     });
   }
 
-  bool restoreBackup(String json) {
+  Future<bool> restoreBackup(String json) async {
     final Map<String, dynamic> decoded =
         jsonDecode(json) as Map<String, dynamic>;
     final List<Map<String, dynamic>> remindersData =
@@ -63,9 +64,16 @@ class RemindersRepository extends _$RemindersRepository {
           (Map<String, dynamic> e) => ReminderEntity.fromJson(e, asNew: true),
         )
         .toList();
-    _box
-      ..removeAll()
-      ..putMany(reminders);
+    for (final ReminderEntity r in reminders) {
+      final int id = saveReminder(r);
+
+      if (!r.paused) {
+        // Only reschedule if reminder is NOT paused
+        await NotificationController.scheduleNotification(
+          r.toModel.copyWith(id: id),
+        );
+      }
+    }
     return true;
   }
 }
@@ -112,7 +120,7 @@ class NoRushRemindersRepository extends _$NoRushRemindersRepository {
     });
   }
 
-  bool restoreBackup(String json) {
+  Future<bool> restoreBackup(String json) async {
     final Map<String, dynamic> decoded =
         jsonDecode(json) as Map<String, dynamic>;
     final List<Map<String, dynamic>> remindersData =
@@ -123,9 +131,13 @@ class NoRushRemindersRepository extends _$NoRushRemindersRepository {
               NoRushReminderEntity.fromJson(e, asNew: true),
         )
         .toList();
-    _box
-      ..removeAll()
-      ..putMany(reminders);
+    for (final NoRushReminderEntity r in reminders) {
+      final int id = saveReminder(r);
+
+      await NotificationController.scheduleNotification(
+        r.toModel.copyWith(id: id),
+      );
+    }
     return true;
   }
 }

@@ -172,7 +172,9 @@ class RemindersNotifier extends _$RemindersNotifier {
   }
 
   Future<void> restoreBackup(String jsonData) async {
-    ref.read(remindersRepositoryProvider.notifier).restoreBackup(jsonData);
+    await ref
+        .read(remindersRepositoryProvider.notifier)
+        .restoreBackup(jsonData);
     gLogger.i('Restored Database Backup');
   }
 
