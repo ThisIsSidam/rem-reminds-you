@@ -7,6 +7,7 @@ import '../../../../core/constants/const_strings.dart';
 import '../../../../core/data/entities/no_rush_entitiy/no_rush_entity.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
+import '../../../../shared/utils/id_handler.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../data/repositories/reminders_repo.dart';
@@ -26,7 +27,9 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   Future<NoRushReminderModel> saveReminder(NoRushReminderModel reminder) async {
     if (reminder.id != newReminderID) {
       await NotificationController.cancelScheduledNotification(
-        reminder.id.toString(),
+        IdHandler().getGroupKey(
+          reminder,
+        ),
       );
     }
     final int id = ref
@@ -44,8 +47,16 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   Future<bool> deleteReminder(
     int id,
   ) async {
+    final NoRushReminderModel? reminder =
+        ref.read(noRushRemindersRepositoryProvider.notifier).getReminder(id);
+    if (reminder == null) {
+      gLogger.i('Reminder not found | Cannot perform action.');
+      return false;
+    }
     await NotificationController.cancelScheduledNotification(
-      id.toString(),
+      IdHandler().getGroupKey(
+        reminder,
+      ),
     );
 
     final bool removed =

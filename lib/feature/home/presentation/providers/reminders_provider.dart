@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
+import '../../../../shared/utils/id_handler.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../data/repositories/reminders_repo.dart';
 import '../screens/home_screen.dart';
@@ -68,7 +69,9 @@ class RemindersNotifier extends _$RemindersNotifier {
 
   Future<ReminderModel> saveReminder(ReminderModel reminder) async {
     await NotificationController.cancelScheduledNotification(
-      reminder.id.toString(),
+      IdHandler().getGroupKey(
+        reminder,
+      ),
     );
 
     final int id = ref
@@ -86,8 +89,16 @@ class RemindersNotifier extends _$RemindersNotifier {
   }
 
   Future<void> deleteReminder(int id) async {
+    final ReminderModel? reminder =
+        ref.read(remindersRepositoryProvider.notifier).getReminder(id);
+    if (reminder == null) {
+      gLogger.w('Reminder not found | Cannot perform action.');
+      return;
+    }
     await NotificationController.cancelScheduledNotification(
-      id.toString(),
+      IdHandler().getGroupKey(
+        reminder,
+      ),
     );
 
     ref.read(remindersRepositoryProvider.notifier).removeReminder(id);
@@ -101,7 +112,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 
       gLogger.i('Marking Reminder as Done');
       if (reminder == null) {
-        gLogger.i('Reminder not found | Cannot perform action.');
+        gLogger.w('Reminder not found | Cannot perform action.');
         return;
       }
       if (!reminder.isRecurring) {
@@ -114,7 +125,11 @@ class RemindersNotifier extends _$RemindersNotifier {
         await moveToNextReminderOccurrence(id);
       }
 
-      await NotificationController.removeNotifications(id.toString());
+      await NotificationController.removeNotifications(
+        IdHandler().getGroupKey(
+          reminder,
+        ),
+      );
     }
   }
 
@@ -122,14 +137,18 @@ class RemindersNotifier extends _$RemindersNotifier {
     final ReminderModel? reminder =
         ref.read(remindersRepositoryProvider.notifier).getReminder(id);
     if (reminder == null) {
-      gLogger.i('Reminder not found | Cannot perform action.');
+      gLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) {
       return;
     }
 
-    await NotificationController.cancelScheduledNotification(id.toString());
+    await NotificationController.cancelScheduledNotification(
+      IdHandler().getGroupKey(
+        reminder,
+      ),
+    );
     reminder.moveToNextOccurrence();
     await NotificationController.scheduleNotification(reminder);
 
@@ -146,12 +165,16 @@ class RemindersNotifier extends _$RemindersNotifier {
     final ReminderModel? reminder =
         ref.read(remindersRepositoryProvider.notifier).getReminder(id);
     if (reminder == null) {
-      gLogger.i('Reminder not found | Cannot perform action.');
+      gLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) return;
 
-    await NotificationController.cancelScheduledNotification(id.toString());
+    await NotificationController.cancelScheduledNotification(
+      IdHandler().getGroupKey(
+        reminder,
+      ),
+    );
     reminder.moveToPreviousOccurrence();
     await NotificationController.scheduleNotification(reminder);
 
@@ -182,12 +205,16 @@ class RemindersNotifier extends _$RemindersNotifier {
     final ReminderModel? reminder =
         ref.read(remindersRepositoryProvider.notifier).getReminder(id);
     if (reminder == null) {
-      gLogger.i('Reminder not found | Cannot perform action.');
+      gLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) {
       reminder.paused = true;
-      await NotificationController.cancelScheduledNotification(id.toString());
+      await NotificationController.cancelScheduledNotification(
+        IdHandler().getGroupKey(
+          reminder,
+        ),
+      );
       ref
           .read(remindersRepositoryProvider.notifier)
           .saveReminder(reminder.toEntity);
@@ -198,7 +225,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     final ReminderModel? reminder =
         ref.read(remindersRepositoryProvider.notifier).getReminder(id);
     if (reminder == null) {
-      gLogger.i('Reminder not found | Cannot perform action.');
+      gLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) {

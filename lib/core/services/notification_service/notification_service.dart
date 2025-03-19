@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../feature/reminder_sheet/presentation/sheet_helper.dart';
 import '../../../main.dart';
 import '../../../objectbox.g.dart';
-import '../../../shared/utils/generate_id.dart';
+import '../../../shared/utils/id_handler.dart';
 import '../../../shared/utils/logger/global_logger.dart';
 import '../../constants/const_strings.dart';
 import '../../data/models/reminder/reminder.dart';
@@ -29,8 +29,8 @@ class NotificationController {
       <NotificationChannel>[
         NotificationChannel(
           channelKey: '111',
-          channelName: 'rem_channel',
-          channelDescription: 'Shows Reminder Notification',
+          channelName: 'Reminder notifications',
+          channelDescription: 'Shows reminder notifications',
           soundSource: 'resource://raw/rem_sound',
         ),
       ],
@@ -57,7 +57,7 @@ class NotificationController {
 
     await AndroidAlarmManager.oneShotAt(
       scheduledTime,
-      id,
+      IdHandler().getAlarmId(reminder),
       showNotificationCallback,
       allowWhileIdle: true,
       exact: true,
@@ -81,7 +81,7 @@ class NotificationController {
     final ReminderBase reminder = ReminderBase.fromJson(strParams);
 
     // Should be different each time so that different notifications are shown.
-    final int notificationId = generatedNotificationId(id);
+    final int notificationId = IdHandler().getNotificationId(reminder.id);
     final Map<String, String?> payload = reminder.toJson();
 
     gLogger.i('Showing notification | notificationID: $notificationId');
@@ -91,7 +91,7 @@ class NotificationController {
         id: notificationId,
         channelKey: '111',
         title: 'Reminder: ${reminder.title}',
-        groupKey: reminder.id.toString(),
+        groupKey: IdHandler().getGroupKey(reminder),
         wakeUpScreen: true,
         payload: payload,
       ),
