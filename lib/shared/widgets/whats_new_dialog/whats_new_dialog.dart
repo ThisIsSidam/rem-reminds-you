@@ -9,6 +9,7 @@ class WhatsNewDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     gLogger.i("Showing what's new dialog");
     return PopScope(
       canPop: false,
@@ -30,27 +31,40 @@ class WhatsNewDialog extends StatelessWidget {
         ),
         insetPadding: const EdgeInsets.symmetric(horizontal: 32),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        content: const SingleChildScrollView(
+        content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
+                leading: Icon(
+                  Icons.circle,
+                  size: 12,
+                  color: theme.colorScheme.error,
+                ),
+                title: Text(
+                  'Fixed Issue in scheduling NoRush reminders. Could have caused some missed notifications for normal reminders, it will be better if you re-saved the reminders, to reschedule them.',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+              ),
+              const ListTile(
                 leading: Icon(Icons.music_note, size: 12),
                 title: Text(
                   'Added separate notification tone. Easy to differentiate notification through tone now.',
                 ),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(Icons.circle, size: 12),
                 title: Text('Backup/Restore are now functional.'),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(Icons.circle, size: 12),
                 title: Text(
                   'Added postpone button for no rush reminders in reminder sheet.',
                 ),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(Icons.circle, size: 12),
                 title: Text(
                   'Fixed issue: Save button in reminder sheet for no rush reminder saved with new date.',
