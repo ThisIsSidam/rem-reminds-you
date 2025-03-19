@@ -31,7 +31,7 @@ class NotificationController {
           channelKey: '111',
           channelName: 'Reminder notifications',
           channelDescription: 'Shows reminder notifications',
-          soundSource: 'resource://raw/rem_sound',
+          soundSource: 'resource://raw/res_default_sound',
         ),
       ],
     );
