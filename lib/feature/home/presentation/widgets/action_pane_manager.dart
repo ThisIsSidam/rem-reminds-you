@@ -114,7 +114,7 @@ class ActionPaneManager {
           onPressed: (BuildContext context) {
             remindersProviderValue.saveReminder(
               reminder.copyWith(
-                dateTime: reminder.dateTime.add(postponeDuration),
+                dateTime: reminder.getPostponeDt(postponeDuration),
               ),
             );
 

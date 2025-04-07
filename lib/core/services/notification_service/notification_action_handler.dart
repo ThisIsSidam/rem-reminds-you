@@ -117,7 +117,7 @@ class NotificationActionHandler {
     final ReminderModel model = entity.toModel;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final UserSettingsNotifier settings = UserSettingsNotifier(prefs: prefs);
-    model.dateTime = model.dateTime.add(settings.defaultPostponeDuration);
+    model.dateTime = model.getPostponeDt(settings.defaultPostponeDuration);
     final int id = box.put(model.toEntity);
     await NotificationController.scheduleNotification(
       model.copyWith(id: id),

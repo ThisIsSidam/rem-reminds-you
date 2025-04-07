@@ -135,4 +135,13 @@ extension ReminderX on ReminderModel {
   bool isTimesUp() {
     return dateTime.isBefore(DateTime.now().add(const Duration(seconds: 5)));
   }
+
+  DateTime getPostponeDt(Duration dur) {
+    final DateTime now = DateTime.now();
+    if (dateTime.isBefore(now)) {
+      return now.add(dur);
+    } else {
+      return dateTime.add(dur);
+    }
+  }
 }
