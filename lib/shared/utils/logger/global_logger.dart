@@ -3,29 +3,16 @@ import 'package:logger/logger.dart';
 
 import '../../../core/enums/files_n_folders.dart';
 import 'app_console_output.dart';
-import 'logs_manager.dart';
 
-/// Global instance of [Logger].
-/// Needs to be called [initLogger] for it to work.
 late final Logger gLogger;
 
-bool get isLoggerInitialized {
-  try {
-    // ignore: unnecessary_null_comparison
-    return gLogger != null;
-  } catch (e) {
-    return false;
-  }
-}
-
-Future<void> initLogger() async {
+void initLogger({required String directory}) {
   final AdvancedFileOutput fileOutput = AdvancedFileOutput(
-    path: await LogsManager().directoryPath,
+    path: directory,
     fileNameFormatter: (DateTime timestamp) =>
         '${FilesNFolders.logFilePrefix}${timestamp.millisecondsSinceEpoch}.log',
   );
 
-  if (isLoggerInitialized) return;
   gLogger = Logger(
     printer: PrettyPrinter(
       methodCount: 0,

@@ -7,6 +7,7 @@ import '../../../../shared/utils/logger/global_logger.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/sections/backup_restore_section/backup_restore_section.dart';
 import '../widgets/sections/gestures_section/gestures_section.dart';
+import '../widgets/sections/logs/logs_section.dart';
 import '../widgets/sections/new_reminder_settings/new_reminder_section.dart';
 import '../widgets/sections/other_section/other_section.dart';
 import '../widgets/sections/user_preferences_section/user_pref_settings.dart';
@@ -48,8 +49,8 @@ class SettingsScreen extends HookConsumerWidget {
             const NewReminderSection(),
             _buildPaddedDivider(),
             const BackupRestoreSection(),
-            // _buildPaddedDivider(),
-            // const LogsSection(),
+            _buildPaddedDivider(),
+            const LogsSection(),
             _buildPaddedDivider(),
             const OtherSection(),
             _buildVersionWidget(),

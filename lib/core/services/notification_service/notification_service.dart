@@ -15,6 +15,7 @@ import '../../../main.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/id_handler.dart';
 import '../../../shared/utils/logger/global_logger.dart';
+import '../../../shared/utils/logger/logs_manager.dart';
 import '../../constants/const_strings.dart';
 import '../../data/models/reminder/reminder.dart';
 import '../../data/models/reminder_base/reminder_base.dart';
@@ -74,7 +75,7 @@ class NotificationController {
     int id,
     Map<String, dynamic> params,
   ) async {
-    await initLogger();
+    initLogger(directory: await LogsManager().directoryPath);
     gLogger.i('Notification Callback Running | callBackId: $id');
 
     final Map<String, String> strParams = params.cast<String, String>();
@@ -154,7 +155,7 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
-    await initLogger();
+    initLogger(directory: await LogsManager().directoryPath);
     gLogger.i(
       'Received notification action | Action : ${receivedAction.actionType}',
     );
