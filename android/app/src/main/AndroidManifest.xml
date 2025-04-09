@@ -22,6 +22,10 @@
         android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher">
 
+        <meta-data
+            android:name="res_default_sound"
+            android:resource="@raw/res_default_sound"/>
+
         <service
             android:name="dev.fluttercommunity.plus.androidalarmmanager.AlarmService"
             android:permission="android.permission.BIND_JOB_SERVICE"
