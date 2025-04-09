@@ -58,7 +58,7 @@ class NotificationActionHandler {
   ///
   /// If yes, moves reminder to next occurrence,
   /// if not, removes the reminder from box.
-  void _normalDonePressed() {
+  Future<void> _normalDonePressed() async {
     final Box<ReminderEntity> box = store.box<ReminderEntity>();
     final ReminderEntity? entity = box.get(reminder.id);
     if (entity == null) {
@@ -68,8 +68,9 @@ class NotificationActionHandler {
     final ReminderModel model = entity.toModel;
     if (model.isRecurring) {
       model.moveToNextOccurrence();
-
       box.put(model.toEntity);
+
+      await NotificationController.scheduleNotification(model);
       gLogger.i('Reminder moved to next occurrence : ${model.dateTime}');
       return;
     }
