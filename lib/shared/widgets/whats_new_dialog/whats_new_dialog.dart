@@ -42,7 +42,7 @@ class WhatsNewDialog extends StatelessWidget {
                   color: theme.colorScheme.error,
                 ),
                 title: Text(
-                  'Fixed Issue in scheduling NoRush reminders. Could have caused some missed notifications for normal reminders, it will be better if you re-saved the reminders, to reschedule them.',
+                  'Fixed the issue where reminder notifications for recurring reminders were not working.',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.error,
                   ),
@@ -51,25 +51,10 @@ class WhatsNewDialog extends StatelessWidget {
               const ListTile(
                 leading: Icon(Icons.music_note, size: 12),
                 title: Text(
-                  'Added separate notification tone. Easy to differentiate notification through tone now.',
+                  'Note: If in case you are not getting the new notification sound added, try reinstalling the app. The backup & restore can help you in that.',
                 ),
               ),
-              const ListTile(
-                leading: Icon(Icons.circle, size: 12),
-                title: Text('Backup/Restore are now functional.'),
-              ),
-              const ListTile(
-                leading: Icon(Icons.circle, size: 12),
-                title: Text(
-                  'Added postpone button for no rush reminders in reminder sheet.',
-                ),
-              ),
-              const ListTile(
-                leading: Icon(Icons.circle, size: 12),
-                title: Text(
-                  'Fixed issue: Save button in reminder sheet for no rush reminder saved with new date.',
-                ),
-              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),
