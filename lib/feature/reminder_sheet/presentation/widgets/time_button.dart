@@ -34,13 +34,16 @@ class TimeSetButton extends ConsumerWidget {
       onPressed: () {
         final DateTime reminderTime = ref.read(sheetReminderNotifier).dateTime;
 
-        final DateTime updatedTime = DateTime(
+        DateTime updatedTime = DateTime(
           reminderTime.year,
           reminderTime.month,
           reminderTime.day,
           dateTime.hour,
           dateTime.minute,
         );
+        if (updatedTime.isBefore(DateTime.now())) {
+          updatedTime = updatedTime.add(const Duration(days: 1));
+        }
         ref.read(sheetReminderNotifier).cleanTitle();
         ref.read(sheetReminderNotifier).updateDateTime(updatedTime);
       },
