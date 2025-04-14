@@ -15,12 +15,13 @@ class SheetReminderNotifier extends ChangeNotifier {
     final UserSettingsNotifier settings = ref.read(userSettingsProvider);
     _dateTime = DateTime.now().add(settings.defaultLeadDuration);
     _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
+    _originalType = ReminderModel;
 
     gLogger.i('SheetReminderNotifier initialized');
   }
 
   Ref ref;
-  int? _id;
+  int _id = 0;
   String _title = '';
   String _preParsedTitle = '';
   DateTime _dateTime = DateTime.now();
@@ -29,6 +30,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   RecurringInterval _recurringInterval = RecurringInterval();
   bool _noRush = false;
   bool _isPaused = false;
+  Type? _originalType;
 
   @override
   void dispose() {
@@ -49,7 +51,7 @@ class SheetReminderNotifier extends ChangeNotifier {
 
   // Setters
   void updateId(int? newId) {
-    _id = newId;
+    _id = newId ?? 0;
     notifyListeners();
   }
 
@@ -114,7 +116,7 @@ class SheetReminderNotifier extends ChangeNotifier {
 
   void resetValuesWith({Duration? customDuration, bool isNoRush = false}) {
     final UserSettingsNotifier settings = ref.read(userSettingsProvider);
-    _id = null;
+    _id = 0;
     _title = '';
     _preParsedTitle = '';
     _dateTime =
@@ -147,6 +149,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     _recurringInterval = reminder.recurringInterval;
     _noRush = false;
     _isPaused = reminder.paused;
+    _originalType = reminder.runtimeType;
     notifyListeners();
   }
 
@@ -160,10 +163,19 @@ class SheetReminderNotifier extends ChangeNotifier {
     _recurringInterval = RecurringInterval();
     _noRush = true;
     _isPaused = false;
+    _originalType = noRush.runtimeType;
     notifyListeners();
   }
 
   ReminderBase constructReminder() {
+    final Type toBeType = _noRush ? NoRushReminderModel : ReminderModel;
+
+    // Handler is for database, but if id is 0, means new reminder,
+    // hence this would be its first time to be saved in db
+    if (_originalType != toBeType && _id != 0) {
+      _handleTypeChange();
+    }
+
     if (_noRush) {
       return constructNoRush();
     } else {
@@ -204,6 +216,19 @@ class SheetReminderNotifier extends ChangeNotifier {
           ? NoRushReminderModel.generateRandomFutureTime(startTime, endTime)
           : _dateTime,
     );
+  }
+
+  /// This function is called when the type of the reminder changes
+  /// Since the database for saving reminder would be changed,
+  /// this method deletes the reminder from the database it is
+  /// currently in and changes id to 0.
+  void _handleTypeChange() {
+    if (_originalType == ReminderModel) {
+      ref.read(remindersNotifierProvider.notifier).deleteReminder(_id);
+    } else if (_originalType == NoRushReminderModel) {
+      ref.read(noRushRemindersNotifierProvider.notifier).deleteReminder(_id);
+    }
+    _id = 0;
   }
 }
 

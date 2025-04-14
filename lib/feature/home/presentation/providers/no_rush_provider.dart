@@ -27,9 +27,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   Future<NoRushReminderModel> saveReminder(NoRushReminderModel reminder) async {
     if (reminder.id != newReminderID) {
       await NotificationController.cancelScheduledNotification(
-        IdHandler().getGroupKey(
-          reminder,
-        ),
+        IdHandler().getGroupKey(reminder),
       );
     }
     final int id = ref
