@@ -73,11 +73,21 @@ class TimeEditButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final DateTime reminderTime = ref.watch(sheetReminderNotifier).dateTime;
+    final bool isEnabled = reminderTime.add(duration).isAfter(DateTime.now());
     return ElevatedButton(
       style: ButtonStyle(
         padding: WidgetStateProperty.all(const EdgeInsets.all(4)),
-        backgroundColor: WidgetStateProperty.all(
-          Theme.of(context).colorScheme.secondaryContainer,
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.disabled)) {
+              return Theme.of(context)
+                  .colorScheme
+                  .secondaryContainer
+                  .withAlpha(100);
+            }
+            return Theme.of(context).colorScheme.secondaryContainer;
+          },
         ),
         shape: WidgetStateProperty.all(
           const RoundedRectangleBorder(),
@@ -93,14 +103,17 @@ class TimeEditButton extends ConsumerWidget {
           },
         ),
       ),
-      onPressed: () {
-        final DateTime reminderTime = ref.read(sheetReminderNotifier).dateTime;
+      onPressed: isEnabled
+          ? () {
+              final DateTime reminderTime =
+                  ref.read(sheetReminderNotifier).dateTime;
 
-        ref.read(sheetReminderNotifier).cleanTitle();
-        ref
-            .read(sheetReminderNotifier)
-            .updateDateTime(reminderTime.add(duration));
-      },
+              ref.read(sheetReminderNotifier).cleanTitle();
+              ref
+                  .read(sheetReminderNotifier)
+                  .updateDateTime(reminderTime.add(duration));
+            }
+          : null,
       child: getChild(context),
     );
   }
