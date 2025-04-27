@@ -212,7 +212,7 @@ class SheetReminderNotifier extends ChangeNotifier {
       id: id ?? 0,
       title: title,
       autoSnoozeInterval: autoSnooze,
-      dateTime: id == null || newDateTime
+      dateTime: id == null || id == 0 || newDateTime
           ? NoRushReminderModel.generateRandomFutureTime(startTime, endTime)
           : _dateTime,
     );
