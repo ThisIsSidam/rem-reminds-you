@@ -88,24 +88,11 @@ class ReminderModel implements ReminderBase {
     dateTime = baseDateTime;
   }
 
-  void moveToPreviousOccurrence() {
-    _decrementRecurDuration();
-    dateTime = baseDateTime;
-  }
-
   void _incrementRecurDuration() {
-    final Duration? increment = recurringInterval.toNext();
+    final Duration? increment = recurringInterval.toNext(dateTime);
 
     if (increment != null) {
       baseDateTime = baseDateTime.add(increment);
-    }
-  }
-
-  void _decrementRecurDuration() {
-    final Duration? decrement = recurringInterval.toPrevious();
-
-    if (decrement != null) {
-      baseDateTime = baseDateTime.subtract(decrement);
     }
   }
 

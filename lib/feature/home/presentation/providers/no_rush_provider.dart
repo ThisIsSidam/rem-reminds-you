@@ -42,9 +42,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
     return reminder;
   }
 
-  Future<bool> deleteReminder(
-    int id,
-  ) async {
+  Future<bool> deleteReminder(int id) async {
     final NoRushReminderModel? reminder =
         ref.read(noRushRemindersRepositoryProvider.notifier).getReminder(id);
     if (reminder == null) {

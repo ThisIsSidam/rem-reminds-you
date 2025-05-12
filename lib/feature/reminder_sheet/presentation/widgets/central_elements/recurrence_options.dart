@@ -15,23 +15,27 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
       child: GridView.count(
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
-        crossAxisCount: 3,
+        crossAxisCount: 2,
         shrinkWrap: true,
-        childAspectRatio: 2,
+        childAspectRatio: 2.5,
         children: <Widget>[
-          intervalButton(RecurringInterval(), context, ref),
-          intervalButton(RecurringInterval.daily(), context, ref),
-          intervalButton(RecurringInterval.weekly(), context, ref),
+          IntervalButton(interval: RecurringInterval()),
+          IntervalButton(interval: RecurringInterval.daily()),
+          IntervalButton(interval: RecurringInterval.weekly()),
+          IntervalButton(interval: RecurringInterval.monthly()),
         ],
       ),
     );
   }
+}
 
-  Widget intervalButton(
-    RecurringInterval interval,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+class IntervalButton extends ConsumerWidget {
+  const IntervalButton({required this.interval, super.key});
+
+  final RecurringInterval interval;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final RecurringInterval recurringInterval =
         ref.read(sheetReminderNotifier).recurringInterval;
     final bool isPickedOption = interval == recurringInterval;

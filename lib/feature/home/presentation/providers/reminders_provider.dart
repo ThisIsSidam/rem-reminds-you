@@ -161,7 +161,10 @@ class RemindersNotifier extends _$RemindersNotifier {
     );
   }
 
-  Future<void> moveToPreviousReminderOccurrence(int id) async {
+  Future<void> moveToPreviousReminderOccurrence(
+    int id,
+    DateTime previous,
+  ) async {
     final ReminderModel? reminder =
         ref.read(remindersRepositoryProvider.notifier).getReminder(id);
     if (reminder == null) {
@@ -175,7 +178,9 @@ class RemindersNotifier extends _$RemindersNotifier {
         reminder,
       ),
     );
-    reminder.moveToPreviousOccurrence();
+    reminder
+      ..baseDateTime = previous
+      ..dateTime = previous;
     await NotificationController.scheduleNotification(reminder);
 
     ref
