@@ -1,3 +1,7 @@
+## Notice
+
+Hey guys! Anyone using the app or thinking of using it.. The app works. Normally. But can have improvements.. Also there are some issues.. obvsiouly. It is just that I am a little too busy. I know what needs to be done in it.. I just can't find the time to do it.. so I'm sorry about that. I'll handle it whenever I get it. Thanks for using the app.
+
 # Rem Reminds You : A Reminder Application
 
 This is a simple reminder app built using Flutter. But it is not so simple as it reminds user repetetively until the reminder gets marked as "Done".
