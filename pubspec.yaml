@@ -8,9 +8,9 @@ environment:
   sdk: '>=3.2.5 <4.0.0'
 
 dependencies:
-  android_alarm_manager_plus: ^4.0.4
+  android_alarm_manager_plus: ^5.0.0
   archive: ^3.6.1
-  awesome_notifications: ^0.10.0
+  awesome_notifications: ^0.11.0
   double_back_to_close_app: ^2.1.0
   duration: ^4.0.3
   dynamic_color: ^1.7.0
@@ -23,7 +23,7 @@ dependencies:
   flutter_slidable: ^3.1.1
   go_router: ^15.1.1
   hooks_riverpod: ^2.6.1
-  intl: ^0.19.0
+  intl: ^0.20.0
   logger: ^2.4.0
   mutex: ^3.1.0
   objectbox: ^4.1.0
@@ -44,7 +44,7 @@ dev_dependencies:
   json_serializable: ^6.9.0
   objectbox_generator: ^4.1.0
   riverpod_generator: ^2.6.3
-  very_good_analysis: ^7.0.0
+  very_good_analysis: ^10.1.0
 
 flutter_lints: ^3.0.1
 
