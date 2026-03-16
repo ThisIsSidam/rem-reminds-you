@@ -8,7 +8,7 @@ import '../../domain/app_permi_handler.dart';
 import '../providers/permission_status_provider.dart';
 import '../screens/permissions_screen.dart';
 
-class PermissionBottomActions extends ConsumerWidget {
+class PermissionBottomActions extends ConsumerStatefulWidget {
   const PermissionBottomActions({
     required this.currentPage,
     required this.onContinue,
@@ -21,17 +21,42 @@ class PermissionBottomActions extends ConsumerWidget {
   /// Callback for next action. Only runs after permission is given.
   final VoidCallback onContinue;
 
-  String get _permissionButtonLabel => switch (currentPage) {
+  @override
+  ConsumerState<PermissionBottomActions> createState() =>
+      _PermissionBottomActionsState();
+}
+
+class _PermissionBottomActionsState
+    extends ConsumerState<PermissionBottomActions> {
+  bool _hasRequestedPermission = false;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual<AsyncValue<bool>>(
+      permissionProvider(widget.currentPage),
+      (AsyncValue<bool>? previous, AsyncValue<bool> next) {
+        final bool granted = next.valueOrNull ?? false;
+
+        if (_hasRequestedPermission && granted) {
+          _hasRequestedPermission = false;
+          widget.onContinue();
+        }
+      },
+    );
+  }
+
+  String get _permissionButtonLabel => switch (widget.currentPage) {
         PermissionPage.notification => 'Allow Permission',
         PermissionPage.alarm => 'Allow Permission',
         PermissionPage.battery => 'Set as Unrestricted',
       };
 
-  /// Request the permission based on [currentPage].
+  /// Request the permission based on [widget.currentPage].
   /// TODO: Changed returned value to Future<bool>.. this would mean, changing
   /// the native calls to return results if possible..
   Future<void> _requestPermission() async {
-    switch (currentPage) {
+    switch (widget.currentPage) {
       case PermissionPage.notification:
         await NotificationController.requestNotificationPermission();
       case PermissionPage.alarm:
@@ -42,9 +67,9 @@ class PermissionBottomActions extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AsyncValue<bool> permissionAsync =
-        ref.watch(permissionProvider(currentPage));
+        ref.watch(permissionProvider(widget.currentPage));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -56,10 +81,11 @@ class PermissionBottomActions extends ConsumerWidget {
             data: (bool hasPermission) => ElevatedButton(
               onPressed: () async {
                 if (hasPermission) {
-                  onContinue();
+                  widget.onContinue();
                   return;
                 }
 
+                _hasRequestedPermission = true;
                 await _requestPermission();
               },
               style: ElevatedButton.styleFrom(
@@ -101,7 +127,7 @@ class PermissionBottomActions extends ConsumerWidget {
             ),
           ),
         ),
-        if (currentPage == PermissionPage.battery)
+        if (widget.currentPage == PermissionPage.battery)
           FutureBuilder<bool>(
             future: AppPermissionHandler.checkRequiredPermissions(),
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -111,7 +137,7 @@ class PermissionBottomActions extends ConsumerWidget {
               }
 
               return TextButton(
-                onPressed: onContinue,
+                onPressed: widget.onContinue,
                 child: Text(
                   'Continue to app',
                   style: context.texts.bodyMedium,
