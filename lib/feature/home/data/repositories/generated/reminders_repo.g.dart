@@ -7,7 +7,7 @@ part of '../reminders_repo.dart';
 // **************************************************************************
 
 String _$remindersRepositoryHash() =>
-    r'be84fff20e87dfd1f45b3bb7efee036d31b3eb62';
+    r'b05e81edc2295758701afb26103c60a72dc00dd1';
 
 /// See also [RemindersRepository].
 @ProviderFor(RemindersRepository)
@@ -24,7 +24,7 @@ final remindersRepositoryProvider = AutoDisposeNotifierProvider<
 
 typedef _$RemindersRepository = AutoDisposeNotifier<List<ReminderEntity>>;
 String _$noRushRemindersRepositoryHash() =>
-    r'47b4e8eac542765c793ce58a26e078909edac663';
+    r'bc217c0988ba93efa988e54abedc2432a94b30d2';
 
 /// See also [NoRushRemindersRepository].
 @ProviderFor(NoRushRemindersRepository)

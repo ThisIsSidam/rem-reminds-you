@@ -11,7 +11,7 @@ part 'generated/app_startup_provider.g.dart';
 
 @riverpod
 Future<String?> appStartup(Ref ref) async {
-  final bool permissions = await AppPermissionHandler.checkPermissions();
+  final bool permissions = await AppPermissionHandler.checkRequiredPermissions();
 
   if (!permissions) {
     ref.read(initialRouteProvider.notifier).setRoute = AppRoute.permissions;

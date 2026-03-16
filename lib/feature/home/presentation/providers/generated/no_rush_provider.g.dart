@@ -7,7 +7,7 @@ part of '../no_rush_provider.dart';
 // **************************************************************************
 
 String _$noRushRemindersNotifierHash() =>
-    r'4cd6ec1e69f89c2e0f4ee6cca696963068840fc1';
+    r'e7ccb0d1b436747c8c5aa4eab3c348f7cbc91fbf';
 
 /// See also [NoRushRemindersNotifier].
 @ProviderFor(NoRushRemindersNotifier)

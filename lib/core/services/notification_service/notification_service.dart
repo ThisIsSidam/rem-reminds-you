@@ -25,17 +25,14 @@ class NotificationController {
   static Future<void> initializeLocalNotifications() async {
     await AndroidAlarmManager.initialize();
 
-    await AwesomeNotifications().initialize(
-      null,
-      <NotificationChannel>[
-        NotificationChannel(
-          channelKey: '111',
-          channelName: 'Reminder notifications',
-          channelDescription: 'Shows reminder notifications',
-          soundSource: 'resource://raw/res_default_sound',
-        ),
-      ],
-    );
+    await AwesomeNotifications().initialize(null, <NotificationChannel>[
+      NotificationChannel(
+        channelKey: '111',
+        channelName: 'Reminder notifications',
+        channelDescription: 'Shows reminder notifications',
+        soundSource: 'resource://raw/res_default_sound',
+      ),
+    ]);
 
     gLogger.i('Initialized Notifications');
   }
@@ -46,9 +43,11 @@ class NotificationController {
     return isAllowed;
   }
 
-  static Future<bool> scheduleNotification(
-    ReminderBase reminder,
-  ) async {
+  static Future<bool> requestNotificationPermission() async {
+    return AwesomeNotifications().requestPermissionToSendNotifications();
+  }
+
+  static Future<bool> scheduleNotification(ReminderBase reminder) async {
     final int id = reminder.id;
 
     final DateTime scheduledTime = reminder.dateTime;
@@ -110,8 +109,9 @@ class NotificationController {
       ],
     );
 
-    final DateTime nextScheduledTime =
-        reminder.dateTime.add(reminder.autoSnoozeInterval);
+    final DateTime nextScheduledTime = reminder.dateTime.add(
+      reminder.autoSnoozeInterval,
+    );
     reminder.dateTime = nextScheduledTime;
     await scheduleNotification(reminder);
     gLogger.i(
@@ -145,8 +145,9 @@ class NotificationController {
   }
 
   static Future<void> startListeningNotificationEvents() async {
-    await AwesomeNotifications()
-        .setListeners(onActionReceivedMethod: onActionReceivedMethod);
+    await AwesomeNotifications().setListeners(
+      onActionReceivedMethod: onActionReceivedMethod,
+    );
 
     gLogger.i('Started Listening to notification events');
   }
@@ -160,8 +161,9 @@ class NotificationController {
       'Received notification action | Action : ${receivedAction.actionType}',
     );
     if (receivedAction.payload == null) return;
-    final ReminderBase reminder =
-        ReminderBase.fromJson(receivedAction.payload!);
+    final ReminderBase reminder = ReminderBase.fromJson(
+      receivedAction.payload!,
+    );
     await cancelScheduledNotification(
       receivedAction.groupKey ?? notificationNullGroupKey,
     );
@@ -180,8 +182,8 @@ class NotificationController {
   }
 
   static Future<void> handleInitialCallback(WidgetRef ref) async {
-    final ReceivedAction? initialAction =
-        await AwesomeNotifications().getInitialNotificationAction();
+    final ReceivedAction? initialAction = await AwesomeNotifications()
+        .getInitialNotificationAction();
 
     if (initialAction == null) return;
     if (initialAction.actionType != ActionType.Default) return;
@@ -201,10 +203,7 @@ class NotificationController {
       gLogger.i(
         'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${initialAction.groupKey}',
       );
-      SheetHelper().openReminderSheet(
-        context,
-        reminder: reminder,
-      );
+      SheetHelper().openReminderSheet(context, reminder: reminder);
     }
     await removeNotifications(initialAction.groupKey);
   }
@@ -212,12 +211,7 @@ class NotificationController {
   @pragma('vm:entry-point')
   static Future<Store> getObjectboxStore() async {
     final Directory dir = await getApplicationDocumentsDirectory();
-    if (Store.isOpen(
-      path.join(
-        dir.path,
-        'objectbox-activity-store',
-      ),
-    )) {
+    if (Store.isOpen(path.join(dir.path, 'objectbox-activity-store'))) {
       return Store.attach(
         getObjectBoxModel(),
         path.join(dir.path, 'objectbox-activity-store'),

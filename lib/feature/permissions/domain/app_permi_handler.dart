@@ -6,11 +6,12 @@ import '../../../shared/utils/logger/global_logger.dart';
 class AppPermissionHandler {
   static const MethodChannel platform = MethodChannel('app_permission_channel');
 
-  static Future<bool> checkPermissions() async {
+  static Future<bool> checkRequiredPermissions() async {
     final bool notifPermission =
         await NotificationController.checkNotificationPermissions();
-    final bool alarmPermission = await checkAlarmPermission();
-    return notifPermission && alarmPermission;
+    // if notification permission is not present, no need to check alarm
+    if (notifPermission == false) return false;
+    return checkAlarmPermission();
   }
 
   static Future<bool> checkAlarmPermission() async {
