@@ -5,6 +5,9 @@ import 'package:random_datetime/random_dt_options.dart';
 import '../../entities/no_rush_entitiy/no_rush_entity.dart';
 import '../reminder_base/reminder_base.dart';
 
+/// One of the implementations of [ReminderBase].
+/// Data-wise, this is same as [ReminderBase]. Its name
+/// is used to differentiate it for its purpose.
 class NoRushReminderModel implements ReminderBase {
   NoRushReminderModel({
     required this.id,

@@ -1,6 +1,8 @@
 import '../no_rush_reminder/no_rush_reminder.dart';
 import '../reminder/reminder.dart';
 
+/// The father reminder class.
+/// Implemented by [ReminderModel] and [NoRushReminderModel].
 abstract interface class ReminderBase {
   ReminderBase({
     required this.id,
@@ -27,7 +29,9 @@ abstract interface class ReminderBase {
   DateTime dateTime;
   Duration autoSnoozeInterval;
 
-  // type-id 1 refers to normal reminders while 2 refers to no-rush reminders
-  // Do not change these ids
+  /// To be implemented by classes that implement [ReminderBase].
+  ///
+  /// type-id 1 refers to normal reminders while 2 refers to no-rush reminders
+  /// Do not change these ids
   Map<String, String?> toJson();
 }

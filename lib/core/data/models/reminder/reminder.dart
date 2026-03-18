@@ -2,6 +2,9 @@ import '../../entities/reminder_entitiy/reminder_entity.dart';
 import '../recurring_interval/recurring_interval.dart';
 import '../reminder_base/reminder_base.dart';
 
+/// One of the implementations of [ReminderBase].
+/// Features like recurring intervals and title parsing make use of
+/// this model.
 class ReminderModel implements ReminderBase {
   ReminderModel({
     required this.id,

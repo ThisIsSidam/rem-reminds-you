@@ -12,10 +12,14 @@ import '../../../../core/services/notification_service/notification_service.dart
 
 part 'generated/reminders_repo.g.dart';
 
+/// Repository provider which handles changes to [ReminderEntity] box and
+/// emits new states as changes are made to the box.
 @riverpod
 class RemindersRepository extends _$RemindersRepository {
   late Box<ReminderEntity> _box;
 
+  /// Assigns the [_box], starts the listeners and returns the first batch
+  /// of values to the state.
   @override
   List<ReminderEntity> build() {
     final Store store = getIt<Store>();
@@ -24,6 +28,8 @@ class RemindersRepository extends _$RemindersRepository {
     return _box.query().build().find();
   }
 
+  /// Starts listeners which update the provider state whenever changes
+  /// are made to the store.
   void _startListeners() {
     _box
         .query()
@@ -43,6 +49,10 @@ class RemindersRepository extends _$RemindersRepository {
   bool removeReminder(int id) {
     return _box.remove(id);
   }
+
+  // ----------------------------
+  // ----- BACKUP & RESTORE -------------------
+  // ----------------------------
 
   String getBackup() {
     final List<Map<String, dynamic>> jsonData =
@@ -78,10 +88,14 @@ class RemindersRepository extends _$RemindersRepository {
   }
 }
 
+/// Repository provider which handles changes to [NoRushReminderEntity] box and
+/// emits new states as changes are made to the box.
 @riverpod
 class NoRushRemindersRepository extends _$NoRushRemindersRepository {
   late Box<NoRushReminderEntity> _box;
 
+  /// Assigns the [_box], starts the listeners and returns the first batch
+  /// of values to the state.
   @override
   List<NoRushReminderEntity> build() {
     final Store store = getIt<Store>();
@@ -90,6 +104,8 @@ class NoRushRemindersRepository extends _$NoRushRemindersRepository {
     return _box.query().build().find();
   }
 
+  /// Starts listeners which update the provider state whenever changes
+  /// are made to the store.
   void _startListeners() {
     _box
         .query()
@@ -109,6 +125,10 @@ class NoRushRemindersRepository extends _$NoRushRemindersRepository {
   bool removeReminder(int id) {
     return _box.remove(id);
   }
+
+  // ----------------------------
+  // ----- BACKUP & RESTORE -------------------
+  // ----------------------------
 
   String getBackup() {
     final List<Map<String, dynamic>> jsonData =
