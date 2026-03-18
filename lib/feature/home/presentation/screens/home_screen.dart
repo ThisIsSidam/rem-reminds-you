@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../app.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
-import '../../../../core/providers/global_providers.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
@@ -67,7 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Future<void> _checkAndShowWhatsNewDialog() async {
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final int currentBuild = int.tryParse(packageInfo.buildNumber) ?? 1;
-    final SharedPreferences prefs = ref.read(sharedPreferencesProvider);
+    final SharedPreferences prefs = getIt<SharedPreferences>();
     final int storedBuild = prefs.getInt('storedBuildNumber') ?? 1;
     if (currentBuild > storedBuild) {
       await prefs.setInt('storedBuildNumber', currentBuild);

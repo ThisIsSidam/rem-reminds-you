@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
-import 'core/providers/global_providers.dart';
 import 'core/services/notification_service/notification_service.dart';
 import 'objectbox.g.dart';
 import 'shared/utils/logger/global_logger.dart';
@@ -21,9 +20,10 @@ void main() async {
   initLogger(directory: await LogsManager().directoryPath);
   await NotificationController.initializeLocalNotifications();
 
+  // Create SharedPreference instace for getIt registration
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  // Create Objectbox store instance
+  // Create Objectbox store instance for getIt registration
   final Directory dir = await getApplicationDocumentsDirectory();
   final Store store = Store(
     getObjectBoxModel(),
@@ -34,14 +34,13 @@ void main() async {
   );
 
   // Register elements to GetIt
-  getIt.registerSingleton<Store>(store);
+  getIt
+    ..registerSingleton<Store>(store)
+    ..registerSingleton<SharedPreferences>(prefs);
 
   runApp(
-    ProviderScope(
-      overrides: <Override>[
-        sharedPreferencesProvider.overrideWithValue(prefs),
-      ],
-      child: const MyApp(),
+    const ProviderScope(
+      child: MyApp(),
     ),
   );
 }
