@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:objectbox/objectbox.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../app.dart';
 import '../../../../core/data/entities/no_rush_entitiy/no_rush_entity.dart';
 import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
-import '../../../../core/providers/global_providers.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 
 part 'generated/reminders_repo.g.dart';
@@ -18,7 +18,7 @@ class RemindersRepository extends _$RemindersRepository {
 
   @override
   List<ReminderEntity> build() {
-    final Store store = ref.watch(objectboxStoreProvider);
+    final Store store = getIt<Store>();
     _box = store.box<ReminderEntity>();
     _startListeners();
     return _box.query().build().find();
@@ -84,7 +84,7 @@ class NoRushRemindersRepository extends _$NoRushRemindersRepository {
 
   @override
   List<NoRushReminderEntity> build() {
-    final Store store = ref.watch(objectboxStoreProvider);
+    final Store store = getIt<Store>();
     _box = store.box<NoRushReminderEntity>();
     _startListeners();
     return _box.query().build().find();

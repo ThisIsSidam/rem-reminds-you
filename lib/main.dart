@@ -22,6 +22,8 @@ void main() async {
   await NotificationController.initializeLocalNotifications();
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Create Objectbox store instance
   final Directory dir = await getApplicationDocumentsDirectory();
   final Store store = Store(
     getObjectBoxModel(),
@@ -31,11 +33,13 @@ void main() async {
     ),
   );
 
+  // Register elements to GetIt
+  getIt.registerSingleton<Store>(store);
+
   runApp(
     ProviderScope(
       overrides: <Override>[
         sharedPreferencesProvider.overrideWithValue(prefs),
-        objectboxStoreProvider.overrideWithValue(store),
       ],
       child: const MyApp(),
     ),
