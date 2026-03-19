@@ -1,7 +1,6 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
 import 'package:toastification/toastification.dart';
 
 import 'core/theme/color_schemes.dart';
@@ -18,9 +17,6 @@ import 'main.dart';
 import 'router/app_routes.dart';
 import 'router/route_builder.dart';
 import 'shared/utils/logger/global_logger.dart';
-
-/// Global [GetIt] instance.
-final GetIt getIt = GetIt.I;
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});

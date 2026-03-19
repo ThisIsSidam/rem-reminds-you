@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../app.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
+import '../../../../main.dart';
 import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';

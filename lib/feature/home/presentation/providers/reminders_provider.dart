@@ -1,10 +1,13 @@
 // ignore_for_file: lines_longer_than_80_chars
 
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
+import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import '../../data/repositories/reminders_repo.dart';
@@ -14,17 +17,30 @@ part 'generated/reminders_provider.g.dart';
 
 @riverpod
 class RemindersNotifier extends _$RemindersNotifier {
-  bool isEmpty = false;
+  bool isEmpty = true;
+
+  final RemindersRepository _repo = getIt<RemindersRepository>();
+  StreamSubscription<List<ReminderEntity>>? _remindersSubscrioption;
 
   @override
   Map<HomeScreenSection, List<ReminderModel>> build() {
+    _handleEntitiesStream();
+
+    // Handle dispose
+    ref.onDispose(() => _remindersSubscrioption?.cancel());
+
     gLogger.i('RemindersNotifier initialized');
-    final List<ReminderEntity> entities =
-        ref.watch(remindersRepositoryProvider);
-    isEmpty = entities.isEmpty;
-    final List<ReminderModel> reminders =
-        entities.map((ReminderEntity val) => val.toModel).toList();
-    return _updateCategorizedReminders(reminders);
+    return <HomeScreenSection, List<ReminderModel>>{};
+  }
+
+  void _handleEntitiesStream() {
+    _remindersSubscrioption =
+        _repo.getRemindersStream().listen((List<ReminderEntity> entities) {
+      isEmpty = entities.isEmpty;
+      final List<ReminderModel> reminders =
+          entities.map((ReminderEntity val) => val.toModel).toList();
+      state = _updateCategorizedReminders(reminders);
+    });
   }
 
   Map<HomeScreenSection, List<ReminderModel>> _updateCategorizedReminders(
@@ -74,9 +90,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       ),
     );
 
-    final int id = ref
-        .read(remindersRepositoryProvider.notifier)
-        .saveReminder(reminder.toEntity);
+    final int id = _repo.saveReminder(reminder.toEntity);
 
     if (!reminder.paused) {
       // Only reschedule if reminder is NOT paused
@@ -89,8 +103,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   }
 
   Future<void> deleteReminder(int id) async {
-    final ReminderModel? reminder =
-        ref.read(remindersRepositoryProvider.notifier).getReminder(id);
+    final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
       gLogger.w('Reminder not found | Cannot perform action.');
       return;
@@ -101,14 +114,13 @@ class RemindersNotifier extends _$RemindersNotifier {
       ),
     );
 
-    ref.read(remindersRepositoryProvider.notifier).removeReminder(id);
+    _repo.removeReminder(id);
     gLogger.i('Deleted Reminder from Database | ID: $id');
   }
 
   Future<void> markAsDone(List<int> ids) async {
     for (final int id in ids) {
-      final ReminderModel? reminder =
-          ref.read(remindersRepositoryProvider.notifier).getReminder(id);
+      final ReminderModel? reminder = _repo.getReminder(id);
 
       gLogger.i('Marking Reminder as Done');
       if (reminder == null) {
@@ -134,8 +146,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   }
 
   Future<void> moveToNextReminderOccurrence(int id) async {
-    final ReminderModel? reminder =
-        ref.read(remindersRepositoryProvider.notifier).getReminder(id);
+    final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
       gLogger.w('Reminder not found | Cannot perform action.');
       return;
@@ -152,9 +163,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     reminder.moveToNextOccurrence();
     await NotificationController.scheduleNotification(reminder);
 
-    ref
-        .read(remindersRepositoryProvider.notifier)
-        .saveReminder(reminder.toEntity);
+    _repo.saveReminder(reminder.toEntity);
 
     gLogger.i(
       'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
@@ -165,8 +174,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     int id,
     DateTime previous,
   ) async {
-    final ReminderModel? reminder =
-        ref.read(remindersRepositoryProvider.notifier).getReminder(id);
+    final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
       gLogger.w('Reminder not found | Cannot perform action.');
       return;
@@ -183,9 +191,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       ..dateTime = previous;
     await NotificationController.scheduleNotification(reminder);
 
-    ref
-        .read(remindersRepositoryProvider.notifier)
-        .saveReminder(reminder.toEntity);
+    _repo.saveReminder(reminder.toEntity);
 
     gLogger.i(
       'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
@@ -193,22 +199,18 @@ class RemindersNotifier extends _$RemindersNotifier {
   }
 
   Future<String> getBackup() async {
-    final String backup =
-        ref.read(remindersRepositoryProvider.notifier).getBackup();
+    final String backup = _repo.getBackup();
     gLogger.i('Created Database Backup');
     return backup;
   }
 
   Future<void> restoreBackup(String jsonData) async {
-    await ref
-        .read(remindersRepositoryProvider.notifier)
-        .restoreBackup(jsonData);
+    await _repo.restoreBackup(jsonData);
     gLogger.i('Restored Database Backup');
   }
 
   Future<void> pauseReminder(int id) async {
-    final ReminderModel? reminder =
-        ref.read(remindersRepositoryProvider.notifier).getReminder(id);
+    final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
       gLogger.w('Reminder not found | Cannot perform action.');
       return;
@@ -220,15 +222,12 @@ class RemindersNotifier extends _$RemindersNotifier {
           reminder,
         ),
       );
-      ref
-          .read(remindersRepositoryProvider.notifier)
-          .saveReminder(reminder.toEntity);
+      _repo.saveReminder(reminder.toEntity);
     }
   }
 
   Future<void> resumeReminder(int id) async {
-    final ReminderModel? reminder =
-        ref.read(remindersRepositoryProvider.notifier).getReminder(id);
+    final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
       gLogger.w('Reminder not found | Cannot perform action.');
       return;
@@ -242,9 +241,7 @@ class RemindersNotifier extends _$RemindersNotifier {
         reminder.moveToNextOccurrence();
       }
 
-      ref
-          .read(remindersRepositoryProvider.notifier)
-          .saveReminder(reminder.toEntity);
+      _repo.saveReminder(reminder.toEntity);
       await NotificationController.scheduleNotification(reminder);
     }
   }

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../app.dart';
 import '../../../../core/enums/swipe_actions.dart';
 import '../../../../core/extensions/shared_prefs_ext.dart';
+import '../../../../main.dart';
 import '../../../../shared/utils/logger/global_logger.dart';
 import 'default_settings.dart';
 
