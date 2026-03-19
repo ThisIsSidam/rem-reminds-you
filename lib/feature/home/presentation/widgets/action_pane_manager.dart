@@ -14,13 +14,11 @@ class ActionPaneManager {
   const ActionPaneManager({
     required this.context,
     required this.ref,
-    required this.remove,
     required this.reminder,
   });
 
   final BuildContext context;
   final WidgetRef ref;
-  final VoidCallback remove;
   final ReminderModel reminder;
 
   ActionPane? getActionPane(SwipeAction action) {
@@ -51,19 +49,14 @@ class ActionPaneManager {
     return ActionPane(
       motion: const StretchMotion(),
       dismissible: DismissiblePane(
-        onDismissed: () {
-          remove.call();
-          _slideAndRemoveReminder(context, ref);
-        },
+        onDismissed: () => _slideAndRemoveReminder(context, ref),
       ),
       children: <Widget>[
         SlidableAction(
           backgroundColor: Colors.red,
           icon: Icons.delete_forever,
-          onPressed: (BuildContext context) {
-            remove.call();
-            _slideAndRemoveReminder(context, ref);
-          },
+          onPressed: (BuildContext context) =>
+              _slideAndRemoveReminder(context, ref),
         ),
       ],
     );
@@ -76,10 +69,8 @@ class ActionPaneManager {
         SlidableAction(
           backgroundColor: Colors.red,
           icon: Icons.delete_forever,
-          onPressed: (BuildContext context) {
-            remove.call();
-            _slideAndRemoveReminder(context, ref);
-          },
+          onPressed: (BuildContext context) =>
+              _slideAndRemoveReminder(context, ref),
         ),
         if (reminder.isRecurring) _doneSlidableAction(ref),
       ],
@@ -164,13 +155,11 @@ class NoRushPaneManager {
   const NoRushPaneManager({
     required this.context,
     required this.ref,
-    required this.remove,
     required this.reminder,
   });
 
   final BuildContext context;
   final WidgetRef ref;
-  final VoidCallback remove;
   final NoRushReminderModel reminder;
 
   ActionPane? getActionPane(SwipeAction action) {
@@ -192,19 +181,14 @@ class NoRushPaneManager {
     return ActionPane(
       motion: const StretchMotion(),
       dismissible: DismissiblePane(
-        onDismissed: () {
-          remove.call();
-          _slideAndRemoveReminder(context, ref);
-        },
+        onDismissed: () => _slideAndRemoveReminder(context, ref),
       ),
       children: <Widget>[
         SlidableAction(
           backgroundColor: Colors.red,
           icon: Icons.delete_forever,
-          onPressed: (BuildContext context) {
-            remove.call();
-            _slideAndRemoveReminder(context, ref);
-          },
+          onPressed: (BuildContext context) =>
+              _slideAndRemoveReminder(context, ref),
         ),
       ],
     );

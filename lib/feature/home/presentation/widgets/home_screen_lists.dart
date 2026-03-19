@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
@@ -11,14 +8,12 @@ import '../../../../core/enums/swipe_actions.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
-import '../../domain/model/dragged_reminder.dart';
 import '../providers/no_rush_provider.dart';
-import '../providers/reminder_dragging_provider.dart';
 import '../providers/reminders_provider.dart';
 import '../screens/home_screen.dart';
-import 'action_pane_manager.dart';
+import 'no_rush_reminder_tile.dart';
+import 'normal_reminder_tile.dart';
 import 'reminder_drag_zone.dart';
-import 'reminder_tile.dart';
 
 /// [ListedReminderSection] and [ListedNoRushSection] are identical
 /// But keep separate and synced
@@ -40,9 +35,6 @@ class ListedReminderSection extends ConsumerWidget {
   /// Whether to hide this section if [remindersList] is empty.
   final bool hideIfEmpty;
 
-  void _clearDrag(WidgetRef ref) =>
-      ref.read(reminderDraggingProvider.notifier).state = null;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<ReminderModel> reminders =
@@ -50,16 +42,19 @@ class ListedReminderSection extends ConsumerWidget {
     if (hideIfEmpty && reminders.isEmpty) {
       return const SizedBox.shrink();
     }
-    final (SwipeAction, SwipeAction) actions = ref.watch(
+    final SwipeActionPair actions = ref.watch(
       userSettingsProvider.select(
-        (UserSettingsNotifier p) =>
-            (p.homeTileSwipeActionRight, p.homeTileSwipeActionLeft),
+        (UserSettingsNotifier p) => (
+          start: p.homeTileSwipeActionRight,
+          end: p.homeTileSwipeActionLeft,
+        ),
       ),
     );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ReminderSectionTitle(section: section, onTap: onTapTitle),
@@ -69,61 +64,17 @@ class ListedReminderSection extends ConsumerWidget {
             onDroppedAccepted: (ReminderBase reminder) => ref
                 .read(remindersNotifierProvider.notifier)
                 .moveReminder(reminder, section),
-            child: Column(
-              children: <Widget>[
-                for (int i = 0; i < reminders.length; i++) ...<Widget>[
-                  const SizedBox(height: 4),
-                  Builder(
-                    builder: (BuildContext context) {
-                      final ReminderModel reminder = reminders[i];
-                      final ActionPaneManager paneManager = ActionPaneManager(
-                        reminder: reminder,
-                        remove: () {
-                          reminders.removeAt(i);
-                        },
-                        context: context,
-                        ref: ref,
-                      );
-                      return Slidable(
-                        key: ValueKey<int>(reminder.id),
-                        startActionPane: paneManager.getActionPane(actions.$1),
-                        endActionPane: paneManager.getActionPane(actions.$2),
-                        child: LongPressDraggable<ReminderBase>(
-                          data: reminder,
-                          onDragStarted: () => ref
-                              .read(reminderDraggingProvider.notifier)
-                              .state = DraggedReminder(
-                            reminder: reminder,
-                            section: section,
-                          ),
-                          onDragEnd: (_) => _clearDrag(ref),
-                          onDraggableCanceled: (_, __) => _clearDrag(ref),
-                          onDragCompleted: () => _clearDrag(ref),
-                          feedback: Material(
-                            borderRadius: BorderRadius.circular(12),
-                            child: SizedBox(
-                              width: min(MediaQuery.widthOf(context) - 40, 360),
-                              child: HomePageReminderEntryListTile(
-                                reminder: reminder,
-                              ),
-                            ),
-                          ),
-                          childWhenDragging: Opacity(
-                            opacity: 0.5,
-                            child: HomePageReminderEntryListTile(
-                              reminder: reminder,
-                            ),
-                          ),
-                          child: HomePageReminderEntryListTile(
-                            reminder: reminder,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 4),
-                ],
-              ],
+            child: ListView.separated(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (_, int i) => NormalReminderTile(
+                reminder: reminders[i],
+                actions: actions,
+                section: section,
+              ),
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemCount: reminders.length,
             ),
           ),
         ],
@@ -138,17 +89,16 @@ class ListedNoRushSection extends ConsumerWidget {
 
   HomeScreenSection get _section => HomeScreenSection.noRush;
 
-  void _clearDrag(WidgetRef ref) =>
-      ref.read(reminderDraggingProvider.notifier).state = null;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<NoRushReminderModel> remindersList =
+    final List<NoRushReminderModel> reminders =
         ref.watch(noRushRemindersNotifierProvider);
-    final (SwipeAction, SwipeAction) actions = ref.watch(
+    final SwipeActionPair actions = ref.watch(
       userSettingsProvider.select(
-        (UserSettingsNotifier p) =>
-            (p.homeTileSwipeActionRight, p.homeTileSwipeActionLeft),
+        (UserSettingsNotifier p) => (
+          start: p.homeTileSwipeActionRight,
+          end: p.homeTileSwipeActionLeft,
+        ),
       ),
     );
 
@@ -167,66 +117,18 @@ class ListedNoRushSection extends ConsumerWidget {
           const SizedBox(height: 4),
           ReminderDragZone(
             homescreenSection: _section,
-            onDroppedAccepted: (ReminderBase reminder) {
-              ref
-                  .read(noRushRemindersNotifierProvider.notifier)
-                  .moveReminder(reminder);
-            },
-            child: Column(
-              children: <Widget>[
-                for (int i = 0; i < remindersList.length; i++) ...<Widget>[
-                  const SizedBox(height: 4),
-                  Builder(
-                    builder: (BuildContext context) {
-                      final NoRushReminderModel reminder = remindersList[i];
-                      final NoRushPaneManager paneManager = NoRushPaneManager(
-                        reminder: reminder,
-                        remove: () {
-                          remindersList.removeAt(i);
-                        },
-                        context: context,
-                        ref: ref,
-                      );
-                      return Slidable(
-                        key: ValueKey<int>(reminder.id),
-                        startActionPane: paneManager.getActionPane(actions.$1),
-                        endActionPane: paneManager.getActionPane(actions.$2),
-                        child: LongPressDraggable<NoRushReminderModel>(
-                          data: reminder,
-                          onDragStarted: () => ref
-                              .read(reminderDraggingProvider.notifier)
-                              .state = DraggedReminder(
-                            reminder: reminder,
-                            section: _section,
-                          ),
-                          onDragEnd: (_) => _clearDrag(ref),
-                          onDraggableCanceled: (_, __) => _clearDrag(ref),
-                          onDragCompleted: () => _clearDrag(ref),
-                          feedback: Material(
-                            borderRadius: BorderRadius.circular(12),
-                            child: SizedBox(
-                              width: min(MediaQuery.widthOf(context) - 40, 360),
-                              child: NoRushReminderListTile(
-                                reminder: reminder,
-                              ),
-                            ),
-                          ),
-                          childWhenDragging: Opacity(
-                            opacity: 0.3,
-                            child: NoRushReminderListTile(
-                              reminder: reminder,
-                            ),
-                          ),
-                          child: NoRushReminderListTile(
-                            reminder: reminder,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 4),
-                ],
-              ],
+            onDroppedAccepted: (ReminderBase reminder) => ref
+                .read(noRushRemindersNotifierProvider.notifier)
+                .moveReminder(reminder),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (_, int i) => NoRushReminderTile(
+                reminder: reminders[i],
+                actions: actions,
+              ),
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemCount: reminders.length,
             ),
           ),
         ],

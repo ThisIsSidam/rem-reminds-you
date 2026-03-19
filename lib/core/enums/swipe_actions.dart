@@ -1,5 +1,7 @@
 import 'dart:core';
 
+typedef SwipeActionPair = ({SwipeAction start, SwipeAction end});
+
 enum SwipeAction {
   none,
   done,

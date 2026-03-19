@@ -1,25 +1,75 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
+import '../../../../core/data/models/reminder_base/reminder_base.dart';
+import '../../../../core/enums/swipe_actions.dart';
 import '../../../../core/extensions/datetime_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
+import '../../domain/model/dragged_reminder.dart';
+import '../providers/reminder_dragging_provider.dart';
 import '../providers/reminders_provider.dart';
+import '../screens/home_screen.dart';
+import 'action_pane_manager.dart';
 
-class HomePageReminderEntryListTile extends StatelessWidget {
-  const HomePageReminderEntryListTile({
+class NormalReminderTile extends ConsumerWidget {
+  const NormalReminderTile({
     required this.reminder,
+    required this.actions,
+    required this.section,
     super.key,
   });
+
   final ReminderModel reminder;
+  final SwipeActionPair actions;
+  final HomeScreenSection section;
+
+  void _clearDrag(WidgetRef ref) =>
+      ref.read(reminderDraggingProvider.notifier).state = null;
 
   @override
-  Widget build(BuildContext context) {
-    if (reminder.isRecurring) {
-      return RecurringReminderListTile(reminder: reminder);
-    }
-    return ReminderListTile(reminder: reminder);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Widget tile = switch (reminder.isRecurring) {
+      true => RecurringReminderListTile(reminder: reminder),
+      false => ReminderListTile(reminder: reminder)
+    };
+
+    final ActionPaneManager paneManager = ActionPaneManager(
+      reminder: reminder,
+      context: context,
+      ref: ref,
+    );
+    return Slidable(
+      key: ValueKey<int>(reminder.id),
+      startActionPane: paneManager.getActionPane(actions.start),
+      endActionPane: paneManager.getActionPane(actions.end),
+      child: LongPressDraggable<ReminderBase>(
+        data: reminder,
+        onDragStarted: () =>
+            ref.read(reminderDraggingProvider.notifier).state = DraggedReminder(
+          reminder: reminder,
+          section: section,
+        ),
+        onDragEnd: (_) => _clearDrag(ref),
+        onDraggableCanceled: (_, __) => _clearDrag(ref),
+        onDragCompleted: () => _clearDrag(ref),
+        feedback: Material(
+          borderRadius: BorderRadius.circular(12),
+          child: SizedBox(
+            width: min(MediaQuery.widthOf(context) - 40, 360),
+            child: tile,
+          ),
+        ),
+        childWhenDragging: Opacity(
+          opacity: 0.5,
+          child: tile,
+        ),
+        child: tile,
+      ),
+    );
   }
 }
 
@@ -193,51 +243,6 @@ class RecurringReminderListTile extends ConsumerWidget {
       child: Text(
         isPaused ? 'Resume' : 'Pause',
         style: Theme.of(context).textTheme.labelMedium,
-      ),
-    );
-  }
-}
-
-class NoRushReminderListTile extends ConsumerWidget {
-  const NoRushReminderListTile({
-    required this.reminder,
-    super.key,
-  });
-  final NoRushReminderModel reminder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () {
-        SheetHelper().openReminderSheet(
-          context,
-          reminder: reminder,
-        );
-      },
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary.withValues(
-                alpha: 0.10,
-              ),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.inversePrimary.withValues(
-                  alpha: 0.25,
-                ),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          child: SizedBox(
-            width: double.maxFinite,
-            child: Text(
-              reminder.title,
-              style: Theme.of(context).textTheme.titleMedium,
-              softWrap: true,
-            ),
-          ),
-        ),
       ),
     );
   }
