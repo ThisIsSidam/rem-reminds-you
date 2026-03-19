@@ -33,6 +33,7 @@ class ReminderListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12),
       onTap: () {
         SheetHelper().openReminderSheet(
           context,
@@ -96,6 +97,7 @@ class RecurringReminderListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12),
       onTap: () {
         SheetHelper().openReminderSheet(
           context,
@@ -206,6 +208,7 @@ class NoRushReminderListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12),
       onTap: () {
         SheetHelper().openReminderSheet(
           context,

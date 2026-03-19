@@ -43,6 +43,9 @@ class ReminderModel implements ReminderBase {
   @override
   Duration autoSnoozeInterval;
   RecurringInterval recurringInterval;
+
+  /// Refers to the initial [DateTime] set for the reminder.
+  /// This does not change if user postpones a reminder.
   DateTime baseDateTime;
   bool paused;
 

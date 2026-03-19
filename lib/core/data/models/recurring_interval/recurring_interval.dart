@@ -13,18 +13,13 @@ class RecurringInterval {
 
   factory RecurringInterval.fromJson(Map<String, dynamic> json) {
     final int type = json['type'] as int? ?? 0;
-    switch (type) {
-      case 99:
-        return RecurringInterval();
-      case 101:
-        return RecurringInterval.daily();
-      case 707:
-        return RecurringInterval.weekly();
-      case 1001:
-        return RecurringInterval.monthly();
-      default:
-        return RecurringInterval();
-    }
+    return switch (type) {
+      101 => RecurringInterval.daily(),
+      707 => RecurringInterval.weekly(),
+      1001 => RecurringInterval.monthly(),
+      // Includes default '99' and non recognized types
+      _ => RecurringInterval(),
+    };
   }
 
   factory RecurringInterval.fromString(String encoded) {
@@ -41,33 +36,25 @@ class RecurringInterval {
   bool get isMonthly => type == 1001;
 
   Duration? toNext(DateTime dateTime) {
-    switch (type) {
-      case 99:
-        return null;
-      case 101:
-        return const Duration(days: 1);
-      case 707:
-        return const Duration(days: 7);
-      case 1001:
-        return toNextMonth(dateTime);
-      default:
-        return null;
-    }
+    return switch (type) {
+      99 => null,
+      101 => const Duration(days: 1),
+      707 => const Duration(days: 7),
+      1001 => toNextMonth(dateTime),
+      // Includes default '99' and non recognized types
+      _ => null,
+    };
   }
 
   String get name {
-    switch (type) {
-      case 99:
-        return 'none';
-      case 101:
-        return 'daily';
-      case 707:
-        return 'weekly';
-      case 1001:
-        return 'monthly';
-      default:
-        return 'none';
-    }
+    return switch (type) {
+      101 => 'daily',
+      707 => 'weekly',
+      1001 => 'monthly',
+
+      // Includes default '99' and non recognized types
+      _ => 'none',
+    };
   }
 
   Map<String, dynamic> toJson() {
@@ -77,9 +64,7 @@ class RecurringInterval {
   }
 
   @override
-  String toString() {
-    return jsonEncode(toJson());
-  }
+  String toString() => jsonEncode(toJson());
 
   Duration toNextMonth(DateTime date) {
     final int nextMonth = date.month == 12 ? 1 : date.month + 1;

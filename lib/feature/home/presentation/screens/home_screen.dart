@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
+import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../router/app_routes.dart';
@@ -20,12 +20,24 @@ enum HomeScreenSection {
   today('Today'),
   tomorrow('Tomorrow'),
   later('Later'),
-  noRush('No Rush'),
-  ;
+  noRush('No Rush');
 
   const HomeScreenSection(this.title);
 
   final String title;
+
+  bool get isOverdue => this == overdue;
+
+  Color getColor(BuildContext context) {
+    final ColorScheme colors = context.colors;
+    return switch (this) {
+      overdue => colors.error,
+      today => colors.primary,
+      tomorrow => colors.secondary,
+      later => colors.inversePrimary,
+      noRush => colors.inverseSurface
+    };
+  }
 }
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -37,10 +49,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
-  Map<HomeScreenSection, List<ReminderModel>> remindersMap =
-      <HomeScreenSection, List<ReminderModel>>{};
-  List<NoRushReminderModel> noRushReminders = <NoRushReminderModel>[];
-
   @override
   void initState() {
     super.initState();
@@ -92,10 +100,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    remindersMap = ref.watch(remindersNotifierProvider);
-    noRushReminders = ref.watch(noRushRemindersNotifierProvider);
-    final bool isEmpty = ref.read(remindersNotifierProvider.notifier).isEmpty &&
-        noRushReminders.isEmpty;
+    final bool isEmpty = ref.watch(remindersNotifierProvider).isEmpty &&
+        ref.watch(noRushRemindersNotifierProvider).isEmpty;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -176,56 +182,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return SliverList(
       delegate: SliverChildListDelegate(
         <Widget>[
-          ListedReminderSection(
-            label: _buildHomeSectionButton(
-              label: HomeScreenSection.overdue.title,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            remindersList:
-                remindersMap[HomeScreenSection.overdue] ?? <ReminderModel>[],
+          const ListedReminderSection(
+            key: ValueKey<HomeScreenSection>(HomeScreenSection.overdue),
+            section: HomeScreenSection.overdue,
             hideIfEmpty: true,
           ),
           ListedReminderSection(
-            label: _buildHomeSectionButton(
-              onTap: _showReminderSheet,
-              label: HomeScreenSection.today.title,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            remindersList:
-                remindersMap[HomeScreenSection.today] ?? <ReminderModel>[],
+            section: HomeScreenSection.today,
+            onTapTitle: _showReminderSheet,
           ),
           ListedReminderSection(
-            label: _buildHomeSectionButton(
-              onTap: () {
-                _showReminderSheet(duration: const Duration(days: 1));
-              },
-              label: HomeScreenSection.tomorrow.title,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-            remindersList:
-                remindersMap[HomeScreenSection.tomorrow] ?? <ReminderModel>[],
+            section: HomeScreenSection.tomorrow,
+            onTapTitle: () {
+              _showReminderSheet(duration: const Duration(days: 1));
+            },
           ),
           ListedReminderSection(
-            label: _buildHomeSectionButton(
-              onTap: () {
-                _showReminderSheet(duration: const Duration(days: 7));
-              },
-              label: HomeScreenSection.later.title,
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-            remindersList:
-                remindersMap[HomeScreenSection.later] ?? <ReminderModel>[],
+            section: HomeScreenSection.later,
+            onTapTitle: () {
+              _showReminderSheet(duration: const Duration(days: 7));
+            },
           ),
-          ListedNoRushSection(
-            label: _buildHomeSectionButton(
-              onTap: () {
-                _showReminderSheet(isNoRush: true);
-              },
-              label: HomeScreenSection.noRush.title,
-              color: Theme.of(context).colorScheme.inverseSurface,
-            ),
-            remindersList: noRushReminders,
-          ),
+          const ListedNoRushSection(),
         ],
       ),
     );
@@ -253,26 +231,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       reminder: reminder,
       customDuration: duration,
       isNoRush: isNoRush,
-    );
-  }
-
-  InkWell _buildHomeSectionButton({
-    required String label,
-    required Color color,
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: color,
-              ),
-        ),
-      ),
     );
   }
 }

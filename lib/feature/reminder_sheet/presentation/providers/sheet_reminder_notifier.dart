@@ -10,6 +10,7 @@ import '../../../home/presentation/providers/no_rush_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 
+/// Notifier handling changes happening
 class SheetReminderNotifier extends ChangeNotifier {
   SheetReminderNotifier({required this.ref}) {
     final UserSettingsNotifier settings = ref.read(userSettingsProvider);
