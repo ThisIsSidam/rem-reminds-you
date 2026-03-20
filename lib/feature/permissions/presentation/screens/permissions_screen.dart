@@ -96,6 +96,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
           children: <Widget>[
             Expanded(
               child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 onPageChanged: (int page) async {
                   final PermissionPage previous = _currentPage.value;
@@ -160,7 +161,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
   }
 
   Widget _buildBottomActions() {
-    final double bottomPadding = 8 + MediaQuery.viewInsetsOf(context).bottom;
+    final double bottomPadding = 8 + MediaQuery.viewPaddingOf(context).bottom;
     return Padding(
       padding: EdgeInsets.fromLTRB(32, 0, 32, bottomPadding),
       child: ValueListenableBuilder<PermissionPage>(

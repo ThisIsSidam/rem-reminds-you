@@ -157,6 +157,7 @@ class ReminderSectionTitle extends StatelessWidget {
             section.title,
             style: context.texts.titleMedium!.copyWith(
               color: section.getColor(context),
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
