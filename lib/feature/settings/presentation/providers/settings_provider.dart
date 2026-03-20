@@ -7,6 +7,7 @@ import '../../../../core/extensions/shared_prefs_ext.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import 'default_settings.dart';
+import 'settings_keys.dart';
 
 final ChangeNotifierProvider<UserSettingsNotifier> userSettingsProvider =
     ChangeNotifierProvider<UserSettingsNotifier>(
@@ -29,20 +30,22 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   void resetSettings() {
-    for (final MapEntry<String, dynamic> entry in defaultSettings.entries) {
+    for (final MapEntry<SettingsKey, dynamic> entry
+        in defaultSettings.entries) {
+      final String key = entry.key.name;
       final dynamic value = entry.value;
       if (value is Duration) {
-        prefs.setDuration(entry.key, value);
+        prefs.setDuration(key, value);
       } else if (value is DateTime) {
-        prefs.setDateTime(entry.key, value);
+        prefs.setDateTime(key, value);
       } else if (value is SwipeAction) {
-        prefs.setSwipeAction(entry.key, value);
+        prefs.setSwipeAction(key, value);
       } else if (value is ThemeMode) {
-        prefs.setThemeMode(entry.key, value);
+        prefs.setThemeMode(key, value);
       } else if (value is TimeOfDay) {
-        prefs.setTimeOfDay(entry.key, value);
+        prefs.setTimeOfDay(key, value);
       } else if (value is double) {
-        prefs.setDouble(entry.key, value);
+        prefs.setDouble(key, value);
       } else {
         AppLogger.w(
           // ignore: lines_longer_than_80_chars
@@ -54,8 +57,8 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Duration get defaultLeadDuration {
-    const String key = 'defaultLeadDuration';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.defaultLeadDuration;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -63,14 +66,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setDefaultLeadDuration(Duration value) async {
-    const String key = 'defaultLeadDuration';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.defaultLeadDuration;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get defaultAutoSnoozeDuration {
-    const String key = 'defaultAutoSnoozeDuration';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.defaultAutoSnoozeDuration;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -78,14 +81,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setDefaultAutoSnoozeDuration(Duration value) async {
-    const String key = 'defaultAutoSnoozeDuration';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.defaultAutoSnoozeDuration;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   DateTime get quickTimeSetOption1 {
-    const String key = 'quickTimeSetOption1';
-    final DateTime? value = prefs.getDateTime(key);
+    const SettingsKey key = SettingsKey.quickTimeSetOption1;
+    final DateTime? value = prefs.getDateTime(key.name);
     if (value == null) {
       return defaultSettings[key] as DateTime;
     }
@@ -93,14 +96,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeSetOption1(DateTime value) async {
-    const String key = 'quickTimeSetOption1';
-    await prefs.setDateTime(key, value);
+    const SettingsKey key = SettingsKey.quickTimeSetOption1;
+    await prefs.setDateTime(key.name, value);
     notifyListeners();
   }
 
   DateTime get quickTimeSetOption2 {
-    const String key = 'quickTimeSetOption2';
-    final DateTime? value = prefs.getDateTime(key);
+    const SettingsKey key = SettingsKey.quickTimeSetOption2;
+    final DateTime? value = prefs.getDateTime(key.name);
     if (value == null) {
       return defaultSettings[key] as DateTime;
     }
@@ -108,14 +111,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeSetOption2(DateTime value) async {
-    const String key = 'quickTimeSetOption2';
-    await prefs.setDateTime(key, value);
+    const SettingsKey key = SettingsKey.quickTimeSetOption2;
+    await prefs.setDateTime(key.name, value);
     notifyListeners();
   }
 
   DateTime get quickTimeSetOption3 {
-    const String key = 'quickTimeSetOption3';
-    final DateTime? value = prefs.getDateTime(key);
+    const SettingsKey key = SettingsKey.quickTimeSetOption3;
+    final DateTime? value = prefs.getDateTime(key.name);
     if (value == null) {
       return defaultSettings[key] as DateTime;
     }
@@ -123,14 +126,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeSetOption3(DateTime value) async {
-    const String key = 'quickTimeSetOption3';
-    await prefs.setDateTime(key, value);
+    const SettingsKey key = SettingsKey.quickTimeSetOption3;
+    await prefs.setDateTime(key.name, value);
     notifyListeners();
   }
 
   DateTime get quickTimeSetOption4 {
-    const String key = 'quickTimeSetOption4';
-    final DateTime? value = prefs.getDateTime(key);
+    const SettingsKey key = SettingsKey.quickTimeSetOption4;
+    final DateTime? value = prefs.getDateTime(key.name);
     if (value == null) {
       return defaultSettings[key] as DateTime;
     }
@@ -138,14 +141,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeSetOption4(DateTime value) async {
-    const String key = 'quickTimeSetOption4';
-    await prefs.setDateTime(key, value);
+    const SettingsKey key = SettingsKey.quickTimeSetOption4;
+    await prefs.setDateTime(key.name, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption1 {
-    const String key = 'quickTimeEditOption1';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.quickTimeEditOption1;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -153,14 +156,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeEditOption1(Duration value) async {
-    const String key = 'quickTimeEditOption1';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.quickTimeEditOption1;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption2 {
-    const String key = 'quickTimeEditOption2';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.quickTimeEditOption2;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -168,14 +171,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeEditOption2(Duration value) async {
-    const String key = 'quickTimeEditOption2';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.quickTimeEditOption2;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption3 {
-    const String key = 'quickTimeEditOption3';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.quickTimeEditOption3;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -183,14 +186,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeEditOption3(Duration value) async {
-    const String key = 'quickTimeEditOption3';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.quickTimeEditOption3;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption4 {
-    const String key = 'quickTimeEditOption4';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.quickTimeEditOption4;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -198,14 +201,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeEditOption4(Duration value) async {
-    const String key = 'quickTimeEditOption4';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.quickTimeEditOption4;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption5 {
-    const String key = 'quickTimeEditOption5';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.quickTimeEditOption5;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -213,14 +216,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeEditOption5(Duration value) async {
-    const String key = 'quickTimeEditOption5';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.quickTimeEditOption5;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption6 {
-    const String key = 'quickTimeEditOption6';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.quickTimeEditOption6;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -228,14 +231,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeEditOption6(Duration value) async {
-    const String key = 'quickTimeEditOption6';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.quickTimeEditOption6;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption7 {
-    const String key = 'quickTimeEditOption7';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.quickTimeEditOption7;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -243,14 +246,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeEditOption7(Duration value) async {
-    const String key = 'quickTimeEditOption7';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.quickTimeEditOption7;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get quickTimeEditOption8 {
-    const String key = 'quickTimeEditOption8';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.quickTimeEditOption8;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -258,14 +261,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setQuickTimeEditOption8(Duration value) async {
-    const String key = 'quickTimeEditOption8';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.quickTimeEditOption8;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption1 {
-    const String key = 'autoSnoozeOption1';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.autoSnoozeOption1;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -273,14 +276,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setAutoSnoozeOption1(Duration value) async {
-    const String key = 'autoSnoozeOption1';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.autoSnoozeOption1;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption2 {
-    const String key = 'autoSnoozeOption2';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.autoSnoozeOption2;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -288,14 +291,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setAutoSnoozeOption2(Duration value) async {
-    const String key = 'autoSnoozeOption2';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.autoSnoozeOption2;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption3 {
-    const String key = 'autoSnoozeOption3';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.autoSnoozeOption3;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -303,14 +306,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setAutoSnoozeOption3(Duration value) async {
-    const String key = 'autoSnoozeOption3';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.autoSnoozeOption3;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption4 {
-    const String key = 'autoSnoozeOption4';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.autoSnoozeOption4;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -318,14 +321,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setAutoSnoozeOption4(Duration value) async {
-    const String key = 'autoSnoozeOption4';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.autoSnoozeOption4;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   Duration get autoSnoozeOption5 {
-    const String key = 'autoSnoozeOption5';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.autoSnoozeOption5;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -339,8 +342,8 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Duration get autoSnoozeOption6 {
-    const String key = 'autoSnoozeOption6';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.autoSnoozeOption6;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -348,14 +351,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setAutoSnoozeOption6(Duration value) async {
-    const String key = 'autoSnoozeOption6';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.autoSnoozeOption6;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   SwipeAction get homeTileSwipeActionLeft {
-    const String key = 'homeTileSwipeActionLeft';
-    final SwipeAction? value = prefs.getSwipeAction(key);
+    const SettingsKey key = SettingsKey.homeTileSwipeActionLeft;
+    final SwipeAction? value = prefs.getSwipeAction(key.name);
     if (value == null) {
       return SwipeAction.fromString(defaultSettings[key] as String);
     }
@@ -363,14 +366,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setHomeTileSwipeActionLeft(SwipeAction value) async {
-    const String key = 'homeTileSwipeActionLeft';
-    await prefs.setSwipeAction(key, value);
+    const SettingsKey key = SettingsKey.homeTileSwipeActionLeft;
+    await prefs.setSwipeAction(key.name, value);
     notifyListeners();
   }
 
   SwipeAction get homeTileSwipeActionRight {
-    const String key = 'homeTileSwipeActionRight';
-    final SwipeAction? value = prefs.getSwipeAction(key);
+    const SettingsKey key = SettingsKey.homeTileSwipeActionRight;
+    final SwipeAction? value = prefs.getSwipeAction(key.name);
     if (value == null) {
       return SwipeAction.fromString(defaultSettings[key] as String);
     }
@@ -378,14 +381,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setHomeTileSwipeActionRight(SwipeAction value) async {
-    const String key = 'homeTileSwipeActionRight';
-    await prefs.setSwipeAction(key, value);
+    const SettingsKey key = SettingsKey.homeTileSwipeActionRight;
+    await prefs.setSwipeAction(key.name, value);
     notifyListeners();
   }
 
   Duration get defaultPostponeDuration {
-    const String key = 'defaultPostponeDuration';
-    final Duration? value = prefs.getDuration(key);
+    const SettingsKey key = SettingsKey.defaultPostponeDuration;
+    final Duration? value = prefs.getDuration(key.name);
     if (value == null) {
       return defaultSettings[key] as Duration;
     }
@@ -393,14 +396,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setDefaultPostponeDuration(Duration value) async {
-    const String key = 'defaultPostponeDuration';
-    await prefs.setDuration(key, value);
+    const SettingsKey key = SettingsKey.defaultPostponeDuration;
+    await prefs.setDuration(key.name, value);
     notifyListeners();
   }
 
   ThemeMode get themeMode {
-    const String key = 'themeMode';
-    final ThemeMode? value = prefs.getThemeMode(key);
+    const SettingsKey key = SettingsKey.themeMode;
+    final ThemeMode? value = prefs.getThemeMode(key.name);
     if (value == null) {
       return ThemeMode.system;
     }
@@ -408,14 +411,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setThemeMode(ThemeMode value) async {
-    const String key = 'themeMode';
-    await prefs.setThemeMode(key, value);
+    const SettingsKey key = SettingsKey.themeMode;
+    await prefs.setThemeMode(key.name, value);
     notifyListeners();
   }
 
   TimeOfDay get noRushStartTime {
-    const String key = 'noRushHoursStartTime';
-    final TimeOfDay? value = prefs.getTimeOfDay(key);
+    const SettingsKey key = SettingsKey.noRushHoursStartTime;
+    final TimeOfDay? value = prefs.getTimeOfDay(key.name);
     if (value == null) {
       return defaultSettings[key] as TimeOfDay;
     }
@@ -423,14 +426,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setNoRushStartTime(TimeOfDay value) async {
-    const String key = 'noRushHoursStartTime';
-    await prefs.setTimeOfDay(key, value);
+    const SettingsKey key = SettingsKey.noRushHoursStartTime;
+    await prefs.setTimeOfDay(key.name, value);
     notifyListeners();
   }
 
   TimeOfDay get noRushEndTime {
-    const String key = 'noRushHoursEndTime';
-    final TimeOfDay? value = prefs.getTimeOfDay(key);
+    const SettingsKey key = SettingsKey.noRushHoursEndTime;
+    final TimeOfDay? value = prefs.getTimeOfDay(key.name);
     if (value == null) {
       return defaultSettings[key] as TimeOfDay;
     }
@@ -438,14 +441,14 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setNoRushEndTime(TimeOfDay value) async {
-    const String key = 'noRushHoursEndTime';
-    await prefs.setTimeOfDay(key, value);
+    const SettingsKey key = SettingsKey.noRushHoursEndTime;
+    await prefs.setTimeOfDay(key.name, value);
     notifyListeners();
   }
 
   double get textScale {
-    const String key = 'textScale';
-    final double? value = prefs.getDouble(key);
+    const SettingsKey key = SettingsKey.textScale;
+    final double? value = prefs.getDouble(key.name);
     if (value == null) {
       return defaultSettings[key] as double;
     }
@@ -453,8 +456,8 @@ class UserSettingsNotifier extends ChangeNotifier {
   }
 
   Future<void> setTextScale(double value) async {
-    const String key = 'textScale';
-    await prefs.setDouble(key, value);
+    const SettingsKey key = SettingsKey.textScale;
+    await prefs.setDouble(key.name, value);
     notifyListeners();
   }
 }
