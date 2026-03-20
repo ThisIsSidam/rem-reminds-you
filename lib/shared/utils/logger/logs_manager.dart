@@ -14,22 +14,21 @@ class LogsManager {
     return '${directory.path}/${FilesNFolders.logsFolder.name}';
   }
 
-  Future<List<int>?> createLogsZipData(
-    Directory srcFolder,
-    File outputFile,
-  ) async {
+  Future<List<int>?> createLogsZipData() async {
+    final Directory srcDirectory = Directory(await directoryPath);
+
     final ZipEncoder encoder = ZipEncoder();
     final Archive archive = Archive();
 
-    // Get all files in the source directory
+    // Get all files in the source directoryz
     final List<FileSystemEntity> entities =
-        await srcFolder.list(recursive: true).toList();
+        await srcDirectory.list(recursive: true).toList();
 
     // Add each file to the archive
     for (final FileSystemEntity entity in entities) {
       if (entity is File) {
         final String relativePath =
-            p.relative(entity.path, from: srcFolder.path);
+            p.relative(entity.path, from: srcDirectory.path);
         final Uint8List data = await entity.readAsBytes();
         final ArchiveFile archiveFile = ArchiveFile(
           relativePath,

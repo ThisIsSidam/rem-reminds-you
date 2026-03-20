@@ -1,13 +1,10 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:toastification/toastification.dart';
 
-import '../../../../../../core/enums/files_n_folders.dart';
 import '../../../../../../shared/utils/logger/global_logger.dart';
 import '../../../../../../shared/utils/logger/logs_manager.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
@@ -47,45 +44,41 @@ class LogsSection extends ConsumerWidget {
       title:
           Text('Get log file', style: Theme.of(context).textTheme.titleSmall),
       onTap: () async {
-        final PermissionStatus status2 =
-            await Permission.manageExternalStorage.request();
-        if (!status2.isGranted) {
-          if (!context.mounted) return;
-          AppUtils.showToast(
-            msg: 'Storage permission is required for backup',
-            type: ToastificationType.warning,
-          );
-          return;
-        }
-
         try {
-          final Directory storage = await getApplicationDocumentsDirectory();
-          final Directory srcFolder = Directory(
-            path.join(storage.path, FilesNFolders.logsFolder.name),
-          );
-
-          final Directory extStorage = Directory('storage/emulated/0/Download');
-          if (extStorage.existsSync() == false) {
-            extStorage.createSync();
+          final Uint8List? logsData = await _getLogsData();
+          if (logsData == null || logsData.isEmpty) {
+            gLogger.e('Failed to find any relevant logs');
+            return;
           }
 
-          final File outputFile = File(
-            path.join(
-              extStorage.path,
-              '${FilesNFolders.logsFolder.name}.zip',
-            ),
-          );
-          final List<int>? zipData =
-              await LogsManager().createLogsZipData(srcFolder, outputFile);
+          // Get save location directory
+          final DirectoryLocation? saveLocation =
+              await FlutterFileDialog.pickDirectory();
 
-          if (zipData != null) {
-            await outputFile.writeAsBytes(zipData);
+          // User cancelled operation
+          if (saveLocation == null) {
+            AppUtils.showToast(
+              msg: 'No directory selected',
+              type: ToastificationType.warning,
+            );
+            return;
           }
+
+          // Save new backup file
+          final int millis = DateTime.now().millisecondsSinceEpoch;
+          final String fileName = 'rem-logs-$millis.zip';
+          const String mimeType = 'application/zip';
+          await FlutterFileDialog.saveFileToDirectory(
+            directory: saveLocation,
+            data: logsData,
+            mimeType: mimeType,
+            fileName: fileName,
+            replace: true,
+          );
 
           if (!context.mounted) return;
           AppUtils.showToast(
-            msg: 'Logs saved',
-            description: outputFile.path,
+            msg: 'Logs saved successfully',
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
@@ -113,5 +106,11 @@ class LogsSection extends ConsumerWidget {
         AppUtils.showToast(msg: 'Successfully deleted all logs');
       },
     );
+  }
+
+  Future<Uint8List?> _getLogsData() async {
+    final List<int>? zipData = await LogsManager().createLogsZipData();
+    if (zipData == null) return null;
+    return Uint8List.fromList(zipData);
   }
 }

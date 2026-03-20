@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
 import '../../../core/enums/files_n_folders.dart';
-import 'app_console_output.dart';
 
+/// Global instance of [Logger].
 late final Logger gLogger;
 
+/// Initialize the global instance of [Logger] -> [gLogger].
 void initLogger({required String directory}) {
   try {
     final AdvancedFileOutput fileOutput = AdvancedFileOutput(
@@ -30,7 +31,7 @@ void initLogger({required String directory}) {
       ),
       output: MultiOutput(
         <LogOutput>[
-          if (kDebugMode) ConsoleOutput() else AppConsoleOutput(),
+          if (kDebugMode) ConsoleOutput(),
           fileOutput,
         ],
       ),
