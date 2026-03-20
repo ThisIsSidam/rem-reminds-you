@@ -16,7 +16,7 @@ import 'feature/settings/presentation/providers/settings_provider.dart';
 import 'main.dart';
 import 'router/app_routes.dart';
 import 'router/route_builder.dart';
-import 'shared/utils/logger/global_logger.dart';
+import 'shared/utils/logger/app_logger.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -42,7 +42,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     ref.listen(appStartupProvider, (_, __) {});
-    gLogger.i('App Built');
+    AppLogger.i('App Built');
     final (ThemeMode, double) settings = ref.watch(
       userSettingsProvider
           .select((UserSettingsNotifier p) => (p.themeMode, p.textScale)),

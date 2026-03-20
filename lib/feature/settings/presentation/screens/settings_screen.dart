@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/sections/backup_restore_section/backup_restore_section.dart';
 import '../widgets/sections/gestures_section/gestures_section.dart';
@@ -21,7 +21,7 @@ class SettingsScreen extends HookConsumerWidget {
         ref.watch(userSettingsProvider);
     useEffect(
       () {
-        gLogger.i('Built Settings Screen');
+        AppLogger.i('Built Settings Screen');
         return null;
       },
       <Object?>[],
@@ -75,7 +75,7 @@ class SettingsScreen extends HookConsumerWidget {
     return IconButton(
       icon: const Icon(Icons.refresh),
       onPressed: () {
-        gLogger.i('Tapped reset icon');
+        AppLogger.i('Tapped reset icon');
         showDialog<void>(
           context: context,
           builder: (BuildContext context) {
@@ -89,14 +89,14 @@ class SettingsScreen extends HookConsumerWidget {
                 children: <Widget>[
                   TextButton(
                     onPressed: () {
-                      gLogger.i('Reset cancelled');
+                      AppLogger.i('Reset cancelled');
                       Navigator.pop(context);
                     },
                     child: const Text('No'),
                   ),
                   TextButton(
                     onPressed: () {
-                      gLogger.i('Resetting settings');
+                      AppLogger.i('Resetting settings');
                       notifier.resetSettings();
                       Navigator.pop(context);
                     },

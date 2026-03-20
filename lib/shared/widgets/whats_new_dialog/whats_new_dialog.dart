@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../utils/logger/global_logger.dart';
+import '../../utils/logger/app_logger.dart';
 
 class WhatsNewDialog extends StatelessWidget {
   const WhatsNewDialog({super.key});
@@ -10,7 +10,7 @@ class WhatsNewDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    gLogger.i("Showing what's new dialog");
+    AppLogger.i("Showing what's new dialog");
     return PopScope(
       canPop: false,
       child: AlertDialog(

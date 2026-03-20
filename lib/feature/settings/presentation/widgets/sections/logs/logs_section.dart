@@ -5,7 +5,7 @@ import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
-import '../../../../../../shared/utils/logger/global_logger.dart';
+import '../../../../../../shared/utils/logger/app_logger.dart';
 import '../../../../../../shared/utils/logger/logs_manager.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 
@@ -47,7 +47,7 @@ class LogsSection extends ConsumerWidget {
         try {
           final Uint8List? logsData = await _getLogsData();
           if (logsData == null || logsData.isEmpty) {
-            gLogger.e('Failed to find any relevant logs');
+            AppLogger.e('Failed to find any relevant logs');
             return;
           }
 
@@ -82,7 +82,7 @@ class LogsSection extends ConsumerWidget {
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
-          gLogger.e(
+          AppLogger.e(
             'Error exporting logs',
             error: e,
             stackTrace: stackTrace,

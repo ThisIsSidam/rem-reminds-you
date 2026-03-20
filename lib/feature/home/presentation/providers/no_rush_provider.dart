@@ -12,7 +12,7 @@ import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../data/repositories/reminders_repo.dart';
 import 'reminders_provider.dart';
@@ -31,7 +31,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
     // Handle dispose
     ref.onDispose(() => _noRushSubscription?.cancel());
 
-    gLogger.i('RemindersNotifier initialized');
+    AppLogger.i('RemindersNotifier initialized');
     return <NoRushReminderModel>[];
   }
 
@@ -57,14 +57,14 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
       reminder.copyWith(id: id),
     );
 
-    gLogger.i('Saved Reminder in Database | ID: $id');
+    AppLogger.i('Saved Reminder in Database | ID: $id');
     return reminder;
   }
 
   Future<bool> deleteReminder(int id) async {
     final NoRushReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      gLogger.i('Reminder not found | Cannot perform action.');
+      AppLogger.i('Reminder not found | Cannot perform action.');
       return false;
     }
     await NotificationController.cancelScheduledNotification(
@@ -74,7 +74,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
     );
 
     final bool removed = _repo.removeReminder(id);
-    gLogger.i('Deleted reminder from database | ID: $id | Status: $removed');
+    AppLogger.i('Deleted reminder from database | ID: $id | Status: $removed');
     return removed;
   }
 
@@ -111,13 +111,13 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
 
   Future<String> getBackup() async {
     final String backup = _repo.getBackup();
-    gLogger.i('Created Database Backup');
+    AppLogger.i('Created Database Backup');
     return backup;
   }
 
   Future<void> restoreBackup(String jsonData) async {
     await _repo.restoreBackup(jsonData);
-    gLogger.i('Restored Database Backup');
+    AppLogger.i('Restored Database Backup');
   }
 
   // -------------------------

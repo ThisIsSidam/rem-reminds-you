@@ -12,7 +12,7 @@ import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 import '../../data/repositories/reminders_repo.dart';
 import '../screens/home_screen.dart';
 import 'no_rush_provider.dart';
@@ -31,7 +31,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     // Handle dispose
     ref.onDispose(() => _remindersSubscrioption?.cancel());
 
-    gLogger.i('RemindersNotifier initialized');
+    AppLogger.i('RemindersNotifier initialized');
     return <HomeScreenSection, List<ReminderModel>>{};
   }
 
@@ -104,14 +104,14 @@ class RemindersNotifier extends _$RemindersNotifier {
         reminder.copyWith(id: id),
       );
     }
-    gLogger.i('Saved Reminder in Database | ID: $id');
+    AppLogger.i('Saved Reminder in Database | ID: $id');
     return reminder;
   }
 
   Future<void> deleteReminder(int id) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      gLogger.w('Reminder not found | Cannot perform action.');
+      AppLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     await NotificationController.cancelScheduledNotification(
@@ -121,23 +121,23 @@ class RemindersNotifier extends _$RemindersNotifier {
     );
 
     _repo.removeReminder(id);
-    gLogger.i('Deleted Reminder from Database | ID: $id');
+    AppLogger.i('Deleted Reminder from Database | ID: $id');
   }
 
   Future<void> markAsDone(List<int> ids) async {
     for (final int id in ids) {
       final ReminderModel? reminder = _repo.getReminder(id);
 
-      gLogger.i('Marking Reminder as Done');
+      AppLogger.i('Marking Reminder as Done');
       if (reminder == null) {
-        gLogger.w('Reminder not found | Cannot perform action.');
+        AppLogger.w('Reminder not found | Cannot perform action.');
         return;
       }
       if (!reminder.isRecurring) {
-        gLogger.i('Deleting reminder | ID: ${reminder.id}');
+        AppLogger.i('Deleting reminder | ID: ${reminder.id}');
         await deleteReminder(reminder.id);
       } else {
-        gLogger.i(
+        AppLogger.i(
           'Moving Reminder to next occurrence | ID: ${reminder.id} | DT: ${reminder.dateTime}',
         );
         await moveToNextReminderOccurrence(id);
@@ -152,7 +152,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   Future<void> moveToNextReminderOccurrence(int id) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      gLogger.w('Reminder not found | Cannot perform action.');
+      AppLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) {
@@ -167,7 +167,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 
     _repo.saveReminder(reminder.toEntity);
 
-    gLogger.i(
+    AppLogger.i(
       'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
     );
   }
@@ -178,7 +178,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   ) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      gLogger.w('Reminder not found | Cannot perform action.');
+      AppLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) return;
@@ -195,7 +195,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 
     _repo.saveReminder(reminder.toEntity);
 
-    gLogger.i(
+    AppLogger.i(
       'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
     );
   }
@@ -203,7 +203,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   Future<void> pauseReminder(int id) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      gLogger.w('Reminder not found | Cannot perform action.');
+      AppLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) {
@@ -220,7 +220,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   Future<void> resumeReminder(int id) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      gLogger.w('Reminder not found | Cannot perform action.');
+      AppLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) {
@@ -308,13 +308,13 @@ class RemindersNotifier extends _$RemindersNotifier {
 
   Future<String> getBackup() async {
     final String backup = _repo.getBackup();
-    gLogger.i('Created Database Backup');
+    AppLogger.i('Created Database Backup');
     return backup;
   }
 
   Future<void> restoreBackup(String jsonData) async {
     await _repo.restoreBackup(jsonData);
-    gLogger.i('Restored Database Backup');
+    AppLogger.i('Restored Database Backup');
   }
 
   // ----------------------------

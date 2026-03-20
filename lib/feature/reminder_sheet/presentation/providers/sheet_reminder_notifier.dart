@@ -5,7 +5,7 @@ import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../home/presentation/providers/no_rush_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
@@ -18,7 +18,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
     _originalType = ReminderModel;
 
-    gLogger.i('SheetReminderNotifier initialized');
+    AppLogger.i('SheetReminderNotifier initialized');
   }
 
   Ref ref;
@@ -35,7 +35,7 @@ class SheetReminderNotifier extends ChangeNotifier {
 
   @override
   void dispose() {
-    gLogger.i('ReminderNotifier disposed');
+    AppLogger.i('ReminderNotifier disposed');
     super.dispose();
   }
 

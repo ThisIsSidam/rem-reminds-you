@@ -8,7 +8,7 @@ import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
-import '../../../../../../shared/utils/logger/global_logger.dart';
+import '../../../../../../shared/utils/logger/app_logger.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../../../home/presentation/providers/no_rush_provider.dart';
 import '../../../../../home/presentation/providers/reminders_provider.dart';
@@ -51,7 +51,7 @@ class BackupRestoreSection extends ConsumerWidget {
           // Get backup data
           final Uint8List? backupData = await _getBackupData(ref);
           if (backupData == null || backupData.isEmpty) {
-            gLogger.i('Failed to create zip data | Data : $backupData');
+            AppLogger.i('Failed to create zip data | Data : $backupData');
             return;
           }
 
@@ -84,7 +84,7 @@ class BackupRestoreSection extends ConsumerWidget {
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
-          gLogger.e('Error during backup', error: e, stackTrace: stackTrace);
+          AppLogger.e('Error during backup', error: e, stackTrace: stackTrace);
           AppUtils.showToast(
             msg: 'Backup failed!',
             type: ToastificationType.error,
@@ -134,7 +134,7 @@ class BackupRestoreSection extends ConsumerWidget {
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
-          gLogger.e('Error during restore', error: e, stackTrace: stackTrace);
+          AppLogger.e('Error during restore', error: e, stackTrace: stackTrace);
           if (!context.mounted) return;
           AppUtils.showToast(
             msg: 'Backup restore failed!',
@@ -182,7 +182,7 @@ class BackupRestoreSection extends ConsumerWidget {
         archive.findFile('reminders_backup.json');
 
     if (remindersJsonFile == null) {
-      gLogger.e("File 'reminders_backup.json' not found in the zip file");
+      AppLogger.e("File 'reminders_backup.json' not found in the zip file");
     } else if (remindersJsonFile.content is List<int>) {
       final String remindersJsonContent =
           utf8.decode(remindersJsonFile.content as List<int>);
@@ -190,7 +190,7 @@ class BackupRestoreSection extends ConsumerWidget {
             remindersJsonContent,
           );
     } else {
-      gLogger.e('File contents not found');
+      AppLogger.e('File contents not found');
     }
   }
 
@@ -199,7 +199,7 @@ class BackupRestoreSection extends ConsumerWidget {
         archive.findFile('no_rush_backup.json');
 
     if (archivesJsonFile == null) {
-      gLogger.e(
+      AppLogger.e(
         "File 'no_rush_reminders_backup.json' not found in the zip file",
       );
     } else if (archivesJsonFile.content is List<int>) {
@@ -209,7 +209,7 @@ class BackupRestoreSection extends ConsumerWidget {
           .read(noRushRemindersNotifierProvider.notifier)
           .restoreBackup(archivesJsonContent);
     } else {
-      gLogger.e('File contents not found');
+      AppLogger.e('File contents not found');
     }
   }
 }

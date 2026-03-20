@@ -11,8 +11,7 @@ import 'app.dart';
 import 'core/services/notification_service/notification_service.dart';
 import 'feature/home/data/repositories/reminders_repo.dart';
 import 'objectbox.g.dart';
-import 'shared/utils/logger/global_logger.dart';
-import 'shared/utils/logger/logs_manager.dart';
+import 'shared/utils/logger/app_logger.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -22,16 +21,12 @@ final GetIt getIt = GetIt.I;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  initLogger(directory: await LogsManager().directoryPath);
+  await AppLogger.init();
   await NotificationController.initializeLocalNotifications();
 
   await _injectDependencies();
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 Future<void> _injectDependencies() async {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/extensions/datetime_ext.dart';
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
@@ -112,7 +112,7 @@ class CentralWidget extends ConsumerWidget {
       sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
     );
     if (element != CentralElement.dateTimeGrid) {
-      gLogger.i('Bottom element changed, un-focusing');
+      AppLogger.i('Bottom element changed, un-focusing');
     }
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),

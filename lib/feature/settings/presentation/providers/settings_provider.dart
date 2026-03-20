@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/enums/swipe_actions.dart';
 import '../../../../core/extensions/shared_prefs_ext.dart';
 import '../../../../main.dart';
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 import 'default_settings.dart';
 
 final ChangeNotifierProvider<UserSettingsNotifier> userSettingsProvider =
@@ -18,13 +18,13 @@ final ChangeNotifierProvider<UserSettingsNotifier> userSettingsProvider =
 
 class UserSettingsNotifier extends ChangeNotifier {
   UserSettingsNotifier({required this.prefs}) {
-    gLogger.i('Created User Settings Notifier');
+    AppLogger.i('Created User Settings Notifier');
   }
   final SharedPreferences prefs;
 
   @override
   void dispose() {
-    gLogger.i('User Settings Notifier Disposed');
+    AppLogger.i('User Settings Notifier Disposed');
     super.dispose();
   }
 
@@ -44,7 +44,7 @@ class UserSettingsNotifier extends ChangeNotifier {
       } else if (value is double) {
         prefs.setDouble(entry.key, value);
       } else {
-        gLogger.w(
+        AppLogger.w(
           // ignore: lines_longer_than_80_chars
           'Found unhandled datatype value when resettings settings: ${value.runtimeType}',
         );

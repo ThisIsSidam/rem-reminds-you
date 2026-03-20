@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../feature/settings/presentation/providers/settings_provider.dart';
 import '../../../objectbox.g.dart';
-import '../../../shared/utils/logger/global_logger.dart';
+import '../../../shared/utils/logger/app_logger.dart';
 import '../../data/entities/no_rush_entitiy/no_rush_entity.dart';
 import '../../data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../data/models/no_rush_reminder/no_rush_reminder.dart';
@@ -22,7 +22,7 @@ class NotificationActionHandler {
 
   /// Redirects to specific done handler based on the type attribute
   void donePressed() {
-    gLogger.i('Notification action | Done Button Pressed');
+    AppLogger.i('Notification action | Done Button Pressed');
 
     if (reminder is ReminderModel) {
       _normalDonePressed();
@@ -35,7 +35,7 @@ class NotificationActionHandler {
 
   /// Redirects to specific postpone handler based on the type attribute
   Future<void> postponePressed() async {
-    gLogger.i('Notification action | Done Button Pressed');
+    AppLogger.i('Notification action | Done Button Pressed');
 
     if (reminder is ReminderModel) {
       await _normalPostponePressed();
@@ -50,7 +50,7 @@ class NotificationActionHandler {
   void _noRushDonePressed() {
     final Box<NoRushReminderEntity> box = store.box<NoRushReminderEntity>();
     final bool deleted = box.remove(reminder.id);
-    gLogger.i('No Rush Reminder deletion status: $deleted');
+    AppLogger.i('No Rush Reminder deletion status: $deleted');
   }
 
   /// Retreives remidner from box, gets the model instance,
@@ -62,7 +62,7 @@ class NotificationActionHandler {
     final Box<ReminderEntity> box = store.box<ReminderEntity>();
     final ReminderEntity? entity = box.get(reminder.id);
     if (entity == null) {
-      gLogger.i('Reminder not found in database | Done action cancelled');
+      AppLogger.i('Reminder not found in database | Done action cancelled');
       return;
     }
     final ReminderModel model = entity.toModel;
@@ -71,11 +71,11 @@ class NotificationActionHandler {
       box.put(model.toEntity);
 
       await NotificationController.scheduleNotification(model);
-      gLogger.i('Reminder moved to next occurrence : ${model.dateTime}');
+      AppLogger.i('Reminder moved to next occurrence : ${model.dateTime}');
       return;
     }
     final bool deleted = box.remove(reminder.id);
-    gLogger.i('Reminder deletion status: $deleted');
+    AppLogger.i('Reminder deletion status: $deleted');
   }
 
   /// Opens box, retrieves the entitiy object and converts it to model.
@@ -87,7 +87,9 @@ class NotificationActionHandler {
     final NoRushReminderEntity? entity = box.get(reminder.id);
     if (entity == null) {
       // ignore: lines_longer_than_80_chars
-      gLogger.i('NoRushReminder not found in database | Done action cancelled');
+      AppLogger.i(
+        'NoRushReminder not found in database | Done action cancelled',
+      );
       return;
     }
     final NoRushReminderModel model = entity.toModel;
@@ -101,7 +103,7 @@ class NotificationActionHandler {
     await NotificationController.scheduleNotification(
       model.copyWith(id: id),
     );
-    gLogger.i('NoRushReminder ${model.id} postponed to ${model.dateTime}');
+    AppLogger.i('NoRushReminder ${model.id} postponed to ${model.dateTime}');
   }
 
   /// Opens box, retrieves the entitiy object and converts it to model.
@@ -112,7 +114,7 @@ class NotificationActionHandler {
     final Box<ReminderEntity> box = store.box<ReminderEntity>();
     final ReminderEntity? entity = box.get(reminder.id);
     if (entity == null) {
-      gLogger.i('Reminder not found in database | Done action cancelled');
+      AppLogger.i('Reminder not found in database | Done action cancelled');
       return;
     }
     final ReminderModel model = entity.toModel;
@@ -123,6 +125,6 @@ class NotificationActionHandler {
     await NotificationController.scheduleNotification(
       model.copyWith(id: id),
     );
-    gLogger.i('Reminder ${model.id} postponed to ${model.dateTime}');
+    AppLogger.i('Reminder ${model.id} postponed to ${model.dateTime}');
   }
 }

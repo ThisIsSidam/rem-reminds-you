@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
 import '../../../core/services/notification_service/notification_service.dart';
-import '../../../shared/utils/logger/global_logger.dart';
+import '../../../shared/utils/logger/app_logger.dart';
 
 class AppPermissionHandler {
   static const MethodChannel platform = MethodChannel('app_permission_channel');
@@ -20,7 +20,7 @@ class AppPermissionHandler {
           await platform.invokeMethod('checkAlarmPermission');
       return isGranted is bool && isGranted;
     } on PlatformException catch (e) {
-      gLogger.e('Failed to check Alarm permission', error: e);
+      AppLogger.e('Failed to check Alarm permission', error: e);
       return false;
     }
   }
@@ -29,7 +29,7 @@ class AppPermissionHandler {
     try {
       await platform.invokeMethod('openAlarmSettings');
     } on PlatformException catch (e) {
-      gLogger.e('Failed to open Alarm settings', error: e);
+      AppLogger.e('Failed to open Alarm settings', error: e);
     }
   }
 
@@ -39,7 +39,7 @@ class AppPermissionHandler {
           await platform.invokeMethod('isIgnoringBatteryOptimizations');
       return isIgnoring is bool && isIgnoring;
     } on PlatformException catch (e) {
-      gLogger.e('Failed to check battery settings', error: e);
+      AppLogger.e('Failed to check battery settings', error: e);
       return false;
     }
   }
@@ -48,7 +48,7 @@ class AppPermissionHandler {
     try {
       await platform.invokeMethod('requestIgnoreBatteryOptimization');
     } on PlatformException catch (e) {
-      gLogger.e('Failed to request battery settings', error: e);
+      AppLogger.e('Failed to request battery settings', error: e);
     }
   }
 }

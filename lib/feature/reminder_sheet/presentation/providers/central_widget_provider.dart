@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 
 part 'generated/central_widget_provider.g.dart';
 
@@ -19,7 +19,7 @@ class CentralWidgetNotifier extends _$CentralWidgetNotifier
 
   @override
   CentralElement build() {
-    gLogger.i('CentralWidgetNotifier initialized');
+    AppLogger.i('CentralWidgetNotifier initialized');
     return _default;
   }
 
@@ -41,7 +41,7 @@ class CentralWidgetNotifier extends _$CentralWidgetNotifier
 
   @override
   void dispose() {
-    gLogger.i('BottomElementNotifier disposed');
+    AppLogger.i('BottomElementNotifier disposed');
     super.dispose();
   }
 }

@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../core/enums/files_n_folders.dart';
-import 'global_logger.dart';
+import 'app_logger.dart';
 
 class LogsManager {
   Future<String> get directoryPath async {
@@ -47,7 +47,7 @@ class LogsManager {
     final Directory logsDirectory = Directory(await directoryPath);
 
     if (!logsDirectory.existsSync()) {
-      gLogger.i('Attempted to delete logs | Folder does not exist');
+      AppLogger.i('Attempted to delete logs | Folder does not exist');
       return;
     }
 
@@ -55,7 +55,7 @@ class LogsManager {
       try {
         await entity.delete(recursive: true);
       } catch (e) {
-        gLogger.e('Error deleting log files');
+        AppLogger.e('Error deleting log files');
       }
     }
   }

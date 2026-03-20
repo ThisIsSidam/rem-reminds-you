@@ -8,7 +8,7 @@ import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../router/app_routes.dart';
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../providers/no_rush_provider.dart';
@@ -52,7 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void initState() {
     super.initState();
-    gLogger.i('HomeScreen initState');
+    AppLogger.i('HomeScreen initState');
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -91,7 +91,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   void dispose() {
-    gLogger.i('HomeScreen dispose');
+    AppLogger.i('HomeScreen dispose');
 
     if (mounted) {
       super.dispose();
@@ -154,7 +154,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  gLogger.i('Show new reminder sheet');
+                  AppLogger.i('Show new reminder sheet');
                   _showReminderSheet();
                 },
                 style: ElevatedButton.styleFrom(

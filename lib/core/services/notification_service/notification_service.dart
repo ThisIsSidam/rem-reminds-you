@@ -14,8 +14,7 @@ import '../../../feature/reminder_sheet/presentation/sheet_helper.dart';
 import '../../../main.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/id_handler.dart';
-import '../../../shared/utils/logger/global_logger.dart';
-import '../../../shared/utils/logger/logs_manager.dart';
+import '../../../shared/utils/logger/app_logger.dart';
 import '../../constants/const_strings.dart';
 import '../../data/models/reminder/reminder.dart';
 import '../../data/models/reminder_base/reminder_base.dart';
@@ -34,7 +33,7 @@ class NotificationController {
       ),
     ]);
 
-    gLogger.i('Initialized Notifications');
+    AppLogger.i('Initialized Notifications');
   }
 
   static Future<bool> checkNotificationPermissions() async {
@@ -52,7 +51,7 @@ class NotificationController {
 
     final DateTime scheduledTime = reminder.dateTime;
 
-    gLogger.i('Notification Scheduled | ID: $id | DT : $scheduledTime');
+    AppLogger.i('Notification Scheduled | ID: $id | DT : $scheduledTime');
     final Map<String, String?> params = reminder.toJson();
 
     await AndroidAlarmManager.oneShotAt(
@@ -74,8 +73,8 @@ class NotificationController {
     int id,
     Map<String, dynamic> params,
   ) async {
-    initLogger(directory: await LogsManager().directoryPath);
-    gLogger.i('Notification Callback Running | callBackId: $id');
+    await AppLogger.init();
+    AppLogger.i('Notification Callback Running | callBackId: $id');
 
     final Map<String, String> strParams = params.cast<String, String>();
     final ReminderBase reminder = ReminderBase.fromJson(strParams);
@@ -84,7 +83,7 @@ class NotificationController {
     final int notificationId = IdHandler().getNotificationId(reminder.id);
     final Map<String, String?> payload = reminder.toJson();
 
-    gLogger.i('Showing notification | notificationID: $notificationId');
+    AppLogger.i('Showing notification | notificationID: $notificationId');
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
@@ -114,7 +113,7 @@ class NotificationController {
     );
     reminder.dateTime = nextScheduledTime;
     await scheduleNotification(reminder);
-    gLogger.i(
+    AppLogger.i(
       'Scheduled Next Notif | ID : ${reminder.id} | DT : ${reminder.dateTime}',
     );
   }
@@ -122,18 +121,18 @@ class NotificationController {
   /// Used to remove notifications present in user's notification space.
   static Future<void> removeNotifications(String? groupKey) async {
     if (groupKey == null) {
-      gLogger.w('Received null groupKey in removeNotifications');
+      AppLogger.w('Received null groupKey in removeNotifications');
       return;
     }
 
     await AwesomeNotifications().cancelNotificationsByGroupKey(groupKey);
-    gLogger.i('Cleared present notifications | gKey : $groupKey');
+    AppLogger.i('Cleared present notifications | gKey : $groupKey');
   }
 
   /// Cancels the scheduled notification.
   static Future<void> cancelScheduledNotification(String? groupKey) async {
     if (groupKey == null) {
-      gLogger.w('Received null groupKey in cancelScheduleNotification');
+      AppLogger.w('Received null groupKey in cancelScheduleNotification');
       return;
     }
 
@@ -141,7 +140,7 @@ class NotificationController {
     // It has no hands in scheduling notifications.
     await AndroidAlarmManager.cancel(int.tryParse(groupKey) ?? -1);
     await removeNotifications(groupKey);
-    gLogger.i('Cancelled scheduled notifications | gKey : $groupKey');
+    AppLogger.i('Cancelled scheduled notifications | gKey : $groupKey');
   }
 
   static Future<void> startListeningNotificationEvents() async {
@@ -149,15 +148,15 @@ class NotificationController {
       onActionReceivedMethod: onActionReceivedMethod,
     );
 
-    gLogger.i('Started Listening to notification events');
+    AppLogger.i('Started Listening to notification events');
   }
 
   @pragma('vm:entry-point')
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
-    initLogger(directory: await LogsManager().directoryPath);
-    gLogger.i(
+    await AppLogger.init();
+    AppLogger.i(
       'Received notification action | Action : ${receivedAction.actionType}',
     );
     if (receivedAction.payload == null) return;
@@ -182,15 +181,15 @@ class NotificationController {
   }
 
   static Future<void> handleInitialCallback(WidgetRef ref) async {
-    final ReceivedAction? initialAction = await AwesomeNotifications()
-        .getInitialNotificationAction();
+    final ReceivedAction? initialAction =
+        await AwesomeNotifications().getInitialNotificationAction();
 
     if (initialAction == null) return;
     if (initialAction.actionType != ActionType.Default) return;
 
     final Map<String, String?>? payload = initialAction.payload;
     if (payload == null) {
-      gLogger.e(
+      AppLogger.e(
         'Received null payload through notification action | gKey : ${initialAction.groupKey}',
       );
       throw 'Received null payload through notification action | gKey : ${initialAction.groupKey}';
@@ -200,7 +199,7 @@ class NotificationController {
     final ReminderModel reminder = ReminderModel.fromJson(payload);
 
     if (context.mounted) {
-      gLogger.i(
+      AppLogger.i(
         'Notification action : Showing bottom sheet | rId : ${reminder.id} | gKey : ${initialAction.groupKey}',
       );
       SheetHelper().openReminderSheet(context, reminder: reminder);

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/constants/app_images.dart';
-import '../../../../shared/utils/logger/global_logger.dart';
+import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../app_startup/presentation/providers/app_startup_provider.dart';
 import '../../domain/app_permi_handler.dart';
 import '../providers/permission_status_provider.dart';
@@ -54,7 +54,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      gLogger.i('LifecycleState resumed | Rebuilding permissions screen');
+      AppLogger.i('LifecycleState resumed | Rebuilding permissions screen');
 
       // If not already on the current page as in state in _currentPage,
       // jump to it.
@@ -87,7 +87,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
 
   @override
   Widget build(BuildContext context) {
-    gLogger.i('Build permissions screen');
+    AppLogger.i('Build permissions screen');
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: Center(
