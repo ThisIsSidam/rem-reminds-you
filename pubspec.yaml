@@ -57,3 +57,13 @@ flutter:
   uses-material-design: true
   assets: 
     - assets/images/svgs/
+  fonts:
+    - family: JosefinSans
+      fonts:
+        - asset: assets/fonts/JosefinSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/JosefinSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/JosefinSans-Italic.ttf
+          style: italic
+          weight: 400
