@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../core/constants/const_strings.dart';
+import '../../../../app/constants/const_strings.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../providers/central_widget_provider.dart';

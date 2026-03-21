@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../app/enums/swipe_actions.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
-import '../../../../core/enums/swipe_actions.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';

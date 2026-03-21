@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
-import 'core/theme/color_schemes.dart';
-import 'core/theme/theme.dart';
+import 'app/theme/color_schemes.dart';
+import 'app/theme/theme.dart';
 import 'feature/app_startup/presentation/providers/app_startup_provider.dart';
 import 'feature/app_startup/presentation/providers/initial_screen_provider.dart';
 import 'feature/app_startup/presentation/screens/splash_screen.dart';

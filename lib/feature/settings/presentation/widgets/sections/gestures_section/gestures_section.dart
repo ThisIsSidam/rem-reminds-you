@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../../core/enums/swipe_actions.dart';
+import '../../../../../../app/enums/swipe_actions.dart';
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
 import '../user_preferences_section/swipe_to_left_action_sheet.dart';

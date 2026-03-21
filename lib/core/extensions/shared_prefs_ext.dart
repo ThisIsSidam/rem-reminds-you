@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../enums/swipe_actions.dart';
+import '../../app/enums/swipe_actions.dart';
 
 extension SharedPrefsX on SharedPreferences {
   Duration? getDuration(String key) {

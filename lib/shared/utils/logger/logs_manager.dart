@@ -5,7 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import '../../../core/enums/files_n_folders.dart';
+import '../../../app/enums/files_n_folders.dart';
 import 'app_logger.dart';
 
 class LogsManager {
