@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/extensions/context_ext.dart';
 import '../providers/app_startup_provider.dart';
 
 class SplashErrorWidget extends ConsumerWidget {
@@ -11,14 +12,12 @@ class SplashErrorWidget extends ConsumerWidget {
     return Center(
       child: Column(
         children: <Widget>[
-          const Text(
-            'Something went wrong!',
-          ),
+          Text(context.local.somethingWentWrong),
           ElevatedButton(
             onPressed: () {
               ref.invalidate(appStartupProvider);
             },
-            child: const Text('Retry'),
+            child: Text(context.local.retry),
           ),
         ],
       ),

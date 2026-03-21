@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
+import '../../../../core/extensions/context_ext.dart';
 import '../../domain/model/dragged_reminder.dart';
 import '../providers/reminder_dragging_provider.dart';
 import '../screens/home_screen.dart';
@@ -24,13 +25,13 @@ class ReminderDragZone extends ConsumerWidget {
   /// Handle when a reminder has been dropped to this drop zone.
   final void Function(ReminderBase reminder) onDroppedAccepted;
 
-  String getDragZoneText() {
+  String getDragZoneText(BuildContext context) {
     return switch (homescreenSection) {
-      HomeScreenSection.overdue => 'Something Went Wrong!',
-      HomeScreenSection.today => 'Set for Today',
-      HomeScreenSection.tomorrow => 'Set for Tomorrow',
-      HomeScreenSection.later => 'Schedule for Later',
-      HomeScreenSection.noRush => 'Save to No rush',
+      HomeScreenSection.overdue => context.local.dragZoneOverdue,
+      HomeScreenSection.today => context.local.dragZoneToday,
+      HomeScreenSection.tomorrow => context.local.dragZoneTomorrow,
+      HomeScreenSection.later => context.local.dragZoneLater,
+      HomeScreenSection.noRush => context.local.dragZoneNoRush,
     };
   }
 
@@ -73,7 +74,7 @@ class ReminderDragZone extends ConsumerWidget {
             : sectionColor.withAlpha(50),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(getDragZoneText()),
+      child: Text(getDragZoneText(context)),
     );
   }
 }

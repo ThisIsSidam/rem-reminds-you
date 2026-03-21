@@ -16,17 +16,23 @@ import '../providers/reminders_provider.dart';
 import '../widgets/home_screen_lists.dart';
 
 enum HomeScreenSection {
-  overdue('Overdue'),
-  today('Today'),
-  tomorrow('Tomorrow'),
-  later('Later'),
-  noRush('No Rush');
-
-  const HomeScreenSection(this.title);
-
-  final String title;
+  overdue,
+  today,
+  tomorrow,
+  later,
+  noRush;
 
   bool get isOverdue => this == overdue;
+
+  String localizedTitle(BuildContext context) {
+    return switch (this) {
+      HomeScreenSection.overdue => context.local.homeSectionOverdue,
+      HomeScreenSection.today => context.local.homeSectionToday,
+      HomeScreenSection.tomorrow => context.local.homeSectionTomorrow,
+      HomeScreenSection.later => context.local.homeSectionLater,
+      HomeScreenSection.noRush => context.local.homeSectionNoRush,
+    };
+  }
 
   Color getColor(BuildContext context) {
     final ColorScheme colors = context.colors;
@@ -121,7 +127,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return SliverAppBar(
       backgroundColor: Colors.transparent,
       title: Text(
-        'Reminders',
+        context.local.homeTitle,
         style: Theme.of(context).textTheme.titleLarge,
       ),
       actions: <Widget>[
@@ -144,7 +150,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "You don't have any reminders!",
+              context.local.emptyReminders,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(
@@ -166,7 +172,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    'Set a reminder',
+                    context.local.setReminder,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),

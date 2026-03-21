@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/sections/backup_restore_section/backup_restore_section.dart';
@@ -31,7 +32,7 @@ class SettingsScreen extends HookConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'Settings',
+          context.local.settingsTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: <Widget>[
@@ -81,7 +82,7 @@ class SettingsScreen extends HookConsumerWidget {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(
-                'Reset settings to default?',
+                context.local.settingsResetDialogTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               content: Row(
@@ -92,7 +93,7 @@ class SettingsScreen extends HookConsumerWidget {
                       AppLogger.i('Reset cancelled');
                       Navigator.pop(context);
                     },
-                    child: const Text('No'),
+                    child: Text(context.local.settingsNo),
                   ),
                   TextButton(
                     onPressed: () {
@@ -100,7 +101,7 @@ class SettingsScreen extends HookConsumerWidget {
                       notifier.resetSettings();
                       Navigator.pop(context);
                     },
-                    child: const Text('Yes'),
+                    child: Text(context.local.settingsYes),
                   ),
                 ],
               ),

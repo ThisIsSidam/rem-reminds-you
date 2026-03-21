@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/extensions/context_ext.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
@@ -143,12 +144,12 @@ class _RecurringReminderDeletionDialog extends ConsumerWidget {
       surfaceTintColor: Colors.transparent,
       backgroundColor: Theme.of(context).cardColor,
       title: Text(
-        'Recurring Reminder',
+        context.local.sheetRecurringDialogTitle,
         style: Theme.of(context).textTheme.titleMedium,
       ),
       content: Text(
         // ignore: lines_longer_than_80_chars
-        'This is a recurring reminder. Do you really want to delete it? You can also archive it.',
+        context.local.sheetRecurringDialogContent,
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       actions: <Widget>[
@@ -157,7 +158,7 @@ class _RecurringReminderDeletionDialog extends ConsumerWidget {
             Navigator.of(context).pop(); // Close the dialog
           },
           child: Text(
-            'Cancel',
+            context.local.sheetCancel,
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
@@ -167,7 +168,7 @@ class _RecurringReminderDeletionDialog extends ConsumerWidget {
             Navigator.of(context).pop(); // Close the dialog
           },
           child: Text(
-            'Delete',
+            context.local.sheetDelete,
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),

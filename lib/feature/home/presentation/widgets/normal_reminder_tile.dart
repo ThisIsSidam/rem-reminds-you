@@ -7,6 +7,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../../../../core/enums/swipe_actions.dart';
+import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/extensions/datetime_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../../domain/model/dragged_reminder.dart';
@@ -241,7 +242,7 @@ class RecurringReminderListTile extends ConsumerWidget {
         ),
       ),
       child: Text(
-        isPaused ? 'Resume' : 'Pause',
+        isPaused ? context.local.actionResume : context.local.actionPause,
         style: Theme.of(context).textTheme.labelMedium,
       ),
     );

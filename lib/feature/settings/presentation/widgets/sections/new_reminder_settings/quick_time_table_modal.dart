@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../core/extensions/datetime_ext.dart';
 import '../../../../../../core/extensions/duration_ext.dart';
 import '../../../../../../shared/widgets/dhm_single_duration_picker.dart';
@@ -94,7 +95,7 @@ class _QuickTimeTableModalState extends ConsumerState<QuickTimeTableModal> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            'Quick Time Table',
+            context.local.settingsQuickTimeTableTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const Divider(),

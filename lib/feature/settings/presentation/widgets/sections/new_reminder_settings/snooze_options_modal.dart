@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../core/extensions/duration_ext.dart';
 import '../../../../../../shared/widgets/hm_duration_picker.dart';
 import '../../../../../../shared/widgets/save_close_buttons.dart';
@@ -60,7 +61,7 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            'Snooze Options',
+            context.local.settingsSnoozeOptionsTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const Divider(),

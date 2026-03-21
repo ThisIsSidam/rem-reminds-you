@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/constants/app_images.dart';
+import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../app_startup/presentation/providers/app_startup_provider.dart';
 import '../../domain/app_permi_handler.dart';
@@ -208,11 +209,11 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
             TextSpan(
               children: <InlineSpan>[
                 TextSpan(
-                  text: 'Notification Permission',
+                  text: context.local.permissionNotificationTitle,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 TextSpan(
-                  text: ' (Required)',
+                  text: context.local.permissionRequired,
                   style: Theme.of(
                     context,
                   ).textTheme.bodySmall!.copyWith(fontStyle: FontStyle.italic),
@@ -221,8 +222,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
             ),
           ),
           Text(
-            "We'd love to remind you about your tasks, "
-            "but we can't do that without notifications.",
+            context.local.permissionNotificationDescription,
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
@@ -246,11 +246,11 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
               TextSpan(
                 children: <InlineSpan>[
                   TextSpan(
-                    text: 'Alarm Permission',
+                    text: context.local.permissionAlarmTitle,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   TextSpan(
-                    text: ' (Required)',
+                    text: context.local.permissionRequired,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           fontStyle: FontStyle.italic,
                         ),
@@ -259,8 +259,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
               ),
             ),
             Text(
-              'To make sure reminders ring on time, '
-              "we need access to your device's alarm system.",
+              context.local.permissionAlarmDescription,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -288,11 +287,11 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
               TextSpan(
                 children: <InlineSpan>[
                   TextSpan(
-                    text: 'Battery Permission',
+                    text: context.local.permissionBatteryTitle,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   TextSpan(
-                    text: ' (Recommended)',
+                    text: context.local.permissionRecommended,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           fontStyle: FontStyle.italic,
                         ),
@@ -301,8 +300,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
               ),
             ),
             Text(
-              'Your device may restrict notifications to save battery. '
-              'Allow unrestricted battery use to receive reminders on time.',
+              context.local.permissionBatteryDescription,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),

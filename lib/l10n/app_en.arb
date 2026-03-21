@@ -1,0 +1,381 @@
+{
+  "retry": "retry",
+  "@retry": {
+    "description": "Text for 'retry' buttons"
+  },
+  "somethingWentWrong": "Something went wrong!",
+  "homeTitle": "Reminders",
+  "@homeTitle": {
+    "description": "Title of homescreen"
+  },
+  "homeSectionOverdue": "Overdue",
+  "@homeSectionOverdue": {
+    "description": "Section title for overdue reminders"
+  },
+  "homeSectionToday": "Today",
+  "@homeSectionToday": {
+    "description": "Section title for today reminders"
+  },
+  "homeSectionTomorrow": "Tomorrow",
+  "@homeSectionTomorrow": {
+    "description": "Section title for tomorrow reminders"
+  },
+  "homeSectionLater": "Later",
+  "@homeSectionLater": {
+    "description": "Section title for later reminders"
+  },
+  "homeSectionNoRush": "No Rush",
+  "@homeSectionNoRush": {
+    "description": "Section title for no-rush reminders"
+  },
+  "emptyReminders": "You don't have any reminders!",
+  "@emptyReminders": {
+    "description": "Message shown when no reminders exist"
+  },
+  "setReminder": "Set a reminder",
+  "@setReminder": {
+    "description": "Button text for creating a new reminder"
+  },
+  "actionResume": "Resume",
+  "@actionResume": {
+    "description": "Button text for resuming a recurring reminder"
+  },
+  "actionPause": "Pause",
+  "@actionPause": {
+    "description": "Button text for pausing a recurring reminder"
+  },
+  "actionTapToUndo": "Tap to undo",
+  "@actionTapToUndo": {
+    "description": "Text describing undo action in snackbars"
+  },
+  "actionDeleted": "deleted",
+  "@actionDeleted": {
+    "description": "Verb used for deleted reminder snackbar message"
+  },
+  "actionPostponed": "postponed.",
+  "@actionPostponed": {
+    "description": "Verb used for postponed reminder snackbar message"
+  },
+  "actionMovedNextOccurrence": "moved to next occurrence.",
+  "@actionMovedNextOccurrence": {
+    "description": "Text used for moved-to-next-occurrence snackbar message"
+  },
+  "dragZoneOverdue": "Something Went Wrong!",
+  "@dragZoneOverdue": {
+    "description": "Drag zone text for overdue section"
+  },
+  "dragZoneToday": "Set for Today",
+  "@dragZoneToday": {
+    "description": "Drag zone text for today section"
+  },
+  "dragZoneTomorrow": "Set for Tomorrow",
+  "@dragZoneTomorrow": {
+    "description": "Drag zone text for tomorrow section"
+  },
+  "dragZoneLater": "Schedule for Later",
+  "@dragZoneLater": {
+    "description": "Drag zone text for later section"
+  },
+  "dragZoneNoRush": "Save to No rush",
+  "@dragZoneNoRush": {
+    "description": "Drag zone text for no rush section"
+  },
+  "permissionNotificationTitle": "Notification Permission",
+  "@permissionNotificationTitle": {
+    "description": "Title for notification permission section"
+  },
+  "permissionRequired": " (Required)",
+  "@permissionRequired": {
+    "description": "Text indicating permission is required"
+  },
+  "permissionNotificationDescription": "We'd love to remind you about your tasks, but we can't do that without notifications.",
+  "@permissionNotificationDescription": {
+    "description": "Description for notification permission"
+  },
+  "permissionAlarmTitle": "Alarm Permission",
+  "@permissionAlarmTitle": {
+    "description": "Title for alarm permission section"
+  },
+  "permissionAlarmDescription": "To make sure reminders ring on time, we need access to your device's alarm system.",
+  "@permissionAlarmDescription": {
+    "description": "Description for alarm permission"
+  },
+  "permissionBatteryTitle": "Battery Permission",
+  "@permissionBatteryTitle": {
+    "description": "Title for battery permission section"
+  },
+  "permissionRecommended": " (Recommended)",
+  "@permissionRecommended": {
+    "description": "Text indicating permission is recommended"
+  },
+  "permissionBatteryDescription": "Your device may restrict notifications to save battery. Allow unrestricted battery use to receive reminders on time.",
+  "@permissionBatteryDescription": {
+    "description": "Description for battery permission"
+  },
+  "permissionAllow": "Allow Permission",
+  "@permissionAllow": {
+    "description": "Button text to allow permission"
+  },
+  "permissionSetUnrestricted": "Set as Unrestricted",
+  "@permissionSetUnrestricted": {
+    "description": "Button text to set battery as unrestricted"
+  },
+  "permissionContinue": "Continue",
+  "@permissionContinue": {
+    "description": "Button text to continue"
+  },
+  "permissionContinueToApp": "Continue to app",
+  "@permissionContinueToApp": {
+    "description": "Button text to continue to the app"
+  },
+  "sheetTitle": "Title",
+  "@sheetTitle": {
+    "description": "Label for title input field in reminder sheet"
+  },
+  "sheetEnterTitleError": "Enter a title!",
+  "@sheetEnterTitleError": {
+    "description": "Error message when title is empty"
+  },
+  "sheetPastTimeError": "Can't remind you in the past!",
+  "@sheetPastTimeError": {
+    "description": "Error message when reminder time is in the past"
+  },
+  "sheetSave": "Save",
+  "@sheetSave": {
+    "description": "Button text to save the reminder"
+  },
+  "sheetForAll": "For All",
+  "@sheetForAll": {
+    "description": "Button text to apply changes to all recurring instances"
+  },
+  "sheetPostpone": "Postpone",
+  "@sheetPostpone": {
+    "description": "Button text to postpone the reminder"
+  },
+  "sheetRecurringDialogTitle": "Recurring Reminder",
+  "@sheetRecurringDialogTitle": {
+    "description": "Title of dialog for deleting recurring reminders"
+  },
+  "sheetRecurringDialogContent": "This is a recurring reminder. Do you really want to delete it? You can also archive it.",
+  "@sheetRecurringDialogContent": {
+    "description": "Content of dialog for deleting recurring reminders"
+  },
+  "sheetCancel": "Cancel",
+  "@sheetCancel": {
+    "description": "Button text to cancel action"
+  },
+  "sheetDelete": "Delete",
+  "@sheetDelete": {
+    "description": "Button text to delete reminder"
+  },
+  "sheetAgo": "{duration} ago",
+  "@sheetAgo": {
+    "description": "Text indicating time in the past",
+    "placeholders": {
+        "duration": {
+            "type": "String",
+            "example": "4 Hrs"
+        }
+    }
+  },
+  "sheetIn": "in {duration}",
+  "@sheetIn": {
+    "description": "Text indicating time in the future",
+    "placeholders": {
+        "duration": {
+            "type": "String",
+            "example": "4 Hrs"
+        }
+    }
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title of settings screen"
+  },
+  "settingsResetDialogTitle": "Reset settings to default?",
+  "@settingsResetDialogTitle": {
+    "description": "Title of dialog for resetting settings"
+  },
+  "settingsNo": "No",
+  "@settingsNo": {
+    "description": "Negative response button text"
+  },
+  "settingsYes": "Yes",
+  "@settingsYes": {
+    "description": "Positive response button text"
+  },
+  "settingsTheme": "Theme",
+  "@settingsTheme": {
+    "description": "Label for theme setting"
+  },
+  "settingsTextScale": "Text Scale",
+  "@settingsTextScale": {
+    "description": "Label for text scale setting"
+  },
+  "settingsPostponeDuration": "Postpone Duration",
+  "@settingsPostponeDuration": {
+    "description": "Label for postpone duration setting"
+  },
+  "settings15Min": "15 min",
+  "@settings15Min": {
+    "description": "Duration option for 15 minutes"
+  },
+  "settings30Min": "30 min",
+  "@settings30Min": {
+    "description": "Duration option for 30 minutes"
+  },
+  "settings45Min": "45 min",
+  "@settings45Min": {
+    "description": "Duration option for 45 minutes"
+  },
+  "settings1Hour": "1 hour",
+  "@settings1Hour": {
+    "description": "Duration option for 1 hour"
+  },
+  "settings2Hours": "2 hours",
+  "@settings2Hours": {
+    "description": "Duration option for 2 hours"
+  },
+  "settingsNoRushHours": "No rush hours",
+  "@settingsNoRushHours": {
+    "description": "Label for no rush hours setting"
+  },
+  "settingsNoRushDescription": "No rush reminders are shown only within this time range, so that you only get notified when you want to.",
+  "@settingsNoRushDescription": {
+    "description": "Description for no rush hours setting"
+  },
+  "settingsSwipeToLeftActions": "Swipe to Left Actions",
+  "@settingsSwipeToLeftActions": {
+    "description": "Title for swipe to left actions setting"
+  },
+  "settingsSwipeLeft": "Swipe Left",
+  "@settingsSwipeLeft": {
+    "description": "Label for swipe left demonstration"
+  },
+  "settingsSwipeToRightActions": "Swipe to Right Actions",
+  "@settingsSwipeToRightActions": {
+    "description": "Title for swipe to right actions setting"
+  },
+  "settingsSwipeRight": "Swipe Right",
+  "@settingsSwipeRight": {
+    "description": "Label for swipe right demonstration"
+  },
+  "settingsGestures": "Gestures",
+  "@settingsGestures": {
+    "description": "Section title for gestures settings"
+  },
+  "settingsNewReminder": "New Reminder",
+  "@settingsNewReminder": {
+    "description": "Section title for new reminder settings"
+  },
+  "settingsDefaultLeadDuration": "Default lead duration",
+  "@settingsDefaultLeadDuration": {
+    "description": "Label for default lead duration setting"
+  },
+  "settingsEvery": "Every {duration}",
+  "@settingsEvery": {
+    "description": "Prefix for recurring duration display",
+    "placeholders": {
+        "duration": {
+            "type": "String",
+            "example": "4 Hrs"
+        }
+    }
+  },
+  "settingsDefaultAutoSnoozeDuration": "Default auto snooze duration",
+  "@settingsDefaultAutoSnoozeDuration": {
+    "description": "Label for default auto snooze duration setting"
+  },
+  "settingsQuickTimeTable": "Quick time table",
+  "@settingsQuickTimeTable": {
+    "description": "Label for quick time table setting"
+  },
+  "settingsSnoozeOptions": "Snooze options",
+  "@settingsSnoozeOptions": {
+    "description": "Label for snooze options setting"
+  },
+  "settingsDefaultLeadDurationTitle": "Default Lead Duration",
+  "@settingsDefaultLeadDurationTitle": {
+    "description": "Title for default lead duration modal"
+  },
+  "settingsDefaultAutoSnoozeDurationTitle": "Default Auto Snooze Duration",
+  "@settingsDefaultAutoSnoozeDurationTitle": {
+    "description": "Title for default auto snooze duration modal"
+  },
+  "settingsQuickTimeTableTitle": "Quick Time Table",
+  "@settingsQuickTimeTableTitle": {
+    "description": "Title for quick time table modal"
+  },
+  "settingsSnoozeOptionsTitle": "Snooze Options",
+  "@settingsSnoozeOptionsTitle": {
+    "description": "Title for snooze options modal"
+  },
+  "settingsBackupRestore": "Backup & Restore (Experimental)",
+  "@settingsBackupRestore": {
+    "description": "Section title for backup and restore settings"
+  },
+  "settingsBackup": "Backup",
+  "@settingsBackup": {
+    "description": "Label for backup action"
+  },
+  "settingsNoDirectorySelected": "No directory selected",
+  "@settingsNoDirectorySelected": {
+    "description": "Message when no directory is selected for backup"
+  },
+  "settingsBackupCreated": "Backup created successfully",
+  "@settingsBackupCreated": {
+    "description": "Success message for backup creation"
+  },
+  "settingsBackupFailed": "Backup failed!",
+  "@settingsBackupFailed": {
+    "description": "Error message for backup failure"
+  },
+  "settingsRestore": "Restore",
+  "@settingsRestore": {
+    "description": "Label for restore action"
+  },
+  "settingsNoFileSelected": "No file selected",
+  "@settingsNoFileSelected": {
+    "description": "Message when no file is selected for restore"
+  },
+  "settingsBackupRestored": "Backup restored successfully",
+  "@settingsBackupRestored": {
+    "description": "Success message for backup restore"
+  },
+  "settingsRestoreFailed": "Backup restore failed!",
+  "@settingsRestoreFailed": {
+    "description": "Error message for backup restore failure"
+  },
+  "settingsLogs": "Logs",
+  "@settingsLogs": {
+    "description": "Section title for logs settings"
+  },
+  "settingsGetLogFile": "Get log file",
+  "@settingsGetLogFile": {
+    "description": "Label for getting log file action"
+  },
+  "settingsLogsSaved": "Logs saved successfully",
+  "@settingsLogsSaved": {
+    "description": "Success message for logs export"
+  },
+  "settingsExportLogsFailed": "Couldn't export logs!",
+  "@settingsExportLogsFailed": {
+    "description": "Error message for logs export failure"
+  },
+  "settingsClearAllLogs": "Clear all logs",
+  "@settingsClearAllLogs": {
+    "description": "Label for clearing all logs action"
+  },
+  "settingsLogsDeleted": "Successfully deleted all logs",
+  "@settingsLogsDeleted": {
+    "description": "Success message for logs deletion"
+  },
+  "settingsOther": "Other",
+  "@settingsOther": {
+    "description": "Section title for other settings"
+  },
+  "settingsWhatsNew": "What's New?",
+  "@settingsWhatsNew": {
+    "description": "Label for what's new dialog"
+  }
+}

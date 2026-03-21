@@ -47,9 +47,9 @@ class _PermissionBottomActionsState
   }
 
   String get _permissionButtonLabel => switch (widget.currentPage) {
-        PermissionPage.notification => 'Allow Permission',
-        PermissionPage.alarm => 'Allow Permission',
-        PermissionPage.battery => 'Set as Unrestricted',
+        PermissionPage.notification => context.local.permissionAllow,
+        PermissionPage.alarm => context.local.permissionAllow,
+        PermissionPage.battery => context.local.permissionSetUnrestricted,
       };
 
   /// Request the permission based on [widget.currentPage].
@@ -94,7 +94,9 @@ class _PermissionBottomActionsState
                 ).colorScheme.primaryContainer,
               ),
               child: Text(
-                hasPermission ? 'Continue' : _permissionButtonLabel,
+                hasPermission
+                    ? context.local.permissionContinue
+                    : _permissionButtonLabel,
                 style: context.texts.bodyMedium!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colors.onPrimaryContainer,
@@ -118,7 +120,7 @@ class _PermissionBottomActionsState
                 ).colorScheme.primaryContainer,
               ),
               child: Text(
-                'Something Went Wrong!',
+                context.local.somethingWentWrong,
                 style: context.texts.bodyMedium!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colors.onPrimaryContainer,
@@ -139,7 +141,7 @@ class _PermissionBottomActionsState
               return TextButton(
                 onPressed: widget.onContinue,
                 child: Text(
-                  'Continue to app',
+                  context.local.permissionContinueToApp,
                   style: context.texts.bodyMedium,
                 ),
               );

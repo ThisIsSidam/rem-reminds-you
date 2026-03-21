@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/constants/const_strings.dart';
 import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/extensions/context_ext.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 import 'title_parser/title_parser.dart';
@@ -96,7 +97,7 @@ class NormalTitleField extends HookConsumerWidget {
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   label: Text(
-                    'Title',
+                    context.local.sheetTitle,
                     style: theme.textTheme.titleSmall!.copyWith(
                       color: color,
                       fontStyle: FontStyle.normal,
@@ -171,7 +172,7 @@ class NoRushTitleField extends HookConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8, top: 4),
             child: Text(
-              'No Rush',
+              context.local.homeSectionNoRush,
               style: theme.textTheme.titleSmall!.copyWith(
                 color: color,
                 fontWeight: FontWeight.w900,
@@ -182,7 +183,7 @@ class NoRushTitleField extends HookConsumerWidget {
             textCapitalization: TextCapitalization.sentences,
             decoration: InputDecoration(
               label: Text(
-                'Title',
+                context.local.sheetTitle,
                 style: theme.textTheme.titleSmall!.copyWith(
                   color: color,
                 ),
@@ -259,7 +260,7 @@ class PauseButton extends ConsumerWidget {
           ),
         ),
         child: Text(
-          isPaused ? 'Resume' : 'Pause',
+          isPaused ? context.local.actionResume : context.local.actionPause,
           style: Theme.of(context).textTheme.labelMedium,
         ),
       ),

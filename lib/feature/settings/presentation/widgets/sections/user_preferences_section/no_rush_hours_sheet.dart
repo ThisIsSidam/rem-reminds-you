@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
 
 enum SelectedTime { start, end }
@@ -27,7 +28,7 @@ class NoRushHoursSheet extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  'No rush hours',
+                  context.local.settingsNoRushHours,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const Divider(),
@@ -38,7 +39,7 @@ class NoRushHoursSheet extends HookWidget {
                   ),
                   child: Text(
                     // ignore: lines_longer_than_80_chars
-                    'No rush reminders are shown only within this time range, so that you only get notified when you want to.',
+                    context.local.settingsNoRushDescription,
                     style: Theme.of(context).textTheme.labelSmall,
                     textAlign: TextAlign.center,
                   ),

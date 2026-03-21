@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/enums/swipe_actions.dart';
+import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../providers/no_rush_provider.dart';
@@ -83,8 +84,8 @@ class ActionPaneManager {
         .read(remindersNotifierProvider.notifier)
       ..deleteReminder(reminder.id);
     AppUtils.showToast(
-      msg: "'${reminder.title}' deleted",
-      description: 'Tap to undo',
+      msg: '${reminder.title} ${context.local.actionDeleted}',
+      description: context.local.actionTapToUndo,
       onTap: () {
         remindersProviderValue.saveReminder(reminder);
       },
@@ -110,8 +111,8 @@ class ActionPaneManager {
             );
 
             AppUtils.showToast(
-              msg: "'${reminder.title}' postponed.",
-              description: 'Tap to undo',
+              msg: '${reminder.title} ${context.local.actionPostponed}',
+              description: context.local.actionTapToUndo,
               onTap: () {
                 remindersProviderValue.saveReminder(reminder);
               },
@@ -136,8 +137,8 @@ class ActionPaneManager {
           return;
         } else {
           AppUtils.showToast(
-            msg: "'${reminder.title}' moved to next occurrence.",
-            description: 'Tap to undo',
+            msg: '${reminder.title} ${context.local.actionMovedNextOccurrence}',
+            description: context.local.actionTapToUndo,
             onTap: () {
               remindersProviderValue.moveToPreviousReminderOccurrence(
                 reminder.id,
@@ -200,8 +201,8 @@ class NoRushPaneManager {
         .read(noRushRemindersNotifierProvider.notifier)
       ..deleteReminder(reminder.id);
     AppUtils.showToast(
-      msg: "'${reminder.title}' deleted",
-      description: 'Tap to undo',
+      msg: '${reminder.title} ${context.local.actionDeleted}',
+      description: context.local.actionTapToUndo,
       onTap: () {
         noRushNotifier.saveReminder(reminder);
       },
@@ -220,8 +221,8 @@ class NoRushPaneManager {
           onPressed: (BuildContext context) {
             noRushNotifier.postponeReminder(reminder);
             AppUtils.showToast(
-              msg: "'${reminder.title}' postponed.",
-              description: 'Tap to undo',
+              msg: '${reminder.title} ${context.local.actionPostponed}',
+              description: context.local.actionTapToUndo,
               onTap: () {
                 noRushNotifier.saveReminder(reminder);
               },

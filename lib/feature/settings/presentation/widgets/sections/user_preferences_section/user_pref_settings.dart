@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../shared/utils/extensions/string_ext.dart';
 import '../../../providers/settings_provider.dart';
 import 'no_rush_hours_sheet.dart';
@@ -59,7 +60,10 @@ class UserPreferenceSection extends HookWidget {
                       ? Icons.dark_mode
                       : Icons.light_mode,
             ),
-            title: Text('Theme', style: Theme.of(context).textTheme.titleSmall),
+            title: Text(
+              context.local.settingsTheme,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             subtitle: Text(
               themeMode.name.capitalize(),
               style: Theme.of(context).textTheme.bodySmall,
@@ -73,7 +77,10 @@ class UserPreferenceSection extends HookWidget {
   Widget _buildTextScaleSetting(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.format_size),
-      title: Text('Text Scale', style: Theme.of(context).textTheme.titleSmall),
+      title: Text(
+        context.local.settingsTextScale,
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
       subtitle: Consumer(
         builder: (BuildContext context, WidgetRef ref, Widget? child) {
           final double textScale = ref.watch(
@@ -110,7 +117,7 @@ class UserPreferenceSection extends HookWidget {
     return ListTile(
       leading: const Icon(Icons.more_time),
       title: Text(
-        'Postpone Duration',
+        context.local.settingsPostponeDuration,
         style: Theme.of(context).textTheme.titleSmall,
       ),
       trailing: Consumer(
@@ -125,26 +132,26 @@ class UserPreferenceSection extends HookWidget {
             style: Theme.of(context).textTheme.bodyMedium,
             borderRadius: BorderRadius.circular(12),
             value: currentDuration,
-            items: const <DropdownMenuItem<Duration>>[
+            items: <DropdownMenuItem<Duration>>[
               DropdownMenuItem<Duration>(
-                value: Duration(minutes: 15),
-                child: Text('15 min'),
+                value: const Duration(minutes: 15),
+                child: Text(context.local.settings15Min),
               ),
               DropdownMenuItem<Duration>(
-                value: Duration(minutes: 30),
-                child: Text('30 min'),
+                value: const Duration(minutes: 30),
+                child: Text(context.local.settings30Min),
               ),
               DropdownMenuItem<Duration>(
-                value: Duration(minutes: 45),
-                child: Text('45 min'),
+                value: const Duration(minutes: 45),
+                child: Text(context.local.settings45Min),
               ),
               DropdownMenuItem<Duration>(
-                value: Duration(hours: 1),
-                child: Text('1 hour'),
+                value: const Duration(hours: 1),
+                child: Text(context.local.settings1Hour),
               ),
               DropdownMenuItem<Duration>(
-                value: Duration(hours: 2),
-                child: Text('2 hours'),
+                value: const Duration(hours: 2),
+                child: Text(context.local.settings2Hours),
               ),
             ],
             onChanged: (Duration? value) {
@@ -170,7 +177,7 @@ class UserPreferenceSection extends HookWidget {
       },
       leading: const Icon(Icons.nightlight),
       title: Text(
-        'No rush hours',
+        context.local.settingsNoRushHours,
         style: Theme.of(context).textTheme.titleSmall,
       ),
       subtitle: Consumer(

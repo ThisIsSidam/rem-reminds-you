@@ -154,7 +154,7 @@ class ReminderSectionTitle extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(4),
           child: Text(
-            section.title,
+            section.localizedTitle(context),
             style: context.texts.titleMedium!.copyWith(
               color: section.getColor(context),
               fontWeight: FontWeight.bold,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/extensions/datetime_ext.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
@@ -73,12 +74,13 @@ class CentralSection extends HookConsumerWidget {
                     Flexible(
                       child: Text(
                         dateTime.isBefore(DateTime.now())
-                            ? '${dateTime.prettyDuration} ago'
+                            ? context.local
+                                .sheetAgo(dateTime.prettyDuration)
                                 .replaceFirst('-', '')
-                            : 'in ${dateTime.prettyDuration}',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: textColor,
-                            ),
+                            : context.local.sheetIn(dateTime.prettyDuration),
+                        style: context.texts.bodyMedium!.copyWith(
+                          color: textColor,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

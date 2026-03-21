@@ -13,6 +13,7 @@ import 'feature/home/presentation/screens/home_screen.dart';
 import 'feature/permissions/domain/app_permi_handler.dart';
 import 'feature/permissions/presentation/screens/permissions_screen.dart';
 import 'feature/settings/presentation/providers/settings_provider.dart';
+import 'l10n/app_localizations.dart';
 import 'main.dart';
 import 'router/app_routes.dart';
 import 'router/route_builder.dart';
@@ -63,6 +64,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
         return ToastificationWrapper(
           child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             navigatorKey: navigatorKey,
             builder: (BuildContext context, Widget? child) {
               return MediaQuery(

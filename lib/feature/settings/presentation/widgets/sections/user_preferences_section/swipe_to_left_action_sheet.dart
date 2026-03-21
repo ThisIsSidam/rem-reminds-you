@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../core/enums/swipe_actions.dart';
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
 
 class SwipeToLeftActionSheet extends ConsumerWidget {
@@ -15,7 +16,7 @@ class SwipeToLeftActionSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            'Swipe to Left Actions',
+            context.local.settingsSwipeToLeftActions,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const Divider(),
@@ -30,7 +31,7 @@ class SwipeToLeftActionSheet extends ConsumerWidget {
                   ),
                 const SizedBox(width: 20),
                 Text(
-                  'Swipe Left',
+                  context.local.settingsSwipeLeft,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),

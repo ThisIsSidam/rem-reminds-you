@@ -6,6 +6,7 @@ import '../../../../core/constants/const_strings.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
+import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../home/presentation/providers/no_rush_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
@@ -52,7 +53,7 @@ class SaveButton extends ConsumerWidget {
     final ReminderBase reminder =
         ref.read(sheetReminderNotifier).constructReminder();
 
-    if (_hasProblem(reminder)) return;
+    if (_hasProblem(context, reminder)) return;
     if (reminder is NoRushReminderModel) {
       await ref
           .read(noRushRemindersNotifierProvider.notifier)
@@ -65,17 +66,17 @@ class SaveButton extends ConsumerWidget {
     Navigator.pop(context);
   }
 
-  bool _hasProblem(ReminderBase reminder) {
+  bool _hasProblem(BuildContext context, ReminderBase reminder) {
     if (reminder.title == '') {
       AppUtils.showToast(
-        msg: 'Enter a title!',
+        msg: context.local.sheetEnterTitleError,
         style: ToastificationStyle.simple,
       );
       return true;
     }
     if (reminder.dateTime.isBefore(DateTime.now())) {
       AppUtils.showToast(
-        msg: "Can't remind you in the past!",
+        msg: context.local.sheetPastTimeError,
         style: ToastificationStyle.simple,
       );
       return true;
@@ -105,7 +106,7 @@ class SaveButton extends ConsumerWidget {
               surfaceTintColor: Colors.transparent,
             ),
             child: Text(
-              'Save',
+              context.local.sheetSave,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
@@ -124,7 +125,7 @@ class SaveButton extends ConsumerWidget {
                 surfaceTintColor: Colors.transparent,
               ),
               child: Text(
-                'For All',
+                context.local.sheetForAll,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onErrorContainer,
                     ),
@@ -138,7 +139,7 @@ class SaveButton extends ConsumerWidget {
                 final NoRushReminderModel noRush = ref
                     .read(sheetReminderNotifier.notifier)
                     .constructNoRush(newDateTime: true);
-                if (_hasProblem(noRush)) return;
+                if (_hasProblem(context, noRush)) return;
                 await ref
                     .read(noRushRemindersNotifierProvider.notifier)
                     .saveReminder(noRush);
@@ -149,7 +150,7 @@ class SaveButton extends ConsumerWidget {
                 surfaceTintColor: Colors.transparent,
               ),
               child: Text(
-                'Postpone',
+                context.local.sheetPostpone,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onErrorContainer,

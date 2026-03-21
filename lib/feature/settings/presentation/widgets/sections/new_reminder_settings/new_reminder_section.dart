@@ -2,6 +2,7 @@ import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
 import 'default_auto_snooze_duration_modal.dart';
 import 'default_lead_duration_modal.dart';
@@ -19,7 +20,7 @@ class NewReminderSection extends ConsumerWidget {
         ListTile(
           leading: const Icon(Icons.near_me, color: Colors.transparent),
           title: Text(
-            'New Reminder',
+            context.local.settingsNewReminder,
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
@@ -49,7 +50,7 @@ class NewReminderSection extends ConsumerWidget {
         return ListTile(
           leading: const Icon(Icons.add),
           title: Text(
-            'Default lead duration',
+            context.local.settingsDefaultLeadDuration,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           minVerticalPadding: 20,
@@ -81,13 +82,13 @@ class NewReminderSection extends ConsumerWidget {
       builder: (BuildContext context, StateSetter setState) {
         final Duration dur =
             ref.watch(userSettingsProvider).defaultAutoSnoozeDuration;
-        final String durString =
-            'Every ${dur.pretty(tersity: DurationTersity.minute)}';
+        final String durString = '${context.local.settingsEvery} '
+            '${dur.pretty(tersity: DurationTersity.minute)}';
 
         return ListTile(
           leading: const Icon(Icons.snooze),
           title: Text(
-            'Default auto snooze duration',
+            context.local.settingsDefaultAutoSnoozeDuration,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           minVerticalPadding: 20,
@@ -115,7 +116,7 @@ class NewReminderSection extends ConsumerWidget {
     return ListTile(
       leading: const Icon(Icons.table_chart_outlined),
       title: Text(
-        'Quick time table',
+        context.local.settingsQuickTimeTable,
         style: Theme.of(context).textTheme.titleSmall,
       ),
       minVerticalPadding: 20,
@@ -135,7 +136,7 @@ class NewReminderSection extends ConsumerWidget {
     return ListTile(
       leading: const Icon(Icons.snooze_outlined),
       title: Text(
-        'Snooze options',
+        context.local.settingsSnoozeOptions,
         style: Theme.of(context).textTheme.titleSmall,
       ),
       minVerticalPadding: 20,

@@ -2,6 +2,7 @@ import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../shared/widgets/hm_duration_picker.dart';
 import '../../../providers/settings_provider.dart';
 
@@ -18,7 +19,7 @@ class DefaultAutoSnoozeDurationModal extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            'Default Auto Snooze Duration',
+            context.local.settingsDefaultAutoSnoozeDurationTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const Divider(),
@@ -48,7 +49,9 @@ class DefaultAutoSnoozeDurationModal extends ConsumerWidget {
         padding: const EdgeInsets.all(10),
         child: Center(
           child: Text(
-            'Every ${dur.pretty(tersity: DurationTersity.minute)}',
+            context.local.settingsEvery(
+              dur.pretty(tersity: DurationTersity.minute),
+            ),
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),

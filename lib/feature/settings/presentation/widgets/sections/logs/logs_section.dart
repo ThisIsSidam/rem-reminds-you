@@ -5,6 +5,7 @@ import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../shared/utils/logger/app_logger.dart';
 import '../../../../../../shared/utils/logger/logs_manager.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
@@ -20,7 +21,7 @@ class LogsSection extends ConsumerWidget {
         ListTile(
           leading: const Icon(Icons.backup, color: Colors.transparent),
           title: Text(
-            'Logs',
+            context.local.settingsLogs,
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
@@ -41,8 +42,10 @@ class LogsSection extends ConsumerWidget {
   Widget getLogsTile(BuildContext context, WidgetRef ref) {
     return ListTile(
       leading: const Icon(Icons.storage),
-      title:
-          Text('Get log file', style: Theme.of(context).textTheme.titleSmall),
+      title: Text(
+        context.local.settingsGetLogFile,
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
       onTap: () async {
         try {
           final Uint8List? logsData = await _getLogsData();
@@ -57,8 +60,9 @@ class LogsSection extends ConsumerWidget {
 
           // User cancelled operation
           if (saveLocation == null) {
+            if (!context.mounted) return;
             AppUtils.showToast(
-              msg: 'No directory selected',
+              msg: context.local.settingsNoDirectorySelected,
               type: ToastificationType.warning,
             );
             return;
@@ -78,7 +82,7 @@ class LogsSection extends ConsumerWidget {
 
           if (!context.mounted) return;
           AppUtils.showToast(
-            msg: 'Logs saved successfully',
+            msg: context.local.settingsLogsSaved,
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
@@ -88,7 +92,7 @@ class LogsSection extends ConsumerWidget {
             stackTrace: stackTrace,
           );
           if (!context.mounted) return;
-          AppUtils.showToast(msg: "Couldn't export logs!");
+          AppUtils.showToast(msg: context.local.settingsExportLogsFailed);
         }
       },
     );

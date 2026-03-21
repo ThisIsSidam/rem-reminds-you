@@ -8,6 +8,7 @@ import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../shared/utils/logger/app_logger.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../../../home/presentation/providers/no_rush_provider.dart';
@@ -24,7 +25,7 @@ class BackupRestoreSection extends ConsumerWidget {
         ListTile(
           leading: const Icon(Icons.backup, color: Colors.transparent),
           title: Text(
-            'Backup & Restore (Experimental)',
+            context.local.settingsBackupRestore,
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
@@ -45,7 +46,10 @@ class BackupRestoreSection extends ConsumerWidget {
   Widget getBackupTile(BuildContext context, WidgetRef ref) {
     return ListTile(
       leading: const Icon(Icons.backup_outlined),
-      title: Text('Backup', style: Theme.of(context).textTheme.titleSmall),
+      title: Text(
+        context.local.settingsBackup,
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
       onTap: () async {
         try {
           // Get backup data
@@ -61,8 +65,9 @@ class BackupRestoreSection extends ConsumerWidget {
 
           // User cancelled operation
           if (saveLocation == null) {
+            if (!context.mounted) return;
             AppUtils.showToast(
-              msg: 'No directory selected',
+              msg: context.local.settingsNoDirectorySelected,
               type: ToastificationType.warning,
             );
             return;
@@ -79,14 +84,15 @@ class BackupRestoreSection extends ConsumerWidget {
             fileName: fileName,
             replace: true,
           );
+          if (!context.mounted) return;
           AppUtils.showToast(
-            msg: 'Backup created successfully',
+            msg: context.local.settingsBackupCreated,
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
           AppLogger.e('Error during backup', error: e, stackTrace: stackTrace);
           AppUtils.showToast(
-            msg: 'Backup failed!',
+            msg: context.local.settingsBackupFailed,
             type: ToastificationType.error,
           );
         }
@@ -97,7 +103,10 @@ class BackupRestoreSection extends ConsumerWidget {
   Widget getRestoreTile(BuildContext context, WidgetRef ref) {
     return ListTile(
       leading: const Icon(Icons.settings_backup_restore),
-      title: Text('Restore', style: Theme.of(context).textTheme.titleSmall),
+      title: Text(
+        context.local.settingsRestore,
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
       onTap: () async {
         try {
           // Get file path of selected file
@@ -111,7 +120,7 @@ class BackupRestoreSection extends ConsumerWidget {
           if (filePath == null) {
             if (!context.mounted) return;
             AppUtils.showToast(
-              msg: 'No file selected',
+              msg: context.local.settingsNoFileSelected,
               type: ToastificationType.warning,
             );
             return;

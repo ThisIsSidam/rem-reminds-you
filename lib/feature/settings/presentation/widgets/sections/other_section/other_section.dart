@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 
 class OtherSection extends StatelessWidget {
@@ -16,7 +17,7 @@ class OtherSection extends StatelessWidget {
             color: Colors.transparent,
           ),
           title: Text(
-            'Other',
+            context.local.settingsOther,
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
@@ -38,7 +39,7 @@ class OtherSection extends StatelessWidget {
       leading: const Icon(Icons.new_releases_outlined),
       tileColor: Theme.of(context).cardColor,
       title: Text(
-        "What's New?",
+        context.local.settingsWhatsNew,
         style: Theme.of(context).textTheme.titleSmall,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../core/enums/swipe_actions.dart';
+import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
 import '../user_preferences_section/swipe_to_left_action_sheet.dart';
 import '../user_preferences_section/swipe_to_right_action_sheet.dart';
@@ -17,7 +18,7 @@ class GesturesSection extends ConsumerWidget {
         ListTile(
           leading: const Icon(Icons.near_me, color: Colors.transparent),
           title: Text(
-            'Gestures',
+            context.local.settingsGestures,
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
@@ -46,7 +47,7 @@ class GesturesSection extends ConsumerWidget {
         return ListTile(
           leading: const Icon(Icons.swipe_left),
           title: Text(
-            'Swipe to Left Actions',
+            context.local.settingsSwipeToLeftActions,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           minVerticalPadding: 20,
@@ -77,7 +78,7 @@ class GesturesSection extends ConsumerWidget {
         return ListTile(
           leading: const Icon(Icons.swipe_right),
           title: Text(
-            'Swipe to Right Actions',
+            context.local.settingsSwipeToRightActions,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           minVerticalPadding: 20,
