@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/recurring_interval/recurrence_rule.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
@@ -23,10 +23,10 @@ class TopButtons extends ConsumerWidget {
       Navigator.pop(context);
     }
 
-    final RecurringInterval recurringInterval =
-        ref.read(sheetReminderNotifier).recurringInterval;
+    final RecurrenceRule recurrenceRule =
+        ref.read(sheetReminderNotifier).recurrenceRule;
 
-    if (!recurringInterval.isNone && context.mounted) {
+    if (!recurrenceRule.isNone && context.mounted) {
       await showDialog<void>(
         context: context,
         builder: (BuildContext context) {

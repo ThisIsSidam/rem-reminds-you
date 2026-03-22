@@ -1,5 +1,6 @@
 import '../../entities/reminder_entitiy/reminder_entity.dart';
-import '../recurring_interval/recurring_interval.dart';
+import '../recurring_interval/recurrence_engine.dart';
+import '../recurring_interval/recurrence_rule.dart';
 import '../reminder_base/reminder_base.dart';
 
 /// One of the implementations of [ReminderBase].
@@ -12,7 +13,7 @@ class ReminderModel implements ReminderBase {
     required this.dateTime,
     required this.preParsedTitle,
     required this.autoSnoozeInterval,
-    required this.recurringInterval,
+    required this.recurrenceRule,
     required this.baseDateTime,
     this.paused = false,
   });
@@ -25,8 +26,8 @@ class ReminderModel implements ReminderBase {
       autoSnoozeInterval:
           Duration(seconds: int.parse(map['autoSnoozeInterval']!)),
       preParsedTitle: map['preParsedTitle'] ?? '',
-      recurringInterval: RecurringInterval.fromString(
-        map['recurringInterval'] ?? '',
+      recurrenceRule: RecurrenceRule.fromString(
+        map['recurringRule'] ?? '',
       ),
       baseDateTime: DateTime.parse(map['baseDateTime'] ?? map['dateTime']!),
       paused: map['paused']! == 'true',
@@ -42,15 +43,15 @@ class ReminderModel implements ReminderBase {
   String preParsedTitle;
   @override
   Duration autoSnoozeInterval;
-  RecurringInterval recurringInterval;
+  RecurrenceRule recurrenceRule;
 
   /// Refers to the initial [DateTime] set for the reminder.
   /// This does not change if user postpones a reminder.
   DateTime baseDateTime;
   bool paused;
 
-  bool get isRecurring => !recurringInterval.isNone;
-  bool get isNotRecurring => recurringInterval.isNone;
+  bool get isRecurring => !recurrenceRule.isNone;
+  bool get isNotRecurring => recurrenceRule.isNone;
 
   @override
   Map<String, String?> toJson() {
@@ -60,7 +61,7 @@ class ReminderModel implements ReminderBase {
       'dateTime': dateTime.toIso8601String(),
       'preParsedTitle': preParsedTitle,
       'autoSnoozeInterval': autoSnoozeInterval.inSeconds.toString(),
-      'recurringInterval': recurringInterval.toString(),
+      'recurrenceRule': recurrenceRule.toString(),
       'baseDateTime': baseDateTime.toIso8601String(),
       'paused': paused.toString(),
       'type': '1',
@@ -73,7 +74,7 @@ class ReminderModel implements ReminderBase {
     DateTime? dateTime,
     Duration? autoSnoozeInterval,
     String? preParsedTitle,
-    RecurringInterval? recurringInterval,
+    RecurrenceRule? recurrenceRule,
     DateTime? baseDateTime,
     bool? paused,
   }) {
@@ -83,7 +84,7 @@ class ReminderModel implements ReminderBase {
       dateTime: dateTime ?? this.dateTime,
       autoSnoozeInterval: autoSnoozeInterval ?? this.autoSnoozeInterval,
       preParsedTitle: preParsedTitle ?? this.preParsedTitle,
-      recurringInterval: recurringInterval ?? this.recurringInterval,
+      recurrenceRule: recurrenceRule ?? this.recurrenceRule,
       baseDateTime: baseDateTime ?? this.baseDateTime,
       paused: paused ?? this.paused,
     );
@@ -95,7 +96,10 @@ class ReminderModel implements ReminderBase {
   }
 
   void _incrementRecurDuration() {
-    final Duration? increment = recurringInterval.toNext(dateTime);
+    final Duration? increment = RecurrenceEngine.nextOccurense(
+      base: dateTime,
+      rule: recurrenceRule,
+    );
 
     if (increment != null) {
       baseDateTime = baseDateTime.add(increment);
@@ -108,7 +112,8 @@ class ReminderModel implements ReminderBase {
         dateTime: dateTime,
         preParsedTitle: preParsedTitle,
         autoSnoozeInterval: autoSnoozeInterval.inSeconds,
-        recurringInterval: recurringInterval.toString(),
+        recurringInterval: recurrenceRule.toString(),
+        recurrenceRule: recurrenceRule.toString(),
         baseDateTime: baseDateTime,
         paused: paused,
       );

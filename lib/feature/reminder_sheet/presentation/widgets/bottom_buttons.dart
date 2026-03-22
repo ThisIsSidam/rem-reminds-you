@@ -90,7 +90,7 @@ class SaveButton extends ConsumerWidget {
 
     final bool forAllCondition = reminder.id != null &&
         reminder.id != newReminderID &&
-        !reminder.recurringInterval.isNone &&
+        !reminder.recurrenceRule.isNone &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
     final bool showPostpone = reminder.noRush && reminder.id != null;
 

@@ -34,7 +34,7 @@
     },
     {
       "id": "10:892633009722074988",
-      "lastPropertyId": "8:4345127216394472894",
+      "lastPropertyId": "9:7320500449972197344",
       "name": "ReminderEntity",
       "properties": [
         {
@@ -77,6 +77,11 @@
           "id": "8:4345127216394472894",
           "name": "paused",
           "type": 1
+        },
+        {
+          "id": "9:7320500449972197344",
+          "name": "recurrenceRule",
+          "type": 9
         }
       ],
       "relations": []

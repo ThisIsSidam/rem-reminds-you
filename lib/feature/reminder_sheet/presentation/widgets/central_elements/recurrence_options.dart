@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../../core/data/models/recurring_interval/recurrence_rule.dart';
 import '../../providers/central_widget_provider.dart';
 import '../../providers/sheet_reminder_notifier.dart';
 
@@ -19,10 +19,10 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
         shrinkWrap: true,
         childAspectRatio: 2.5,
         children: <Widget>[
-          IntervalButton(interval: RecurringInterval()),
-          IntervalButton(interval: RecurringInterval.daily()),
-          IntervalButton(interval: RecurringInterval.weekly()),
-          IntervalButton(interval: RecurringInterval.monthly()),
+          IntervalButton(interval: RecurrenceRule()),
+          IntervalButton(interval: RecurrenceRule.daily()),
+          IntervalButton(interval: RecurrenceRule.weekly()),
+          IntervalButton(interval: RecurrenceRule.monthly()),
         ],
       ),
     );
@@ -32,17 +32,17 @@ class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
 class IntervalButton extends ConsumerWidget {
   const IntervalButton({required this.interval, super.key});
 
-  final RecurringInterval interval;
+  final RecurrenceRule interval;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final RecurringInterval recurringInterval =
-        ref.read(sheetReminderNotifier).recurringInterval;
-    final bool isPickedOption = interval == recurringInterval;
+    final RecurrenceRule recurrenceRule =
+        ref.read(sheetReminderNotifier).recurrenceRule;
+    final bool isPickedOption = interval == recurrenceRule;
 
     return ElevatedButton(
       onPressed: () {
-        ref.read(sheetReminderNotifier).updateRecurringInterval(interval);
+        ref.read(sheetReminderNotifier).updateRecurrenceRule(interval);
         ref.read(centralWidgetNotifierProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(

@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/recurring_interval/recurrence_rule.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
@@ -260,7 +260,7 @@ class RemindersNotifier extends _$RemindersNotifier {
           preParsedTitle: title,
           autoSnoozeInterval: autoSnoozeInterval,
           // The normal 'no recurring' default mode.
-          recurringInterval: RecurringInterval(),
+          recurrenceRule: RecurrenceRule(),
           baseDateTime: dateTime,
         ),
       _ => throw Exception('Unsupported ReminderBase type: $original'),

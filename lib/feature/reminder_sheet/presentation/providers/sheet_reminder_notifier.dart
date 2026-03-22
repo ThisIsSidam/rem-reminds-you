@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/recurring_interval/recurring_interval.dart';
+import '../../../../core/data/models/recurring_interval/recurrence_rule.dart';
 import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/data/models/reminder_base/reminder_base.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
@@ -28,7 +28,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   DateTime _dateTime = DateTime.now();
   DateTime _baseDateTime = DateTime.now();
   Duration _autoSnoozeInterval = Duration.zero;
-  RecurringInterval _recurringInterval = RecurringInterval();
+  RecurrenceRule _recurrenceRule = RecurrenceRule();
   bool _noRush = false;
   bool _isPaused = false;
   Type? _originalType;
@@ -46,7 +46,7 @@ class SheetReminderNotifier extends ChangeNotifier {
   DateTime get dateTime => _dateTime;
   DateTime get baseDateTime => _baseDateTime;
   Duration get autoSnoozeInterval => _autoSnoozeInterval;
-  RecurringInterval get recurringInterval => _recurringInterval;
+  RecurrenceRule get recurrenceRule => _recurrenceRule;
   bool get noRush => _noRush;
   bool get isPaused => _isPaused;
 
@@ -85,8 +85,8 @@ class SheetReminderNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateRecurringInterval(RecurringInterval newInterval) {
-    _recurringInterval = newInterval;
+  void updateRecurrenceRule(RecurrenceRule newInterval) {
+    _recurrenceRule = newInterval;
     notifyListeners();
   }
 
@@ -125,7 +125,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     _baseDateTime = DateTime.now();
     _autoSnoozeInterval =
         _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
-    _recurringInterval = RecurringInterval();
+    _recurrenceRule = RecurrenceRule();
     _noRush = isNoRush;
     _isPaused = false;
     notifyListeners();
@@ -147,7 +147,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     _baseDateTime =
         reminder.isRecurring ? reminder.baseDateTime : DateTime.now();
     _autoSnoozeInterval = reminder.autoSnoozeInterval;
-    _recurringInterval = reminder.recurringInterval;
+    _recurrenceRule = reminder.recurrenceRule;
     _noRush = false;
     _isPaused = reminder.paused;
     _originalType = reminder.runtimeType;
@@ -161,7 +161,7 @@ class SheetReminderNotifier extends ChangeNotifier {
     _dateTime = noRush.dateTime;
     _baseDateTime = noRush.dateTime;
     _autoSnoozeInterval = Duration.zero;
-    _recurringInterval = RecurringInterval();
+    _recurrenceRule = RecurrenceRule();
     _noRush = true;
     _isPaused = false;
     _originalType = noRush.runtimeType;
@@ -197,7 +197,7 @@ class SheetReminderNotifier extends ChangeNotifier {
       autoSnoozeInterval: autoSnoozeInterval,
       baseDateTime: baseDateTime,
       preParsedTitle: preParsedTitle,
-      recurringInterval: recurringInterval,
+      recurrenceRule: recurrenceRule,
       paused: isPaused,
     );
   }
