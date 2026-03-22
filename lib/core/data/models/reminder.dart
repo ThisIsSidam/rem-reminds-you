@@ -1,5 +1,5 @@
+import '../../domain/recurrence_factory.dart';
 import '../entities/reminder_entitiy/reminder_entity.dart';
-import 'recurrence_engine.dart';
 import 'recurrence_rule.dart';
 import 'reminder_base.dart';
 
@@ -91,19 +91,11 @@ class ReminderModel implements ReminderBase {
   }
 
   void moveToNextOccurrence() {
-    _incrementRecurDuration();
-    dateTime = baseDateTime;
-  }
-
-  void _incrementRecurDuration() {
-    final Duration? increment = RecurrenceEngine.nextOccurense(
-      base: dateTime,
-      rule: recurrenceRule,
-    );
-
-    if (increment != null) {
-      baseDateTime = baseDateTime.add(increment);
-    }
+    final DateTime? nextOccurence =
+        RecurrenceFactory.fromRule(recurrenceRule).next(dateTime);
+    if (nextOccurence == null) return;
+    baseDateTime = nextOccurence;
+    dateTime = nextOccurence;
   }
 
   ReminderEntity get toEntity => ReminderEntity(
