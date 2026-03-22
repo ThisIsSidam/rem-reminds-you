@@ -23,6 +23,6 @@ Future<String?> appStartup(Ref ref) async {
     return AppRoute.permissions.path;
   }
 
-  ref.read(initialRouteProvider.notifier).setRoute = AppRoute.home;
-  return AppRoute.home.path;
+  ref.read(initialRouteProvider.notifier).setRoute = AppRoute.dashboard;
+  return AppRoute.dashboard.path;
 }

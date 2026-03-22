@@ -7,7 +7,6 @@ import '../../../../core/data/models/reminder/reminder.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
-import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
@@ -130,14 +129,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         context.local.homeTitle,
         style: Theme.of(context).textTheme.titleLarge,
       ),
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.settings),
-          onPressed: () {
-            Navigator.pushNamed(context, AppRoute.settings.path);
-          },
-        ),
-      ],
     );
   }
 

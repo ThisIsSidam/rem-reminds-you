@@ -93,14 +93,14 @@ class ReminderListTile extends ConsumerWidget {
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary.withValues(
-                alpha: 0.10,
-              ),
+          color: context.colors.inversePrimary.withValues(
+            alpha: 0.10,
+          ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Theme.of(context).colorScheme.inversePrimary.withValues(
-                  alpha: 0.25,
-                ),
+            color: context.colors.inversePrimary.withValues(
+              alpha: 0.25,
+            ),
           ),
         ),
         child: Padding(

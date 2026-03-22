@@ -9,17 +9,18 @@ class SplashErrorWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Text(context.local.somethingWentWrong),
-          ElevatedButton(
-            onPressed: () {
-              ref.invalidate(appStartupProvider);
-            },
-            child: Text(context.local.retry),
-          ),
-        ],
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(context.local.somethingWentWrong),
+            ElevatedButton(
+              onPressed: () => ref.invalidate(appStartupProvider),
+              child: Text(context.local.retry),
+            ),
+          ],
+        ),
       ),
     );
   }
