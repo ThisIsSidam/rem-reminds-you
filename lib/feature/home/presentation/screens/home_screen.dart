@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/data/models/reminder/reminder.dart';
+import '../../../../core/data/models/reminder.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';

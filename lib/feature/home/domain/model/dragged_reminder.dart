@@ -1,4 +1,4 @@
-import '../../../../core/data/models/reminder_base/reminder_base.dart';
+import '../../../../core/data/models/reminder_base.dart';
 import '../../presentation/screens/home_screen.dart';
 
 /// For information regarding a reminder being dragged.

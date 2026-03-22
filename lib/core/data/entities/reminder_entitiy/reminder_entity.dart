@@ -1,7 +1,7 @@
 import 'package:objectbox/objectbox.dart';
 
-import '../../models/recurring_interval/recurrence_rule.dart';
-import '../../models/reminder/reminder.dart';
+import '../../models/recurrence_rule.dart';
+import '../../models/reminder.dart';
 
 /// Used for Objectbox storage of [ReminderModel].
 ///

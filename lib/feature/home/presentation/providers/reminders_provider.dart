@@ -5,10 +5,10 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/recurring_interval/recurrence_rule.dart';
-import '../../../../core/data/models/reminder/reminder.dart';
-import '../../../../core/data/models/reminder_base/reminder_base.dart';
+import '../../../../core/data/models/no_rush_reminder.dart';
+import '../../../../core/data/models/recurrence_rule.dart';
+import '../../../../core/data/models/reminder.dart';
+import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';

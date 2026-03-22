@@ -16,8 +16,8 @@ import '../../../main.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/id_handler.dart';
 import '../../../shared/utils/logger/app_logger.dart';
-import '../../data/models/reminder/reminder.dart';
-import '../../data/models/reminder_base/reminder_base.dart';
+import '../../data/models/reminder.dart';
+import '../../data/models/reminder_base.dart';
 import 'notification_action_handler.dart';
 
 class NotificationController {

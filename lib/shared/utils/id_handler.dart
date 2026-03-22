@@ -1,5 +1,5 @@
-import '../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../core/data/models/reminder_base/reminder_base.dart';
+import '../../core/data/models/no_rush_reminder.dart';
+import '../../core/data/models/reminder_base.dart';
 
 class IdHandler {
   @pragma('vm:entry-point')

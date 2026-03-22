@@ -1,5 +1,5 @@
-import '../no_rush_reminder/no_rush_reminder.dart';
-import '../reminder/reminder.dart';
+import 'no_rush_reminder.dart';
+import 'reminder.dart';
 
 /// The father reminder class.
 /// Implemented by [ReminderModel] and [NoRushReminderModel].

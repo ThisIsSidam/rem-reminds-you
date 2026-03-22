@@ -6,9 +6,9 @@ import '../../../objectbox.g.dart';
 import '../../../shared/utils/logger/app_logger.dart';
 import '../../data/entities/no_rush_entitiy/no_rush_entity.dart';
 import '../../data/entities/reminder_entitiy/reminder_entity.dart';
-import '../../data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../data/models/reminder/reminder.dart';
-import '../../data/models/reminder_base/reminder_base.dart';
+import '../../data/models/no_rush_reminder.dart';
+import '../../data/models/reminder.dart';
+import '../../data/models/reminder_base.dart';
 import 'notification_service.dart';
 
 class NotificationActionHandler {

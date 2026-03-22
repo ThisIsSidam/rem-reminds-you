@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
+import '../../../../core/data/models/no_rush_reminder.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../../domain/model/dragged_reminder.dart';

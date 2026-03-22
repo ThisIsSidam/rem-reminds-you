@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/data/models/reminder_base/reminder_base.dart';
+import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../domain/model/dragged_reminder.dart';
 import '../providers/reminder_dragging_provider.dart';

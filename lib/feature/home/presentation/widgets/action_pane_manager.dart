@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/reminder/reminder.dart';
+import '../../../../core/data/models/no_rush_reminder.dart';
+import '../../../../core/data/models/reminder.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';

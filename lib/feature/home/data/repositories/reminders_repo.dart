@@ -4,8 +4,8 @@ import 'package:objectbox/objectbox.dart';
 
 import '../../../../core/data/entities/no_rush_entitiy/no_rush_entity.dart';
 import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/reminder/reminder.dart';
+import '../../../../core/data/models/no_rush_reminder.dart';
+import '../../../../core/data/models/reminder.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 
 /// Repository which handles CRUD Operatioins to [ReminderEntity] box.

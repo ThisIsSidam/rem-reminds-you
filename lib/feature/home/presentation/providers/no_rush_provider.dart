@@ -7,8 +7,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../app/constants/const_strings.dart';
 import '../../../../core/data/entities/no_rush_entitiy/no_rush_entity.dart';
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/reminder_base/reminder_base.dart';
+import '../../../../core/data/models/no_rush_reminder.dart';
+import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';

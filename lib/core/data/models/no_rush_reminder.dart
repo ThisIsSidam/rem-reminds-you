@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:random_datetime/random_datetime.dart';
 import 'package:random_datetime/random_dt_options.dart';
 
-import '../../entities/no_rush_entitiy/no_rush_entity.dart';
-import '../reminder_base/reminder_base.dart';
+import '../entities/no_rush_entitiy/no_rush_entity.dart';
+import 'reminder_base.dart';
 
 /// One of the implementations of [ReminderBase].
 /// Data-wise, this is same as [ReminderBase]. Its name

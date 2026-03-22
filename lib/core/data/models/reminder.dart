@@ -1,7 +1,7 @@
-import '../../entities/reminder_entitiy/reminder_entity.dart';
-import '../recurring_interval/recurrence_engine.dart';
-import '../recurring_interval/recurrence_rule.dart';
-import '../reminder_base/reminder_base.dart';
+import '../entities/reminder_entitiy/reminder_entity.dart';
+import 'recurrence_engine.dart';
+import 'recurrence_rule.dart';
+import 'reminder_base.dart';
 
 /// One of the implementations of [ReminderBase].
 /// Features like recurring intervals and title parsing make use of

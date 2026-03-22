@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/data/models/recurring_interval/recurrence_rule.dart';
+import '../../../../../core/data/models/recurrence_rule.dart';
 import '../../providers/central_widget_provider.dart';
 import '../../providers/sheet_reminder_notifier.dart';
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/data/models/no_rush_reminder/no_rush_reminder.dart';
-import '../../../../core/data/models/recurring_interval/recurrence_rule.dart';
-import '../../../../core/data/models/reminder/reminder.dart';
-import '../../../../core/data/models/reminder_base/reminder_base.dart';
+import '../../../../core/data/models/no_rush_reminder.dart';
+import '../../../../core/data/models/recurrence_rule.dart';
+import '../../../../core/data/models/reminder.dart';
+import '../../../../core/data/models/reminder_base.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../home/presentation/providers/no_rush_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
