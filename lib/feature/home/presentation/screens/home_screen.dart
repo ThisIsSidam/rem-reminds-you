@@ -40,7 +40,7 @@ enum HomeScreenSection {
       today => colors.primary,
       tomorrow => colors.secondary,
       later => colors.inversePrimary,
-      noRush => colors.inverseSurface
+      noRush => colors.inverseSurface,
     };
   }
 }
@@ -65,13 +65,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     NotificationController.startListeningNotificationEvents();
 
     Future<void>.delayed(Duration.zero, _checkAndShowWhatsNewDialog);
-    Future<void>.delayed(
-      Duration.zero,
-      () async {
-        await NotificationController.handleInitialCallback(ref);
-        return;
-      },
-    );
+    Future<void>.delayed(Duration.zero, () async {
+      await NotificationController.handleInitialCallback(ref);
+      return;
+    });
   }
 
   /// Check if app version stored in SharedPrefs match with current
@@ -106,8 +103,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final bool isEmpty =
-        ref.watch(remindersNotifierProvider.notifier).isEmpty() &&
-            ref.watch(noRushRemindersNotifierProvider.notifier).isEmpty();
+        ref.watch(remindersProvider.notifier).isEmpty() &&
+        ref.watch(noRushRemindersProvider.notifier).isEmpty();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -144,9 +141,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               context.local.emptyReminders,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             SizedBox(
               height: 75,
               width: 200,
@@ -156,8 +151,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   _showReminderSheet();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
                   surfaceTintColor: Colors.transparent,
                 ),
                 child: Padding(
@@ -178,32 +174,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   // The list of reminders widget used in scaffold body.
   Widget getListedReminderPage() {
     return SliverList(
-      delegate: SliverChildListDelegate(
-        <Widget>[
-          const ListedReminderSection(
-            key: ValueKey<HomeScreenSection>(HomeScreenSection.overdue),
-            section: HomeScreenSection.overdue,
-            hideIfEmpty: true,
-          ),
-          ListedReminderSection(
-            section: HomeScreenSection.today,
-            onTapTitle: _showReminderSheet,
-          ),
-          ListedReminderSection(
-            section: HomeScreenSection.tomorrow,
-            onTapTitle: () {
-              _showReminderSheet(duration: const Duration(days: 1));
-            },
-          ),
-          ListedReminderSection(
-            section: HomeScreenSection.later,
-            onTapTitle: () {
-              _showReminderSheet(duration: const Duration(days: 7));
-            },
-          ),
-          const ListedNoRushSection(),
-        ],
-      ),
+      delegate: SliverChildListDelegate(<Widget>[
+        const ListedReminderSection(
+          key: ValueKey<HomeScreenSection>(HomeScreenSection.overdue),
+          section: HomeScreenSection.overdue,
+          hideIfEmpty: true,
+        ),
+        ListedReminderSection(
+          section: HomeScreenSection.today,
+          onTapTitle: _showReminderSheet,
+        ),
+        ListedReminderSection(
+          section: HomeScreenSection.tomorrow,
+          onTapTitle: () {
+            _showReminderSheet(duration: const Duration(days: 1));
+          },
+        ),
+        ListedReminderSection(
+          section: HomeScreenSection.later,
+          onTapTitle: () {
+            _showReminderSheet(duration: const Duration(days: 7));
+          },
+        ),
+        const ListedNoRushSection(),
+      ]),
     );
   }
 
@@ -213,9 +207,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onPressed: _showReminderSheet,
-      child: const Icon(
-        Icons.add,
-      ),
+      child: const Icon(Icons.add),
     );
   }
 

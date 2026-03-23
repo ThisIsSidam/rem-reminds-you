@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
@@ -10,12 +11,10 @@ import 'default_settings.dart';
 import 'settings_keys.dart';
 
 final ChangeNotifierProvider<UserSettingsNotifier> userSettingsProvider =
-    ChangeNotifierProvider<UserSettingsNotifier>(
-  (Ref<Object?> ref) {
-    final SharedPreferences prefs = getIt<SharedPreferences>();
-    return UserSettingsNotifier(prefs: prefs);
-  },
-);
+    ChangeNotifierProvider<UserSettingsNotifier>((Ref ref) {
+      final SharedPreferences prefs = getIt<SharedPreferences>();
+      return UserSettingsNotifier(prefs: prefs);
+    });
 
 class UserSettingsNotifier extends ChangeNotifier {
   UserSettingsNotifier({required this.prefs}) {

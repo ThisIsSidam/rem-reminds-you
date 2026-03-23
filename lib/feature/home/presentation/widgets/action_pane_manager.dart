@@ -40,9 +40,7 @@ class ActionPaneManager {
   ActionPane _doneActionPane(WidgetRef ref) {
     return ActionPane(
       motion: const StretchMotion(),
-      children: <Widget>[
-        _doneSlidableAction(ref),
-      ],
+      children: <Widget>[_doneSlidableAction(ref)],
     );
   }
 
@@ -80,9 +78,9 @@ class ActionPaneManager {
 
   void _slideAndRemoveReminder(BuildContext context, WidgetRef ref) {
     // Store the provider reference before any potential disposal
-    final RemindersNotifier remindersProviderValue = ref
-        .read(remindersNotifierProvider.notifier)
-      ..deleteReminder(reminder.id);
+    final RemindersNotifier remindersProviderValue = ref.read(
+      remindersProvider.notifier,
+    )..deleteReminder(reminder.id);
     AppUtils.showToast(
       msg: '${reminder.title} ${context.local.actionDeleted}',
       description: context.local.actionTapToUndo,
@@ -93,10 +91,12 @@ class ActionPaneManager {
   }
 
   ActionPane _postponeActionPane(WidgetRef ref) {
-    final Duration postponeDuration =
-        ref.read(userSettingsProvider).defaultPostponeDuration;
-    final RemindersNotifier remindersProviderValue =
-        ref.read(remindersNotifierProvider.notifier);
+    final Duration postponeDuration = ref
+        .read(userSettingsProvider)
+        .defaultPostponeDuration;
+    final RemindersNotifier remindersProviderValue = ref.read(
+      remindersProvider.notifier,
+    );
 
     return ActionPane(
       motion: const StretchMotion(),
@@ -124,8 +124,9 @@ class ActionPaneManager {
   }
 
   Widget _doneSlidableAction(WidgetRef ref) {
-    final RemindersNotifier remindersProviderValue =
-        ref.read(remindersNotifierProvider.notifier);
+    final RemindersNotifier remindersProviderValue = ref.read(
+      remindersProvider.notifier,
+    );
 
     return SlidableAction(
       backgroundColor: Colors.green,
@@ -197,9 +198,9 @@ class NoRushPaneManager {
 
   void _slideAndRemoveReminder(BuildContext context, WidgetRef ref) {
     // Store the provider reference before any potential disposal
-    final NoRushRemindersNotifier noRushNotifier = ref
-        .read(noRushRemindersNotifierProvider.notifier)
-      ..deleteReminder(reminder.id);
+    final NoRushRemindersNotifier noRushNotifier = ref.read(
+      noRushRemindersProvider.notifier,
+    )..deleteReminder(reminder.id);
     AppUtils.showToast(
       msg: '${reminder.title} ${context.local.actionDeleted}',
       description: context.local.actionTapToUndo,
@@ -210,8 +211,9 @@ class NoRushPaneManager {
   }
 
   ActionPane _postponeActionPane(WidgetRef ref) {
-    final NoRushRemindersNotifier noRushNotifier =
-        ref.read(noRushRemindersNotifierProvider.notifier);
+    final NoRushRemindersNotifier noRushNotifier = ref.read(
+      noRushRemindersProvider.notifier,
+    );
 
     return ActionPane(
       motion: const StretchMotion(),

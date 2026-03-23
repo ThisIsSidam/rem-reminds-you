@@ -35,7 +35,7 @@ class NormalReminderTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final Widget tile = switch (reminder.isRecurring) {
       true => RecurringReminderListTile(reminder: reminder),
-      false => ReminderListTile(reminder: reminder)
+      false => ReminderListTile(reminder: reminder),
     };
 
     final ActionPaneManager paneManager = ActionPaneManager(
@@ -49,11 +49,8 @@ class NormalReminderTile extends ConsumerWidget {
       endActionPane: paneManager.getActionPane(actions.end),
       child: LongPressDraggable<ReminderBase>(
         data: reminder,
-        onDragStarted: () =>
-            ref.read(reminderDraggingProvider.notifier).state = DraggedReminder(
-          reminder: reminder,
-          section: section,
-        ),
+        onDragStarted: () => ref.read(reminderDraggingProvider.notifier).state =
+            DraggedReminder(reminder: reminder, section: section),
         onDragEnd: (_) => _clearDrag(ref),
         onDraggableCanceled: (_, __) => _clearDrag(ref),
         onDragCompleted: () => _clearDrag(ref),
@@ -64,10 +61,7 @@ class NormalReminderTile extends ConsumerWidget {
             child: tile,
           ),
         ),
-        childWhenDragging: Opacity(
-          opacity: 0.5,
-          child: tile,
-        ),
+        childWhenDragging: Opacity(opacity: 0.5, child: tile),
         child: tile,
       ),
     );
@@ -75,10 +69,7 @@ class NormalReminderTile extends ConsumerWidget {
 }
 
 class ReminderListTile extends ConsumerWidget {
-  const ReminderListTile({
-    required this.reminder,
-    super.key,
-  });
+  const ReminderListTile({required this.reminder, super.key});
   final ReminderModel reminder;
 
   @override
@@ -86,21 +77,14 @@ class ReminderListTile extends ConsumerWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () {
-        SheetHelper().openReminderSheet(
-          context,
-          reminder: reminder,
-        );
+        SheetHelper().openReminderSheet(context, reminder: reminder);
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: context.colors.inversePrimary.withValues(
-            alpha: 0.10,
-          ),
+          color: context.colors.inversePrimary.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: context.colors.inversePrimary.withValues(
-              alpha: 0.25,
-            ),
+            color: context.colors.inversePrimary.withValues(alpha: 0.25),
           ),
         ),
         child: Padding(
@@ -139,10 +123,7 @@ class ReminderListTile extends ConsumerWidget {
 }
 
 class RecurringReminderListTile extends ConsumerWidget {
-  const RecurringReminderListTile({
-    required this.reminder,
-    super.key,
-  });
+  const RecurringReminderListTile({required this.reminder, super.key});
   final ReminderModel reminder;
 
   @override
@@ -150,21 +131,18 @@ class RecurringReminderListTile extends ConsumerWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () {
-        SheetHelper().openReminderSheet(
-          context,
-          reminder: reminder,
-        );
+        SheetHelper().openReminderSheet(context, reminder: reminder);
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary.withValues(
-                alpha: 0.10,
-              ),
+          color: Theme.of(
+            context,
+          ).colorScheme.inversePrimary.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Theme.of(context).colorScheme.inversePrimary.withValues(
-                  alpha: 0.25,
-                ),
+            color: Theme.of(
+              context,
+            ).colorScheme.inversePrimary.withValues(alpha: 0.25),
           ),
         ),
         child: Padding(
@@ -222,24 +200,19 @@ class RecurringReminderListTile extends ConsumerWidget {
     return OutlinedButton(
       onPressed: () {
         if (isPaused) {
-          ref
-              .read(remindersNotifierProvider.notifier)
-              .resumeReminder(reminder.id);
+          ref.read(remindersProvider.notifier).resumeReminder(reminder.id);
         } else {
-          ref
-              .read(remindersNotifierProvider.notifier)
-              .pauseReminder(reminder.id);
+          ref.read(remindersProvider.notifier).pauseReminder(reminder.id);
         }
       },
       style: OutlinedButton.styleFrom(
-        backgroundColor:
-            Theme.of(context).colorScheme.inversePrimary.withAlpha(100),
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.inversePrimary.withAlpha(100),
         side: BorderSide(
           color: Theme.of(context).colorScheme.inversePrimary..withAlpha(100),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       child: Text(
         isPaused ? context.local.actionResume : context.local.actionPause,

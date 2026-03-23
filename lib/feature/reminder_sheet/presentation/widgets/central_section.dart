@@ -24,25 +24,22 @@ class CentralSection extends HookConsumerWidget {
     final bool noRush = ref.watch(
       sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
     );
-    final CentralElement centralElement =
-        ref.watch(centralWidgetNotifierProvider);
-    final CentralWidgetNotifier centralElementNotififer =
-        ref.read(centralWidgetNotifierProvider.notifier);
+    final CentralElement centralElement = ref.watch(centralWidgetProvider);
+    final CentralWidgetNotifier centralElementNotififer = ref.read(
+      centralWidgetProvider.notifier,
+    );
     final ThemeData theme = Theme.of(context);
     final Color textColor = dateTime.isBefore(DateTime.now())
         ? theme.colorScheme.onErrorContainer
         : noRush
-            ? theme.colorScheme.onSecondaryContainer
-            : theme.colorScheme.onTertiaryContainer;
+        ? theme.colorScheme.onSecondaryContainer
+        : theme.colorScheme.onTertiaryContainer;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         if (!noRush)
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: InkWell(
               borderRadius: BorderRadius.circular(12),
               onTap: () {
@@ -53,10 +50,7 @@ class CentralSection extends HookConsumerWidget {
                 }
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 4,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -64,19 +58,17 @@ class CentralSection extends HookConsumerWidget {
                       dateTime.friendly(
                         is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
                       ),
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: textColor,
-                          ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleMedium!.copyWith(color: textColor),
                     ),
-                    const SizedBox(
-                      width: 24,
-                    ),
+                    const SizedBox(width: 24),
                     Flexible(
                       child: Text(
                         dateTime.isBefore(DateTime.now())
                             ? context.local
-                                .sheetAgo(dateTime.prettyDuration)
-                                .replaceFirst('-', '')
+                                  .sheetAgo(dateTime.prettyDuration)
+                                  .replaceFirst('-', '')
                             : context.local.sheetIn(dateTime.prettyDuration),
                         style: context.texts.bodyMedium!.copyWith(
                           color: textColor,
@@ -89,9 +81,7 @@ class CentralSection extends HookConsumerWidget {
               ),
             ),
           ),
-        const SizedBox(
-          height: 8,
-        ),
+        const SizedBox(height: 8),
         const CentralWidget(),
       ],
     );
@@ -104,7 +94,7 @@ class CentralWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final CentralElement element = ref.watch(centralWidgetNotifierProvider);
+    final CentralElement element = ref.watch(centralWidgetProvider);
     final UserSettingsNotifier settings = ref.watch(userSettingsProvider);
 
     final DateTime dateTime = ref.watch(
@@ -139,19 +129,11 @@ class CentralWidget extends ConsumerWidget {
             case CentralElement.dateTimeGrid:
               return _buildTimeButtonsGrid(settings);
             case CentralElement.timePicker:
-              return _buildTimePicker(
-                context,
-                ref,
-                dateTime,
-              );
+              return _buildTimePicker(context, ref, dateTime);
             case CentralElement.snoozeOptions:
-              return ReminderSnoozeOptionsWidget(
-                key: UniqueKey(),
-              );
+              return ReminderSnoozeOptionsWidget(key: UniqueKey());
             case CentralElement.recurrenceOptions:
-              return ReminderRecurrenceOptionsWidget(
-                key: UniqueKey(),
-              );
+              return ReminderRecurrenceOptionsWidget(key: UniqueKey());
           }
         }(),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../../core/data/models/no_rush_reminder.dart';
 import '../../../../core/data/models/recurrence_rule.dart';
@@ -109,9 +110,9 @@ class SheetReminderNotifier extends ChangeNotifier {
 
   void deleteReminder(int id) {
     if (_noRush) {
-      ref.read(noRushRemindersNotifierProvider.notifier).deleteReminder(id);
+      ref.read(noRushRemindersProvider.notifier).deleteReminder(id);
     } else {
-      ref.read(remindersNotifierProvider.notifier).deleteReminder(id);
+      ref.read(remindersProvider.notifier).deleteReminder(id);
     }
   }
 
@@ -120,11 +121,12 @@ class SheetReminderNotifier extends ChangeNotifier {
     _id = 0;
     _title = '';
     _preParsedTitle = '';
-    _dateTime =
-        DateTime.now().add(customDuration ?? settings.defaultLeadDuration);
+    _dateTime = DateTime.now().add(
+      customDuration ?? settings.defaultLeadDuration,
+    );
     _baseDateTime = DateTime.now();
-    _autoSnoozeInterval =
-        _autoSnoozeInterval = settings.defaultAutoSnoozeDuration;
+    _autoSnoozeInterval = _autoSnoozeInterval =
+        settings.defaultAutoSnoozeDuration;
     _recurrenceRule = RecurrenceRule();
     _noRush = isNoRush;
     _isPaused = false;
@@ -144,8 +146,9 @@ class SheetReminderNotifier extends ChangeNotifier {
     _title = reminder.title;
     _preParsedTitle = reminder.preParsedTitle;
     _dateTime = reminder.dateTime;
-    _baseDateTime =
-        reminder.isRecurring ? reminder.baseDateTime : DateTime.now();
+    _baseDateTime = reminder.isRecurring
+        ? reminder.baseDateTime
+        : DateTime.now();
     _autoSnoozeInterval = reminder.autoSnoozeInterval;
     _recurrenceRule = reminder.recurrenceRule;
     _noRush = false;
@@ -203,8 +206,9 @@ class SheetReminderNotifier extends ChangeNotifier {
   }
 
   NoRushReminderModel constructNoRush({bool newDateTime = false}) {
-    final Duration autoSnooze =
-        ref.read(userSettingsProvider).defaultAutoSnoozeDuration;
+    final Duration autoSnooze = ref
+        .read(userSettingsProvider)
+        .defaultAutoSnoozeDuration;
 
     final UserSettingsNotifier settings = ref.read(userSettingsProvider);
     final TimeOfDay startTime = settings.noRushStartTime;
@@ -225,16 +229,15 @@ class SheetReminderNotifier extends ChangeNotifier {
   /// currently in and changes id to 0.
   void _handleTypeChange() {
     if (_originalType == ReminderModel) {
-      ref.read(remindersNotifierProvider.notifier).deleteReminder(_id);
+      ref.read(remindersProvider.notifier).deleteReminder(_id);
     } else if (_originalType == NoRushReminderModel) {
-      ref.read(noRushRemindersNotifierProvider.notifier).deleteReminder(_id);
+      ref.read(noRushRemindersProvider.notifier).deleteReminder(_id);
     }
     _id = 0;
   }
 }
 
 final ChangeNotifierProvider<SheetReminderNotifier> sheetReminderNotifier =
-    ChangeNotifierProvider<SheetReminderNotifier>(
-        (Ref<SheetReminderNotifier> ref) {
-  return SheetReminderNotifier(ref: ref);
-});
+    ChangeNotifierProvider<SheetReminderNotifier>((Ref ref) {
+      return SheetReminderNotifier(ref: ref);
+    });

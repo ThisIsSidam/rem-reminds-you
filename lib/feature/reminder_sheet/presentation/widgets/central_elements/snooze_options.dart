@@ -43,13 +43,14 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final Duration snoozeInterval =
-        ref.read(sheetReminderNotifier).autoSnoozeInterval;
+    final Duration snoozeInterval = ref
+        .read(sheetReminderNotifier)
+        .autoSnoozeInterval;
     final bool isPickedDuration = duration == snoozeInterval;
     return ElevatedButton(
       onPressed: () {
         ref.read(sheetReminderNotifier).updateAutoSnoozeInterval(duration);
-        ref.read(centralWidgetNotifierProvider.notifier).reset();
+        ref.read(centralWidgetProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(4),
@@ -62,10 +63,10 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
       child: Text(
         duration.friendly(),
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: isPickedDuration
-                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                  : Theme.of(context).colorScheme.onSecondaryContainer,
-            ),
+          color: isPickedDuration
+              ? Theme.of(context).colorScheme.onPrimaryContainer
+              : Theme.of(context).colorScheme.onSecondaryContainer,
+        ),
       ),
     );
   }

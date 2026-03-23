@@ -33,24 +33,24 @@ class _PermissionBottomActionsState
   @override
   void initState() {
     super.initState();
-    ref.listenManual<AsyncValue<bool>>(
-      permissionProvider(widget.currentPage),
-      (AsyncValue<bool>? previous, AsyncValue<bool> next) {
-        final bool granted = next.valueOrNull ?? false;
+    ref.listenManual<AsyncValue<bool>>(permissionProvider(widget.currentPage), (
+      AsyncValue<bool>? previous,
+      AsyncValue<bool> next,
+    ) {
+      final bool granted = next.value ?? false;
 
-        if (_hasRequestedPermission && granted) {
-          _hasRequestedPermission = false;
-          widget.onContinue();
-        }
-      },
-    );
+      if (_hasRequestedPermission && granted) {
+        _hasRequestedPermission = false;
+        widget.onContinue();
+      }
+    });
   }
 
   String get _permissionButtonLabel => switch (widget.currentPage) {
-        PermissionPage.notification => context.local.permissionAllow,
-        PermissionPage.alarm => context.local.permissionAllow,
-        PermissionPage.battery => context.local.permissionSetUnrestricted,
-      };
+    PermissionPage.notification => context.local.permissionAllow,
+    PermissionPage.alarm => context.local.permissionAllow,
+    PermissionPage.battery => context.local.permissionSetUnrestricted,
+  };
 
   /// Request the permission based on [widget.currentPage].
   /// TODO: Changed returned value to Future<bool>.. this would mean, changing
@@ -68,8 +68,9 @@ class _PermissionBottomActionsState
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<bool> permissionAsync =
-        ref.watch(permissionProvider(widget.currentPage));
+    final AsyncValue<bool> permissionAsync = ref.watch(
+      permissionProvider(widget.currentPage),
+    );
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -89,9 +90,7 @@ class _PermissionBottomActionsState
                 await _requestPermission();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.primaryContainer,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               ),
               child: Text(
                 hasPermission
@@ -106,18 +105,14 @@ class _PermissionBottomActionsState
             loading: () => ElevatedButton(
               onPressed: null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.primaryContainer,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               ),
               child: const CircularProgressIndicator(strokeWidth: 2),
             ),
             error: (_, __) => ElevatedButton(
               onPressed: null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.primaryContainer,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               ),
               child: Text(
                 context.local.somethingWentWrong,

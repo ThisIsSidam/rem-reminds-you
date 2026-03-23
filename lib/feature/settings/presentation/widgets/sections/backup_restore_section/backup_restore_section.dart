@@ -26,10 +26,9 @@ class BackupRestoreSection extends ConsumerWidget {
           leading: const Icon(Icons.backup, color: Colors.transparent),
           title: Text(
             context.local.settingsBackupRestore,
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall!
-                .copyWith(color: Theme.of(context).colorScheme.primary),
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
         const SizedBox(height: 5),
@@ -160,10 +159,12 @@ class BackupRestoreSection extends ConsumerWidget {
 
   Future<Uint8List?> _getBackupData(WidgetRef ref) async {
     // Get backup string
-    final String remindersJsonData =
-        await ref.read(remindersNotifierProvider.notifier).getBackup();
-    final String noRushJsonData =
-        await ref.read(noRushRemindersNotifierProvider.notifier).getBackup();
+    final String remindersJsonData = await ref
+        .read(remindersProvider.notifier)
+        .getBackup();
+    final String noRushJsonData = await ref
+        .read(noRushRemindersProvider.notifier)
+        .getBackup();
 
     // Create a temporary zip file in memory
     final Archive archive = Archive()
@@ -181,44 +182,43 @@ class BackupRestoreSection extends ConsumerWidget {
           utf8.encode(noRushJsonData),
         ),
       );
-    final List<int>? zipData = ZipEncoder().encode(archive);
-    if (zipData == null) return null;
+    final List<int> zipData = ZipEncoder().encode(archive);
     return Uint8List.fromList(zipData);
   }
 
   Future<void> _loadRemindersFromBackup(WidgetRef ref, Archive archive) async {
-    final ArchiveFile? remindersJsonFile =
-        archive.findFile('reminders_backup.json');
+    final ArchiveFile? remindersJsonFile = archive.findFile(
+      'reminders_backup.json',
+    );
 
     if (remindersJsonFile == null) {
       AppLogger.e("File 'reminders_backup.json' not found in the zip file");
-    } else if (remindersJsonFile.content is List<int>) {
-      final String remindersJsonContent =
-          utf8.decode(remindersJsonFile.content as List<int>);
-      await ref.read(remindersNotifierProvider.notifier).restoreBackup(
-            remindersJsonContent,
-          );
     } else {
-      AppLogger.e('File contents not found');
+      final String remindersJsonContent = utf8.decode(
+        remindersJsonFile.content as List<int>,
+      );
+      await ref
+          .read(remindersProvider.notifier)
+          .restoreBackup(remindersJsonContent);
     }
   }
 
   Future<void> _loadNoRushFromBackup(WidgetRef ref, Archive archive) async {
-    final ArchiveFile? archivesJsonFile =
-        archive.findFile('no_rush_backup.json');
+    final ArchiveFile? archivesJsonFile = archive.findFile(
+      'no_rush_backup.json',
+    );
 
     if (archivesJsonFile == null) {
       AppLogger.e(
         "File 'no_rush_reminders_backup.json' not found in the zip file",
       );
-    } else if (archivesJsonFile.content is List<int>) {
-      final String archivesJsonContent =
-          utf8.decode(archivesJsonFile.content as List<int>);
-      await ref
-          .read(noRushRemindersNotifierProvider.notifier)
-          .restoreBackup(archivesJsonContent);
     } else {
-      AppLogger.e('File contents not found');
+      final String archivesJsonContent = utf8.decode(
+        archivesJsonFile.content as List<int>,
+      );
+      await ref
+          .read(noRushRemindersProvider.notifier)
+          .restoreBackup(archivesJsonContent);
     }
   }
 }

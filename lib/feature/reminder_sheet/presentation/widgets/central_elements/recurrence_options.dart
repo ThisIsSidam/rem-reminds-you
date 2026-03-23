@@ -36,14 +36,15 @@ class IntervalButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final RecurrenceRule recurrenceRule =
-        ref.read(sheetReminderNotifier).recurrenceRule;
+    final RecurrenceRule recurrenceRule = ref
+        .read(sheetReminderNotifier)
+        .recurrenceRule;
     final bool isPickedOption = interval == recurrenceRule;
 
     return ElevatedButton(
       onPressed: () {
         ref.read(sheetReminderNotifier).updateRecurrenceRule(interval);
-        ref.read(centralWidgetNotifierProvider.notifier).reset();
+        ref.read(centralWidgetProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(4),
@@ -55,10 +56,10 @@ class IntervalButton extends ConsumerWidget {
       child: Text(
         interval.name,
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: isPickedOption
-                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                  : Theme.of(context).colorScheme.onSecondaryContainer,
-            ),
+          color: isPickedOption
+              ? Theme.of(context).colorScheme.onPrimaryContainer
+              : Theme.of(context).colorScheme.onSecondaryContainer,
+        ),
       ),
     );
   }

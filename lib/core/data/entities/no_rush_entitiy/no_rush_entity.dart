@@ -28,6 +28,7 @@ class NoRushReminderEntity {
 
   int id;
   String title;
+  @Property(type: PropertyType.date)
   DateTime dateTime;
   int autoSnoozeInterval;
 

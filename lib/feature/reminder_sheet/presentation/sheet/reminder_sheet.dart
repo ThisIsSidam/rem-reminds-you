@@ -36,13 +36,15 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
       if (widget.reminder != null) {
         ref.read(sheetReminderNotifier.notifier).loadValues(widget.reminder!);
       } else {
-        ref.read(sheetReminderNotifier).resetValuesWith(
+        ref
+            .read(sheetReminderNotifier)
+            .resetValuesWith(
               customDuration: widget.customDuration,
               isNoRush: widget.isNoRush,
             );
       }
 
-      ref.read(centralWidgetNotifierProvider.notifier).reset();
+      ref.read(centralWidgetProvider.notifier).reset();
       isLoaded.value = true;
     });
   }
@@ -62,9 +64,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     );
 
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: 500 + keyboardInsets,
-      ),
+      constraints: BoxConstraints(maxHeight: 500 + keyboardInsets),
       child: SingleChildScrollView(
         child: AnimatedPadding(
           duration: const Duration(milliseconds: 200),
@@ -95,11 +95,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
           ),
           duration: const Duration(milliseconds: 500),
           child: const Column(
-            children: <Widget>[
-              TitleField(),
-              CentralSection(),
-              BottomButtons(),
-            ],
+            children: <Widget>[TitleField(), CentralSection(), BottomButtons()],
           ),
         ),
       ],
@@ -107,8 +103,6 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
   }
 
   Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
+    return const Center(child: CircularProgressIndicator());
   }
 }

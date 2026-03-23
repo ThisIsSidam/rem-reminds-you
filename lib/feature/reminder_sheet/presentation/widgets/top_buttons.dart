@@ -7,9 +7,7 @@ import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
 class TopButtons extends ConsumerWidget {
-  const TopButtons({
-    super.key,
-  });
+  const TopButtons({super.key});
 
   Future<void> deleteReminder(
     int id,
@@ -17,22 +15,19 @@ class TopButtons extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     void finalDelete({bool deleteAllRecurring = false}) {
-      ref.read(sheetReminderNotifier.notifier).deleteReminder(
-            id,
-          );
+      ref.read(sheetReminderNotifier.notifier).deleteReminder(id);
       Navigator.pop(context);
     }
 
-    final RecurrenceRule recurrenceRule =
-        ref.read(sheetReminderNotifier).recurrenceRule;
+    final RecurrenceRule recurrenceRule = ref
+        .read(sheetReminderNotifier)
+        .recurrenceRule;
 
     if (!recurrenceRule.isNone && context.mounted) {
       await showDialog<void>(
         context: context,
         builder: (BuildContext context) {
-          return _RecurringReminderDeletionDialog(
-            finalDelete: finalDelete,
-          );
+          return _RecurringReminderDeletionDialog(finalDelete: finalDelete);
         },
       );
     } else {
@@ -42,13 +37,13 @@ class TopButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final int? id = ref
-        .watch(sheetReminderNotifier.select((SheetReminderNotifier p) => p.id));
+    final int? id = ref.watch(
+      sheetReminderNotifier.select((SheetReminderNotifier p) => p.id),
+    );
     final bool noRush = ref.watch(
       sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
     );
-    final CentralElement centralElement =
-        ref.watch(centralWidgetNotifierProvider);
+    final CentralElement centralElement = ref.watch(centralWidgetProvider);
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -73,7 +68,7 @@ class TopButtons extends ConsumerWidget {
               active: centralElement == CentralElement.snoozeOptions,
               onTap: () {
                 ref
-                    .read(centralWidgetNotifierProvider.notifier)
+                    .read(centralWidgetProvider.notifier)
                     .switchTo(CentralElement.snoozeOptions);
               },
             ),
@@ -83,7 +78,7 @@ class TopButtons extends ConsumerWidget {
               active: centralElement == CentralElement.recurrenceOptions,
               onTap: () {
                 ref
-                    .read(centralWidgetNotifierProvider.notifier)
+                    .read(centralWidgetProvider.notifier)
                     .switchTo(CentralElement.recurrenceOptions);
               },
             ),
@@ -123,9 +118,7 @@ class TopButtons extends ConsumerWidget {
             ? fillColor ?? colorScheme.primaryContainer
             : colorScheme.onPrimaryContainer,
         padding: const EdgeInsets.all(8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       onPressed: onTap,
     );

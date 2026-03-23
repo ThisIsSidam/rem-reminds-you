@@ -36,18 +36,19 @@ class RemindersNotifier extends _$RemindersNotifier {
   }
 
   void _handleEntitiesStream() {
-    _remindersSubscrioption =
-        _repo.getRemindersStream().listen((List<ReminderEntity> entities) {
-      final List<ReminderModel> reminders =
-          entities.map((ReminderEntity val) => val.toModel).toList();
+    _remindersSubscrioption = _repo.getRemindersStream().listen((
+      List<ReminderEntity> entities,
+    ) {
+      final List<ReminderModel> reminders = entities
+          .map((ReminderEntity val) => val.toModel)
+          .toList();
       state = _updateCategorizedReminders(reminders);
     });
   }
 
   /// Returns true if any one of the sections has a reminder
-  bool isEmpty() => !state.values.any(
-        (List<ReminderModel> element) => element.isNotEmpty,
-      );
+  bool isEmpty() =>
+      !state.values.any((List<ReminderModel> element) => element.isNotEmpty);
 
   Map<HomeScreenSection, List<ReminderModel>> _updateCategorizedReminders(
     List<ReminderModel> reminders,
@@ -91,9 +92,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 
   Future<ReminderModel> saveReminder(ReminderModel reminder) async {
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(
-        reminder,
-      ),
+      IdHandler().getGroupKey(reminder),
     );
 
     final int id = _repo.saveReminder(reminder.toEntity);
@@ -115,9 +114,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       return;
     }
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(
-        reminder,
-      ),
+      IdHandler().getGroupKey(reminder),
     );
 
     _repo.removeReminder(id);
@@ -184,9 +181,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     if (!reminder.isRecurring) return;
 
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(
-        reminder,
-      ),
+      IdHandler().getGroupKey(reminder),
     );
     reminder
       ..baseDateTime = previous
@@ -209,9 +204,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     if (!reminder.isRecurring) {
       reminder.paused = true;
       await NotificationController.cancelScheduledNotification(
-        IdHandler().getGroupKey(
-          reminder,
-        ),
+        IdHandler().getGroupKey(reminder),
       );
       _repo.saveReminder(reminder.toEntity);
     }
@@ -251,7 +244,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       NoRushReminderModel(
         :final String title,
         :final DateTime dateTime,
-        :final Duration autoSnoozeInterval
+        :final Duration autoSnoozeInterval,
       ) =>
         ReminderModel(
           id: 0,
@@ -267,12 +260,15 @@ class RemindersNotifier extends _$RemindersNotifier {
     };
 
     // Get new datetime and update create a new updated instance with it.
-    final DateTime newDateTime =
-        _getDateTimeForSection(newReminder.dateTime, section);
+    final DateTime newDateTime = _getDateTimeForSection(
+      newReminder.dateTime,
+      section,
+    );
     final ReminderModel updatedReminder = newReminder.copyWith(
       dateTime: newDateTime,
-      baseDateTime:
-          newReminder.isRecurring ? newDateTime : newReminder.baseDateTime,
+      baseDateTime: newReminder.isRecurring
+          ? newDateTime
+          : newReminder.baseDateTime,
     );
 
     switch (original) {
@@ -287,8 +283,9 @@ class RemindersNotifier extends _$RemindersNotifier {
         {
           // Get notifier instance beforehand since we can't after making a
           // state change using saveReminder call
-          final NoRushRemindersNotifier noRushNotifier =
-              ref.read(noRushRemindersNotifierProvider.notifier);
+          final NoRushRemindersNotifier noRushNotifier = ref.read(
+            noRushRemindersProvider.notifier,
+          );
 
           // Save the updated reminder
           await saveReminder(updatedReminder);
@@ -333,14 +330,14 @@ class RemindersNotifier extends _$RemindersNotifier {
     return switch (section) {
       HomeScreenSection.today => _keepTimeButChangeDate(dateTime, now),
       HomeScreenSection.tomorrow => _keepTimeButChangeDate(
-          dateTime,
-          now.add(const Duration(days: 1)),
-        ),
+        dateTime,
+        now.add(const Duration(days: 1)),
+      ),
       HomeScreenSection.later => _keepTimeButChangeDate(
-          dateTime,
-          now.add(const Duration(days: 7)),
-        ),
-      _ => throw 'Unhandled Section Type : $section'
+        dateTime,
+        now.add(const Duration(days: 7)),
+      ),
+      _ => throw 'Unhandled Section Type : $section',
     };
   }
 

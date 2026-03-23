@@ -51,19 +51,17 @@ class NormalTitleField extends HookConsumerWidget {
       sheetReminderNotifier.select((SheetReminderNotifier p) => p.dateTime),
     );
 
-    useEffect(
-      () {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          FocusScope.of(context).requestFocus(focusNode);
-        });
-        return null;
-      },
-      <Object?>[],
-    );
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FocusScope.of(context).requestFocus(focusNode);
+      });
+      return null;
+    }, <Object?>[]);
 
     titleController.text = ref.watch(
-      sheetReminderNotifier
-          .select((SheetReminderNotifier p) => p.preParsedTitle),
+      sheetReminderNotifier.select(
+        (SheetReminderNotifier p) => p.preParsedTitle,
+      ),
     );
 
     if (titleController.text == reminderNullTitle) {
@@ -90,9 +88,7 @@ class NormalTitleField extends HookConsumerWidget {
         children: <Widget>[
           Expanded(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: kHeight,
-              ),
+              constraints: const BoxConstraints(minHeight: kHeight),
               child: TextField(
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
@@ -115,10 +111,9 @@ class NormalTitleField extends HookConsumerWidget {
                     borderSide: BorderSide(color: color),
                   ),
                 ),
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: color),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium!.copyWith(color: color),
                 controller: titleController,
                 focusNode: focusNode,
                 onChanged: (String str) {
@@ -128,7 +123,7 @@ class NormalTitleField extends HookConsumerWidget {
                 onTap: () {
                   // Defer the bottom element removal
                   Future<void>.microtask(() {
-                    ref.read(centralWidgetNotifierProvider.notifier).reset();
+                    ref.read(centralWidgetProvider.notifier).reset();
                   });
                 },
               ),
@@ -184,9 +179,7 @@ class NoRushTitleField extends HookConsumerWidget {
             decoration: InputDecoration(
               label: Text(
                 context.local.sheetTitle,
-                style: theme.textTheme.titleSmall!.copyWith(
-                  color: color,
-                ),
+                style: theme.textTheme.titleSmall!.copyWith(color: color),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -200,8 +193,9 @@ class NoRushTitleField extends HookConsumerWidget {
                 borderSide: BorderSide(color: color),
               ),
             ),
-            style:
-                Theme.of(context).textTheme.titleMedium!.copyWith(color: color),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(color: color),
             controller: controller,
             focusNode: focusNode,
             onChanged: (String str) {
@@ -210,7 +204,7 @@ class NoRushTitleField extends HookConsumerWidget {
             onTap: () {
               // Defer the bottom element removal
               Future<void>.microtask(() {
-                ref.read(centralWidgetNotifierProvider.notifier).reset();
+                ref.read(centralWidgetProvider.notifier).reset();
               });
             },
           ),
@@ -250,8 +244,9 @@ class PauseButton extends ConsumerWidget {
           ref.read(sheetReminderNotifier).togglePausedSwitch();
         },
         style: OutlinedButton.styleFrom(
-          backgroundColor:
-              Theme.of(context).colorScheme.inversePrimary.withAlpha(100),
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.inversePrimary.withAlpha(100),
           side: BorderSide(
             color: Theme.of(context).colorScheme.inversePrimary.withAlpha(100),
           ),

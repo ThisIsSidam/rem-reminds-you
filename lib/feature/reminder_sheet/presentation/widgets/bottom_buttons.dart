@@ -22,9 +22,7 @@ class BottomButtons extends ConsumerWidget {
       child: Row(
         spacing: 8,
         children: <Widget>[
-          Expanded(
-            child: _closeButton(context),
-          ),
+          Expanded(child: _closeButton(context)),
           const Expanded(flex: 3, child: SaveButton()),
         ],
       ),
@@ -38,9 +36,7 @@ class BottomButtons extends ConsumerWidget {
         Navigator.of(context).pop();
       },
       style: IconButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
     );
   }
@@ -50,16 +46,15 @@ class SaveButton extends ConsumerWidget {
   const SaveButton({super.key});
 
   Future<void> saveReminder(BuildContext context, WidgetRef ref) async {
-    final ReminderBase reminder =
-        ref.read(sheetReminderNotifier).constructReminder();
+    final ReminderBase reminder = ref
+        .read(sheetReminderNotifier)
+        .constructReminder();
 
     if (_hasProblem(context, reminder)) return;
     if (reminder is NoRushReminderModel) {
-      await ref
-          .read(noRushRemindersNotifierProvider.notifier)
-          .saveReminder(reminder);
+      await ref.read(noRushRemindersProvider.notifier).saveReminder(reminder);
     } else if (reminder is ReminderModel) {
-      await ref.read(remindersNotifierProvider.notifier).saveReminder(reminder);
+      await ref.read(remindersProvider.notifier).saveReminder(reminder);
     }
 
     if (!context.mounted) return;
@@ -88,7 +83,8 @@ class SaveButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final SheetReminderNotifier reminder = ref.watch(sheetReminderNotifier);
 
-    final bool forAllCondition = reminder.id != null &&
+    final bool forAllCondition =
+        reminder.id != null &&
         reminder.id != newReminderID &&
         !reminder.recurrenceRule.isNone &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
@@ -108,8 +104,8 @@ class SaveButton extends ConsumerWidget {
             child: Text(
               context.local.sheetSave,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
             ),
           ),
         ),
@@ -127,8 +123,8 @@ class SaveButton extends ConsumerWidget {
               child: Text(
                 context.local.sheetForAll,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onErrorContainer,
-                    ),
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
               ),
             ),
           ),
@@ -141,7 +137,7 @@ class SaveButton extends ConsumerWidget {
                     .constructNoRush(newDateTime: true);
                 if (_hasProblem(context, noRush)) return;
                 await ref
-                    .read(noRushRemindersNotifierProvider.notifier)
+                    .read(noRushRemindersProvider.notifier)
                     .saveReminder(noRush);
                 if (context.mounted) Navigator.pop(context);
               },
@@ -153,8 +149,8 @@ class SaveButton extends ConsumerWidget {
                 context.local.sheetPostpone,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onErrorContainer,
-                    ),
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
               ),
             ),
           ),

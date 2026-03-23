@@ -38,16 +38,14 @@ class ListedReminderSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<ReminderModel> reminders =
-        ref.watch(remindersNotifierProvider)[section] ?? <ReminderModel>[];
+        ref.watch(remindersProvider)[section] ?? <ReminderModel>[];
     if (hideIfEmpty && reminders.isEmpty) {
       return const SizedBox.shrink();
     }
     final SwipeActionPair actions = ref.watch(
       userSettingsProvider.select(
-        (UserSettingsNotifier p) => (
-          start: p.homeTileSwipeActionRight,
-          end: p.homeTileSwipeActionLeft,
-        ),
+        (UserSettingsNotifier p) =>
+            (start: p.homeTileSwipeActionRight, end: p.homeTileSwipeActionLeft),
       ),
     );
 
@@ -62,7 +60,7 @@ class ListedReminderSection extends ConsumerWidget {
           ReminderDragZone(
             homescreenSection: section,
             onDroppedAccepted: (ReminderBase reminder) => ref
-                .read(remindersNotifierProvider.notifier)
+                .read(remindersProvider.notifier)
                 .moveReminder(reminder, section),
             child: ListView.separated(
               padding: EdgeInsets.zero,
@@ -91,14 +89,13 @@ class ListedNoRushSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<NoRushReminderModel> reminders =
-        ref.watch(noRushRemindersNotifierProvider);
+    final List<NoRushReminderModel> reminders = ref.watch(
+      noRushRemindersProvider,
+    );
     final SwipeActionPair actions = ref.watch(
       userSettingsProvider.select(
-        (UserSettingsNotifier p) => (
-          start: p.homeTileSwipeActionRight,
-          end: p.homeTileSwipeActionLeft,
-        ),
+        (UserSettingsNotifier p) =>
+            (start: p.homeTileSwipeActionRight, end: p.homeTileSwipeActionLeft),
       ),
     );
 
@@ -109,24 +106,20 @@ class ListedNoRushSection extends ConsumerWidget {
         children: <Widget>[
           ReminderSectionTitle(
             section: _section,
-            onTap: () => SheetHelper().openReminderSheet(
-              context,
-              isNoRush: true,
-            ),
+            onTap: () =>
+                SheetHelper().openReminderSheet(context, isNoRush: true),
           ),
           const SizedBox(height: 4),
           ReminderDragZone(
             homescreenSection: _section,
             onDroppedAccepted: (ReminderBase reminder) => ref
-                .read(noRushRemindersNotifierProvider.notifier)
+                .read(noRushRemindersProvider.notifier)
                 .moveReminder(reminder),
             child: ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (_, int i) => NoRushReminderTile(
-                reminder: reminders[i],
-                actions: actions,
-              ),
+              itemBuilder: (_, int i) =>
+                  NoRushReminderTile(reminder: reminders[i], actions: actions),
               separatorBuilder: (_, __) => const SizedBox(height: 8),
               itemCount: reminders.length,
             ),

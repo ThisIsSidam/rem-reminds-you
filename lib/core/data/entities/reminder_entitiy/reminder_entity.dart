@@ -43,6 +43,7 @@ class ReminderEntity {
 
   int id;
   String title;
+  @Property(type: PropertyType.date)
   DateTime dateTime;
   String preParsedTitle;
   int autoSnoozeInterval;

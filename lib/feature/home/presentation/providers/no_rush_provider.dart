@@ -36,9 +36,9 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   }
 
   void _handleEntitiesStream() {
-    _noRushSubscription = _repo
-        .getRemindersStream()
-        .listen((List<NoRushReminderEntity> entities) {
+    _noRushSubscription = _repo.getRemindersStream().listen((
+      List<NoRushReminderEntity> entities,
+    ) {
       state = entities.map((NoRushReminderEntity val) => val.toModel).toList();
     });
   }
@@ -68,9 +68,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
       return false;
     }
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(
-        reminder,
-      ),
+      IdHandler().getGroupKey(reminder),
     );
 
     final bool removed = _repo.removeReminder(id);
@@ -86,8 +84,9 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   Future<void> moveReminder(ReminderBase reminder) async {
     // Get notifier instance beforehand since we can't after making a
     // state change using saveReminder call
-    final RemindersNotifier remindersNotifier =
-        ref.read(remindersNotifierProvider.notifier);
+    final RemindersNotifier remindersNotifier = ref.read(
+      remindersProvider.notifier,
+    );
 
     // Create new NoRush reminder based on normal reminder instance
     await saveReminder(
