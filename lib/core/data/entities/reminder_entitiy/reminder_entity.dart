@@ -1,6 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 
-import '../../models/recurrence_rule.dart';
+import '../../../../feature/recurrence/data/models/recurrence_rule.dart';
 import '../../models/reminder.dart';
 
 /// Used for Objectbox storage of [ReminderModel].
@@ -28,18 +28,17 @@ class ReminderEntity {
   factory ReminderEntity.fromJson(
     Map<String, dynamic> json, {
     bool asNew = false,
-  }) =>
-      ReminderEntity(
-        id: asNew ? 0 : json['id'] as int,
-        title: json['title'] as String,
-        dateTime: DateTime.parse(json['dateTime'] as String),
-        preParsedTitle: json['preParsedTitle'] as String,
-        autoSnoozeInterval: json['autoSnoozeInterval'] as int,
-        recurringInterval: json['recurringInterval'] as String? ?? '',
-        recurrenceRule: json['recurrenceRule'] as String? ?? '',
-        baseDateTime: DateTime.parse(json['baseDateTime'] as String),
-        paused: json['paused'] as bool,
-      );
+  }) => ReminderEntity(
+    id: asNew ? 0 : json['id'] as int,
+    title: json['title'] as String,
+    dateTime: DateTime.parse(json['dateTime'] as String),
+    preParsedTitle: json['preParsedTitle'] as String,
+    autoSnoozeInterval: json['autoSnoozeInterval'] as int,
+    recurringInterval: json['recurringInterval'] as String? ?? '',
+    recurrenceRule: json['recurrenceRule'] as String? ?? '',
+    baseDateTime: DateTime.parse(json['baseDateTime'] as String),
+    paused: json['paused'] as bool,
+  );
 
   int id;
   String title;
@@ -71,13 +70,13 @@ class ReminderEntity {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'title': title,
-        'dateTime': dateTime.toIso8601String(),
-        'preParsedTitle': preParsedTitle,
-        'autoSnoozeInterval': autoSnoozeInterval,
-        'recurrenceRule': recurrenceRule,
-        'baseDateTime': baseDateTime.toIso8601String(),
-        'paused': paused,
-      };
+    'id': id,
+    'title': title,
+    'dateTime': dateTime.toIso8601String(),
+    'preParsedTitle': preParsedTitle,
+    'autoSnoozeInterval': autoSnoozeInterval,
+    'recurrenceRule': recurrenceRule,
+    'baseDateTime': baseDateTime.toIso8601String(),
+    'paused': paused,
+  };
 }

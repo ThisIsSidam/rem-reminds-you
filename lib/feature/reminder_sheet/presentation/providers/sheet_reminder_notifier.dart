@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../../core/data/models/no_rush_reminder.dart';
-import '../../../../core/data/models/recurrence_rule.dart';
 import '../../../../core/data/models/reminder.dart';
 import '../../../../core/data/models/reminder_base.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../home/presentation/providers/no_rush_provider.dart';
 import '../../../home/presentation/providers/reminders_provider.dart';
+import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 
 /// Notifier handling changes happening

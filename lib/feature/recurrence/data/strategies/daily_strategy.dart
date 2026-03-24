@@ -1,4 +1,4 @@
-import '../../extensions/datetime_ext.dart';
+import '../../../../core/extensions/datetime_ext.dart';
 import 'recurrence_strategy.dart';
 
 class DailyStrategy implements RecurrenceStrategy {

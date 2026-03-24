@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rem/core/data/recurrence_strategies/daily_strategy.dart';
-import 'package:rem/core/data/recurrence_strategies/monthly_strategy.dart';
-import 'package:rem/core/data/recurrence_strategies/no_recurrence_strategy.dart';
-import 'package:rem/core/data/recurrence_strategies/weekly_strategy.dart';
+import 'package:rem/feature/recurrence/data/strategies/daily_strategy.dart';
+import 'package:rem/feature/recurrence/data/strategies/monthly_strategy.dart';
+import 'package:rem/feature/recurrence/data/strategies/no_recurrence_strategy.dart';
+import 'package:rem/feature/recurrence/data/strategies/weekly_strategy.dart';
 
 void main() {
   group('NoRecurrenceStrategy', () {

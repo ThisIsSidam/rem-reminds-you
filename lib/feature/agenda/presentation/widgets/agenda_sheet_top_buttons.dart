@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/data/models/recurrence_rule.dart';
+import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../../../recurrence/presentation/widgets/recurrence_rule_sheet.dart';
 import '../../data/models/agenda_task.dart';
 import '../providers/agenda_provider.dart';

@@ -1,6 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 
-import '../../../../core/data/models/recurrence_rule.dart';
+import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../models/agenda_task.dart';
 
 /// Used for ObjectBox storage of [AgendaTask].

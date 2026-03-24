@@ -1,6 +1,6 @@
-import '../../domain/recurrence_factory.dart';
+import '../../../feature/recurrence/data/models/recurrence_rule.dart';
+import '../../../feature/recurrence/domain/recurrence_factory.dart';
 import '../entities/reminder_entitiy/reminder_entity.dart';
-import 'recurrence_rule.dart';
 import 'reminder_base.dart';
 
 /// One of the implementations of [ReminderBase].
@@ -23,12 +23,11 @@ class ReminderModel implements ReminderBase {
       id: int.parse(map['id']!),
       title: map['title'] ?? '',
       dateTime: DateTime.parse(map['dateTime']!),
-      autoSnoozeInterval:
-          Duration(seconds: int.parse(map['autoSnoozeInterval']!)),
-      preParsedTitle: map['preParsedTitle'] ?? '',
-      recurrenceRule: RecurrenceRule.fromString(
-        map['recurringRule'] ?? '',
+      autoSnoozeInterval: Duration(
+        seconds: int.parse(map['autoSnoozeInterval']!),
       ),
+      preParsedTitle: map['preParsedTitle'] ?? '',
+      recurrenceRule: RecurrenceRule.fromString(map['recurringRule'] ?? ''),
       baseDateTime: DateTime.parse(map['baseDateTime'] ?? map['dateTime']!),
       paused: map['paused']! == 'true',
     );
@@ -91,24 +90,25 @@ class ReminderModel implements ReminderBase {
   }
 
   void moveToNextOccurrence() {
-    final DateTime? nextOccurence =
-        RecurrenceFactory.fromRule(recurrenceRule).next(dateTime);
+    final DateTime? nextOccurence = RecurrenceFactory.fromRule(
+      recurrenceRule,
+    ).next(dateTime);
     if (nextOccurence == null) return;
     baseDateTime = nextOccurence;
     dateTime = nextOccurence;
   }
 
   ReminderEntity get toEntity => ReminderEntity(
-        id: id,
-        title: title,
-        dateTime: dateTime,
-        preParsedTitle: preParsedTitle,
-        autoSnoozeInterval: autoSnoozeInterval.inSeconds,
-        recurringInterval: recurrenceRule.toString(),
-        recurrenceRule: recurrenceRule.toString(),
-        baseDateTime: baseDateTime,
-        paused: paused,
-      );
+    id: id,
+    title: title,
+    dateTime: dateTime,
+    preParsedTitle: preParsedTitle,
+    autoSnoozeInterval: autoSnoozeInterval.inSeconds,
+    recurringInterval: recurrenceRule.toString(),
+    recurrenceRule: recurrenceRule.toString(),
+    baseDateTime: baseDateTime,
+    paused: paused,
+  );
 }
 
 extension ReminderX on ReminderModel {

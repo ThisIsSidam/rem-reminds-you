@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/data/models/recurrence_rule.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/widgets/sheet_handle.dart';
+import '../../data/models/recurrence_rule.dart';
 
 Future<RecurrenceRule?> pickRecurrenceRule(
   BuildContext context, {

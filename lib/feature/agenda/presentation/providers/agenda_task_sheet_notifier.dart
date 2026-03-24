@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/data/models/recurrence_rule.dart';
 import '../../../../core/extensions/datetime_ext.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
+import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../../data/models/agenda_task.dart';
 
 part 'generated/agenda_task_sheet_notifier.g.dart';

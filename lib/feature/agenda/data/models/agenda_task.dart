@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/data/models/recurrence_rule.dart';
 import '../../../../core/extensions/datetime_ext.dart';
+import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../entities/agenda_task_entity.dart';
 
 part 'generated/agenda_task.freezed.dart';

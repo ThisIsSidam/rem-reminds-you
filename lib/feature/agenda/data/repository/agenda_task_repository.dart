@@ -1,7 +1,7 @@
 import 'package:objectbox/objectbox.dart';
 
-import '../../../../core/data/recurrence_strategies/recurrence_strategy.dart';
-import '../../../../core/domain/recurrence_factory.dart';
+import '../../../recurrence/data/strategies/recurrence_strategy.dart';
+import '../../../recurrence/domain/recurrence_factory.dart';
 import '../entities/agenda_task_entity.dart';
 import '../models/agenda_task.dart';
 
