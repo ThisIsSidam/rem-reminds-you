@@ -19,19 +19,16 @@ import '../../../shared/utils/logger/app_logger.dart';
 import '../../data/models/reminder.dart';
 import '../../data/models/reminder_base.dart';
 import 'notification_action_handler.dart';
+import 'notification_channels.dart';
 
 class NotificationController {
   static Future<void> initializeLocalNotifications() async {
     await AndroidAlarmManager.initialize();
 
-    await AwesomeNotifications().initialize(null, <NotificationChannel>[
-      NotificationChannel(
-        channelKey: '111',
-        channelName: 'Reminder notifications',
-        channelDescription: 'Shows reminder notifications',
-        soundSource: 'resource://raw/res_default_sound',
-      ),
-    ]);
+    await AwesomeNotifications().initialize(
+      null,
+      NotificationChannels.channels,
+    );
 
     AppLogger.i('Initialized Notifications');
   }
@@ -88,7 +85,7 @@ class NotificationController {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: notificationId,
-        channelKey: '111',
+        channelKey: NotificationChannels.reminder.key,
         title: 'Reminder: ${reminder.title}',
         groupKey: IdHandler().getGroupKey(reminder),
         wakeUpScreen: true,
@@ -181,8 +178,8 @@ class NotificationController {
   }
 
   static Future<void> handleInitialCallback(WidgetRef ref) async {
-    final ReceivedAction? initialAction =
-        await AwesomeNotifications().getInitialNotificationAction();
+    final ReceivedAction? initialAction = await AwesomeNotifications()
+        .getInitialNotificationAction();
 
     if (initialAction == null) return;
     if (initialAction.actionType != ActionType.Default) return;
