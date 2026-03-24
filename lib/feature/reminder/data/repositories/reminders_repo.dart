@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:objectbox/objectbox.dart';
 
-import '../../../../core/data/entities/no_rush_entitiy/no_rush_entity.dart';
-import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
-import '../../../../core/data/models/no_rush_reminder.dart';
-import '../../../../core/data/models/reminder.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
+import '../entities/no_rush_entity.dart';
+import '../entities/reminder_entity.dart';
+import '../models/no_rush_reminder.dart';
+import '../models/reminder.dart';
 
 /// Repository which handles CRUD Operatioins to [ReminderEntity] box.
 class RemindersRepository {
@@ -41,8 +41,9 @@ class RemindersRepository {
 
   String getBackup() {
     final List<ReminderEntity> reminders = _box.query().build().find();
-    final List<Map<String, dynamic>> jsonData =
-        reminders.map((ReminderEntity e) => e.toJson()).toList();
+    final List<Map<String, dynamic>> jsonData = reminders
+        .map((ReminderEntity e) => e.toJson())
+        .toList();
     return jsonEncode(<String, Object>{
       'reminders': jsonData,
       'timestamp': DateTime.now().toIso8601String(),
@@ -77,7 +78,7 @@ class RemindersRepository {
 /// Repository which handles CRUD Operatioins to [NoRushReminderEntity] box.
 class NoRushRemindersRepository {
   NoRushRemindersRepository(Store store)
-      : _box = store.box<NoRushReminderEntity>();
+    : _box = store.box<NoRushReminderEntity>();
 
   /// The [Box] handling all database operations of [NoRushReminderEntity].
   late final Box<NoRushReminderEntity> _box;
@@ -108,8 +109,9 @@ class NoRushRemindersRepository {
 
   String getBackup() {
     final List<NoRushReminderEntity> allNoRush = _box.query().build().find();
-    final List<Map<String, dynamic>> jsonData =
-        allNoRush.map((NoRushReminderEntity e) => e.toJson()).toList();
+    final List<Map<String, dynamic>> jsonData = allNoRush
+        .map((NoRushReminderEntity e) => e.toJson())
+        .toList();
     return jsonEncode(<String, Object>{
       'reminders': jsonData,
       'timestamp': DateTime.now().toIso8601String(),

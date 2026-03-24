@@ -3,18 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/data/models/reminder.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
+import '../../data/models/reminder.dart';
 import '../providers/no_rush_provider.dart';
 import '../providers/reminders_provider.dart';
 import '../widgets/home_screen_lists.dart';
 
-enum HomeScreenSection {
+enum ReminderSection {
   overdue,
   today,
   tomorrow,
@@ -25,11 +25,11 @@ enum HomeScreenSection {
 
   String localizedTitle(BuildContext context) {
     return switch (this) {
-      HomeScreenSection.overdue => context.local.homeSectionOverdue,
-      HomeScreenSection.today => context.local.homeSectionToday,
-      HomeScreenSection.tomorrow => context.local.homeSectionTomorrow,
-      HomeScreenSection.later => context.local.homeSectionLater,
-      HomeScreenSection.noRush => context.local.homeSectionNoRush,
+      ReminderSection.overdue => context.local.homeSectionOverdue,
+      ReminderSection.today => context.local.homeSectionToday,
+      ReminderSection.tomorrow => context.local.homeSectionTomorrow,
+      ReminderSection.later => context.local.homeSectionLater,
+      ReminderSection.noRush => context.local.homeSectionNoRush,
     };
   }
 
@@ -45,14 +45,14 @@ enum HomeScreenSection {
   }
 }
 
-class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+class ReminderScreen extends ConsumerStatefulWidget {
+  const ReminderScreen({super.key});
 
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<ReminderScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen>
+class _HomeScreenState extends ConsumerState<ReminderScreen>
     with WidgetsBindingObserver {
   @override
   void initState() {
@@ -176,22 +176,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return SliverList(
       delegate: SliverChildListDelegate(<Widget>[
         const ListedReminderSection(
-          key: ValueKey<HomeScreenSection>(HomeScreenSection.overdue),
-          section: HomeScreenSection.overdue,
+          key: ValueKey<ReminderSection>(ReminderSection.overdue),
+          section: ReminderSection.overdue,
           hideIfEmpty: true,
         ),
         ListedReminderSection(
-          section: HomeScreenSection.today,
+          section: ReminderSection.today,
           onTapTitle: _showReminderSheet,
         ),
         ListedReminderSection(
-          section: HomeScreenSection.tomorrow,
+          section: ReminderSection.tomorrow,
           onTapTitle: () {
             _showReminderSheet(duration: const Duration(days: 1));
           },
         ),
         ListedReminderSection(
-          section: HomeScreenSection.later,
+          section: ReminderSection.later,
           onTapTitle: () {
             _showReminderSheet(duration: const Duration(days: 7));
           },

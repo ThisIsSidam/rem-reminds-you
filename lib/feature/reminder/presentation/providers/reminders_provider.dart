@@ -4,17 +4,17 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/data/entities/reminder_entitiy/reminder_entity.dart';
-import '../../../../core/data/models/no_rush_reminder.dart';
-import '../../../../core/data/models/reminder.dart';
-import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../recurrence/data/models/recurrence_rule.dart';
+import '../../data/entities/reminder_entity.dart';
+import '../../data/models/no_rush_reminder.dart';
+import '../../data/models/reminder.dart';
+import '../../data/models/reminder_base.dart';
 import '../../data/repositories/reminders_repo.dart';
-import '../screens/home_screen.dart';
+import '../screens/reminder_screen.dart';
 import 'no_rush_provider.dart';
 
 part 'generated/reminders_provider.g.dart';
@@ -25,14 +25,14 @@ class RemindersNotifier extends _$RemindersNotifier {
   StreamSubscription<List<ReminderEntity>>? _remindersSubscrioption;
 
   @override
-  Map<HomeScreenSection, List<ReminderModel>> build() {
+  Map<ReminderSection, List<ReminderModel>> build() {
     _handleEntitiesStream();
 
     // Handle dispose
     ref.onDispose(() => _remindersSubscrioption?.cancel());
 
     AppLogger.i('RemindersNotifier initialized');
-    return <HomeScreenSection, List<ReminderModel>>{};
+    return <ReminderSection, List<ReminderModel>>{};
   }
 
   void _handleEntitiesStream() {
@@ -50,7 +50,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   bool isEmpty() =>
       !state.values.any((List<ReminderModel> element) => element.isNotEmpty);
 
-  Map<HomeScreenSection, List<ReminderModel>> _updateCategorizedReminders(
+  Map<ReminderSection, List<ReminderModel>> _updateCategorizedReminders(
     List<ReminderModel> reminders,
   ) {
     final DateTime now = DateTime.now();
@@ -82,11 +82,11 @@ class RemindersNotifier extends _$RemindersNotifier {
       }
     }
 
-    return <HomeScreenSection, List<ReminderModel>>{
-      HomeScreenSection.overdue: overdueList,
-      HomeScreenSection.today: todayList,
-      HomeScreenSection.tomorrow: tomorrowList,
-      HomeScreenSection.later: laterList,
+    return <ReminderSection, List<ReminderModel>>{
+      ReminderSection.overdue: overdueList,
+      ReminderSection.today: todayList,
+      ReminderSection.tomorrow: tomorrowList,
+      ReminderSection.later: laterList,
     };
   }
 
@@ -230,11 +230,11 @@ class RemindersNotifier extends _$RemindersNotifier {
     }
   }
 
-  /// Moves a reminder from a [HomeScreenSection] to a different one.
+  /// Moves a reminder from a [ReminderSection] to a different one.
   /// This involves changing the reminder's date while preserving the time.
   Future<void> moveReminder(
     ReminderBase original,
-    HomeScreenSection section,
+    ReminderSection section,
   ) async {
     // Get a ReminderModel from the received original.
     // If it is already one, just use it.
@@ -321,19 +321,16 @@ class RemindersNotifier extends _$RemindersNotifier {
   /// Returns a new datetime instance for the reminder.
   /// Used in [moveReminder] to move reminder across sections.
   /// Changes the date of the datetime and not the time.
-  DateTime _getDateTimeForSection(
-    DateTime dateTime,
-    HomeScreenSection section,
-  ) {
+  DateTime _getDateTimeForSection(DateTime dateTime, ReminderSection section) {
     final DateTime now = DateTime.now();
 
     return switch (section) {
-      HomeScreenSection.today => _keepTimeButChangeDate(dateTime, now),
-      HomeScreenSection.tomorrow => _keepTimeButChangeDate(
+      ReminderSection.today => _keepTimeButChangeDate(dateTime, now),
+      ReminderSection.tomorrow => _keepTimeButChangeDate(
         dateTime,
         now.add(const Duration(days: 1)),
       ),
-      HomeScreenSection.later => _keepTimeButChangeDate(
+      ReminderSection.later => _keepTimeButChangeDate(
         dateTime,
         now.add(const Duration(days: 7)),
       ),

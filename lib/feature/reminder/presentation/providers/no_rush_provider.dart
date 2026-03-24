@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../app/constants/const_strings.dart';
-import '../../../../core/data/entities/no_rush_entitiy/no_rush_entity.dart';
-import '../../../../core/data/models/no_rush_reminder.dart';
-import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
+import '../../data/entities/no_rush_entity.dart';
+import '../../data/models/no_rush_reminder.dart';
+import '../../data/models/reminder_base.dart';
 import '../../data/repositories/reminders_repo.dart';
 import 'reminders_provider.dart';
 

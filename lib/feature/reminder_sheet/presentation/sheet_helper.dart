@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/models/reminder_base.dart';
+import '../../reminder/data/models/reminder_base.dart';
 import 'sheet/reminder_sheet.dart';
 
 class SheetHelper {

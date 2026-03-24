@@ -11,8 +11,8 @@ import 'package:toastification/toastification.dart';
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../shared/utils/logger/app_logger.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
-import '../../../../../home/presentation/providers/no_rush_provider.dart';
-import '../../../../../home/presentation/providers/reminders_provider.dart';
+import '../../../../../reminder/presentation/providers/no_rush_provider.dart';
+import '../../../../../reminder/presentation/providers/reminders_provider.dart';
 
 class BackupRestoreSection extends ConsumerWidget {
   const BackupRestoreSection({super.key});

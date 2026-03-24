@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'core/services/notification_service/notification_service.dart';
 import 'feature/agenda/data/repository/agenda_task_repository.dart';
-import 'feature/home/data/repositories/reminders_repo.dart';
+import 'feature/reminder/data/repositories/reminders_repo.dart';
 import 'objectbox.g.dart';
 import 'shared/utils/logger/app_logger.dart';
 

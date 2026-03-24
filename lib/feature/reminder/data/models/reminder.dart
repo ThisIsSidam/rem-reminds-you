@@ -1,6 +1,6 @@
-import '../../../feature/recurrence/data/models/recurrence_rule.dart';
-import '../../../feature/recurrence/domain/recurrence_factory.dart';
-import '../entities/reminder_entitiy/reminder_entity.dart';
+import '../../../recurrence/data/models/recurrence_rule.dart';
+import '../../../recurrence/domain/recurrence_factory.dart';
+import '../entities/reminder_entity.dart';
 import 'reminder_base.dart';
 
 /// One of the implementations of [ReminderBase].

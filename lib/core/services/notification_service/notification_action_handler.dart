@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../feature/reminder/data/entities/no_rush_entity.dart';
+import '../../../feature/reminder/data/entities/reminder_entity.dart';
+import '../../../feature/reminder/data/models/no_rush_reminder.dart';
+import '../../../feature/reminder/data/models/reminder.dart';
+import '../../../feature/reminder/data/models/reminder_base.dart';
 import '../../../feature/settings/presentation/providers/settings_provider.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/logger/app_logger.dart';
-import '../../data/entities/no_rush_entitiy/no_rush_entity.dart';
-import '../../data/entities/reminder_entitiy/reminder_entity.dart';
-import '../../data/models/no_rush_reminder.dart';
-import '../../data/models/reminder.dart';
-import '../../data/models/reminder_base.dart';
 import 'notification_service.dart';
 
 class NotificationActionHandler {
@@ -97,12 +97,12 @@ class NotificationActionHandler {
     final UserSettingsNotifier settings = UserSettingsNotifier(prefs: prefs);
     final TimeOfDay startTime = settings.noRushStartTime;
     final TimeOfDay endTime = settings.noRushEndTime;
-    model.dateTime =
-        NoRushReminderModel.generateRandomFutureTime(startTime, endTime);
-    final int id = box.put(model.toEntity);
-    await NotificationController.scheduleNotification(
-      model.copyWith(id: id),
+    model.dateTime = NoRushReminderModel.generateRandomFutureTime(
+      startTime,
+      endTime,
     );
+    final int id = box.put(model.toEntity);
+    await NotificationController.scheduleNotification(model.copyWith(id: id));
     AppLogger.i('NoRushReminder ${model.id} postponed to ${model.dateTime}');
   }
 
@@ -122,9 +122,7 @@ class NotificationActionHandler {
     final UserSettingsNotifier settings = UserSettingsNotifier(prefs: prefs);
     model.dateTime = model.getPostponeDt(settings.defaultPostponeDuration);
     final int id = box.put(model.toEntity);
-    await NotificationController.scheduleNotification(
-      model.copyWith(id: id),
-    );
+    await NotificationController.scheduleNotification(model.copyWith(id: id));
     AppLogger.i('Reminder ${model.id} postponed to ${model.dateTime}');
   }
 }

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
-import '../../../../core/data/models/no_rush_reminder.dart';
-import '../../../../core/data/models/reminder.dart';
-import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
+import '../../data/models/no_rush_reminder.dart';
+import '../../data/models/reminder.dart';
+import '../../data/models/reminder_base.dart';
 import '../providers/no_rush_provider.dart';
 import '../providers/reminders_provider.dart';
-import '../screens/home_screen.dart';
+import '../screens/reminder_screen.dart';
 import 'no_rush_reminder_tile.dart';
 import 'normal_reminder_tile.dart';
 import 'reminder_drag_zone.dart';
@@ -27,7 +27,7 @@ class ListedReminderSection extends ConsumerWidget {
   });
 
   /// The Homescreen section this widget belongs to.
-  final HomeScreenSection section;
+  final ReminderSection section;
 
   /// Callback to run on tap of section title.
   final VoidCallback? onTapTitle;
@@ -81,11 +81,11 @@ class ListedReminderSection extends ConsumerWidget {
   }
 }
 
-/// [HomeScreenSection] for [NoRushReminderModel].
+/// [ReminderSection] for [NoRushReminderModel].
 class ListedNoRushSection extends ConsumerWidget {
   const ListedNoRushSection({super.key});
 
-  HomeScreenSection get _section => HomeScreenSection.noRush;
+  ReminderSection get _section => ReminderSection.noRush;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -133,7 +133,7 @@ class ListedNoRushSection extends ConsumerWidget {
 class ReminderSectionTitle extends StatelessWidget {
   const ReminderSectionTitle({required this.section, this.onTap, super.key});
 
-  final HomeScreenSection section;
+  final ReminderSection section;
 
   final VoidCallback? onTap;
 

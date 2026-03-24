@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../app/constants/const_strings.dart';
-import '../../../../core/data/models/no_rush_reminder.dart';
-import '../../../../core/data/models/reminder.dart';
-import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
-import '../../../home/presentation/providers/no_rush_provider.dart';
-import '../../../home/presentation/providers/reminders_provider.dart';
+import '../../../reminder/data/models/no_rush_reminder.dart';
+import '../../../reminder/data/models/reminder.dart';
+import '../../../reminder/data/models/reminder_base.dart';
+import '../../../reminder/presentation/providers/no_rush_provider.dart';
+import '../../../reminder/presentation/providers/reminders_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
 class BottomButtons extends ConsumerWidget {

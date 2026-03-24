@@ -10,9 +10,9 @@ import 'feature/app_startup/presentation/providers/initial_screen_provider.dart'
 import 'feature/app_startup/presentation/screens/splash_screen.dart';
 import 'feature/app_startup/presentation/widgets/splash_error.dart';
 import 'feature/home/presentation/screens/dashboard_screen.dart';
-import 'feature/home/presentation/screens/home_screen.dart';
 import 'feature/permissions/domain/app_permi_handler.dart';
 import 'feature/permissions/presentation/screens/permissions_screen.dart';
+import 'feature/reminder/presentation/screens/reminder_screen.dart';
 import 'feature/settings/presentation/providers/settings_provider.dart';
 import 'l10n/app_localizations.dart';
 import 'main.dart';
@@ -46,8 +46,9 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     ref.listen(appStartupProvider, (_, __) {});
     AppLogger.i('App Built');
     final (ThemeMode, double) settings = ref.watch(
-      userSettingsProvider
-          .select((UserSettingsNotifier p) => (p.themeMode, p.textScale)),
+      userSettingsProvider.select(
+        (UserSettingsNotifier p) => (p.themeMode, p.textScale),
+      ),
     );
 
     return DynamicColorBuilder(
@@ -70,9 +71,9 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             navigatorKey: navigatorKey,
             builder: (BuildContext context, Widget? child) {
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaler: TextScaler.linear(settings.$2),
-                ),
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: TextScaler.linear(settings.$2)),
                 child: child!,
               );
             },
@@ -96,8 +97,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     late Widget screenWidget;
     if (screen == null) {
       screenWidget = const SplashScreen();
-    } else if (screen == AppRoute.home) {
-      screenWidget = const HomeScreen();
+    } else if (screen == AppRoute.reminder) {
+      screenWidget = const ReminderScreen();
     } else if (screen == AppRoute.permissions) {
       screenWidget = const PermissionScreen();
     } else if (screen == AppRoute.dashboard) {

@@ -11,13 +11,13 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../app/constants/const_strings.dart';
+import '../../../feature/reminder/data/models/reminder.dart';
+import '../../../feature/reminder/data/models/reminder_base.dart';
 import '../../../feature/reminder_sheet/presentation/sheet_helper.dart';
 import '../../../main.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/id_handler.dart';
 import '../../../shared/utils/logger/app_logger.dart';
-import '../../data/models/reminder.dart';
-import '../../data/models/reminder_base.dart';
 import 'notification_action_handler.dart';
 import 'notification_channels.dart';
 

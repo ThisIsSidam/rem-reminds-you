@@ -1,10 +1,10 @@
 enum AppRoute {
+  agenda('/agenda'),
   dashboard('/dashboard'),
-  home('/home'),
+  reminder('/reminder'),
   permissions('/permissions'),
   splash('/splash'),
-  settings('/settings'),
-  ;
+  settings('/settings');
 
   const AppRoute(this.path);
   final String path;

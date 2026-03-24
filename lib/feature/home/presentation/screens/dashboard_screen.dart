@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../agenda/presentation/screens/agenda_screen.dart';
+import '../../../reminder/presentation/screens/reminder_screen.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../widgets/app_bottom_nav_bar.dart';
-import 'home_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -17,7 +17,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   late final List<Widget> _screens = <Widget>[
     const AgendaScreen(key: ValueKey<String>('agenda-screen')),
-    const HomeScreen(key: ValueKey<String>('home-screen')),
+    const ReminderScreen(key: ValueKey<String>('home-screen')),
     const SettingsScreen(key: ValueKey<String>('settings-screen')),
   ];
 
@@ -29,10 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double horizontalMargin = screenWidth < 400 ? 16 : 36;
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: AppBottomNavBar(
         height: 50,
         iconSize: 16,

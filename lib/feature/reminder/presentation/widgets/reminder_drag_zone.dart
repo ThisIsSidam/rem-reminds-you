@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/extensions/context_ext.dart';
+import '../../data/models/reminder_base.dart';
 import '../../domain/model/dragged_reminder.dart';
 import '../providers/reminder_dragging_provider.dart';
-import '../screens/home_screen.dart';
+import '../screens/reminder_screen.dart';
 
 class ReminderDragZone extends ConsumerWidget {
   const ReminderDragZone({
@@ -17,7 +17,7 @@ class ReminderDragZone extends ConsumerWidget {
 
   /// The section of the reminder this drag zone is for..
   /// The postpone action would be handled according to this.
-  final HomeScreenSection homescreenSection;
+  final ReminderSection homescreenSection;
 
   /// Widget to show when drag zone isn't activated.
   final Widget child;
@@ -27,11 +27,11 @@ class ReminderDragZone extends ConsumerWidget {
 
   String getDragZoneText(BuildContext context) {
     return switch (homescreenSection) {
-      HomeScreenSection.overdue => context.local.dragZoneOverdue,
-      HomeScreenSection.today => context.local.dragZoneToday,
-      HomeScreenSection.tomorrow => context.local.dragZoneTomorrow,
-      HomeScreenSection.later => context.local.dragZoneLater,
-      HomeScreenSection.noRush => context.local.dragZoneNoRush,
+      ReminderSection.overdue => context.local.dragZoneOverdue,
+      ReminderSection.today => context.local.dragZoneToday,
+      ReminderSection.tomorrow => context.local.dragZoneTomorrow,
+      ReminderSection.later => context.local.dragZoneLater,
+      ReminderSection.noRush => context.local.dragZoneNoRush,
     };
   }
 
@@ -50,18 +50,12 @@ class ReminderDragZone extends ConsumerWidget {
         if (draggedRem == null || draggedRem.section == homescreenSection) {
           return child;
         }
-        return _buildDragZone(
-          context,
-          isHovering: candidateData.isNotEmpty,
-        );
+        return _buildDragZone(context, isHovering: candidateData.isNotEmpty);
       },
     );
   }
 
-  Widget _buildDragZone(
-    BuildContext context, {
-    bool isHovering = false,
-  }) {
+  Widget _buildDragZone(BuildContext context, {bool isHovering = false}) {
     final Color sectionColor = homescreenSection.getColor(context);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),

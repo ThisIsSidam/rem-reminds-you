@@ -5,15 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
-import '../../../../core/data/models/reminder.dart';
-import '../../../../core/data/models/reminder_base.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/extensions/datetime_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
+import '../../data/models/reminder.dart';
+import '../../data/models/reminder_base.dart';
 import '../../domain/model/dragged_reminder.dart';
 import '../providers/reminder_dragging_provider.dart';
 import '../providers/reminders_provider.dart';
-import '../screens/home_screen.dart';
+import '../screens/reminder_screen.dart';
 import 'action_pane_manager.dart';
 
 class NormalReminderTile extends ConsumerWidget {
@@ -26,7 +26,7 @@ class NormalReminderTile extends ConsumerWidget {
 
   final ReminderModel reminder;
   final SwipeActionPair actions;
-  final HomeScreenSection section;
+  final ReminderSection section;
 
   void _clearDrag(WidgetRef ref) =>
       ref.read(reminderDraggingProvider.notifier).state = null;

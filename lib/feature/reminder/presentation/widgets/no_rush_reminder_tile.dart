@@ -5,12 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
-import '../../../../core/data/models/no_rush_reminder.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../reminder_sheet/presentation/sheet_helper.dart';
+import '../../data/models/no_rush_reminder.dart';
 import '../../domain/model/dragged_reminder.dart';
 import '../providers/reminder_dragging_provider.dart';
-import '../screens/home_screen.dart';
+import '../screens/reminder_screen.dart';
 import 'action_pane_manager.dart';
 
 class NoRushReminderTile extends ConsumerWidget {
@@ -41,9 +41,9 @@ class NoRushReminderTile extends ConsumerWidget {
         data: reminder,
         onDragStarted: () =>
             ref.read(reminderDraggingProvider.notifier).state = DraggedReminder(
-          reminder: reminder,
-          section: HomeScreenSection.noRush,
-        ),
+              reminder: reminder,
+              section: ReminderSection.noRush,
+            ),
         onDragEnd: (_) => _clearDrag(ref),
         onDraggableCanceled: (_, __) => _clearDrag(ref),
         onDragCompleted: () => _clearDrag(ref),
@@ -54,10 +54,7 @@ class NoRushReminderTile extends ConsumerWidget {
             child: tile,
           ),
         ),
-        childWhenDragging: Opacity(
-          opacity: 0.3,
-          child: tile,
-        ),
+        childWhenDragging: Opacity(opacity: 0.3, child: tile),
         child: tile,
       ),
     );
@@ -67,10 +64,7 @@ class NoRushReminderTile extends ConsumerWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () {
-        SheetHelper().openReminderSheet(
-          context,
-          reminder: reminder,
-        );
+        SheetHelper().openReminderSheet(context, reminder: reminder);
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
