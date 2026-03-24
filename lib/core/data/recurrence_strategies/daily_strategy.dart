@@ -1,3 +1,4 @@
+import '../../extensions/datetime_ext.dart';
 import 'recurrence_strategy.dart';
 
 class DailyStrategy implements RecurrenceStrategy {
@@ -6,7 +7,7 @@ class DailyStrategy implements RecurrenceStrategy {
   @override
   bool occursOn(DateTime base, DateTime target) {
     // Target time is NOT in the past.. can be same time, or in future
-    return !target.isBefore(base);
+    return base.isSameDayAs(target) || target.isAfter(base);
   }
 
   @override

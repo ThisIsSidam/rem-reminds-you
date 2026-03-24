@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'core/services/notification_service/notification_service.dart';
+import 'feature/agenda/data/repository/agenda_task_repository.dart';
 import 'feature/home/data/repositories/reminders_repo.dart';
 import 'objectbox.g.dart';
 import 'shared/utils/logger/app_logger.dart';
@@ -37,15 +38,13 @@ Future<void> _injectDependencies() async {
   final Directory dir = await getApplicationDocumentsDirectory();
   final Store store = Store(
     getObjectBoxModel(),
-    directory: path.join(
-      dir.path,
-      'objectbox-activity-store',
-    ),
+    directory: path.join(dir.path, 'objectbox-activity-store'),
   );
 
   // Register elements to GetIt
   getIt
     ..registerSingleton<SharedPreferences>(prefs)
     ..registerSingleton(RemindersRepository(store))
-    ..registerSingleton(NoRushRemindersRepository(store));
+    ..registerSingleton(NoRushRemindersRepository(store))
+    ..registerSingleton(AgendaTaskRepository(store));
 }

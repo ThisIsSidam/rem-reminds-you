@@ -40,4 +40,12 @@ extension DateTimeX on DateTime {
       return "$hour12Base:${minute.toString().padLeft(2, '0')} $suffix";
     }
   }
+
+  /// Similar to [isAtSameMomentAs], but only checks till day.
+  bool isSameDayAs(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
+  }
+
+  /// Get a version of the instance with only date and no time.
+  DateTime get date => DateTime(year, month, day);
 }

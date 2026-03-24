@@ -6,8 +6,8 @@ import '../../../../core/extensions/context_ext.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_notifier.dart';
 
-class TopButtons extends ConsumerWidget {
-  const TopButtons({super.key});
+class ReminderSheetTopButtons extends ConsumerWidget {
+  const ReminderSheetTopButtons({super.key});
 
   Future<void> deleteReminder(
     int id,

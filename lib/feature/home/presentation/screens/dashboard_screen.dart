@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../agenda/presentation/screens/agenda_screen.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../widgets/app_bottom_nav_bar.dart';
 import 'home_screen.dart';
@@ -12,16 +13,16 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   late final List<Widget> _screens = <Widget>[
+    const AgendaScreen(key: ValueKey<String>('agenda-screen')),
     const HomeScreen(key: ValueKey<String>('home-screen')),
     const SettingsScreen(key: ValueKey<String>('settings-screen')),
   ];
 
-  void _onItemSelected(int index) {
-    setState(() => _selectedIndex = index);
-  }
+  /// Update the current screen being shown
+  void _onItemSelected(int index) => setState(() => _selectedIndex = index);
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +39,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
         margin: EdgeInsets.fromLTRB(horizontalMargin, 0, horizontalMargin, 16),
         items: <BottomNavItem>[
           BottomNavItem(
+            label: 'Agenda',
+            icon: Icons.view_agenda_outlined,
+            selectedIcon: Icons.view_agenda,
+          ),
+          BottomNavItem(
             label: 'Home',
-            icon: Icons.home,
+            icon: Icons.home_outlined,
             selectedIcon: Icons.home,
           ),
           BottomNavItem(
             label: 'Settings',
-            icon: Icons.settings,
+            icon: Icons.settings_outlined,
             selectedIcon: Icons.settings,
           ),
         ],

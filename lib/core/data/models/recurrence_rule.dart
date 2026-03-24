@@ -23,9 +23,7 @@ class RecurrenceRule {
   }
 
   factory RecurrenceRule.fromString(String encoded) {
-    return RecurrenceRule.fromJson(
-      jsonDecode(encoded) as Map<String, dynamic>,
-    );
+    return RecurrenceRule.fromJson(jsonDecode(encoded) as Map<String, dynamic>);
   }
 
   int type;
@@ -37,20 +35,16 @@ class RecurrenceRule {
 
   String get name {
     return switch (type) {
-      101 => 'daily',
-      707 => 'weekly',
-      1001 => 'monthly',
+      101 => 'Daily',
+      707 => 'Weekly',
+      1001 => 'Monthly',
 
       // Includes default '99' and non recognized types
-      _ => 'none',
+      _ => 'None',
     };
   }
 
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'type': type,
-    };
-  }
+  Map<String, dynamic> toJson() => <String, dynamic>{'type': type};
 
   @override
   String toString() => jsonEncode(toJson());

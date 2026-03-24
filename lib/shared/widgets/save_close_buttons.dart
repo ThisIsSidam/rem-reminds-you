@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../../core/extensions/context_ext.dart';
+
 class SaveCloseButtons extends StatelessWidget {
   const SaveCloseButtons({required this.onTapSave, super.key, this.onTapClose});
   final void Function() onTapSave;
   final void Function()? onTapClose;
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Row(
+        spacing: 8,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Expanded(
@@ -20,26 +21,14 @@ class SaveCloseButtons extends StatelessWidget {
               width: 100,
               child: ElevatedButton(
                 onPressed: onTapClose == null
-                    ? () {
-                        Navigator.pop(context);
-                      }
+                    ? () => Navigator.pop(context)
                     : onTapClose!,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.secondaryContainer,
+                  backgroundColor: context.colors.secondaryContainer,
                 ),
-                child: Text(
-                  'Close',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
-                ),
+                child: const Icon(Icons.close),
               ),
             ),
-          ),
-          const SizedBox(
-            width: 10,
           ),
           Expanded(
             flex: 3,
@@ -49,14 +38,13 @@ class SaveCloseButtons extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onTapSave,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: context.colors.primaryContainer,
                 ),
                 child: Text(
                   'Save',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      ),
+                  style: context.texts.bodyLarge!.copyWith(
+                    color: context.colors.onPrimaryContainer,
+                  ),
                 ),
               ),
             ),
