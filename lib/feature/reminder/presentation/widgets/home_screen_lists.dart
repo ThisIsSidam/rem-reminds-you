@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
 import '../../../../core/extensions/context_ext.dart';
-import '../../../reminder_sheet/presentation/sheet_helper.dart';
+import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../data/models/no_rush_reminder.dart';
 import '../../data/models/reminder.dart';
@@ -106,8 +106,7 @@ class ListedNoRushSection extends ConsumerWidget {
         children: <Widget>[
           ReminderSectionTitle(
             section: _section,
-            onTap: () =>
-                SheetHelper().openReminderSheet(context, isNoRush: true),
+            onTap: () => showReminderSheet(context, isNoRush: true),
           ),
           const SizedBox(height: 4),
           ReminderDragZone(

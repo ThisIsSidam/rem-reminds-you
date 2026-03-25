@@ -6,7 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
 import '../../../../core/extensions/context_ext.dart';
-import '../../../reminder_sheet/presentation/sheet_helper.dart';
+import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
 import '../../data/models/no_rush_reminder.dart';
 import '../../domain/model/dragged_reminder.dart';
 import '../providers/reminder_dragging_provider.dart';
@@ -63,9 +63,7 @@ class NoRushReminderTile extends ConsumerWidget {
   Widget _buildTile(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
-      onTap: () {
-        SheetHelper().openReminderSheet(context, reminder: reminder);
-      },
+      onTap: () => showReminderSheet(context, reminder: reminder),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: context.colors.inversePrimary.withValues(alpha: 0.10),

@@ -9,6 +9,24 @@ import '../widgets/central_section.dart';
 import '../widgets/reminder_sheet_top_buttons.dart';
 import '../widgets/title_field.dart';
 
+void showReminderSheet(
+  BuildContext context, {
+  ReminderBase? reminder,
+  Duration? customDuration,
+  bool isNoRush = false,
+}) {
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext context) => ReminderSheet(
+      reminder: reminder,
+      isNoRush: isNoRush,
+      customDuration: customDuration,
+    ),
+  );
+}
+
 class ReminderSheet extends ConsumerStatefulWidget {
   const ReminderSheet({
     this.reminder,

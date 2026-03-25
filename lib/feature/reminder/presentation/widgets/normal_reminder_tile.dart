@@ -7,7 +7,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../app/enums/swipe_actions.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/extensions/datetime_ext.dart';
-import '../../../reminder_sheet/presentation/sheet_helper.dart';
+import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
 import '../../data/models/reminder.dart';
 import '../../data/models/reminder_base.dart';
 import '../../domain/model/dragged_reminder.dart';
@@ -76,9 +76,7 @@ class ReminderListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
-      onTap: () {
-        SheetHelper().openReminderSheet(context, reminder: reminder);
-      },
+      onTap: () => showReminderSheet(context, reminder: reminder),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: context.colors.inversePrimary.withValues(alpha: 0.10),
@@ -130,9 +128,7 @@ class RecurringReminderListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
-      onTap: () {
-        SheetHelper().openReminderSheet(context, reminder: reminder);
-      },
+      onTap: () => showReminderSheet(context, reminder: reminder),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Theme.of(

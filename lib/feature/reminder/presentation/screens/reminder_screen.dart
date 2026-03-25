@@ -114,7 +114,12 @@ class _HomeScreenState extends ConsumerState<ReminderScreen>
           if (isEmpty) getEmptyPage() else getListedReminderPage(),
         ],
       ),
-      floatingActionButton: isEmpty ? null : getFloatingActionButton(),
+      floatingActionButton: isEmpty
+          ? null
+          : FloatingActionButton(
+              onPressed: () => showReminderSheet(context),
+              child: const Icon(Icons.add),
+            ),
     );
   }
 
@@ -146,10 +151,7 @@ class _HomeScreenState extends ConsumerState<ReminderScreen>
               height: 75,
               width: 200,
               child: ElevatedButton(
-                onPressed: () {
-                  AppLogger.i('Show new reminder sheet');
-                  _showReminderSheet();
-                },
+                onPressed: () => showReminderSheet(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(
                     context,
@@ -182,45 +184,22 @@ class _HomeScreenState extends ConsumerState<ReminderScreen>
         ),
         ListedReminderSection(
           section: ReminderSection.today,
-          onTapTitle: _showReminderSheet,
+          onTapTitle: () => showReminderSheet(context),
         ),
         ListedReminderSection(
           section: ReminderSection.tomorrow,
           onTapTitle: () {
-            _showReminderSheet(duration: const Duration(days: 1));
+            showReminderSheet(context, customDuration: const Duration(days: 1));
           },
         ),
         ListedReminderSection(
           section: ReminderSection.later,
           onTapTitle: () {
-            _showReminderSheet(duration: const Duration(days: 7));
+            showReminderSheet(context, customDuration: const Duration(days: 7));
           },
         ),
         const ListedNoRushSection(),
       ]),
-    );
-  }
-
-  // The floating Action button for adding new reminders.
-  Widget getFloatingActionButton() {
-    return FloatingActionButton(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      onPressed: _showReminderSheet,
-      child: const Icon(Icons.add),
-    );
-  }
-
-  void _showReminderSheet({
-    ReminderModel? reminder,
-    Duration? duration,
-    bool isNoRush = false,
-  }) {
-    SheetHelper().openReminderSheet(
-      context,
-      reminder: reminder,
-      customDuration: duration,
-      isNoRush: isNoRush,
     );
   }
 }
