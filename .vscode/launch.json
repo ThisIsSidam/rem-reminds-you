@@ -2,7 +2,7 @@
     "version": "1.0.0",
     "configurations": [
         {
-            "name": "Launch DEV Rem",
+            "name": "[DEV] Debug",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
@@ -13,7 +13,29 @@
             ]
         },
         {
-            "name": "Launch PROD Rem",
+            "name": "[DEV] Release",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main.dart",
+            "args": [
+                "--flavor",
+                "dev"
+            ]
+        },
+        {
+            "name": "[PROD] Debug",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "program": "lib/main.dart",
+            "args": [
+                "--flavor",
+                "prod"
+            ]
+        },
+        {
+            "name": "[PROD] Release",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
