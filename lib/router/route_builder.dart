@@ -10,11 +10,11 @@ import 'app_routes.dart';
 
 Map<String, WidgetBuilder> routeBuilder() {
   return <String, WidgetBuilder>{
-    AppRoute.dashboard.path: (_) => const DashboardScreen(),
-    AppRoute.agenda.path: (_) => const AgendaScreen(),
-    AppRoute.reminder.path: (_) => const ReminderScreen(),
-    AppRoute.permissions.path: (_) => const PermissionScreen(),
-    AppRoute.splash.path: (_) => const SplashScreen(),
-    AppRoute.settings.path: (_) => const SettingsScreen(),
+    AppRoute.dashboard.name: (_) => const DashboardScreen(),
+    AppRoute.agenda.name: (_) => const AgendaScreen(),
+    AppRoute.reminder.name: (_) => const ReminderScreen(),
+    AppRoute.permissions.name: (_) => const PermissionScreen(),
+    AppRoute.splash.name: (_) => const SplashScreen(),
+    AppRoute.settings.name: (_) => const SettingsScreen(),
   };
 }

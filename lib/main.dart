@@ -24,6 +24,8 @@ void main() async {
 
   await AppLogger.init();
   await NotificationController.initializeLocalNotifications();
+  await NotificationController.interceptInitialCallActionRequest();
+  await NotificationController.startListeningNotificationEvents();
 
   await _injectDependencies();
 

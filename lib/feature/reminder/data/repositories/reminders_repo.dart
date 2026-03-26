@@ -66,7 +66,7 @@ class RemindersRepository {
 
       if (!r.paused) {
         // Only reschedule if reminder is NOT paused
-        await NotificationController.scheduleNotification(
+        await NotificationController.scheduleReminder(
           r.toModel.copyWith(id: id),
         );
       }
@@ -133,9 +133,7 @@ class NoRushRemindersRepository {
     for (final NoRushReminderEntity r in reminders) {
       final int id = saveReminder(r);
 
-      await NotificationController.scheduleNotification(
-        r.toModel.copyWith(id: id),
-      );
+      await NotificationController.scheduleReminder(r.toModel.copyWith(id: id));
     }
     return true;
   }

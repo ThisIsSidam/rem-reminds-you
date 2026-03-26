@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
+import '../../../core/extensions/datetime_ext.dart';
 import 'logs_manager.dart';
 
 class AppLogger {
@@ -36,11 +36,9 @@ class AppLogger {
           Level.debug: true,
           Level.trace: true,
         },
+        dateTimeFormat: (time) => time.friendly(),
       ),
-      output: MultiOutput(<LogOutput?>[
-        if (kDebugMode) ConsoleOutput(),
-        fileOutput,
-      ]),
+      output: MultiOutput(<LogOutput?>[ConsoleOutput(), fileOutput]),
     );
 
     _initialized = true;

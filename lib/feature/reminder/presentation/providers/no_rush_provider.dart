@@ -53,9 +53,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
     }
     final int id = _repo.saveReminder(reminder.toEntity);
 
-    await NotificationController.scheduleNotification(
-      reminder.copyWith(id: id),
-    );
+    await NotificationController.scheduleReminder(reminder.copyWith(id: id));
 
     AppLogger.i('Saved Reminder in Database | ID: $id');
     return reminder;

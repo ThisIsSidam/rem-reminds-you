@@ -52,7 +52,7 @@ linter:
     prefer_iterable_whereType : true
     prefer_null_aware_method_calls : true
     prefer_null_aware_operators : true
-    always_specify_types: true
+    always_specify_types: false
     avoid_init_to_null: true
     prefer_if_null_operators: true
     sort_constructors_first: true

@@ -22,7 +22,7 @@ class NotificationActionHandler {
 
   /// Redirects to specific done handler based on the type attribute
   void donePressed() {
-    AppLogger.i('Notification action | Done Button Pressed');
+    _log('Notification action | Done Button Pressed');
 
     if (reminder is ReminderModel) {
       _normalDonePressed();
@@ -35,7 +35,7 @@ class NotificationActionHandler {
 
   /// Redirects to specific postpone handler based on the type attribute
   Future<void> postponePressed() async {
-    AppLogger.i('Notification action | Done Button Pressed');
+    _log('Notification action | Done Button Pressed');
 
     if (reminder is ReminderModel) {
       await _normalPostponePressed();
@@ -50,7 +50,7 @@ class NotificationActionHandler {
   void _noRushDonePressed() {
     final Box<NoRushReminderEntity> box = store.box<NoRushReminderEntity>();
     final bool deleted = box.remove(reminder.id);
-    AppLogger.i('No Rush Reminder deletion status: $deleted');
+    _log('No Rush Reminder deletion status: $deleted');
   }
 
   /// Retreives remidner from box, gets the model instance,
@@ -62,7 +62,7 @@ class NotificationActionHandler {
     final Box<ReminderEntity> box = store.box<ReminderEntity>();
     final ReminderEntity? entity = box.get(reminder.id);
     if (entity == null) {
-      AppLogger.i('Reminder not found in database | Done action cancelled');
+      _log('Reminder not found in database | Done action cancelled');
       return;
     }
     final ReminderModel model = entity.toModel;
@@ -70,12 +70,12 @@ class NotificationActionHandler {
       model.moveToNextOccurrence();
       box.put(model.toEntity);
 
-      await NotificationController.scheduleNotification(model);
-      AppLogger.i('Reminder moved to next occurrence : ${model.dateTime}');
+      await NotificationController.scheduleReminder(model);
+      _log('Reminder moved to next occurrence : ${model.dateTime}');
       return;
     }
     final bool deleted = box.remove(reminder.id);
-    AppLogger.i('Reminder deletion status: $deleted');
+    _log('Reminder deletion status: $deleted');
   }
 
   /// Opens box, retrieves the entitiy object and converts it to model.
@@ -87,9 +87,7 @@ class NotificationActionHandler {
     final NoRushReminderEntity? entity = box.get(reminder.id);
     if (entity == null) {
       // ignore: lines_longer_than_80_chars
-      AppLogger.i(
-        'NoRushReminder not found in database | Done action cancelled',
-      );
+      _log('NoRushReminder not found in database | Done action cancelled');
       return;
     }
     final NoRushReminderModel model = entity.toModel;
@@ -102,8 +100,8 @@ class NotificationActionHandler {
       endTime,
     );
     final int id = box.put(model.toEntity);
-    await NotificationController.scheduleNotification(model.copyWith(id: id));
-    AppLogger.i('NoRushReminder ${model.id} postponed to ${model.dateTime}');
+    await NotificationController.scheduleReminder(model.copyWith(id: id));
+    _log('NoRushReminder ${model.id} postponed to ${model.dateTime}');
   }
 
   /// Opens box, retrieves the entitiy object and converts it to model.
@@ -114,7 +112,7 @@ class NotificationActionHandler {
     final Box<ReminderEntity> box = store.box<ReminderEntity>();
     final ReminderEntity? entity = box.get(reminder.id);
     if (entity == null) {
-      AppLogger.i('Reminder not found in database | Done action cancelled');
+      _log('Reminder not found in database | Done action cancelled');
       return;
     }
     final ReminderModel model = entity.toModel;
@@ -122,7 +120,9 @@ class NotificationActionHandler {
     final UserSettingsNotifier settings = UserSettingsNotifier(prefs: prefs);
     model.dateTime = model.getPostponeDt(settings.defaultPostponeDuration);
     final int id = box.put(model.toEntity);
-    await NotificationController.scheduleNotification(model.copyWith(id: id));
-    AppLogger.i('Reminder ${model.id} postponed to ${model.dateTime}');
+    await NotificationController.scheduleReminder(model.copyWith(id: id));
+    _log('Reminder ${model.id} postponed to ${model.dateTime}');
   }
+
+  void _log(String msg) => AppLogger.i('[NotificationActionHandler] $msg');
 }

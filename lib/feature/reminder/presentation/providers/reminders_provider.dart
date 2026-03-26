@@ -99,9 +99,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 
     if (!reminder.paused) {
       // Only reschedule if reminder is NOT paused
-      await NotificationController.scheduleNotification(
-        reminder.copyWith(id: id),
-      );
+      await NotificationController.scheduleReminder(reminder.copyWith(id: id));
     }
     AppLogger.i('Saved Reminder in Database | ID: $id');
     return reminder;
@@ -160,7 +158,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       IdHandler().getGroupKey(reminder),
     );
     reminder.moveToNextOccurrence();
-    await NotificationController.scheduleNotification(reminder);
+    await NotificationController.scheduleReminder(reminder);
 
     _repo.saveReminder(reminder.toEntity);
 
@@ -186,7 +184,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     reminder
       ..baseDateTime = previous
       ..dateTime = previous;
-    await NotificationController.scheduleNotification(reminder);
+    await NotificationController.scheduleReminder(reminder);
 
     _repo.saveReminder(reminder.toEntity);
 
@@ -226,7 +224,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       }
 
       _repo.saveReminder(reminder.toEntity);
-      await NotificationController.scheduleNotification(reminder);
+      await NotificationController.scheduleReminder(reminder);
     }
   }
 

@@ -5,18 +5,11 @@ import 'package:toastification/toastification.dart';
 
 import 'app/theme/color_schemes.dart';
 import 'app/theme/theme.dart';
-import 'feature/app_startup/presentation/providers/app_startup_provider.dart';
-import 'feature/app_startup/presentation/providers/initial_screen_provider.dart';
 import 'feature/app_startup/presentation/screens/splash_screen.dart';
-import 'feature/app_startup/presentation/widgets/splash_error.dart';
-import 'feature/home/presentation/screens/dashboard_screen.dart';
 import 'feature/permissions/domain/app_permi_handler.dart';
-import 'feature/permissions/presentation/screens/permissions_screen.dart';
-import 'feature/reminder/presentation/screens/reminder_screen.dart';
 import 'feature/settings/presentation/providers/settings_provider.dart';
 import 'l10n/app_localizations.dart';
 import 'main.dart';
-import 'router/app_routes.dart';
 import 'router/route_builder.dart';
 import 'shared/utils/logger/app_logger.dart';
 
@@ -43,7 +36,6 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(appStartupProvider, (_, __) {});
     AppLogger.i('App Built');
     final (ThemeMode, double) settings = ref.watch(
       userSettingsProvider.select(
@@ -78,38 +70,13 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               );
             },
             routes: routeBuilder(),
-            home: Consumer(
-              builder: (BuildContext context, WidgetRef ref, Widget? child) {
-                final AppRoute? route = ref.watch(initialRouteProvider);
-                return _buildScreen(route);
-              },
-            ),
+            home: const SplashScreen(),
             themeMode: settings.$1,
             theme: getLightTheme(lightColorScheme),
             darkTheme: getDarkTheme(darkColorScheme, settings.$1),
           ),
         );
       },
-    );
-  }
-
-  Widget _buildScreen(AppRoute? screen) {
-    late Widget screenWidget;
-    if (screen == null) {
-      screenWidget = const SplashScreen();
-    } else if (screen == AppRoute.reminder) {
-      screenWidget = const ReminderScreen();
-    } else if (screen == AppRoute.permissions) {
-      screenWidget = const PermissionScreen();
-    } else if (screen == AppRoute.dashboard) {
-      screenWidget = const DashboardScreen();
-    } else {
-      screenWidget = const SplashErrorWidget();
-    }
-
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
-      child: screenWidget,
     );
   }
 }

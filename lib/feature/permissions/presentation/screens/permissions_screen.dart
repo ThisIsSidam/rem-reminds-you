@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/constants/app_images.dart';
 import '../../../../core/extensions/context_ext.dart';
+import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../app_startup/presentation/providers/app_startup_provider.dart';
 import '../../domain/app_permi_handler.dart';
@@ -40,7 +41,10 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
   /// Invalidates the [appStartupProvider], causing it to
   /// reassess situation. If permissions are present, it would
   /// open [HomeScreen] then..
-  void _goToHome() => ref.invalidate(appStartupProvider);
+  void _goToHome() => Navigator.of(context).pushNamedAndRemoveUntil(
+    AppRoute.splash.name,
+    (Route<dynamic> route) => false,
+  );
 
   /// Moves the [_pageController] to next permission page.
   void _goToPage(PermissionPage page) {
@@ -169,21 +173,21 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
         valueListenable: _currentPage,
         builder:
             (BuildContext context, PermissionPage currentPage, Widget? child) {
-          return PermissionBottomActions(
-            key: ValueKey<String>('permission-$currentPage-bottom-section'),
-            currentPage: currentPage,
-            onContinue: () {
-              switch (currentPage) {
-                case PermissionPage.notification:
-                  _goToPage(PermissionPage.alarm);
-                case PermissionPage.alarm:
-                  _goToPage(PermissionPage.battery);
-                case PermissionPage.battery:
-                  _goToHome();
-              }
+              return PermissionBottomActions(
+                key: ValueKey<String>('permission-$currentPage-bottom-section'),
+                currentPage: currentPage,
+                onContinue: () {
+                  switch (currentPage) {
+                    case PermissionPage.notification:
+                      _goToPage(PermissionPage.alarm);
+                    case PermissionPage.alarm:
+                      _goToPage(PermissionPage.battery);
+                    case PermissionPage.battery:
+                      _goToHome();
+                  }
+                },
+              );
             },
-          );
-        },
       ),
     );
   }
@@ -210,7 +214,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
               children: <InlineSpan>[
                 TextSpan(
                   text: context.local.permissionNotificationTitle,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: context.texts.titleMedium,
                 ),
                 TextSpan(
                   text: context.local.permissionRequired,
@@ -223,7 +227,7 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
           ),
           Text(
             context.local.permissionNotificationDescription,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: context.texts.bodyMedium,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -247,20 +251,20 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
                 children: <InlineSpan>[
                   TextSpan(
                     text: context.local.permissionAlarmTitle,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: context.texts.titleMedium,
                   ),
                   TextSpan(
                     text: context.local.permissionRequired,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
+                    style: context.texts.bodySmall!.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ],
               ),
             ),
             Text(
               context.local.permissionAlarmDescription,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: context.texts.bodyMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -288,20 +292,20 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
                 children: <InlineSpan>[
                   TextSpan(
                     text: context.local.permissionBatteryTitle,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: context.texts.titleMedium,
                   ),
                   TextSpan(
                     text: context.local.permissionRecommended,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
+                    style: context.texts.bodySmall!.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ],
               ),
             ),
             Text(
               context.local.permissionBatteryDescription,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: context.texts.bodyMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),

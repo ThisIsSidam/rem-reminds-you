@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/extensions/context_ext.dart';
-import '../../../../core/services/notification_service/notification_service.dart';
-import '../../../../main.dart';
-import '../../../../shared/utils/logger/app_logger.dart';
-import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
-import '../../../reminder_sheet/presentation/sheet_helper.dart';
-import '../../data/models/reminder.dart';
+import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
 import '../providers/no_rush_provider.dart';
 import '../providers/reminders_provider.dart';
 import '../widgets/home_screen_lists.dart';
@@ -45,63 +38,11 @@ enum ReminderSection {
   }
 }
 
-class ReminderScreen extends ConsumerStatefulWidget {
+class ReminderScreen extends ConsumerWidget {
   const ReminderScreen({super.key});
 
   @override
-  ConsumerState<ReminderScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends ConsumerState<ReminderScreen>
-    with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    AppLogger.i('HomeScreen initState');
-
-    WidgetsBinding.instance.addObserver(this);
-
-    // Starts the listener for notification button click
-    NotificationController.startListeningNotificationEvents();
-
-    Future<void>.delayed(Duration.zero, _checkAndShowWhatsNewDialog);
-    Future<void>.delayed(Duration.zero, () async {
-      await NotificationController.handleInitialCallback(ref);
-      return;
-    });
-  }
-
-  /// Check if app version stored in SharedPrefs match with current
-  /// version or not. If not, show the dialog and save the
-  /// current version.
-  Future<void> _checkAndShowWhatsNewDialog() async {
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final int currentBuild = int.tryParse(packageInfo.buildNumber) ?? 1;
-    final SharedPreferences prefs = getIt<SharedPreferences>();
-    final int storedBuild = prefs.getInt('storedBuildNumber') ?? 1;
-    if (currentBuild > storedBuild) {
-      await prefs.setInt('storedBuildNumber', currentBuild);
-      if (!mounted) return;
-      await showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return const WhatsNewDialog();
-        },
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    AppLogger.i('HomeScreen dispose');
-
-    if (mounted) {
-      super.dispose();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final bool isEmpty =
         ref.watch(remindersProvider.notifier).isEmpty() &&
         ref.watch(noRushRemindersProvider.notifier).isEmpty();
@@ -110,8 +51,11 @@ class _HomeScreenState extends ConsumerState<ReminderScreen>
       resizeToAvoidBottomInset: false,
       body: CustomScrollView(
         slivers: <Widget>[
-          _buildAppBar(),
-          if (isEmpty) getEmptyPage() else getListedReminderPage(),
+          _buildAppBar(context),
+          if (isEmpty)
+            getEmptyPage(context)
+          else
+            getListedReminderPage(context),
         ],
       ),
       floatingActionButton: isEmpty
@@ -124,7 +68,7 @@ class _HomeScreenState extends ConsumerState<ReminderScreen>
   }
 
   // The appbar for the home page.
-  SliverAppBar _buildAppBar() {
+  SliverAppBar _buildAppBar(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Colors.transparent,
       title: Text(
@@ -135,7 +79,7 @@ class _HomeScreenState extends ConsumerState<ReminderScreen>
   }
 
   // The empty page widget used in empty scaffold body.
-  Widget getEmptyPage() {
+  Widget getEmptyPage(BuildContext context) {
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Center(
@@ -174,7 +118,7 @@ class _HomeScreenState extends ConsumerState<ReminderScreen>
   }
 
   // The list of reminders widget used in scaffold body.
-  Widget getListedReminderPage() {
+  Widget getListedReminderPage(BuildContext context) {
     return SliverList(
       delegate: SliverChildListDelegate(<Widget>[
         const ListedReminderSection(
