@@ -27,7 +27,7 @@ class ReminderModel implements ReminderBase {
         seconds: int.parse(map['autoSnoozeInterval']!),
       ),
       preParsedTitle: map['preParsedTitle'] ?? '',
-      recurrenceRule: RecurrenceRule.fromString(map['recurringRule'] ?? ''),
+      recurrenceRule: RecurrenceRule.fromString(map['recurrenceRule'] ?? ''),
       baseDateTime: DateTime.parse(map['baseDateTime'] ?? map['dateTime']!),
       paused: map['paused']! == 'true',
     );
