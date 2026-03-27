@@ -5,8 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../app/constants/const_strings.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../recurrence/data/models/recurrence_rule.dart';
+import '../../domain/models/sheet_reminder_form.dart';
 import '../providers/central_widget_provider.dart';
-import '../providers/sheet_reminder_notifier.dart';
+import '../providers/sheet_reminder_provider.dart';
 import 'title_parser/title_parser.dart';
 
 const double kHeight = 50;
@@ -17,7 +18,7 @@ class TitleField extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool noRush = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
+      sheetReminderProvider.select((SheetReminderForm p) => p.noRush),
     );
     final TextEditingController titleController = useTextEditingController();
     final FocusNode focusNode = useFocusNode();
@@ -48,7 +49,7 @@ class NormalTitleField extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final DateTime dateTime = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.dateTime),
+      sheetReminderProvider.select((SheetReminderForm p) => p.dateTime),
     );
 
     useEffect(() {
@@ -59,9 +60,7 @@ class NormalTitleField extends HookConsumerWidget {
     }, <Object?>[]);
 
     titleController.text = ref.watch(
-      sheetReminderNotifier.select(
-        (SheetReminderNotifier p) => p.preParsedTitle,
-      ),
+      sheetReminderProvider.select((SheetReminderForm p) => p.preParsedTitle),
     );
 
     if (titleController.text == reminderNullTitle) {
@@ -117,7 +116,9 @@ class NormalTitleField extends HookConsumerWidget {
                 controller: titleController,
                 focusNode: focusNode,
                 onChanged: (String str) {
-                  ref.read(sheetReminderNotifier).updatePreParsedTitle(str);
+                  ref
+                      .read(sheetReminderProvider.notifier)
+                      .updatePreParsedTitle(str);
                   titleParser.parse(str);
                 },
                 onTap: () {
@@ -149,7 +150,7 @@ class NoRushTitleField extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     controller.text = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.title),
+      sheetReminderProvider.select((SheetReminderForm p) => p.title),
     );
 
     final ThemeData theme = Theme.of(context);
@@ -199,7 +200,7 @@ class NoRushTitleField extends HookConsumerWidget {
             controller: controller,
             focusNode: focusNode,
             onChanged: (String str) {
-              ref.read(sheetReminderNotifier).updateTitle(str);
+              ref.read(sheetReminderProvider.notifier).updateTitle(str);
             },
             onTap: () {
               // Defer the bottom element removal
@@ -222,15 +223,13 @@ class PauseButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isPaused = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.isPaused),
+      sheetReminderProvider.select((SheetReminderForm p) => p.isPaused),
     );
     final int? id = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.id),
+      sheetReminderProvider.select((SheetReminderForm p) => p.id),
     );
     final RecurrenceRule interval = ref.watch(
-      sheetReminderNotifier.select(
-        (SheetReminderNotifier p) => p.recurrenceRule,
-      ),
+      sheetReminderProvider.select((SheetReminderForm p) => p.recurrenceRule),
     );
 
     if (id == null || interval.isNone) {
@@ -241,7 +240,7 @@ class PauseButton extends ConsumerWidget {
       height: height,
       child: OutlinedButton(
         onPressed: () {
-          ref.read(sheetReminderNotifier).togglePausedSwitch();
+          ref.read(sheetReminderProvider.notifier).togglePaused();
         },
         style: OutlinedButton.styleFrom(
           backgroundColor: Theme.of(

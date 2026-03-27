@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/extensions/context_ext.dart';
 import '../../../recurrence/data/models/recurrence_rule.dart';
+import '../../domain/models/sheet_reminder_form.dart';
 import '../providers/central_widget_provider.dart';
-import '../providers/sheet_reminder_notifier.dart';
+import '../providers/sheet_reminder_provider.dart';
 
 class ReminderSheetTopButtons extends ConsumerWidget {
   const ReminderSheetTopButtons({super.key});
@@ -15,12 +16,12 @@ class ReminderSheetTopButtons extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     void finalDelete({bool deleteAllRecurring = false}) {
-      ref.read(sheetReminderNotifier.notifier).deleteReminder(id);
+      ref.read(sheetReminderProvider.notifier).deleteReminder(id);
       Navigator.pop(context);
     }
 
     final RecurrenceRule recurrenceRule = ref
-        .read(sheetReminderNotifier)
+        .read(sheetReminderProvider)
         .recurrenceRule;
 
     if (!recurrenceRule.isNone && context.mounted) {
@@ -38,10 +39,10 @@ class ReminderSheetTopButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int? id = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.id),
+      sheetReminderProvider.select((SheetReminderForm p) => p.id),
     );
     final bool noRush = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
+      sheetReminderProvider.select((SheetReminderForm p) => p.noRush),
     );
     final CentralElement centralElement = ref.watch(centralWidgetProvider);
 
@@ -88,7 +89,7 @@ class ReminderSheetTopButtons extends ConsumerWidget {
             icon: Icons.event_busy,
             active: noRush,
             onTap: () {
-              ref.read(sheetReminderNotifier.notifier).toggleNoRushSwitch();
+              ref.read(sheetReminderProvider.notifier).toggleNoRush();
             },
           ),
         ],

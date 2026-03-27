@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../reminder/data/models/reminder_base.dart';
-import '../providers/central_widget_provider.dart';
-import '../providers/sheet_reminder_notifier.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
+import '../../domain/models/sheet_reminder_form.dart';
+import '../providers/sheet_reminder_provider.dart';
 import '../widgets/bottom_buttons.dart';
 import '../widgets/central_section.dart';
 import '../widgets/reminder_sheet_top_buttons.dart';
@@ -19,66 +20,33 @@ void showReminderSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (BuildContext context) => ReminderSheet(
-      reminder: reminder,
-      isNoRush: isNoRush,
-      customDuration: customDuration,
+    builder: (BuildContext context) => ProviderScope(
+      overrides: [
+        sheetReminderProvider.overrideWithBuild((ref, notifier) {
+          final settings = ref.read(userSettingsProvider);
+          return switch (reminder) {
+            ReminderBase() => SheetReminderForm.fromReminder(reminder),
+            null => SheetReminderForm.initial(
+              leadDuration: customDuration ?? settings.defaultLeadDuration,
+              defaultAutoSnoozeDuration: settings.defaultAutoSnoozeDuration,
+              isNoRush: isNoRush,
+            ),
+          };
+        }),
+      ],
+      child: const ReminderSheet(),
     ),
   );
 }
 
-class ReminderSheet extends ConsumerStatefulWidget {
-  const ReminderSheet({
-    this.reminder,
-    this.customDuration,
-    this.isNoRush = false,
-    super.key,
-  });
-
-  final ReminderBase? reminder;
-  final Duration? customDuration;
-  final bool isNoRush;
-
+class ReminderSheet extends ConsumerWidget {
+  const ReminderSheet({super.key});
   @override
-  ConsumerState<ReminderSheet> createState() => _ReminderSheetState();
-}
-
-class _ReminderSheetState extends ConsumerState<ReminderSheet> {
-  ValueNotifier<bool> isLoaded = ValueNotifier<bool>(false);
-
-  @override
-  void initState() {
-    super.initState();
-
-    Future<void>.delayed(Duration.zero, () {
-      if (widget.reminder != null) {
-        ref.read(sheetReminderNotifier.notifier).loadValues(widget.reminder!);
-      } else {
-        ref
-            .read(sheetReminderNotifier)
-            .resetValuesWith(
-              customDuration: widget.customDuration,
-              isNoRush: widget.isNoRush,
-            );
-      }
-
-      ref.read(centralWidgetProvider.notifier).reset();
-      isLoaded.value = true;
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    isLoaded.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ThemeData theme = Theme.of(context);
     final double keyboardInsets = MediaQuery.of(context).viewInsets.bottom;
     final DateTime dateTime = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.dateTime),
+      sheetReminderProvider.select((SheetReminderForm p) => p.dateTime),
     );
 
     return ConstrainedBox(
@@ -87,12 +55,7 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
         child: AnimatedPadding(
           duration: const Duration(milliseconds: 200),
           padding: EdgeInsets.only(bottom: 0 + keyboardInsets),
-          child: ValueListenableBuilder<bool>(
-            valueListenable: isLoaded,
-            builder: (BuildContext context, bool loaded, Widget? child) {
-              return loaded ? _buildBody(dateTime, theme) : _buildLoading();
-            },
-          ),
+          child: _buildBody(dateTime, theme),
         ),
       ),
     );
@@ -118,9 +81,5 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
         ),
       ],
     );
-  }
-
-  Widget _buildLoading() {
-    return const Center(child: CircularProgressIndicator());
   }
 }

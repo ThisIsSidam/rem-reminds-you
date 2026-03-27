@@ -10,7 +10,8 @@ import '../../../reminder/data/models/reminder.dart';
 import '../../../reminder/data/models/reminder_base.dart';
 import '../../../reminder/presentation/providers/no_rush_provider.dart';
 import '../../../reminder/presentation/providers/reminders_provider.dart';
-import '../providers/sheet_reminder_notifier.dart';
+import '../../domain/models/sheet_reminder_form.dart';
+import '../providers/sheet_reminder_provider.dart';
 
 class BottomButtons extends ConsumerWidget {
   const BottomButtons({super.key});
@@ -47,7 +48,7 @@ class SaveButton extends ConsumerWidget {
 
   Future<void> saveReminder(BuildContext context, WidgetRef ref) async {
     final ReminderBase reminder = ref
-        .read(sheetReminderNotifier)
+        .read(sheetReminderProvider.notifier)
         .constructReminder();
 
     if (_hasProblem(context, reminder)) return;
@@ -81,14 +82,13 @@ class SaveButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final SheetReminderNotifier reminder = ref.watch(sheetReminderNotifier);
+    final SheetReminderForm reminder = ref.watch(sheetReminderProvider);
 
     final bool forAllCondition =
-        reminder.id != null &&
         reminder.id != newReminderID &&
         !reminder.recurrenceRule.isNone &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
-    final bool showPostpone = reminder.noRush && reminder.id != null;
+    final bool showPostpone = reminder.noRush;
 
     return Row(
       spacing: 8,
@@ -113,7 +113,7 @@ class SaveButton extends ConsumerWidget {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                ref.read(sheetReminderNotifier.notifier).refreshBaseDateTime();
+                ref.read(sheetReminderProvider.notifier).refreshBaseDateTime();
                 saveReminder(context, ref);
               },
               style: ElevatedButton.styleFrom(
@@ -133,7 +133,7 @@ class SaveButton extends ConsumerWidget {
             child: ElevatedButton(
               onPressed: () async {
                 final NoRushReminderModel noRush = ref
-                    .read(sheetReminderNotifier.notifier)
+                    .read(sheetReminderProvider.notifier)
                     .constructNoRush(newDateTime: true);
                 if (_hasProblem(context, noRush)) return;
                 await ref

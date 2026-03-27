@@ -1,12 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../providers/sheet_reminder_notifier.dart';
+import '../../providers/sheet_reminder_provider.dart';
 
 class TitleParseHandler {
-  TitleParseHandler({
-    required this.ref,
-  }) {
-    dateTime = ref.read(sheetReminderNotifier).dateTime;
+  TitleParseHandler({required this.ref}) {
+    dateTime = ref.read(sheetReminderProvider).dateTime;
     originalDT = dateTime;
   }
   WidgetRef ref;
@@ -14,8 +12,9 @@ class TitleParseHandler {
   late DateTime dateTime;
 
   void parse(String str) {
-    final SheetReminderNotifier reminderNotifier =
-        ref.read(sheetReminderNotifier.notifier);
+    final SheetReminderNotifier reminderNotifier = ref.read(
+      sheetReminderProvider.notifier,
+    );
     final (String, String)? extractedStrings = extractDateTimeString(str);
 
     if (extractedStrings != null) {
@@ -37,8 +36,9 @@ class TitleParseHandler {
     final int inIndex = str.lastIndexOf(' in ');
     final int atIndex = str.lastIndexOf(' at ');
 
-    final int separatorIndex =
-        (inIndex > atIndex && inIndex != -1) ? inIndex : atIndex;
+    final int separatorIndex = (inIndex > atIndex && inIndex != -1)
+        ? inIndex
+        : atIndex;
 
     if (separatorIndex == -1) {
       return null;
@@ -46,7 +46,7 @@ class TitleParseHandler {
 
     return (
       str.substring(0, separatorIndex).trim(),
-      str.substring(separatorIndex).trim()
+      str.substring(separatorIndex).trim(),
     );
   }
 

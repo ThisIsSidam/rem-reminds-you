@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../recurrence/data/models/recurrence_rule.dart';
 import '../../providers/central_widget_provider.dart';
-import '../../providers/sheet_reminder_notifier.dart';
+import '../../providers/sheet_reminder_provider.dart';
 
 class ReminderRecurrenceOptionsWidget extends ConsumerWidget {
   const ReminderRecurrenceOptionsWidget({super.key});
@@ -37,13 +37,13 @@ class IntervalButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final RecurrenceRule recurrenceRule = ref
-        .read(sheetReminderNotifier)
+        .read(sheetReminderProvider)
         .recurrenceRule;
     final bool isPickedOption = interval == recurrenceRule;
 
     return ElevatedButton(
       onPressed: () {
-        ref.read(sheetReminderNotifier).updateRecurrenceRule(interval);
+        ref.read(sheetReminderProvider.notifier).updateRecurrenceRule(interval);
         ref.read(centralWidgetProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(

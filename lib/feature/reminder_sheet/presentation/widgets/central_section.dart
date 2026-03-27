@@ -6,8 +6,9 @@ import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/extensions/datetime_ext.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
+import '../../domain/models/sheet_reminder_form.dart';
 import '../providers/central_widget_provider.dart';
-import '../providers/sheet_reminder_notifier.dart';
+import '../providers/sheet_reminder_provider.dart';
 import 'central_elements/recurrence_options.dart';
 import 'central_elements/snooze_options.dart';
 import 'time_button.dart';
@@ -19,10 +20,10 @@ class CentralSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final DateTime dateTime = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.dateTime),
+      sheetReminderProvider.select((SheetReminderForm p) => p.dateTime),
     );
     final bool noRush = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
+      sheetReminderProvider.select((SheetReminderForm p) => p.noRush),
     );
     final CentralElement centralElement = ref.watch(centralWidgetProvider);
     final CentralWidgetNotifier centralElementNotififer = ref.read(
@@ -98,10 +99,10 @@ class CentralWidget extends ConsumerWidget {
     final UserSettingsNotifier settings = ref.watch(userSettingsProvider);
 
     final DateTime dateTime = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.dateTime),
+      sheetReminderProvider.select((SheetReminderForm p) => p.dateTime),
     );
     final bool isNoRush = ref.watch(
-      sheetReminderNotifier.select((SheetReminderNotifier p) => p.noRush),
+      sheetReminderProvider.select((SheetReminderForm p) => p.noRush),
     );
     if (element != CentralElement.dateTimeGrid) {
       AppLogger.i('Bottom element changed, un-focusing');
@@ -194,8 +195,9 @@ class CentralWidget extends ConsumerWidget {
         use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
         itemExtent: 75,
         onDateTimeChanged: (DateTime dt) {
-          ref.read(sheetReminderNotifier).cleanTitle();
-          ref.read(sheetReminderNotifier).updateDateTime(dt);
+          ref.read(sheetReminderProvider.notifier)
+            ..cleanTitle()
+            ..updateDateTime(dt);
         },
         backgroundColor: Colors.transparent,
       ),

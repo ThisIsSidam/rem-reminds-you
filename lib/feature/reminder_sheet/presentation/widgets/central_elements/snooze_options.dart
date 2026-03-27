@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/extensions/duration_ext.dart';
 import '../../../../settings/presentation/providers/settings_provider.dart';
 import '../../providers/central_widget_provider.dart';
-import '../../providers/sheet_reminder_notifier.dart';
+import '../../providers/sheet_reminder_provider.dart';
 
 class ReminderSnoozeOptionsWidget extends ConsumerWidget {
   const ReminderSnoozeOptionsWidget({super.key});
@@ -44,12 +44,14 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
     WidgetRef ref,
   ) {
     final Duration snoozeInterval = ref
-        .read(sheetReminderNotifier)
+        .read(sheetReminderProvider)
         .autoSnoozeInterval;
     final bool isPickedDuration = duration == snoozeInterval;
     return ElevatedButton(
       onPressed: () {
-        ref.read(sheetReminderNotifier).updateAutoSnoozeInterval(duration);
+        ref
+            .read(sheetReminderProvider.notifier)
+            .updateAutoSnoozeInterval(duration);
         ref.read(centralWidgetProvider.notifier).reset();
       },
       style: ElevatedButton.styleFrom(
