@@ -48,7 +48,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
   Future<NoRushReminderModel> saveReminder(NoRushReminderModel reminder) async {
     if (reminder.id != newReminderID) {
       await NotificationController.cancelScheduledNotification(
-        IdHandler().getGroupKey(reminder),
+        IdHandler.getReminderGroupKey(reminder),
       );
     }
     final int id = _repo.saveReminder(reminder.toEntity);
@@ -66,7 +66,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
       return false;
     }
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(reminder),
+      IdHandler.getReminderGroupKey(reminder),
     );
 
     final bool removed = _repo.removeReminder(id);

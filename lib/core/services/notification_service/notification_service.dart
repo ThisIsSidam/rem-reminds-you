@@ -63,7 +63,7 @@ class NotificationController {
 
     await AndroidAlarmManager.oneShotAt(
       scheduledTime,
-      IdHandler().getAlarmId(reminder),
+      IdHandler.getReminderAlarmId(reminder),
       showReminderNotificationCallback,
       allowWhileIdle: true,
       exact: true,
@@ -89,7 +89,7 @@ class NotificationController {
     final ReminderBase reminder = ReminderBase.fromJson(strParams);
 
     // Should be different each time so that different notifications are shown.
-    final int notificationId = IdHandler().getNotificationId(reminder.id);
+    final int notificationId = IdHandler.getReminderNotificationId(reminder.id);
     final Map<String, String?> payload = reminder.toJson();
 
     _log('Showing notification | notificationID: $notificationId');
@@ -99,7 +99,7 @@ class NotificationController {
         id: notificationId,
         channelKey: NotificationChannels.reminder.key,
         title: 'Reminder: ${reminder.title}',
-        groupKey: IdHandler().getGroupKey(reminder),
+        groupKey: IdHandler.getReminderGroupKey(reminder),
         wakeUpScreen: true,
         payload: payload,
       ),

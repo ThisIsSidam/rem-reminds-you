@@ -93,7 +93,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 
   Future<ReminderModel> saveReminder(ReminderModel reminder) async {
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(reminder),
+      IdHandler.getReminderGroupKey(reminder),
     );
 
     final int id = _repo.saveReminder(reminder.toEntity);
@@ -113,7 +113,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       return;
     }
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(reminder),
+      IdHandler.getReminderGroupKey(reminder),
     );
 
     _repo.removeReminder(id);
@@ -140,7 +140,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       }
 
       await NotificationController.removeNotifications(
-        IdHandler().getGroupKey(reminder),
+        IdHandler.getReminderGroupKey(reminder),
       );
     }
   }
@@ -156,7 +156,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     }
 
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(reminder),
+      IdHandler.getReminderGroupKey(reminder),
     );
     reminder.moveToNextOccurrence();
     await NotificationController.scheduleReminder(reminder);
@@ -180,7 +180,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     if (!reminder.isRecurring) return;
 
     await NotificationController.cancelScheduledNotification(
-      IdHandler().getGroupKey(reminder),
+      IdHandler.getReminderGroupKey(reminder),
     );
     reminder
       ..baseDateTime = previous
@@ -203,7 +203,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     if (!reminder.isRecurring) {
       reminder.paused = true;
       await NotificationController.cancelScheduledNotification(
-        IdHandler().getGroupKey(reminder),
+        IdHandler.getReminderGroupKey(reminder),
       );
       _repo.saveReminder(reminder.toEntity);
     }
