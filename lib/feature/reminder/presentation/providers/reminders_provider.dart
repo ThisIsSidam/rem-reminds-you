@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/exceptions/failures/failure.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';
@@ -254,7 +255,7 @@ class RemindersNotifier extends _$RemindersNotifier {
           recurrenceRule: RecurrenceRule(),
           baseDateTime: dateTime,
         ),
-      _ => throw Exception('Unsupported ReminderBase type: $original'),
+      _ => throw UnknownReminderTypeFailure(original.runtimeType),
     };
 
     // Get new datetime and update create a new updated instance with it.

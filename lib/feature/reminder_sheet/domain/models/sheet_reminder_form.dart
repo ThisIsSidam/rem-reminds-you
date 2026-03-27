@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/exceptions/failures/failure.dart';
 import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../../../reminder/data/models/no_rush_reminder.dart';
 import '../../../reminder/data/models/reminder.dart';
@@ -81,7 +82,7 @@ sealed class SheetReminderForm with _$SheetReminderForm {
         isPaused: false,
         originalType: ReminderType.noRush,
       ),
-      _ => throw 'Unknown Reminder Type Failure',
+      _ => throw UnknownReminderTypeFailure(reminder.runtimeType),
     };
   }
 }
