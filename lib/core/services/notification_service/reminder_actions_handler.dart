@@ -11,11 +11,8 @@ import '../../../objectbox.g.dart';
 import '../../../shared/utils/logger/app_logger.dart';
 import 'notification_service.dart';
 
-class NotificationActionHandler {
-  const NotificationActionHandler({
-    required this.reminder,
-    required this.store,
-  });
+class ReminderActionsHandler {
+  const ReminderActionsHandler({required this.reminder, required this.store});
 
   final ReminderBase reminder;
   final Store store;

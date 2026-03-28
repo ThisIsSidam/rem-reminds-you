@@ -33,4 +33,14 @@ class AgendaTaskEntity {
       recurrenceRule: RecurrenceRule.fromString(recurrenceRule),
     );
   }
+
+  AgendaTaskEntity copyWith({List<int>? completedDates}) {
+    return AgendaTaskEntity(
+      id: id,
+      title: title,
+      baseDate: baseDate,
+      completedDates: completedDates ?? this.completedDates,
+      recurrenceRule: recurrenceRule,
+    );
+  }
 }

@@ -89,7 +89,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     if (context.mounted) {
       showReminderSheet(context, reminder: reminder);
     }
-    await NotificationController.removeNotifications(initialAction.groupKey);
+    await NotificationController.removeNotificationsByGroupKey(
+      initialAction.groupKey,
+    );
   }
 
   void _log(String msg) => AppLogger.i('[DashboardScreen] $msg');

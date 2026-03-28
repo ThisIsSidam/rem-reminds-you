@@ -68,24 +68,7 @@ class AgendaNotifier extends _$AgendaNotifier {
     required DateTime date,
     required bool value,
   }) async {
-    // List to be updated
-    final List<DateTime> updatedList = List<DateTime>.from(task.completedDates);
-
-    // Does the date already exist in completed list
-    final bool exists = updatedList.any(date.isSameDayAs);
-
-    // If we have to mark complete and it isn't already -> mark complete
-    // Else if, remove mark, and is marked -> remove mark
-    if (value && !exists) {
-      updatedList.add(date.date);
-    } else if (!value && exists) {
-      updatedList.removeWhere(date.isSameDayAs);
-    }
-
-    // Update
-    final AgendaTask updated = task.copyWith(completedDates: updatedList);
-    _repo.saveTask(updated.toEntity);
-
+    _repo.setCompletion(task.id, date, value);
     _log(
       'Updated completion- ID:${task.id} - Date:${date.date} - Complete:$value',
     );

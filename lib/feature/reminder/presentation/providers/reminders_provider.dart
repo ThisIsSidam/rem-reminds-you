@@ -139,7 +139,7 @@ class RemindersNotifier extends _$RemindersNotifier {
         await moveToNextReminderOccurrence(id);
       }
 
-      await NotificationController.removeNotifications(
+      await NotificationController.removeNotificationsByGroupKey(
         IdHandler.getReminderGroupKey(reminder),
       );
     }

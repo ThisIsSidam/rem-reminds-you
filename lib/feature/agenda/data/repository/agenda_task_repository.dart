@@ -1,5 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 
+import '../../../../core/extensions/datetime_ext.dart';
 import '../../../recurrence/data/strategies/recurrence_strategy.dart';
 import '../../../recurrence/domain/recurrence_factory.dart';
 import '../entities/agenda_task_entity.dart';
@@ -10,7 +11,7 @@ class AgendaTaskRepository {
   AgendaTaskRepository(Store store) : _box = store.box<AgendaTaskEntity>();
 
   /// The [Box] handling all database operations of [AgendaTaskEntity].
-  late final Box<AgendaTaskEntity> _box;
+  final Box<AgendaTaskEntity> _box;
 
   /// Returns a stream of [AgendaTaskEntity].
   Stream<List<AgendaTaskEntity>> getTasksStream() {
@@ -48,5 +49,28 @@ class AgendaTaskRepository {
   /// Gets a task by id.
   AgendaTask? getTask(int id) {
     return _box.get(id)?.toModel;
+  }
+
+  void setCompletion(int id, DateTime dateTime, bool isCompleted) {
+    final task = _box.get(id);
+    if (task == null) return;
+
+    final int dateAsInt = dateTime.date.millisecondsSinceEpoch;
+
+    final List<int> completedDates = List<int>.from(task.completedDates);
+
+    final bool exists = completedDates.contains(dateAsInt);
+
+    // Only update if something actually changes
+    if (isCompleted && !exists) {
+      completedDates.add(dateAsInt);
+    } else if (!isCompleted && exists) {
+      completedDates.remove(dateAsInt);
+    } else {
+      return; // no-op → avoid DB write
+    }
+
+    final updated = task.copyWith(completedDates: completedDates);
+    _box.put(updated);
   }
 }

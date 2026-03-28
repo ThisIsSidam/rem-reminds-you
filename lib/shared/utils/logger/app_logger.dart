@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:logger/logger.dart';
 
-import '../../../core/extensions/datetime_ext.dart';
 import 'logs_manager.dart';
 
 class AppLogger {
@@ -36,7 +35,7 @@ class AppLogger {
           Level.debug: true,
           Level.trace: true,
         },
-        dateTimeFormat: (time) => time.friendly(),
+        dateTimeFormat: (time) => time.toString(),
       ),
       output: MultiOutput(<LogOutput?>[ConsoleOutput(), fileOutput]),
     );

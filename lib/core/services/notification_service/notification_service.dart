@@ -9,15 +9,22 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../app/constants/const_strings.dart';
+import '../../../feature/agenda/data/models/agenda_task.dart';
 import '../../../feature/reminder/data/models/reminder_base.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/id_handler.dart';
 import '../../../shared/utils/logger/app_logger.dart';
-import 'notification_action_handler.dart';
+import 'agenda_notifications_helper.dart';
+import 'notification_actions_enum.dart';
 import 'notification_channels.dart';
+import 'reminder_actions_handler.dart';
 
 @pragma('vm:entry-point')
 class NotificationController {
+  // -----------------------------------------
+  // ----- INIT ----------------------------------
+  // -----------------------------------------
+
   static Future<void> initializeLocalNotifications() async {
     await AndroidAlarmManager.initialize();
 
@@ -50,6 +57,10 @@ class NotificationController {
         .getInitialNotificationAction(removeFromActionEvents: true)
         .timeout(const Duration(seconds: 2), onTimeout: () => null);
   }
+
+  // -----------------------------------------
+  // ----- REMINDER ----------------------------------
+  // -----------------------------------------
 
   /// Schedule an alarm for the reminder with callback to show the notification.
   /// [reminder] is used to generate the payload of the alarm and notification.
@@ -104,16 +115,8 @@ class NotificationController {
         payload: payload,
       ),
       actionButtons: <NotificationActionButton>[
-        NotificationActionButton(
-          key: 'done',
-          label: 'Done',
-          actionType: ActionType.SilentBackgroundAction,
-        ),
-        NotificationActionButton(
-          key: 'postpone',
-          label: 'Postpone',
-          actionType: ActionType.SilentBackgroundAction,
-        ),
+        NotificationActions.reminderDone.button,
+        NotificationActions.reminderPostpone.button,
       ],
     );
 
@@ -131,8 +134,83 @@ class NotificationController {
     );
   }
 
+  // -----------------------------------------
+  // ----- AGENDA ----------------------------------
+  // -----------------------------------------
+
+  @pragma('vm:entry-point')
+  static Future<void> scheduleAgenda(DateTime scheduledTime) async {
+    _log('Agenda Scheduled | DT: $scheduledTime');
+
+    await AndroidAlarmManager.oneShotAt(
+      scheduledTime,
+      IdHandler.agendaAlarmId,
+      showAgendaNotificationCallback,
+      allowWhileIdle: true,
+      exact: true,
+      wakeup: true,
+      rescheduleOnReboot: true,
+    );
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> showAgendaNotificationCallback(
+    int id,
+    Map<String, dynamic> params,
+  ) async {
+    await AppLogger.init();
+    _log('Agenda Callback Running');
+
+    final Store store = await _getObjectboxStore();
+    final helper = AgendaNotificationsHelper(store: store);
+    final NextAgendaTask nextTask = await helper.getNextTask();
+    store.close();
+
+    if (nextTask.task == null) {
+      _log('No next task present');
+      return;
+    }
+
+    await showAgendaNotification(task: nextTask.task!, isLast: nextTask.isLast);
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> showAgendaNotification({
+    required AgendaTask task,
+    required bool isLast,
+  }) async {
+    final payload = <String, String>{'currentTaskId': task.id.toString()};
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: IdHandler.agendaNotificationId,
+        channelKey: NotificationChannels.agenda.key,
+        title: "Today's Agenda",
+        body: task.title,
+        locked: true,
+        autoDismissible: false,
+        payload: payload,
+      ),
+      actionButtons: [
+        if (isLast)
+          NotificationActions.agendaDone.button
+        else
+          NotificationActions.agendaNext.button,
+      ],
+    );
+  }
+
+  // -----------------------------------------
+  // ----- NOTIFICATION HANDLERS --------------------------
+  // -----------------------------------------
+
+  /// Remove notifications using the notification [id].
+  static Future<void> removeNotificationsById(int id) async {
+    await AwesomeNotifications().cancel(id);
+  }
+
   /// Used to remove notifications present in user's notification space.
-  static Future<void> removeNotifications(String? groupKey) async {
+  static Future<void> removeNotificationsByGroupKey(String? groupKey) async {
     if (groupKey == null) {
       AppLogger.w('Received null groupKey in removeNotifications');
       return;
@@ -152,9 +230,13 @@ class NotificationController {
     // Cancelling through ALM coz AwesomeN is used to only send notification.
     // It has no hands in scheduling notifications.
     await AndroidAlarmManager.cancel(int.tryParse(groupKey) ?? -1);
-    await removeNotifications(groupKey);
+    await removeNotificationsByGroupKey(groupKey);
     _log('Cancelled scheduled notifications | gKey : $groupKey');
   }
+
+  // -----------------------------------------
+  // ----- ACTION HANDLERS ----------------------------------
+  // -----------------------------------------
 
   static Future<void> startListeningNotificationEvents() async {
     await AwesomeNotifications().setListeners(
@@ -171,32 +253,99 @@ class NotificationController {
     await AppLogger.init();
     _log('Received notification action | Action: ${receivedAction.actionType}');
     if (receivedAction.payload == null) return;
+
+    if (receivedAction.channelKey == NotificationChannels.reminder.key) {
+      await _handleReminderNotificationAction(receivedAction);
+    } else if (receivedAction.channelKey == NotificationChannels.agenda.key) {
+      await _handleAgendaNotificationAction(receivedAction);
+    }
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> _handleReminderNotificationAction(
+    ReceivedAction receivedAction,
+  ) async {
+    final String buttonPressed = receivedAction.buttonKeyPressed;
+    if (!NotificationActions.isReminderAction(buttonPressed)) return;
+
+    // Get reminder from payload
     final ReminderBase reminder = ReminderBase.fromJson(
       receivedAction.payload!,
     );
+
+    // Cancel all existing notifications of the reminder
     await cancelScheduledNotification(
       receivedAction.groupKey ?? notificationNullGroupKey,
     );
-    final Store store = await getObjectboxStore();
-    final NotificationActionHandler actionHandler = NotificationActionHandler(
+
+    // Get store, create action handler instance
+    final Store store = await _getObjectboxStore();
+    final actionHandler = ReminderActionsHandler(
       reminder: reminder,
       store: store,
     );
 
-    if (receivedAction.buttonKeyPressed == 'done') {
+    // Handle action based on button pressed
+    if (buttonPressed == NotificationActions.reminderDone.key) {
       actionHandler.donePressed();
-    } else if (receivedAction.buttonKeyPressed == 'postpone') {
+    } else if (buttonPressed == NotificationActions.reminderPostpone.key) {
       await actionHandler.postponePressed();
     }
+
+    // Close store
     store.close();
   }
+
+  @pragma('vm:entry-point')
+  static Future<void> _handleAgendaNotificationAction(
+    ReceivedAction receivedAction,
+  ) async {
+    final buttonPressed = receivedAction.buttonKeyPressed;
+    if (!NotificationActions.isAgendaActiono(buttonPressed)) return;
+
+    // Parse task id
+    final int? currentTaskId = int.tryParse(
+      receivedAction.payload?['currentTaskId'] ?? '',
+    );
+
+    if (currentTaskId == null) return;
+
+    // Get repository instance
+    final Store store = await _getObjectboxStore();
+    final handler = AgendaNotificationsHelper(store: store);
+
+    // Handle action
+    late final NextAgendaTask nextTask;
+    if (buttonPressed == NotificationActions.agendaDone.key) {
+      nextTask = await handler.nextPressed(currentTaskId);
+    } else if (buttonPressed == NotificationActions.agendaNext.key) {
+      nextTask = await handler.nextPressed(currentTaskId);
+    } else if (buttonPressed == NotificationActions.agendaSkip.key) {
+      await handler.skipPressed();
+      // To be handled
+    }
+
+    store.close();
+
+    if (nextTask.task == null) {
+      _log('No next task present');
+      await removeNotificationsById(IdHandler.agendaNotificationId);
+      return;
+    }
+
+    await showAgendaNotification(task: nextTask.task!, isLast: nextTask.isLast);
+  }
+
+  // -----------------------------------------
+  // ----- HELPERS ----------------------------------
+  // -----------------------------------------
 
   /// Get future to Objectbox Store instance
   ///
   /// If store is already open (in case app is active), attachs to that
   /// instance, or returns a new instance.
   @pragma('vm:entry-point')
-  static Future<Store> getObjectboxStore() async {
+  static Future<Store> _getObjectboxStore() async {
     final Directory dir = await getApplicationDocumentsDirectory();
     if (Store.isOpen(path.join(dir.path, 'objectbox-activity-store'))) {
       return Store.attach(
