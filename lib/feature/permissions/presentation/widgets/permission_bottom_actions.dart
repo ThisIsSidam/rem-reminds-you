@@ -58,7 +58,7 @@ class _PermissionBottomActionsState
   Future<void> _requestPermission() async {
     switch (widget.currentPage) {
       case PermissionPage.notification:
-        await NotificationController.requestNotificationPermission();
+        await NotificationService.requestNotificationPermission();
       case PermissionPage.alarm:
         await AppPermissionHandler.openAlarmSettings();
       case PermissionPage.battery:

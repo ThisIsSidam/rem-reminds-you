@@ -8,7 +8,7 @@ class AppPermissionHandler {
 
   static Future<bool> checkRequiredPermissions() async {
     final bool notifPermission =
-        await NotificationController.checkNotificationPermissions();
+        await NotificationService.checkNotificationPermissions();
     // if notification permission is not present, no need to check alarm
     if (notifPermission == false) return false;
     return checkAlarmPermission();
@@ -16,8 +16,9 @@ class AppPermissionHandler {
 
   static Future<bool> checkAlarmPermission() async {
     try {
-      final dynamic isGranted =
-          await platform.invokeMethod('checkAlarmPermission');
+      final dynamic isGranted = await platform.invokeMethod(
+        'checkAlarmPermission',
+      );
       return isGranted is bool && isGranted;
     } on PlatformException catch (e) {
       AppLogger.e('Failed to check Alarm permission', error: e);
@@ -35,8 +36,9 @@ class AppPermissionHandler {
 
   static Future<bool> isIgnoringBatteryOptimizations() async {
     try {
-      final dynamic isIgnoring =
-          await platform.invokeMethod('isIgnoringBatteryOptimizations');
+      final dynamic isIgnoring = await platform.invokeMethod(
+        'isIgnoringBatteryOptimizations',
+      );
       return isIgnoring is bool && isIgnoring;
     } on PlatformException catch (e) {
       AppLogger.e('Failed to check battery settings', error: e);

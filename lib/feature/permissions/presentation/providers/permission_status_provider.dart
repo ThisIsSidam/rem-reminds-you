@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/services/notification_service/notification_service.dart';
@@ -11,7 +10,7 @@ part 'generated/permission_status_provider.g.dart';
 Future<bool> permission(Ref ref, PermissionPage page) async {
   switch (page) {
     case PermissionPage.notification:
-      return NotificationController.checkNotificationPermissions();
+      return NotificationService.checkNotificationPermissions();
 
     case PermissionPage.alarm:
       return AppPermissionHandler.checkAlarmPermission();

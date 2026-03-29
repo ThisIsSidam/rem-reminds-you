@@ -19,7 +19,7 @@ Future<AppRoute> appStartup(Ref ref) async {
   // Schedule the next agenda notification
   final agendaTime = ref.read(userSettingsProvider).defaultAgendaTime;
   final agendaDateTime = MiscMethods.getAgendaDateTime(agendaTime);
-  await NotificationController.scheduleAgenda(agendaDateTime);
+  await NotificationService.scheduleAgenda(agendaDateTime);
 
   final bool permissions =
       await AppPermissionHandler.checkRequiredPermissions();

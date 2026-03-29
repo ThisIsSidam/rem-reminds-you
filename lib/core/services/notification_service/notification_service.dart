@@ -20,7 +20,7 @@ import 'notification_channels.dart';
 import 'reminder_actions_handler.dart';
 
 @pragma('vm:entry-point')
-class NotificationController {
+class NotificationService {
   // -----------------------------------------
   // ----- INIT ----------------------------------
   // -----------------------------------------

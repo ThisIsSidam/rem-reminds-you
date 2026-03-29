@@ -23,9 +23,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppLogger.init();
-  await NotificationController.initializeLocalNotifications();
-  await NotificationController.interceptInitialCallActionRequest();
-  await NotificationController.startListeningNotificationEvents();
+  await NotificationService.initializeLocalNotifications();
+  await NotificationService.interceptInitialCallActionRequest();
+  await NotificationService.startListeningNotificationEvents();
 
   await _injectDependencies();
 

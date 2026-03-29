@@ -47,13 +47,13 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
 
   Future<NoRushReminderModel> saveReminder(NoRushReminderModel reminder) async {
     if (reminder.id != newReminderID) {
-      await NotificationController.cancelScheduledNotification(
+      await NotificationService.cancelScheduledNotification(
         IdHandler.getReminderGroupKey(reminder),
       );
     }
     final int id = _repo.saveReminder(reminder.toEntity);
 
-    await NotificationController.scheduleReminder(reminder.copyWith(id: id));
+    await NotificationService.scheduleReminder(reminder.copyWith(id: id));
 
     AppLogger.i('Saved Reminder in Database | ID: $id');
     return reminder;
@@ -65,7 +65,7 @@ class NoRushRemindersNotifier extends _$NoRushRemindersNotifier {
       AppLogger.i('Reminder not found | Cannot perform action.');
       return false;
     }
-    await NotificationController.cancelScheduledNotification(
+    await NotificationService.cancelScheduledNotification(
       IdHandler.getReminderGroupKey(reminder),
     );
 

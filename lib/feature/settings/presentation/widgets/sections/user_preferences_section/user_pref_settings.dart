@@ -222,7 +222,7 @@ class UserPreferenceSection extends HookWidget {
 
             // Update the schedule
             final agendaDateTime = MiscMethods.getAgendaDateTime(pickedTime);
-            await NotificationController.scheduleAgenda(agendaDateTime);
+            await NotificationService.scheduleAgenda(agendaDateTime);
           },
           leading: const Icon(Icons.view_agenda),
           title: Text('When to show Agenda?', style: context.texts.titleMedium),

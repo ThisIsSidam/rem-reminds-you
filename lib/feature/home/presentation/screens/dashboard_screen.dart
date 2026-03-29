@@ -68,7 +68,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   /// Handles actions received from notification taps
   Future<void> _handleInitialAction(WidgetRef ref) async {
-    final ReceivedAction? initialAction = NotificationController.initialAction;
+    final ReceivedAction? initialAction = NotificationService.initialAction;
 
     if (initialAction == null) return;
     if (initialAction.actionType != .Default) return;
@@ -89,7 +89,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     if (context.mounted) {
       showReminderSheet(context, reminder: reminder);
     }
-    await NotificationController.removeNotificationsByGroupKey(
+    await NotificationService.removeNotificationsByGroupKey(
       initialAction.groupKey,
     );
   }

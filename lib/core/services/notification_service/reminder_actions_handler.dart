@@ -67,7 +67,7 @@ class ReminderActionsHandler {
       model.moveToNextOccurrence();
       box.put(model.toEntity);
 
-      await NotificationController.scheduleReminder(model);
+      await NotificationService.scheduleReminder(model);
       _log('Reminder moved to next occurrence : ${model.dateTime}');
       return;
     }
@@ -97,7 +97,7 @@ class ReminderActionsHandler {
       endTime,
     );
     final int id = box.put(model.toEntity);
-    await NotificationController.scheduleReminder(model.copyWith(id: id));
+    await NotificationService.scheduleReminder(model.copyWith(id: id));
     _log('NoRushReminder ${model.id} postponed to ${model.dateTime}');
   }
 
@@ -117,7 +117,7 @@ class ReminderActionsHandler {
     final UserSettingsNotifier settings = UserSettingsNotifier(prefs: prefs);
     model.dateTime = model.getPostponeDt(settings.defaultPostponeDuration);
     final int id = box.put(model.toEntity);
-    await NotificationController.scheduleReminder(model.copyWith(id: id));
+    await NotificationService.scheduleReminder(model.copyWith(id: id));
     _log('Reminder ${model.id} postponed to ${model.dateTime}');
   }
 

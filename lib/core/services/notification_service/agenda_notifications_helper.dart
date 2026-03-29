@@ -62,7 +62,7 @@ class AgendaNotificationsHelper {
     final TimeOfDay agendaTime = notififer.defaultAgendaTime;
 
     final agendaDateTime = MiscMethods.getAgendaDateTime(agendaTime);
-    await NotificationController.scheduleAgenda(agendaDateTime);
+    await NotificationService.scheduleAgenda(agendaDateTime);
     _log('Schedule next agenda notification');
   }
 

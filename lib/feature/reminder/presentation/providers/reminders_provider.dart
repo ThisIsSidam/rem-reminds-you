@@ -92,7 +92,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   }
 
   Future<ReminderModel> saveReminder(ReminderModel reminder) async {
-    await NotificationController.cancelScheduledNotification(
+    await NotificationService.cancelScheduledNotification(
       IdHandler.getReminderGroupKey(reminder),
     );
 
@@ -100,7 +100,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 
     if (!reminder.paused) {
       // Only reschedule if reminder is NOT paused
-      await NotificationController.scheduleReminder(reminder.copyWith(id: id));
+      await NotificationService.scheduleReminder(reminder.copyWith(id: id));
     }
     AppLogger.i('Saved Reminder in Database | ID: $id');
     return reminder;
@@ -112,7 +112,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       AppLogger.w('Reminder not found | Cannot perform action.');
       return;
     }
-    await NotificationController.cancelScheduledNotification(
+    await NotificationService.cancelScheduledNotification(
       IdHandler.getReminderGroupKey(reminder),
     );
 
@@ -139,7 +139,7 @@ class RemindersNotifier extends _$RemindersNotifier {
         await moveToNextReminderOccurrence(id);
       }
 
-      await NotificationController.removeNotificationsByGroupKey(
+      await NotificationService.removeNotificationsByGroupKey(
         IdHandler.getReminderGroupKey(reminder),
       );
     }
@@ -155,11 +155,11 @@ class RemindersNotifier extends _$RemindersNotifier {
       return;
     }
 
-    await NotificationController.cancelScheduledNotification(
+    await NotificationService.cancelScheduledNotification(
       IdHandler.getReminderGroupKey(reminder),
     );
     reminder.moveToNextOccurrence();
-    await NotificationController.scheduleReminder(reminder);
+    await NotificationService.scheduleReminder(reminder);
 
     _repo.saveReminder(reminder.toEntity);
 
@@ -179,13 +179,13 @@ class RemindersNotifier extends _$RemindersNotifier {
     }
     if (!reminder.isRecurring) return;
 
-    await NotificationController.cancelScheduledNotification(
+    await NotificationService.cancelScheduledNotification(
       IdHandler.getReminderGroupKey(reminder),
     );
     reminder
       ..baseDateTime = previous
       ..dateTime = previous;
-    await NotificationController.scheduleReminder(reminder);
+    await NotificationService.scheduleReminder(reminder);
 
     _repo.saveReminder(reminder.toEntity);
 
@@ -202,7 +202,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     }
     if (!reminder.isRecurring) {
       reminder.paused = true;
-      await NotificationController.cancelScheduledNotification(
+      await NotificationService.cancelScheduledNotification(
         IdHandler.getReminderGroupKey(reminder),
       );
       _repo.saveReminder(reminder.toEntity);
@@ -225,7 +225,7 @@ class RemindersNotifier extends _$RemindersNotifier {
       }
 
       _repo.saveReminder(reminder.toEntity);
-      await NotificationController.scheduleReminder(reminder);
+      await NotificationService.scheduleReminder(reminder);
     }
   }
 
