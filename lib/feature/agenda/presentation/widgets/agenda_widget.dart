@@ -19,73 +19,82 @@ class AgendaWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final String dateStr = _getDateString(agenda.date);
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.colors.inversePrimary.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: context.colors.inversePrimary.withValues(alpha: 0.25),
-        ),
+    return InkWell(
+      onTap: () => showAgendaTaskSheet(
+        context,
+        ref,
+        task: AgendaTask.empty(dateTime: agenda.date),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            dateStr,
-            style: context.texts.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: context.colors.inversePrimary.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: context.colors.inversePrimary.withValues(alpha: 0.25),
           ),
-          if (agenda.tasks.isEmpty)
-            const Text('No tasks for this day.')
-          else
-            ReorderableListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              buildDefaultDragHandles: false,
-              itemCount: agenda.tasks.length,
-              onReorder: (int oldIndex, int newIndex) {
-                ref
-                    .read(agendaProvider.notifier)
-                    .reorderTask(oldIndex, newIndex, agenda.date);
-              },
-              itemBuilder: (BuildContext context, int index) {
-                final AgendaTask task = agenda.tasks[index];
-                return ListTile(
-                  key: ValueKey(task.id),
-                  contentPadding: .zero,
-                  dense: true,
-                  visualDensity: .compact,
-                  onTap: () => showAgendaTaskSheet(context, ref, task: task),
-                  title: Text(task.title),
-                  leading: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ReorderableDragStartListener(
-                        index: index,
-                        child: const Padding(
-                          padding: EdgeInsets.only(right: 8.0, left: 4.0),
-                          child: Icon(Icons.drag_indicator, color: Colors.grey),
-                        ),
-                      ),
-                      Checkbox(
-                        value: task.isCompleted(agenda.date),
-                        onChanged: (bool? value) => ref
-                            .read(agendaProvider.notifier)
-                            .updateCompletion(
-                              task,
-                              date: agenda.date,
-                              value: value ?? false,
-                            ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              dateStr,
+              style: context.texts.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-        ],
+            if (agenda.tasks.isEmpty)
+              Text('No tasks for this day.', style: context.texts.bodySmall)
+            else
+              ReorderableListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                buildDefaultDragHandles: false,
+                itemCount: agenda.tasks.length,
+                onReorder: (int oldIndex, int newIndex) {
+                  ref
+                      .read(agendaProvider.notifier)
+                      .reorderTask(oldIndex, newIndex, agenda.date);
+                },
+                itemBuilder: (BuildContext context, int index) {
+                  final AgendaTask task = agenda.tasks[index];
+                  return ListTile(
+                    key: ValueKey(task.id),
+                    contentPadding: .zero,
+                    dense: true,
+                    visualDensity: .compact,
+                    onTap: () => showAgendaTaskSheet(context, ref, task: task),
+                    title: Text(task.title),
+                    leading: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ReorderableDragStartListener(
+                          index: index,
+                          child: const Padding(
+                            padding: EdgeInsets.only(right: 8, left: 4),
+                            child: Icon(
+                              Icons.drag_indicator,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        Checkbox(
+                          value: task.isCompleted(agenda.date),
+                          onChanged: (bool? value) => ref
+                              .read(agendaProvider.notifier)
+                              .updateCompletion(
+                                task,
+                                date: agenda.date,
+                                value: value ?? false,
+                              ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
       ),
     );
   }

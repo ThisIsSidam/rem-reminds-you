@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/extensions/context_ext.dart';
 import '../../data/models/agenda.dart';
 import '../providers/agenda_provider.dart';
 import '../widgets/agenda_task_sheet.dart';
@@ -16,13 +17,30 @@ class AgendaScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Agenda')),
-      body: ListView.separated(
-        itemCount: agendas.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (BuildContext context, int index) {
-          final Agenda agenda = agendas[index];
-          return AgendaWidget(agenda: agenda);
-        },
+      body: Column(
+        mainAxisSize: .min,
+        children: [
+          Flexible(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: agendas.length,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (BuildContext context, int index) {
+                final Agenda agenda = agendas[index];
+                return AgendaWidget(agenda: agenda);
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'Tap card to create new task',
+              textAlign: .center,
+              style: context.texts.bodySmall,
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showAgendaTaskSheet(context, ref),

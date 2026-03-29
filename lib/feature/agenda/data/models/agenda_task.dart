@@ -19,10 +19,10 @@ sealed class AgendaTask with _$AgendaTask {
     @Default(<DateTime>[]) List<DateTime> completedDates,
   }) = _AgendaTask;
 
-  factory AgendaTask.empty() => AgendaTask(
+  factory AgendaTask.empty({DateTime? dateTime}) => AgendaTask(
     id: 0,
     title: '',
-    baseDate: DateTime.now().add(const Duration(days: 1)),
+    baseDate: dateTime ?? DateTime.now().add(const Duration(days: 1)),
     completedDates: <DateTime>[],
     recurrenceRule: RecurrenceRule(),
   );

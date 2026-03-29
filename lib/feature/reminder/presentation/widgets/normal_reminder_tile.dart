@@ -92,7 +92,7 @@ class ReminderListTile extends ConsumerWidget {
             children: <Widget>[
               Text(
                 reminder.title,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: context.texts.titleMedium?.copyWith(fontWeight: .bold),
                 softWrap: true,
               ),
               Row(
@@ -103,11 +103,11 @@ class ReminderListTile extends ConsumerWidget {
                     reminder.dateTime.friendly(
                       is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
                     ),
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: context.texts.bodyMedium,
                   ),
                   Text(
                     reminder.dateTime.formattedDuration,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: context.texts.bodySmall,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -152,14 +152,14 @@ class RecurringReminderListTile extends ConsumerWidget {
                 children: <Widget>[
                   Text(
                     reminder.title,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: context.texts.titleMedium,
                     softWrap: true,
                   ),
                   Text(
                     reminder.dateTime.friendly(
                       is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
                     ),
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: context.texts.bodyMedium,
                   ),
                 ],
               ),
@@ -172,11 +172,11 @@ class RecurringReminderListTile extends ConsumerWidget {
                   children: <Widget>[
                     Text(
                       '⟳ ${reminder.recurrenceRule.name}',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: context.texts.bodySmall,
                     ),
                     Text(
                       reminder.dateTime.formattedDuration,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: context.texts.bodySmall,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -212,7 +212,7 @@ class RecurringReminderListTile extends ConsumerWidget {
       ),
       child: Text(
         isPaused ? context.local.actionResume : context.local.actionPause,
-        style: Theme.of(context).textTheme.labelMedium,
+        style: context.texts.labelMedium,
       ),
     );
   }
