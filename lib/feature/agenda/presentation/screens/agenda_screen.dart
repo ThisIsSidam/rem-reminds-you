@@ -43,6 +43,7 @@ class AgendaScreen extends HookConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'new-agenda-task-floating-button',
         onPressed: () => showAgendaTaskSheet(context, ref),
         child: const Icon(Icons.add),
       ),

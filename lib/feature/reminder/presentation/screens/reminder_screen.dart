@@ -43,9 +43,15 @@ class ReminderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bool isEmpty =
-        ref.watch(remindersProvider.notifier).isEmpty() &&
-        ref.watch(noRushRemindersProvider.notifier).isEmpty();
+    final hasNormalReminders = ref.watch(
+      remindersProvider.select(
+        (state) => state.values.any((value) => value.isNotEmpty),
+      ),
+    );
+    final hasNoRushReminders = ref.watch(
+      noRushRemindersProvider.select((state) => state.isNotEmpty),
+    );
+    final bool isEmpty = !hasNormalReminders && !hasNoRushReminders;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -61,6 +67,7 @@ class ReminderScreen extends ConsumerWidget {
       floatingActionButton: isEmpty
           ? null
           : FloatingActionButton(
+              heroTag: 'new-reminder-floating-button',
               onPressed: () => showReminderSheet(context),
               child: const Icon(Icons.add),
             ),
