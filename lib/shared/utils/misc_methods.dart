@@ -19,4 +19,20 @@ class MiscMethods {
     }
     await Future<void>.delayed(const Duration(seconds: 1));
   }
+
+  static DateTime getAgendaDateTime(TimeOfDay time) {
+    final now = DateTime.now();
+    final agendaDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+    if (agendaDateTime.isBefore(now)) {
+      return agendaDateTime.add(const Duration(days: 1));
+    } else {
+      return agendaDateTime;
+    }
+  }
 }

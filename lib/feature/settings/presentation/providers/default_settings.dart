@@ -5,6 +5,7 @@ import 'settings_keys.dart';
 final Map<SettingsKey, dynamic> defaultSettings = <SettingsKey, dynamic>{
   SettingsKey.defaultLeadDuration: const Duration(hours: 1),
   SettingsKey.defaultAutoSnoozeDuration: const Duration(minutes: 10),
+  SettingsKey.defaultAgendaTime: const TimeOfDay(hour: 9, minute: 0),
   SettingsKey.quickTimeSetOption1: DateTime(0, 0, 0, 9, 30),
   SettingsKey.quickTimeSetOption2: DateTime(0, 0, 0, 12),
   SettingsKey.quickTimeSetOption3: DateTime(0, 0, 0, 18, 30),

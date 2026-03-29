@@ -168,6 +168,7 @@ class NotificationController {
 
     if (nextTask.task == null) {
       _log('No next task present');
+      await AgendaNotificationsHelper.scheduleNextAgendaNotification();
       return;
     }
 
@@ -330,6 +331,7 @@ class NotificationController {
     if (nextTask.task == null) {
       _log('No next task present');
       await removeNotificationsById(IdHandler.agendaNotificationId);
+      await AgendaNotificationsHelper.scheduleNextAgendaNotification();
       return;
     }
 

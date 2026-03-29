@@ -85,6 +85,21 @@ class UserSettingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  TimeOfDay get defaultAgendaTime {
+    const SettingsKey key = SettingsKey.defaultAgendaTime;
+    final TimeOfDay? value = prefs.getTimeOfDay(key.name);
+    if (value == null) {
+      return defaultSettings[key] as TimeOfDay;
+    }
+    return value;
+  }
+
+  Future<void> setDefaultAgendaTime(TimeOfDay value) async {
+    const SettingsKey key = SettingsKey.defaultAgendaTime;
+    await prefs.setTimeOfDay(key.name, value);
+    notifyListeners();
+  }
+
   DateTime get quickTimeSetOption1 {
     const SettingsKey key = SettingsKey.quickTimeSetOption1;
     final DateTime? value = prefs.getDateTime(key.name);
