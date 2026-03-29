@@ -15,6 +15,7 @@ sealed class AgendaTask with _$AgendaTask {
     required String title,
     required DateTime baseDate,
     required RecurrenceRule recurrenceRule,
+    @Default(0) int order,
     @Default(<DateTime>[]) List<DateTime> completedDates,
   }) = _AgendaTask;
 
@@ -38,9 +39,12 @@ sealed class AgendaTask with _$AgendaTask {
     completedDates: completedDates
         .map((DateTime e) => e.millisecondsSinceEpoch)
         .toList(),
+    order: order,
     recurrenceRule: recurrenceRule.toString(),
   );
 
   /// Whether the [date] is marked complete.
   bool isCompleted(DateTime date) => completedDates.any(date.isSameDayAs);
+
+  int compareTo(AgendaTask other) => order.compareTo(other.order);
 }

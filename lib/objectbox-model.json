@@ -88,7 +88,7 @@
     },
     {
       "id": "12:235184663884177593",
-      "lastPropertyId": "6:661471845606780354",
+      "lastPropertyId": "7:7469794518233777693",
       "name": "AgendaTaskEntity",
       "properties": [
         {
@@ -116,6 +116,11 @@
           "id": "6:661471845606780354",
           "name": "completedDates",
           "type": 27
+        },
+        {
+          "id": "7:7469794518233777693",
+          "name": "order",
+          "type": 6
         }
       ],
       "relations": []

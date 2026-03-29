@@ -41,27 +41,46 @@ class AgendaWidget extends ConsumerWidget {
           if (agenda.tasks.isEmpty)
             const Text('No tasks for this day.')
           else
-            ListView.builder(
+            ReorderableListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
+              buildDefaultDragHandles: false,
               itemCount: agenda.tasks.length,
+              onReorder: (int oldIndex, int newIndex) {
+                ref
+                    .read(agendaProvider.notifier)
+                    .reorderTask(oldIndex, newIndex, agenda.date);
+              },
               itemBuilder: (BuildContext context, int index) {
                 final AgendaTask task = agenda.tasks[index];
                 return ListTile(
+                  key: ValueKey(task.id),
                   contentPadding: .zero,
                   dense: true,
                   visualDensity: .compact,
                   onTap: () => showAgendaTaskSheet(context, ref, task: task),
                   title: Text(task.title),
-                  leading: Checkbox(
-                    value: task.isCompleted(agenda.date),
-                    onChanged: (bool? value) => ref
-                        .read(agendaProvider.notifier)
-                        .updateCompletion(
-                          task,
-                          date: agenda.date,
-                          value: value ?? false,
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ReorderableDragStartListener(
+                        index: index,
+                        child: const Padding(
+                          padding: EdgeInsets.only(right: 8.0, left: 4.0),
+                          child: Icon(Icons.drag_indicator, color: Colors.grey),
                         ),
+                      ),
+                      Checkbox(
+                        value: task.isCompleted(agenda.date),
+                        onChanged: (bool? value) => ref
+                            .read(agendaProvider.notifier)
+                            .updateCompletion(
+                              task,
+                              date: agenda.date,
+                              value: value ?? false,
+                            ),
+                      ),
+                    ],
                   ),
                 );
               },

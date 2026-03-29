@@ -38,6 +38,7 @@ class AgendaNotifier extends _$AgendaNotifier {
       List<AgendaTaskEntity> entities,
     ) {
       _allTasks = entities.map((AgendaTaskEntity e) => e.toModel).toList();
+      _allTasks.sort((AgendaTask a, AgendaTask b) => a.compareTo(b));
       _recomputeAgenda();
     });
   }
@@ -61,6 +62,30 @@ class AgendaNotifier extends _$AgendaNotifier {
   Future<void> addTask(AgendaTask task) async {
     _repo.saveTask(task.toEntity);
     _log('Saved task - ID:${task.id} - Title:${task.title}');
+  }
+
+  Future<void> reorderTask(int oldIndex, int newIndex, DateTime date) async {
+    final List<AgendaTask> tasks = _repo.getTasksForDate(date, _allTasks);
+
+    final resolvedNewIndex = switch (oldIndex < newIndex) {
+      true => newIndex - 1,
+      false => newIndex,
+    };
+
+    final AgendaTask task = tasks.removeAt(oldIndex);
+    tasks.insert(resolvedNewIndex, task);
+
+    final List<AgendaTaskEntity> updatedEntities = <AgendaTaskEntity>[];
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i].order != i) {
+        updatedEntities.add(tasks[i].copyWith(order: i).toEntity);
+      }
+    }
+
+    if (updatedEntities.isNotEmpty) {
+      _repo.saveTasks(updatedEntities);
+      _log('Reordered ${updatedEntities.length} tasks');
+    }
   }
 
   Future<void> updateCompletion(

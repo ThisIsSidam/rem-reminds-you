@@ -11,6 +11,7 @@ class AgendaTaskEntity {
     required this.title,
     required this.baseDate,
     required this.completedDates,
+    required this.order,
     required this.recurrenceRule,
   });
 
@@ -19,6 +20,7 @@ class AgendaTaskEntity {
   @Property(type: PropertyType.date)
   DateTime baseDate;
   List<int> completedDates;
+  int order;
   String recurrenceRule;
 
   /// Converts this entity to the corresponding model.
@@ -30,6 +32,7 @@ class AgendaTaskEntity {
       completedDates: completedDates
           .map(DateTime.fromMillisecondsSinceEpoch)
           .toList(),
+      order: order,
       recurrenceRule: RecurrenceRule.fromString(recurrenceRule),
     );
   }
@@ -40,6 +43,7 @@ class AgendaTaskEntity {
       title: title,
       baseDate: baseDate,
       completedDates: completedDates ?? this.completedDates,
+      order: order,
       recurrenceRule: recurrenceRule,
     );
   }

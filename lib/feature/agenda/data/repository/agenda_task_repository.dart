@@ -33,12 +33,17 @@ class AgendaTaskRepository {
         task.recurrenceRule,
       );
       return strategy.occursOn(task.baseDate, date);
-    }).toList();
+    }).toList()..sort((AgendaTask a, AgendaTask b) => a.compareTo(b));
   }
 
   /// Saves a task entity.
   int saveTask(AgendaTaskEntity entity) {
     return _box.put(entity);
+  }
+
+  /// Saves multiple task entities.
+  void saveTasks(List<AgendaTaskEntity> entities) {
+    _box.putMany(entities);
   }
 
   /// Removes a task by id.
