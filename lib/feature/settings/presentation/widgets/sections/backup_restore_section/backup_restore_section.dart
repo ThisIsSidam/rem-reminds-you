@@ -44,7 +44,7 @@ class BackupRestoreSection extends ConsumerWidget {
 
   Widget getBackupTile(BuildContext context, WidgetRef ref) {
     return ListTile(
-      leading: const Icon(Icons.backup_outlined),
+      leading: Icon(Icons.backup_outlined, color: context.colors.primary),
       title: Text(
         context.local.settingsBackup,
         style: Theme.of(context).textTheme.titleSmall,
@@ -101,7 +101,10 @@ class BackupRestoreSection extends ConsumerWidget {
 
   Widget getRestoreTile(BuildContext context, WidgetRef ref) {
     return ListTile(
-      leading: const Icon(Icons.settings_backup_restore),
+      leading: Icon(
+        Icons.settings_backup_restore,
+        color: context.colors.primary,
+      ),
       title: Text(
         context.local.settingsRestore,
         style: Theme.of(context).textTheme.titleSmall,

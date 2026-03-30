@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../app/enums/swipe_actions.dart';
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
-import '../user_preferences_section/swipe_to_left_action_sheet.dart';
-import '../user_preferences_section/swipe_to_right_action_sheet.dart';
+import 'swipe_to_left_action_sheet.dart';
+import 'swipe_to_right_action_sheet.dart';
 
 class GesturesSection extends ConsumerWidget {
   const GesturesSection({super.key});
@@ -19,10 +19,9 @@ class GesturesSection extends ConsumerWidget {
           leading: const Icon(Icons.near_me, color: Colors.transparent),
           title: Text(
             context.local.settingsGestures,
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall!
-                .copyWith(color: Theme.of(context).colorScheme.primary),
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
         const SizedBox(height: 5),
@@ -36,16 +35,15 @@ class GesturesSection extends ConsumerWidget {
     );
   }
 
-  Widget _buildSlideToLeftActionsSetting(
-    BuildContext context,
-  ) {
+  Widget _buildSlideToLeftActionsSetting(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
-        final SwipeAction action =
-            ref.watch(userSettingsProvider).homeTileSwipeActionLeft;
+        final SwipeAction action = ref
+            .watch(userSettingsProvider)
+            .homeTileSwipeActionLeft;
 
         return ListTile(
-          leading: const Icon(Icons.swipe_left),
+          leading: Icon(Icons.swipe_left, color: context.colors.primary),
           title: Text(
             context.local.settingsSwipeToLeftActions,
             style: Theme.of(context).textTheme.titleSmall,
@@ -72,11 +70,12 @@ class GesturesSection extends ConsumerWidget {
   Widget _buildSlideToRightActionsSetting(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
-        final SwipeAction action =
-            ref.watch(userSettingsProvider).homeTileSwipeActionRight;
+        final SwipeAction action = ref
+            .watch(userSettingsProvider)
+            .homeTileSwipeActionRight;
 
         return ListTile(
-          leading: const Icon(Icons.swipe_right),
+          leading: Icon(Icons.swipe_right, color: context.colors.primary),
           title: Text(
             context.local.settingsSwipeToRightActions,
             style: Theme.of(context).textTheme.titleSmall,

@@ -4,7 +4,11 @@ enum AppRoute {
   reminder('/reminder'),
   permissions('/permissions'),
   splash('/splash'),
-  settings('/settings');
+  settings('/settings'),
+  settingsPersonalization('/settings/personalization'),
+  settingsReminder('/settings/reminder'),
+  settingsAgenda('/settings/agenda'),
+  settingsAdvanced('/settings/advanced');
 
   const AppRoute(this.path);
   final String path;

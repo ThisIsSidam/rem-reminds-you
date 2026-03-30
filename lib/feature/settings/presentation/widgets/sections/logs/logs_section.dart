@@ -22,10 +22,9 @@ class LogsSection extends ConsumerWidget {
           leading: const Icon(Icons.backup, color: Colors.transparent),
           title: Text(
             context.local.settingsLogs,
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall!
-                .copyWith(color: Theme.of(context).colorScheme.primary),
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
         const SizedBox(height: 5),
@@ -41,7 +40,7 @@ class LogsSection extends ConsumerWidget {
 
   Widget getLogsTile(BuildContext context, WidgetRef ref) {
     return ListTile(
-      leading: const Icon(Icons.storage),
+      leading: Icon(Icons.storage, color: context.colors.primary),
       title: Text(
         context.local.settingsGetLogFile,
         style: Theme.of(context).textTheme.titleSmall,
@@ -86,11 +85,7 @@ class LogsSection extends ConsumerWidget {
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
-          AppLogger.e(
-            'Error exporting logs',
-            error: e,
-            stackTrace: stackTrace,
-          );
+          AppLogger.e('Error exporting logs', error: e, stackTrace: stackTrace);
           if (!context.mounted) return;
           AppUtils.showToast(msg: context.local.settingsExportLogsFailed);
         }
@@ -100,7 +95,7 @@ class LogsSection extends ConsumerWidget {
 
   Widget getClearLogsTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.folder_delete),
+      leading: Icon(Icons.folder_delete, color: context.colors.primary),
       title: Text(
         'Clear all logs',
         style: Theme.of(context).textTheme.titleSmall,

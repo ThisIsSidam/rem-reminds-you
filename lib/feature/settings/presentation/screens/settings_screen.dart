@@ -1,31 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/extensions/context_ext.dart';
+import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
+import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
 import '../providers/settings_provider.dart';
-import '../widgets/sections/backup_restore_section/backup_restore_section.dart';
-import '../widgets/sections/gestures_section/gestures_section.dart';
-import '../widgets/sections/logs/logs_section.dart';
-import '../widgets/sections/new_reminder_settings/new_reminder_section.dart';
-import '../widgets/sections/other_section/other_section.dart';
-import '../widgets/sections/user_preferences_section/user_pref_settings.dart';
 
-class SettingsScreen extends HookConsumerWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final UserSettingsNotifier settingsNotifier =
-        ref.watch(userSettingsProvider);
-    useEffect(
-      () {
-        AppLogger.i('Built Settings Screen');
-        return null;
-      },
-      <Object?>[],
+    final UserSettingsNotifier settingsNotifier = ref.watch(
+      userSettingsProvider,
     );
 
     return Scaffold(
@@ -35,25 +24,39 @@ class SettingsScreen extends HookConsumerWidget {
           context.local.settingsTitle,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        actions: <Widget>[
-          resetIcon(context, settingsNotifier),
-        ],
+        actions: <Widget>[resetIcon(context, settingsNotifier)],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const UserPreferenceSection(),
-            _buildPaddedDivider(),
-            const GesturesSection(),
-            _buildPaddedDivider(),
-            const NewReminderSection(),
-            _buildPaddedDivider(),
-            const BackupRestoreSection(),
-            _buildPaddedDivider(),
-            const LogsSection(),
-            _buildPaddedDivider(),
-            const OtherSection(),
+            const SizedBox(height: 16),
+            _buildNavigationTile(
+              context,
+              title: 'Personalization',
+              icon: Icons.palette_outlined,
+              route: AppRoute.settingsPersonalization,
+            ),
+            _buildNavigationTile(
+              context,
+              title: 'Reminder Settings',
+              icon: Icons.notifications_active_outlined,
+              route: AppRoute.settingsReminder,
+            ),
+            _buildNavigationTile(
+              context,
+              title: 'Agenda Settings',
+              icon: Icons.view_agenda_outlined,
+              route: AppRoute.settingsAgenda,
+            ),
+            _buildNavigationTile(
+              context,
+              title: 'Advanced',
+              icon: Icons.settings_system_daydream_outlined,
+              route: AppRoute.settingsAdvanced,
+            ),
+            _buildWhatsNewTile(context),
+            const SizedBox(height: 16),
             _buildVersionWidget(),
             SizedBox(height: MediaQuery.viewPaddingOf(context).bottom + 16),
           ],
@@ -62,17 +65,43 @@ class SettingsScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildPaddedDivider() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Divider(),
+  Widget _buildNavigationTile(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required AppRoute route,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: context.colors.primary),
+      title: Text(title, style: context.texts.titleMedium),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {
+        Navigator.pushNamed(context, route.name);
+      },
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     );
   }
 
-  Widget resetIcon(
-    BuildContext context,
-    UserSettingsNotifier notifier,
-  ) {
+  Widget _buildWhatsNewTile(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.new_releases_outlined, color: context.colors.primary),
+      title: Text(
+        context.local.settingsWhatsNew,
+        style: context.texts.titleMedium,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      onTap: () {
+        showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return const WhatsNewDialog();
+          },
+        );
+      },
+    );
+  }
+
+  Widget resetIcon(BuildContext context, UserSettingsNotifier notifier) {
     return IconButton(
       icon: const Icon(Icons.refresh),
       onPressed: () {
@@ -129,10 +158,7 @@ class SettingsScreen extends HookConsumerWidget {
           if (snapshot.hasData) {
             return Text(
               'v${snapshot.data!.version}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(color: Colors.grey),
+              style: context.texts.bodySmall?.copyWith(color: Colors.grey),
             );
           }
 

@@ -21,10 +21,9 @@ class NewReminderSection extends ConsumerWidget {
           leading: const Icon(Icons.near_me, color: Colors.transparent),
           title: Text(
             context.local.settingsNewReminder,
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall!
-                .copyWith(color: Theme.of(context).colorScheme.primary),
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
         const SizedBox(height: 5),
@@ -43,12 +42,13 @@ class NewReminderSection extends ConsumerWidget {
   Widget _buildDefaultLeadDurationTile(BuildContext context, WidgetRef ref) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        final Duration dur =
-            ref.watch(userSettingsProvider).defaultLeadDuration;
+        final Duration dur = ref
+            .watch(userSettingsProvider)
+            .defaultLeadDuration;
         final String durString = dur.pretty(tersity: DurationTersity.minute);
 
         return ListTile(
-          leading: const Icon(Icons.add),
+          leading: Icon(Icons.add, color: context.colors.primary),
           title: Text(
             context.local.settingsDefaultLeadDuration,
             style: Theme.of(context).textTheme.titleSmall,
@@ -80,13 +80,15 @@ class NewReminderSection extends ConsumerWidget {
   ) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        final Duration dur =
-            ref.watch(userSettingsProvider).defaultAutoSnoozeDuration;
-        final String durString = '${context.local.settingsEvery} '
-            '${dur.pretty(tersity: DurationTersity.minute)}';
+        final Duration dur = ref
+            .watch(userSettingsProvider)
+            .defaultAutoSnoozeDuration;
+        final String durString = context.local.settingsEvery(
+          dur.pretty(tersity: DurationTersity.minute),
+        );
 
         return ListTile(
-          leading: const Icon(Icons.snooze),
+          leading: Icon(Icons.snooze, color: context.colors.primary),
           title: Text(
             context.local.settingsDefaultAutoSnoozeDuration,
             style: Theme.of(context).textTheme.titleSmall,
@@ -114,7 +116,7 @@ class NewReminderSection extends ConsumerWidget {
 
   Widget _buildQuickTimeTableTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.table_chart_outlined),
+      leading: Icon(Icons.table_chart_outlined, color: context.colors.primary),
       title: Text(
         context.local.settingsQuickTimeTable,
         style: Theme.of(context).textTheme.titleSmall,
@@ -134,7 +136,7 @@ class NewReminderSection extends ConsumerWidget {
 
   Widget _buildSnoozeOptionsTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.snooze_outlined),
+      leading: Icon(Icons.snooze_outlined, color: context.colors.primary),
       title: Text(
         context.local.settingsSnoozeOptions,
         style: Theme.of(context).textTheme.titleSmall,
