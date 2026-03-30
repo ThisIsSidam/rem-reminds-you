@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
+import 'app/enums/app_language.dart';
 import 'app/theme/color_schemes.dart';
 import 'app/theme/theme.dart';
 import 'feature/app_startup/presentation/screens/splash_screen.dart';
@@ -37,9 +38,18 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     AppLogger.i('App Built');
-    final theme = ref.watch(userSettingsProvider.select((p) => p.themeMode));
-    final text = ref.watch(userSettingsProvider.select((p) => p.textScale));
-    final language = ref.watch(userSettingsProvider.select((p) => p.language));
+    final ThemeMode theme = ref.watch(
+      userSettingsProvider.select((p) => p.themeMode),
+    );
+    final double textScale = ref.watch(
+      userSettingsProvider.select((p) => p.textScale),
+    );
+    final AppLanguage language = ref.watch(
+      userSettingsProvider.select((p) => p.language),
+    );
+    final bool useSystemFont = ref.watch(
+      userSettingsProvider.select((p) => p.useSystemFont),
+    );
 
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
@@ -64,15 +74,21 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               return MediaQuery(
                 data: MediaQuery.of(
                   context,
-                ).copyWith(textScaler: TextScaler.linear(text)),
+                ).copyWith(textScaler: TextScaler.linear(textScale)),
                 child: child!,
               );
             },
             routes: routeBuilder(),
             home: const SplashScreen(),
             themeMode: theme,
-            theme: getLightTheme(lightColorScheme),
-            darkTheme: getDarkTheme(darkColorScheme, theme),
+            theme: getLightTheme(
+              lightColorScheme,
+              useSystemFont: useSystemFont,
+            ),
+            darkTheme: getDarkTheme(
+              darkColorScheme,
+              useSystemFont: useSystemFont,
+            ),
           ),
         );
       },

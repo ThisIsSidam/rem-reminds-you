@@ -28,4 +28,5 @@ enum SettingsKey {
   noRushHoursEndTime,
   textScale,
   language,
+  useSystemFont,
 }

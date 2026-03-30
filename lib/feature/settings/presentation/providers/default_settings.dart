@@ -35,4 +35,5 @@ final Map<SettingsKey, dynamic> defaultSettings = <SettingsKey, dynamic>{
   SettingsKey.noRushHoursEndTime: const TimeOfDay(hour: 23, minute: 0),
   SettingsKey.textScale: 1.0,
   SettingsKey.language: AppLanguage.system,
+  SettingsKey.useSystemFont: false,
 };

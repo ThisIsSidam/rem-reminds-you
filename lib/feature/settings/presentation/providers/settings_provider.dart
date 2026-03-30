@@ -48,6 +48,8 @@ class UserSettingsNotifier extends ChangeNotifier {
         prefs.setDouble(key, value);
       } else if (value is String) {
         prefs.setString(key, value);
+      } else if (value is bool) {
+        prefs.setBool(key, value);
       } else {
         AppLogger.w(
           // ignore: lines_longer_than_80_chars
@@ -490,6 +492,21 @@ class UserSettingsNotifier extends ChangeNotifier {
   Future<void> setLanguage(AppLanguage value) async {
     const SettingsKey key = SettingsKey.language;
     await prefs.setString(key.name, value.localeStr);
+    notifyListeners();
+  }
+
+  bool get useSystemFont {
+    const SettingsKey key = SettingsKey.useSystemFont;
+    final bool? value = prefs.getBool(key.name);
+    if (value == null) {
+      return defaultSettings[key] as bool;
+    }
+    return value;
+  }
+
+  Future<void> setUseSystemFont(bool value) async {
+    const SettingsKey key = SettingsKey.useSystemFont;
+    await prefs.setBool(key.name, value);
     notifyListeners();
   }
 }

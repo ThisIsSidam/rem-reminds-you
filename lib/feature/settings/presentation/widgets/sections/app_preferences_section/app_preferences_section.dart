@@ -23,6 +23,7 @@ class AppPreferencesSection extends HookConsumerWidget {
             _buildThemeSetting(context, ref, controller),
             _buildLanguageSetting(context, ref),
             _buildTextScaleSetting(context, ref),
+            _buildUseSystemFontTile(context, ref),
           ],
         ),
       ],
@@ -133,6 +134,19 @@ class AppPreferencesSection extends HookConsumerWidget {
             ref.read(userSettingsProvider).setLanguage(value);
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildUseSystemFontTile(BuildContext context, WidgetRef ref) {
+    final bool useSystemFont = ref.watch(userSettingsProvider).useSystemFont;
+    return ListTile(
+      leading: Icon(Icons.language, color: context.colors.primary),
+      title: Text('Use system font', style: context.texts.titleMedium),
+      trailing: Switch(
+        value: useSystemFont,
+        onChanged: (value) =>
+            ref.read(userSettingsProvider).setUseSystemFont(value),
       ),
     );
   }
