@@ -21,10 +21,10 @@ class BottomNavItem {
     this.selectedIcon,
     this.iconSize,
   }) : assert(
-          (svgIcon != null || selectedSvgIcon != null) ||
-              (icon != null && selectedIcon != null),
-          'Either svgIcon pair or icon pair should be provided',
-        );
+         (svgIcon != null || selectedSvgIcon != null) ||
+             (icon != null && selectedIcon != null),
+         'Either svgIcon pair or icon pair should be provided',
+       );
 
   // Fields for using svg files
   final AppSvgs? svgIcon;
@@ -44,15 +44,22 @@ class AppBottomNavBar extends StatelessWidget {
     required this.selectedIndex,
     required this.onItemSelected,
     super.key,
+    this.isFloating = false,
     this.margin = EdgeInsets.zero,
     this.height = 70,
     this.iconSize = 20,
     this.fontSize = 12,
     this.showLabel = true,
   });
+
   final List<BottomNavItem> items;
   final int selectedIndex;
   final ValueChanged<int> onItemSelected;
+
+  /// Whether the bottom nav bar is a floating one (with rounded corners)
+  /// or a flat one (bevelled corners).
+  final bool isFloating;
+
   final EdgeInsets margin;
 
   final double height;
@@ -74,10 +81,12 @@ class AppBottomNavBar extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         color: context.colors.inversePrimary.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(50),
-        border: Border.all(
-          color: context.colors.inversePrimary.withValues(alpha: 0.25),
-        ),
+        borderRadius: isFloating ? BorderRadius.circular(50) : null,
+        border: isFloating
+            ? Border.all(
+                color: context.colors.inversePrimary.withValues(alpha: 0.25),
+              )
+            : null,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

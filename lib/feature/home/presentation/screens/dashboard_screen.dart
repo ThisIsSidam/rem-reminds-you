@@ -93,14 +93,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double horizontalMargin = screenWidth < 400 ? 16 : 36;
     return Scaffold(
       body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: AppBottomNavBar(
         height: 50,
         iconSize: 16,
-        margin: EdgeInsets.fromLTRB(horizontalMargin, 0, horizontalMargin, 16),
         items: <BottomNavItem>[
           BottomNavItem(
             label: 'Agenda',
