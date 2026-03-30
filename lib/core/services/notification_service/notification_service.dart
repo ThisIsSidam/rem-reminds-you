@@ -29,7 +29,7 @@ class NotificationService {
     await AndroidAlarmManager.initialize();
 
     await AwesomeNotifications().initialize(
-      null,
+      Platform.isAndroid ? 'resource://drawable/ic_notification' : null,
       NotificationChannels.channels,
     );
 
