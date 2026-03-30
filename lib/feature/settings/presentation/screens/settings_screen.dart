@@ -5,7 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
-import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
+import '../../../../shared/widgets/whats_new_sheet/whats_new_sheet.dart';
 import '../providers/settings_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -90,14 +90,7 @@ class SettingsScreen extends ConsumerWidget {
         style: context.texts.titleMedium,
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      onTap: () {
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext context) {
-            return const WhatsNewDialog();
-          },
-        );
-      },
+      onTap: () => showWhatsNewSheet(context),
     );
   }
 

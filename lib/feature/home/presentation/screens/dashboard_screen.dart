@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
-import '../../../../shared/widgets/whats_new_dialog/whats_new_dialog.dart';
+import '../../../../shared/widgets/whats_new_sheet/whats_new_sheet.dart';
 import '../../../agenda/presentation/screens/agenda_screen.dart';
 import '../../../reminder/data/models/reminder.dart';
 import '../../../reminder/presentation/screens/reminder_screen.dart';
@@ -57,12 +57,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     if (currentBuild > storedBuild) {
       await prefs.setInt('storedBuildNumber', currentBuild);
       if (!mounted) return;
-      await showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return const WhatsNewDialog();
-        },
-      );
+      await showWhatsNewSheet(context);
     }
   }
 
