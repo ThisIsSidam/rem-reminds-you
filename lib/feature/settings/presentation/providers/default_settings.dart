@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/enums/app_language.dart';
 import 'settings_keys.dart';
 
 final Map<SettingsKey, dynamic> defaultSettings = <SettingsKey, dynamic>{
@@ -33,4 +34,5 @@ final Map<SettingsKey, dynamic> defaultSettings = <SettingsKey, dynamic>{
   SettingsKey.noRushHoursStartTime: const TimeOfDay(hour: 7, minute: 0),
   SettingsKey.noRushHoursEndTime: const TimeOfDay(hour: 23, minute: 0),
   SettingsKey.textScale: 1.0,
+  SettingsKey.language: AppLanguage.system,
 };

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../../app/enums/app_language.dart';
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../shared/utils/extensions/string_ext.dart';
 import '../../../providers/settings_provider.dart';
@@ -20,6 +21,7 @@ class AppPreferencesSection extends HookConsumerWidget {
         Column(
           children: <Widget>[
             _buildThemeSetting(context, ref, controller),
+            _buildLanguageSetting(context, ref),
             _buildTextScaleSetting(context, ref),
           ],
         ),
@@ -101,6 +103,36 @@ class AppPreferencesSection extends HookConsumerWidget {
             style: context.texts.bodyMedium,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLanguageSetting(BuildContext context, WidgetRef ref) {
+    final AppLanguage language = ref.watch(userSettingsProvider).language;
+    return ListTile(
+      leading: Icon(Icons.language, color: context.colors.primary),
+      title: Text('Language', style: context.texts.titleMedium),
+      trailing: DropdownButton<AppLanguage>(
+        dropdownColor: Theme.of(context).cardColor,
+        underline: const SizedBox(),
+        padding: const EdgeInsets.only(left: 8, right: 4),
+        iconSize: 20,
+        style: context.texts.bodyMedium,
+        borderRadius: BorderRadius.circular(12),
+        value: language,
+        items: AppLanguage.values
+            .map(
+              (lan) => DropdownMenuItem<AppLanguage>(
+                value: lan,
+                child: Text(lan.label),
+              ),
+            )
+            .toList(),
+        onChanged: (AppLanguage? value) {
+          if (value != null) {
+            ref.read(userSettingsProvider).setLanguage(value);
+          }
+        },
       ),
     );
   }

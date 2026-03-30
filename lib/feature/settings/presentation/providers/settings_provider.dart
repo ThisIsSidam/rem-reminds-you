@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../app/enums/app_language.dart';
 import '../../../../app/enums/swipe_actions.dart';
 import '../../../../core/extensions/shared_prefs_ext.dart';
 import '../../../../main.dart';
@@ -45,6 +46,8 @@ class UserSettingsNotifier extends ChangeNotifier {
         prefs.setTimeOfDay(key, value);
       } else if (value is double) {
         prefs.setDouble(key, value);
+      } else if (value is String) {
+        prefs.setString(key, value);
       } else {
         AppLogger.w(
           // ignore: lines_longer_than_80_chars
@@ -472,6 +475,21 @@ class UserSettingsNotifier extends ChangeNotifier {
   Future<void> setTextScale(double value) async {
     const SettingsKey key = SettingsKey.textScale;
     await prefs.setDouble(key.name, value);
+    notifyListeners();
+  }
+
+  AppLanguage get language {
+    const SettingsKey key = SettingsKey.language;
+    final String? value = prefs.getString(key.name);
+    if (value == null) {
+      return defaultSettings[key] as AppLanguage;
+    }
+    return AppLanguage.fromString(value);
+  }
+
+  Future<void> setLanguage(AppLanguage value) async {
+    const SettingsKey key = SettingsKey.language;
+    await prefs.setString(key.name, value.localeStr);
     notifyListeners();
   }
 }

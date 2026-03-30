@@ -37,11 +37,9 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     AppLogger.i('App Built');
-    final (ThemeMode, double) settings = ref.watch(
-      userSettingsProvider.select(
-        (UserSettingsNotifier p) => (p.themeMode, p.textScale),
-      ),
-    );
+    final theme = ref.watch(userSettingsProvider.select((p) => p.themeMode));
+    final text = ref.watch(userSettingsProvider.select((p) => p.textScale));
+    final language = ref.watch(userSettingsProvider.select((p) => p.language));
 
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
@@ -58,6 +56,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
         return ToastificationWrapper(
           child: MaterialApp(
+            locale: language.locale,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             navigatorKey: navigatorKey,
@@ -65,15 +64,15 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               return MediaQuery(
                 data: MediaQuery.of(
                   context,
-                ).copyWith(textScaler: TextScaler.linear(settings.$2)),
+                ).copyWith(textScaler: TextScaler.linear(text)),
                 child: child!,
               );
             },
             routes: routeBuilder(),
             home: const SplashScreen(),
-            themeMode: settings.$1,
+            themeMode: theme,
             theme: getLightTheme(lightColorScheme),
-            darkTheme: getDarkTheme(darkColorScheme, settings.$1),
+            darkTheme: getDarkTheme(darkColorScheme, theme),
           ),
         );
       },
