@@ -102,6 +102,7 @@ class ListedNoRushSection extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Column(
+        mainAxisSize: .min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ReminderSectionTitle(
@@ -115,6 +116,7 @@ class ListedNoRushSection extends ConsumerWidget {
                 .read(noRushRemindersProvider.notifier)
                 .moveReminder(reminder),
             child: ListView.separated(
+              padding: .zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (_, int i) =>
