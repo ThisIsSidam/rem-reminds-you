@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../../core/services/notification_service/notification_service.dart';
-import '../../../../../../shared/utils/misc_methods.dart';
-import '../../../providers/settings_provider.dart';
-import '../../shared/subtitle_setting_tile.dart';
+import '../../../../../core/services/notification_service/notification_service.dart';
+import '../../../../../shared/utils/misc_methods.dart';
+import '../../providers/settings_provider.dart';
+import '../shared/subtitle_setting_tile.dart';
 
 class AgendaPreferencesSection extends ConsumerWidget {
   const AgendaPreferencesSection({super.key});

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../../app/enums/app_language.dart';
-import '../../../../../../core/extensions/context_ext.dart';
-import '../../../providers/settings_provider.dart';
-import '../../shared/dropdown_setting_tile.dart';
-import '../../shared/slider_setting_tile.dart';
-import '../../shared/switch_setting_tile.dart';
+import '../../../../../app/enums/app_language.dart';
+import '../../../../../core/extensions/context_ext.dart';
+import '../../providers/settings_provider.dart';
+import '../shared/dropdown_setting_tile.dart';
+import '../shared/slider_setting_tile.dart';
+import '../shared/switch_setting_tile.dart';
 
 class AppPreferencesSection extends ConsumerWidget {
   const AppPreferencesSection({super.key});

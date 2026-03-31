@@ -5,11 +5,11 @@ import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
-import '../../../../../../core/extensions/context_ext.dart';
-import '../../../../../../shared/utils/logger/app_logger.dart';
-import '../../../../../../shared/utils/logger/logs_manager.dart';
-import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
-import '../../shared/standard_setting_tile.dart';
+import '../../../../../core/extensions/context_ext.dart';
+import '../../../../../shared/utils/logger/app_logger.dart';
+import '../../../../../shared/utils/logger/logs_manager.dart';
+import '../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
+import '../shared/standard_setting_tile.dart';
 
 class LogsSection extends ConsumerWidget {
   const LogsSection({super.key});

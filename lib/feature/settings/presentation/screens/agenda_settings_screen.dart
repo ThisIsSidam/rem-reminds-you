@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/sections/agenda_preferences_section/agenda_preferences_section.dart';
+import '../widgets/agenda_settings/agenda_preferences_section.dart';
 
 class AgendaSettingsScreen extends StatelessWidget {
   const AgendaSettingsScreen({super.key});

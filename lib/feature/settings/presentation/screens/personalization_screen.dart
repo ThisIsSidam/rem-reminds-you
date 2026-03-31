@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/sections/app_preferences_section/app_preferences_section.dart';
+import '../widgets/personalization_settings/app_preferences_section.dart';
 
 class PersonalizationScreen extends StatelessWidget {
   const PersonalizationScreen({super.key});

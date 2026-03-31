@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/sections/backup_restore_section/backup_restore_section.dart';
-import '../widgets/sections/logs/logs_section.dart';
+import '../widgets/advanced_settings/backup_restore_section.dart';
+import '../widgets/advanced_settings/logs_section.dart';
 
 class AdvancedSettingsScreen extends StatelessWidget {
   const AdvancedSettingsScreen({super.key});
