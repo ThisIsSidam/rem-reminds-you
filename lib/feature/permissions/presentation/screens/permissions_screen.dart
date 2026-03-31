@@ -95,47 +95,54 @@ class _PermissionScreenState extends ConsumerState<PermissionScreen>
     AppLogger.i('Build permissions screen');
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: PageView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: _pageController,
-                onPageChanged: (int page) async {
-                  final PermissionPage previous = _currentPage.value;
-                  final PermissionPage next = PermissionPage.values[page];
+      body: Column(
+        children: <Widget>[
+          const Spacer(),
 
-                  // Prevent swiping forward unless the current required
-                  // permission is granted.
-                  if (page > previous.index) {
-                    final bool hasPermission =
-                        await _isRequiredPermissionGrantedForPage(previous);
-                    if (!hasPermission) {
-                      await _pageController.animateToPage(
-                        previous.index,
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.easeInOut,
-                      );
-                      return;
-                    }
+          SizedBox(
+            height: 400,
+            child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              onPageChanged: (int page) async {
+                final PermissionPage previous = _currentPage.value;
+                final PermissionPage next = PermissionPage.values[page];
+
+                if (page > previous.index) {
+                  final bool hasPermission =
+                      await _isRequiredPermissionGrantedForPage(previous);
+                  if (!hasPermission) {
+                    await _pageController.animateToPage(
+                      previous.index,
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                    );
+                    return;
                   }
+                }
 
-                  _currentPage.value = next;
-                },
-                children: <Widget>[
-                  _buildNotificationSection(context),
-                  _buildAlarmPermissionSection(context),
-                  _buildBatterySection(context),
-                ],
-              ),
+                _currentPage.value = next;
+              },
+              children: <Widget>[
+                _buildNotificationSection(context),
+                _buildAlarmPermissionSection(context),
+                _buildBatterySection(context),
+              ],
             ),
-            _buildPageIndicator(),
-            const SizedBox(height: 16),
-            _buildBottomActions(),
-          ],
-        ),
+          ),
+
+          const SizedBox(height: 16),
+
+          Column(
+            children: [
+              _buildPageIndicator(),
+              const SizedBox(height: 16),
+              _buildBottomActions(),
+            ],
+          ),
+
+          const Spacer(),
+        ],
       ),
     );
   }
