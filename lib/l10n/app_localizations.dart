@@ -341,7 +341,7 @@ abstract class AppLocalizations {
   /// Content of dialog for deleting recurring reminders
   ///
   /// In en, this message translates to:
-  /// **'This is a recurring reminder. Do you really want to delete it? You can also archive it.'**
+  /// **'This is a recurring reminder. Do you really want to delete it?'**
   String get sheetRecurringDialogContent;
 
   /// Button text to cancel action
@@ -350,11 +350,11 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get sheetCancel;
 
-  /// Button text to delete reminder
+  /// Button text to confirm prompt
   ///
   /// In en, this message translates to:
-  /// **'Delete'**
-  String get sheetDelete;
+  /// **'Yes'**
+  String get sheetConfirm;
 
   /// Text indicating time in the past
   ///

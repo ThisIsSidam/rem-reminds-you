@@ -160,7 +160,7 @@
   "@sheetRecurringDialogTitle": {
     "description": "Title of dialog for deleting recurring reminders"
   },
-  "sheetRecurringDialogContent": "This is a recurring reminder. Do you really want to delete it? You can also archive it.",
+  "sheetRecurringDialogContent": "This is a recurring reminder. Do you really want to delete it?",
   "@sheetRecurringDialogContent": {
     "description": "Content of dialog for deleting recurring reminders"
   },
@@ -168,9 +168,9 @@
   "@sheetCancel": {
     "description": "Button text to cancel action"
   },
-  "sheetDelete": "Delete",
-  "@sheetDelete": {
-    "description": "Button text to delete reminder"
+  "sheetConfirm": "Yes",
+  "@sheetConfirm": {
+    "description": "Button text to confirm prompt"
   },
   "sheetAgo": "{duration} ago",
   "@sheetAgo": {

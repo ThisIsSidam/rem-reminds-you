@@ -40,9 +40,9 @@
   "sheetForAll": "Para todos",
   "sheetPostpone": "Posponer",
   "sheetRecurringDialogTitle": "Recordatorio recurrente",
-  "sheetRecurringDialogContent": "Este es un recordatorio recurrente. ¿Realmente quieres eliminarlo? También puedes archivarlo.",
+  "sheetRecurringDialogContent": "Este es un recordatorio recurrente. ¿Realmente quieres eliminarlo?",
   "sheetCancel": "Cancelar",
-  "sheetDelete": "Eliminar",
+  "sheetConfirm": "Sí",
   "sheetAgo": "hace {duration}",
   "@sheetAgo": {
     "placeholders": {

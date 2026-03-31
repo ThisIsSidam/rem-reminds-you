@@ -133,13 +133,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sheetRecurringDialogContent =>
-      'This is a recurring reminder. Do you really want to delete it? You can also archive it.';
+      'This is a recurring reminder. Do you really want to delete it?';
 
   @override
   String get sheetCancel => 'Cancel';
 
   @override
-  String get sheetDelete => 'Delete';
+  String get sheetConfirm => 'Yes';
 
   @override
   String sheetAgo(String duration) {
