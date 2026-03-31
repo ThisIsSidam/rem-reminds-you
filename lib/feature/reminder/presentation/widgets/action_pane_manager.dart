@@ -138,19 +138,15 @@ class ActionPaneManager {
       icon: Icons.check,
       onPressed: (BuildContext context) {
         remindersProviderValue.markAsDone(<int>[reminder.id]);
-        final DateTime previous = reminder.dateTime;
+        final ReminderModel previous = reminder;
         if (reminder.isNotRecurring) {
           return;
         } else {
           AppUtils.showToast(
             msg: '${reminder.title} ${context.local.actionMovedNextOccurrence}',
             description: context.local.actionTapToUndo,
-            onTap: () {
-              remindersProviderValue.moveToPreviousReminderOccurrence(
-                reminder.id,
-                previous,
-              );
-            },
+            onTap: () => remindersProviderValue
+                .moveToPreviousReminderOccurrence(previous),
           );
         }
       },

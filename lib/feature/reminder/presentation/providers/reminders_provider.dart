@@ -32,7 +32,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     // Handle dispose
     ref.onDispose(() => _remindersSubscrioption?.cancel());
 
-    AppLogger.i('RemindersNotifier initialized');
+    _log('RemindersNotifier initialized');
     return <ReminderSection, List<ReminderModel>>{};
   }
 
@@ -102,14 +102,14 @@ class RemindersNotifier extends _$RemindersNotifier {
       // Only reschedule if reminder is NOT paused
       await NotificationService.scheduleReminder(reminder.copyWith(id: id));
     }
-    AppLogger.i('Saved Reminder in Database | ID: $id');
+    _log('Saved Reminder in Database | ID: $id');
     return reminder;
   }
 
   Future<void> deleteReminder(int id) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      AppLogger.w('Reminder not found | Cannot perform action.');
+      _logW('Reminder not found | Cannot perform action.');
       return;
     }
     await NotificationService.cancelScheduledNotification(
@@ -117,23 +117,23 @@ class RemindersNotifier extends _$RemindersNotifier {
     );
 
     _repo.removeReminder(id);
-    AppLogger.i('Deleted Reminder from Database | ID: $id');
+    _log('Deleted Reminder from Database | ID: $id');
   }
 
   Future<void> markAsDone(List<int> ids) async {
     for (final int id in ids) {
       final ReminderModel? reminder = _repo.getReminder(id);
 
-      AppLogger.i('Marking Reminder as Done');
+      _log('Marking Reminder as Done');
       if (reminder == null) {
-        AppLogger.w('Reminder not found | Cannot perform action.');
+        _logW('Reminder not found | Cannot perform action.');
         return;
       }
       if (!reminder.isRecurring) {
-        AppLogger.i('Deleting reminder | ID: ${reminder.id}');
+        _log('Deleting reminder | ID: ${reminder.id}');
         await deleteReminder(reminder.id);
       } else {
-        AppLogger.i(
+        _log(
           'Moving Reminder to next occurrence | ID: ${reminder.id} | DT: ${reminder.dateTime}',
         );
         await moveToNextReminderOccurrence(id);
@@ -148,12 +148,12 @@ class RemindersNotifier extends _$RemindersNotifier {
   Future<void> moveToNextReminderOccurrence(int id) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      AppLogger.w('Reminder not found | Cannot perform action.');
+      _logW('Reminder not found | Cannot perform action.');
       return;
     }
-    if (!reminder.isRecurring) {
-      return;
-    }
+
+    // Ignore if not recurring reminder
+    if (!reminder.isRecurring) return;
 
     await NotificationService.cancelScheduledNotification(
       IdHandler.getReminderGroupKey(reminder),
@@ -163,18 +163,18 @@ class RemindersNotifier extends _$RemindersNotifier {
 
     _repo.saveReminder(reminder.toEntity);
 
-    AppLogger.i(
+    _log(
       'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
     );
   }
 
-  Future<void> moveToPreviousReminderOccurrence(
-    int id,
-    DateTime previous,
-  ) async {
-    final ReminderModel? reminder = _repo.getReminder(id);
+  Future<void> moveToPreviousReminderOccurrence(ReminderModel previous) async {
+    // previous instance is used only for getting id, dateTime and baseDateTime..
+    // we can get current state of the reminder in db through id and update it
+
+    final ReminderModel? reminder = _repo.getReminder(previous.id);
     if (reminder == null) {
-      AppLogger.w('Reminder not found | Cannot perform action.');
+      _logW('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) return;
@@ -183,13 +183,13 @@ class RemindersNotifier extends _$RemindersNotifier {
       IdHandler.getReminderGroupKey(reminder),
     );
     reminder
-      ..baseDateTime = previous
-      ..dateTime = previous;
+      ..baseDateTime = previous.baseDateTime
+      ..dateTime = previous.dateTime;
     await NotificationService.scheduleReminder(reminder);
 
     _repo.saveReminder(reminder.toEntity);
 
-    AppLogger.i(
+    _log(
       'Moved Reminder to next occurrence | ID: ${reminder.id} | DT : ${reminder.dateTime}',
     );
   }
@@ -197,7 +197,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   Future<void> pauseReminder(int id) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      AppLogger.w('Reminder not found | Cannot perform action.');
+      _logW('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) {
@@ -212,7 +212,7 @@ class RemindersNotifier extends _$RemindersNotifier {
   Future<void> resumeReminder(int id) async {
     final ReminderModel? reminder = _repo.getReminder(id);
     if (reminder == null) {
-      AppLogger.w('Reminder not found | Cannot perform action.');
+      _logW('Reminder not found | Cannot perform action.');
       return;
     }
     if (!reminder.isRecurring) {
@@ -266,8 +266,8 @@ class RemindersNotifier extends _$RemindersNotifier {
     final ReminderModel updatedReminder = newReminder.copyWith(
       dateTime: newDateTime,
       baseDateTime: newReminder.isRecurring
-          ? newDateTime
-          : newReminder.baseDateTime,
+          ? newReminder.baseDateTime
+          : newDateTime,
     );
 
     switch (original) {
@@ -304,13 +304,13 @@ class RemindersNotifier extends _$RemindersNotifier {
 
   Future<String> getBackup() async {
     final String backup = _repo.getBackup();
-    AppLogger.i('Created Database Backup');
+    _log('Created Database Backup');
     return backup;
   }
 
   Future<void> restoreBackup(String jsonData) async {
     await _repo.restoreBackup(jsonData);
-    AppLogger.i('Restored Database Backup');
+    _log('Restored Database Backup');
   }
 
   // ----------------------------
@@ -352,4 +352,8 @@ class RemindersNotifier extends _$RemindersNotifier {
       return updated;
     }
   }
+
+  void _log(String msg) => AppLogger.i('[RemindersNotifier] $msg');
+
+  void _logW(String msg) => AppLogger.w('[RemindersNotifier] $msg');
 }
