@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/extensions/context_ext.dart';
+
 Future<void> showWhatsNewSheet(BuildContext context) {
   return showModalBottomSheet<void>(
     isScrollControlled: true,
@@ -33,7 +35,7 @@ class WhatsNewSheet extends StatelessWidget {
               color: theme.colorScheme.primary,
             ),
             title: Text(
-              "What's New",
+              context.local.settingsWhatsNew,
               style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.colorScheme.primary,
                 fontWeight: FontWeight.bold,

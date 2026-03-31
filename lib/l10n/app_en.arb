@@ -1,9 +1,13 @@
 {
+  "@@locale": "en",
   "retry": "retry",
   "@retry": {
     "description": "Text for 'retry' buttons"
   },
   "somethingWentWrong": "Something went wrong!",
+  "@somethingWentWrong": {
+    "description": "Message for when something goes wrong."
+  },
   "homeTitle": "Reminders",
   "@homeTitle": {
     "description": "Title of homescreen"
@@ -172,20 +176,20 @@
   "@sheetAgo": {
     "description": "Text indicating time in the past",
     "placeholders": {
-        "duration": {
-            "type": "String",
-            "example": "4 Hrs"
-        }
+      "duration": {
+        "type": "String",
+        "example": "4 Hrs"
+      }
     }
   },
   "sheetIn": "in {duration}",
   "@sheetIn": {
     "description": "Text indicating time in the future",
     "placeholders": {
-        "duration": {
-            "type": "String",
-            "example": "4 Hrs"
-        }
+      "duration": {
+        "type": "String",
+        "example": "4 Hrs"
+      }
     }
   },
   "settingsTitle": "Settings",
@@ -276,10 +280,10 @@
   "@settingsEvery": {
     "description": "Prefix for recurring duration display",
     "placeholders": {
-        "duration": {
-            "type": "String",
-            "example": "4 Hrs"
-        }
+      "duration": {
+        "type": "String",
+        "example": "4 Hrs"
+      }
     }
   },
   "settingsDefaultAutoSnoozeDuration": "Default auto snooze duration",
@@ -409,5 +413,53 @@
   "agendaTapToCreateTask": "Tap card to create new task",
   "@agendaTapToCreateTask": {
     "description": "Instructions for creating a new task in agenda"
+  },
+  "settingsAgendaTimeTitle": "When to show Agenda?",
+  "@settingsAgendaTimeTitle": {
+    "description": "Label for agenda time setting"
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Label for language setting"
+  },
+  "settingsUseSystemFont": "Use system font",
+  "@settingsUseSystemFont": {
+    "description": "Label for system font setting"
+  },
+  "settingsAdvanced": "Advanced",
+  "@settingsAdvanced": {
+    "description": "Title for advanced settings screen"
+  },
+  "settingsAgenda": "Agenda Settings",
+  "@settingsAgenda": {
+    "description": "Title for agenda settings screen"
+  },
+  "settingsPersonalization": "Personalization",
+  "@settingsPersonalization": {
+    "description": "Title for personalization settings screen"
+  },
+  "settingsReminders": "Reminder Settings",
+  "@settingsReminders": {
+    "description": "Title for reminder settings screen"
+  },
+  "swipeActionNone": "None",
+  "@swipeActionNone": {
+    "description": "Label for 'none' swipe action"
+  },
+  "swipeActionDone": "Done",
+  "@swipeActionDone": {
+    "description": "Label for 'done' swipe action"
+  },
+  "swipeActionDelete": "Delete",
+  "@swipeActionDelete": {
+    "description": "Label for 'delete' swipe action"
+  },
+  "swipeActionPostpone": "Postpone",
+  "@swipeActionPostpone": {
+    "description": "Label for 'postpone' swipe action"
+  },
+  "swipeActionDoneAndDelete": "Done/Delete",
+  "@swipeActionDoneAndDelete": {
+    "description": "Label for 'done and delete' swipe action"
   }
 }

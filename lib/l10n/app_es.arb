@@ -1,4 +1,5 @@
 {
+  "@@locale": "es",
   "retry": "reintentar",
   "somethingWentWrong": "¡Algo salió mal!",
   "homeTitle": "Recordatorios",
@@ -45,19 +46,19 @@
   "sheetAgo": "hace {duration}",
   "@sheetAgo": {
     "placeholders": {
-        "duration": {
-            "type": "String",
-            "example": "4 Hrs"
-        }
+      "duration": {
+        "type": "String",
+        "example": "4 Hrs"
+      }
     }
   },
   "sheetIn": "en {duration}",
   "@sheetIn": {
     "placeholders": {
-        "duration": {
-            "type": "String",
-            "example": "4 Hrs"
-        }
+      "duration": {
+        "type": "String",
+        "example": "4 Hrs"
+      }
     }
   },
   "settingsTitle": "Configuración",
@@ -84,10 +85,10 @@
   "settingsEvery": "Cada {duration}",
   "@settingsEvery": {
     "placeholders": {
-        "duration": {
-            "type": "String",
-            "example": "4 Hrs"
-        }
+      "duration": {
+        "type": "String",
+        "example": "4 Hrs"
+      }
     }
   },
   "settingsDefaultAutoSnoozeDuration": "Duración de repetición automática predeterminada",
@@ -121,5 +122,17 @@
   "agendaDayAfter": "Pasado Mañana",
   "agendaTaskTitle": "Título de la Tarea",
   "agendaEnterTaskHint": "Introducir tarea...",
-  "agendaTapToCreateTask": "Toca la tarjeta para crear una nueva tarea"
+  "agendaTapToCreateTask": "Toca la tarjeta para crear una nueva tarea",
+  "settingsAgendaTimeTitle": "¿Cuándo mostrar la Agenda?",
+  "settingsLanguage": "Idioma",
+  "settingsUseSystemFont": "Usar fuente del sistema",
+  "settingsAdvanced": "Avanzado",
+  "settingsAgenda": "Configuración de Agenda",
+  "settingsPersonalization": "Personalización",
+  "settingsReminders": "Configuración de Recordatorios",
+  "swipeActionNone": "Ninguno",
+  "swipeActionDone": "Hecho",
+  "swipeActionDelete": "Eliminar",
+  "swipeActionPostpone": "Posponer",
+  "swipeActionDoneAndDelete": "Hecho y Eliminar"
 }

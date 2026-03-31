@@ -104,7 +104,7 @@ abstract class AppLocalizations {
   /// **'retry'**
   String get retry;
 
-  /// No description provided for @somethingWentWrong.
+  /// Message for when something goes wrong.
   ///
   /// In en, this message translates to:
   /// **'Something went wrong!'**
@@ -691,6 +691,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap card to create new task'**
   String get agendaTapToCreateTask;
+
+  /// Label for agenda time setting
+  ///
+  /// In en, this message translates to:
+  /// **'When to show Agenda?'**
+  String get settingsAgendaTimeTitle;
+
+  /// Label for language setting
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// Label for system font setting
+  ///
+  /// In en, this message translates to:
+  /// **'Use system font'**
+  String get settingsUseSystemFont;
+
+  /// Title for advanced settings screen
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get settingsAdvanced;
+
+  /// Title for agenda settings screen
+  ///
+  /// In en, this message translates to:
+  /// **'Agenda Settings'**
+  String get settingsAgenda;
+
+  /// Title for personalization settings screen
+  ///
+  /// In en, this message translates to:
+  /// **'Personalization'**
+  String get settingsPersonalization;
+
+  /// Title for reminder settings screen
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder Settings'**
+  String get settingsReminders;
+
+  /// Label for 'none' swipe action
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get swipeActionNone;
+
+  /// Label for 'done' swipe action
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get swipeActionDone;
+
+  /// Label for 'delete' swipe action
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get swipeActionDelete;
+
+  /// Label for 'postpone' swipe action
+  ///
+  /// In en, this message translates to:
+  /// **'Postpone'**
+  String get swipeActionPostpone;
+
+  /// Label for 'done and delete' swipe action
+  ///
+  /// In en, this message translates to:
+  /// **'Done/Delete'**
+  String get swipeActionDoneAndDelete;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/extensions/context_ext.dart';
 
 import '../widgets/personalization_settings/app_preferences_section.dart';
 
@@ -11,7 +12,7 @@ class PersonalizationScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'Personalization',
+          context.local.settingsPersonalization,
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),

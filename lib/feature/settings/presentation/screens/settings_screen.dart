@@ -33,7 +33,7 @@ class SettingsScreen extends ConsumerWidget {
           children: <Widget>[
             StandardSettingTile(
               leading: Icons.palette_outlined,
-              title: 'Personalization',
+              title: context.local.settingsPersonalization,
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.pushNamed(
@@ -49,7 +49,7 @@ class SettingsScreen extends ConsumerWidget {
 
             StandardSettingTile(
               leading: Icons.notifications_active_outlined,
-              title: 'Reminder Settings',
+              title: context.local.settingsReminders,
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.pushNamed(context, AppRoute.settingsReminder.name);
@@ -62,7 +62,7 @@ class SettingsScreen extends ConsumerWidget {
 
             StandardSettingTile(
               leading: Icons.view_agenda_outlined,
-              title: 'Agenda Settings',
+              title: context.local.settingsAgenda,
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.pushNamed(context, AppRoute.settingsAgenda.name);
@@ -75,7 +75,7 @@ class SettingsScreen extends ConsumerWidget {
 
             StandardSettingTile(
               leading: Icons.settings_system_daydream_outlined,
-              title: 'Advanced',
+              title: context.local.settingsAdvanced,
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.pushNamed(context, AppRoute.settingsAdvanced.name);

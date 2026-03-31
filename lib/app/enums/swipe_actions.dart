@@ -1,4 +1,5 @@
-import 'dart:core';
+import 'package:flutter/material.dart';
+import '../../core/extensions/context_ext.dart';
 
 typedef SwipeActionPair = ({SwipeAction start, SwipeAction end});
 
@@ -21,6 +22,22 @@ enum SwipeAction {
       return 'Postpone';
     } else if (this == doneAndDelete) {
       return 'Done/Delete';
+    } else {
+      return 'Unknown';
+    }
+  }
+
+  String localizedName(BuildContext context) {
+    if (this == none) {
+      return context.local.swipeActionNone;
+    } else if (this == done) {
+      return context.local.swipeActionDone;
+    } else if (this == delete) {
+      return context.local.swipeActionDelete;
+    } else if (this == postpone) {
+      return context.local.swipeActionPostpone;
+    } else if (this == doneAndDelete) {
+      return context.local.swipeActionDoneAndDelete;
     } else {
       return 'Unknown';
     }

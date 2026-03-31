@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/extensions/context_ext.dart';
 
 import '../widgets/agenda_settings/agenda_preferences_section.dart';
 
@@ -11,7 +12,7 @@ class AgendaSettingsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'Agenda Settings',
+          context.local.settingsAgenda,
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),

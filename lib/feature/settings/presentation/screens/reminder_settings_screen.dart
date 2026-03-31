@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/extensions/context_ext.dart';
 
 import '../widgets/reminder_settings/gestures_section/gestures_section.dart';
 import '../widgets/reminder_settings/new_reminder_settings/new_reminder_section.dart';
@@ -13,7 +14,7 @@ class ReminderSettingsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'Reminder Settings',
+          context.local.settingsReminders,
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),

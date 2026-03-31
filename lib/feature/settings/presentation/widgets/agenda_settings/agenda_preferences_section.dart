@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../core/extensions/context_ext.dart';
 import '../../../../../core/services/notification_service/notification_service.dart';
 import '../../../../../shared/utils/misc_methods.dart';
 import '../../providers/settings_provider.dart';
@@ -23,7 +24,7 @@ class AgendaPreferencesSection extends ConsumerWidget {
   Widget _buildAgendaTimeTile(BuildContext context, WidgetRef ref) {
     return DynamicSubtitleSettingTile<TimeOfDay>(
       leading: Icons.view_agenda,
-      title: 'When to show Agenda?',
+      title: context.local.settingsAgendaTimeTitle,
       selector: (UserSettingsNotifier p) => p.defaultAgendaTime,
       subtitleBuilder: (BuildContext context, TimeOfDay? value) =>
           value != null ? value.format(context) : '',

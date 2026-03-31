@@ -317,4 +317,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get agendaTapToCreateTask => 'Tap card to create new task';
+
+  @override
+  String get settingsAgendaTimeTitle => 'When to show Agenda?';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsUseSystemFont => 'Use system font';
+
+  @override
+  String get settingsAdvanced => 'Advanced';
+
+  @override
+  String get settingsAgenda => 'Agenda Settings';
+
+  @override
+  String get settingsPersonalization => 'Personalization';
+
+  @override
+  String get settingsReminders => 'Reminder Settings';
+
+  @override
+  String get swipeActionNone => 'None';
+
+  @override
+  String get swipeActionDone => 'Done';
+
+  @override
+  String get swipeActionDelete => 'Delete';
+
+  @override
+  String get swipeActionPostpone => 'Postpone';
+
+  @override
+  String get swipeActionDoneAndDelete => 'Done/Delete';
 }

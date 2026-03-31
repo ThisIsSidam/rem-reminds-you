@@ -42,7 +42,7 @@ class GesturesSection extends ConsumerWidget {
       title: context.local.settingsSwipeToLeftActions,
       selector: (UserSettingsNotifier p) => p.homeTileSwipeActionLeft,
       subtitleBuilder: (BuildContext context, SwipeAction? value) =>
-          value?.toString() ?? '',
+          value?.localizedName(context) ?? '',
       onTap: (BuildContext context, WidgetRef ref, SwipeAction? value) async {
         await showModalBottomSheet<void>(
           isScrollControlled: true,
@@ -61,7 +61,7 @@ class GesturesSection extends ConsumerWidget {
       title: context.local.settingsSwipeToRightActions,
       selector: (UserSettingsNotifier p) => p.homeTileSwipeActionRight,
       subtitleBuilder: (BuildContext context, SwipeAction? value) =>
-          value?.toString() ?? '',
+          value?.localizedName(context) ?? '',
       onTap: (BuildContext context, WidgetRef ref, SwipeAction? value) async {
         await showModalBottomSheet<void>(
           isScrollControlled: true,

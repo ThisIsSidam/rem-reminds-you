@@ -84,7 +84,7 @@ class SwipeToLeftActionSheet extends ConsumerWidget {
         shape: const BeveledRectangleBorder(),
       ),
       child: Text(
-        action.toString(),
+        action.localizedName(context),
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
               color: action == selectedAction
                   ? Theme.of(context).colorScheme.onPrimaryContainer

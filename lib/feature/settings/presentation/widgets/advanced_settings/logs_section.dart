@@ -94,10 +94,11 @@ class LogsSection extends ConsumerWidget {
   Widget getClearLogsTile(BuildContext context) {
     return StandardSettingTile(
       leading: Icons.folder_delete,
-      title: 'Clear all logs',
+      title: context.local.settingsClearAllLogs,
       onTap: () async {
         await LogsManager().clearLogs();
-        AppUtils.showToast(msg: 'Successfully deleted all logs');
+        if (!context.mounted) return;
+        AppUtils.showToast(msg: context.local.settingsLogsDeleted);
       },
     );
   }

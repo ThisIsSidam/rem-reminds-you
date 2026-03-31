@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/extensions/context_ext.dart';
 
 import '../widgets/advanced_settings/backup_restore_section.dart';
 import '../widgets/advanced_settings/logs_section.dart';
@@ -11,7 +12,10 @@ class AdvancedSettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text('Advanced', style: Theme.of(context).textTheme.titleLarge),
+        title: Text(
+          context.local.settingsAdvanced,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

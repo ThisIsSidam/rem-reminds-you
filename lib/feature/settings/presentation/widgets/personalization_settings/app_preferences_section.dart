@@ -46,7 +46,7 @@ class AppPreferencesSection extends ConsumerWidget {
   Widget _buildLanguageSetting(BuildContext context, WidgetRef ref) {
     return DropdownSettingTile<AppLanguage>(
       leading: Icons.language,
-      title: 'Language',
+      title: context.local.settingsLanguage,
       selector: (UserSettingsNotifier p) => p.language,
       items: AppLanguage.values
           .map(
@@ -64,7 +64,7 @@ class AppPreferencesSection extends ConsumerWidget {
   Widget _buildUseSystemFontTile(BuildContext context, WidgetRef ref) {
     return SwitchSettingTile(
       leading: Icons.font_download,
-      title: 'Use system font',
+      title: context.local.settingsUseSystemFont,
       selector: (UserSettingsNotifier p) => p.useSystemFont,
       onChanged: (WidgetRef ref, bool value) =>
           ref.read(userSettingsProvider).setUseSystemFont(value),

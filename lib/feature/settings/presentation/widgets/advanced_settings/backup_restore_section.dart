@@ -132,15 +132,16 @@ class BackupRestoreSection extends ConsumerWidget {
           // Use no rush reminders backup part if available
           await _loadNoRushFromBackup(ref, archive);
 
+          if (!context.mounted) return;
           AppUtils.showToast(
-            msg: 'Backup restored successfully',
+            msg: context.local.settingsBackupRestored,
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
           AppLogger.e('Error during restore', error: e, stackTrace: stackTrace);
           if (!context.mounted) return;
           AppUtils.showToast(
-            msg: 'Backup restore failed!',
+            msg: context.local.settingsRestoreFailed,
             type: ToastificationType.error,
           );
         }
