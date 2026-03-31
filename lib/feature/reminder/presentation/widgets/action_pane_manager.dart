@@ -52,7 +52,8 @@ class ActionPaneManager {
       ),
       children: <Widget>[
         SlidableAction(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.red,
           icon: Icons.delete_forever,
           onPressed: (BuildContext context) =>
               _slideAndRemoveReminder(context, ref),
@@ -66,7 +67,8 @@ class ActionPaneManager {
       motion: const StretchMotion(),
       children: <Widget>[
         SlidableAction(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.red,
           icon: Icons.delete_forever,
           onPressed: (BuildContext context) =>
               _slideAndRemoveReminder(context, ref),
@@ -102,7 +104,9 @@ class ActionPaneManager {
       motion: const StretchMotion(),
       children: <Widget>[
         SlidableAction(
+          backgroundColor: Colors.transparent,
           icon: Icons.add,
+          foregroundColor: context.colors.onSurface,
           onPressed: (BuildContext context) {
             remindersProviderValue.saveReminder(
               reminder.copyWith(
@@ -129,7 +133,8 @@ class ActionPaneManager {
     );
 
     return SlidableAction(
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.transparent,
+      foregroundColor: Colors.green,
       icon: Icons.check,
       onPressed: (BuildContext context) {
         remindersProviderValue.markAsDone(<int>[reminder.id]);
@@ -187,7 +192,8 @@ class NoRushPaneManager {
       ),
       children: <Widget>[
         SlidableAction(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.red,
           icon: Icons.delete_forever,
           onPressed: (BuildContext context) =>
               _slideAndRemoveReminder(context, ref),
