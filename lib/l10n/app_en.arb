@@ -377,5 +377,37 @@
   "settingsWhatsNew": "What's New?",
   "@settingsWhatsNew": {
     "description": "Label for what's new dialog"
+  },
+  "agendaTitle": "Agenda",
+  "@agendaTitle": {
+    "description": "Title of agenda screen"
+  },
+  "agendaNoTasks": "No tasks for this day.",
+  "@agendaNoTasks": {
+    "description": "Message shown when no tasks exist for a day"
+  },
+  "agendaToday": "Today",
+  "@agendaToday": {
+    "description": "Label for today in agenda"
+  },
+  "agendaTomorrow": "Tomorrow",
+  "@agendaTomorrow": {
+    "description": "Label for tomorrow in agenda"
+  },
+  "agendaDayAfter": "Day After",
+  "@agendaDayAfter": {
+    "description": "Label for the day after tomorrow in agenda"
+  },
+  "agendaTaskTitle": "Task Title",
+  "@agendaTaskTitle": {
+    "description": "Label for task title input field"
+  },
+  "agendaEnterTaskHint": "Enter task...",
+  "@agendaEnterTaskHint": {
+    "description": "Hint text for task title input field"
+  },
+  "agendaTapToCreateTask": "Tap card to create new task",
+  "@agendaTapToCreateTask": {
+    "description": "Instructions for creating a new task in agenda"
   }
 }

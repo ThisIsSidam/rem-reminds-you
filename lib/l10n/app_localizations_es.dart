@@ -302,4 +302,29 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsWhatsNew => '¿Qué hay de nuevo?';
+
+  @override
+  String get agendaTitle => 'Agenda';
+
+  @override
+  String get agendaNoTasks => 'No hay tareas para este día.';
+
+  @override
+  String get agendaToday => 'Hoy';
+
+  @override
+  String get agendaTomorrow => 'Mañana';
+
+  @override
+  String get agendaDayAfter => 'Pasado Mañana';
+
+  @override
+  String get agendaTaskTitle => 'Título de la Tarea';
+
+  @override
+  String get agendaEnterTaskHint => 'Introducir tarea...';
+
+  @override
+  String get agendaTapToCreateTask =>
+      'Toca la tarjeta para crear una nueva tarea';
 }

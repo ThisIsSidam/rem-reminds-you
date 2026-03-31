@@ -134,13 +134,13 @@ class _TitleField extends HookConsumerWidget {
             onChanged: sheetNotifier.updateTitle,
             decoration: InputDecoration(
               label: Text(
-                'Task Title',
+                context.local.agendaTaskTitle,
                 style: context.theme.textTheme.titleSmall!.copyWith(
                   color: color,
                   fontStyle: FontStyle.normal,
                 ),
               ),
-              hintText: 'Enter task...',
+              hintText: context.local.agendaEnterTaskHint,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -186,7 +186,7 @@ class _DateChips extends ConsumerWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 8),
             child: ChoiceChip(
-              label: Text(_label(date)),
+              label: Text(_label(context, date)),
               selected: isSelected,
               onSelected: (_) =>
                   ref.read(agendaTaskSheetProvider.notifier).updateDate(date),
@@ -197,13 +197,13 @@ class _DateChips extends ConsumerWidget {
     );
   }
 
-  String _label(DateTime date) {
+  String _label(BuildContext context, DateTime date) {
     final DateTime today = DateTime.now();
-    if (date.isSameDayAs(today)) return 'Today';
+    if (date.isSameDayAs(today)) return context.local.agendaToday;
 
     final DateTime tomorrow = today.add(const Duration(days: 1));
-    if (date.isSameDayAs(tomorrow)) return 'Tomorrow';
+    if (date.isSameDayAs(tomorrow)) return context.local.agendaTomorrow;
 
-    return 'Day After';
+    return context.local.agendaDayAfter;
   }
 }

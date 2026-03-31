@@ -17,7 +17,7 @@ class AgendaWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String dateStr = _getDateString(agenda.date);
+    final String dateStr = _getDateString(context, agenda.date);
 
     return InkWell(
       onTap: () => showAgendaTaskSheet(
@@ -44,7 +44,7 @@ class AgendaWidget extends ConsumerWidget {
               ),
             ),
             if (agenda.tasks.isEmpty)
-              Text('No tasks for this day.', style: context.texts.bodySmall)
+              Text(context.local.agendaNoTasks, style: context.texts.bodySmall)
             else
               ReorderableListView.builder(
                 shrinkWrap: true,
@@ -99,15 +99,15 @@ class AgendaWidget extends ConsumerWidget {
     );
   }
 
-  String _getDateString(DateTime date) {
+  String _getDateString(BuildContext context, DateTime date) {
     final DateTime now = DateTime.now();
     final DateTime today = DateTime(now.year, now.month, now.day);
     final DateTime tomorrow = today.add(const Duration(days: 1));
 
     if (date.isSameDayAs(today)) {
-      return 'Today';
+      return context.local.agendaToday;
     } else if (date.isSameDayAs(tomorrow)) {
-      return 'Tomorrow';
+      return context.local.agendaTomorrow;
     } else {
       return DateFormat('EEEE, MMM d').format(date);
     }

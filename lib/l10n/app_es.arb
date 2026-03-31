@@ -113,5 +113,13 @@
   "settingsClearAllLogs": "Limpiar todos los registros",
   "settingsLogsDeleted": "Todos los registros eliminados exitosamente",
   "settingsOther": "Otro",
-  "settingsWhatsNew": "¿Qué hay de nuevo?"
+  "settingsWhatsNew": "¿Qué hay de nuevo?",
+  "agendaTitle": "Agenda",
+  "agendaNoTasks": "No hay tareas para este día.",
+  "agendaToday": "Hoy",
+  "agendaTomorrow": "Mañana",
+  "agendaDayAfter": "Pasado Mañana",
+  "agendaTaskTitle": "Título de la Tarea",
+  "agendaEnterTaskHint": "Introducir tarea...",
+  "agendaTapToCreateTask": "Toca la tarjeta para crear una nueva tarea"
 }

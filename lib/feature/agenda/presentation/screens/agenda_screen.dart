@@ -16,7 +16,7 @@ class AgendaScreen extends HookConsumerWidget {
     final List<Agenda> agendas = ref.watch(agendaProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Agenda')),
+      appBar: AppBar(title: Text(context.local.agendaTitle)),
       body: Column(
         mainAxisSize: .min,
         children: [
@@ -35,7 +35,7 @@ class AgendaScreen extends HookConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Text(
-              'Tap card to create new task',
+              context.local.agendaTapToCreateTask,
               textAlign: .center,
               style: context.texts.bodySmall,
             ),

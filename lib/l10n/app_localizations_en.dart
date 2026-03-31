@@ -293,4 +293,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsWhatsNew => 'What\'s New?';
+
+  @override
+  String get agendaTitle => 'Agenda';
+
+  @override
+  String get agendaNoTasks => 'No tasks for this day.';
+
+  @override
+  String get agendaToday => 'Today';
+
+  @override
+  String get agendaTomorrow => 'Tomorrow';
+
+  @override
+  String get agendaDayAfter => 'Day After';
+
+  @override
+  String get agendaTaskTitle => 'Task Title';
+
+  @override
+  String get agendaEnterTaskHint => 'Enter task...';
+
+  @override
+  String get agendaTapToCreateTask => 'Tap card to create new task';
 }
