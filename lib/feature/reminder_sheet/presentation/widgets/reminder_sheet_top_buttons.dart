@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../app/constants/const_strings.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../../domain/models/sheet_reminder_form.dart';
@@ -38,7 +39,7 @@ class ReminderSheetTopButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final int? id = ref.watch(
+    final int id = ref.watch(
       sheetReminderProvider.select((SheetReminderForm p) => p.id),
     );
     final bool noRush = ref.watch(
@@ -52,12 +53,9 @@ class ReminderSheetTopButtons extends ConsumerWidget {
         spacing: 8,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          if (id != null) ...<Widget>[
-            _buildButton(
+          if (id != newReminderID) ...<Widget>[
+            _buildDeleteButton(
               context: context,
-              icon: Icons.delete,
-              active: true,
-              fillColor: Theme.of(context).colorScheme.errorContainer,
               onTap: () => deleteReminder(id, context, ref),
             ),
             const Spacer(),
@@ -97,12 +95,28 @@ class ReminderSheetTopButtons extends ConsumerWidget {
     );
   }
 
+  IconButton _buildDeleteButton({
+    required BuildContext context,
+    required VoidCallback onTap,
+  }) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return IconButton.filled(
+      constraints: const BoxConstraints(maxWidth: 64),
+      icon: Icon(Icons.delete, size: 28, color: colorScheme.onErrorContainer),
+      style: IconButton.styleFrom(
+        backgroundColor: colorScheme.errorContainer,
+        padding: const EdgeInsets.all(8),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      ),
+      onPressed: onTap,
+    );
+  }
+
   IconButton _buildButton({
     required BuildContext context,
     required IconData icon,
     required bool active,
     required VoidCallback onTap,
-    Color? fillColor,
   }) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return IconButton.filled(
@@ -116,7 +130,7 @@ class ReminderSheetTopButtons extends ConsumerWidget {
       ),
       style: IconButton.styleFrom(
         backgroundColor: active
-            ? fillColor ?? colorScheme.primaryContainer
+            ? colorScheme.primaryContainer
             : colorScheme.onPrimaryContainer,
         padding: const EdgeInsets.all(8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),

@@ -84,11 +84,15 @@ class SaveButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final SheetReminderForm reminder = ref.watch(sheetReminderProvider);
 
+    // For button that lets user save changed details for all recurring
+    // instances of the reminder, mainly the dateTime change..
     final bool forAllCondition =
         reminder.id != newReminderID &&
         !reminder.recurrenceRule.isNone &&
         !reminder.dateTime.isAtSameMomentAs(reminder.baseDateTime);
-    final bool showPostpone = reminder.noRush;
+
+    // For button that lets user postpone a no rush reminder further
+    final bool showPostpone = reminder.noRush && reminder.id != newReminderID;
 
     return Row(
       spacing: 8,

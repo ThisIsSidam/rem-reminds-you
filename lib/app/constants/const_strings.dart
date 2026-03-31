@@ -11,7 +11,7 @@ const String todaySectionTitle = 'Today';
 const String tomorrowSectionTitle = 'Tomorrow';
 const String laterSectionTitle = 'Later';
 
-const int newReminderID = -100;
+const int newReminderID = 0;
 const String reminderNullTitle = 'No Title';
 const int reminderNullID = -1;
 const int reminderDefaultRepetitionCount = 5;
