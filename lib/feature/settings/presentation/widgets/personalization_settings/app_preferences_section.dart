@@ -63,7 +63,7 @@ class AppPreferencesSection extends ConsumerWidget {
 
   Widget _buildUseSystemFontTile(BuildContext context, WidgetRef ref) {
     return SwitchSettingTile(
-      leading: Icons.language,
+      leading: Icons.font_download,
       title: 'Use system font',
       selector: (UserSettingsNotifier p) => p.useSystemFont,
       onChanged: (WidgetRef ref, bool value) =>
