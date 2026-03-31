@@ -9,6 +9,7 @@ import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../shared/utils/logger/app_logger.dart';
 import '../../../../../../shared/utils/logger/logs_manager.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
+import '../../shared/standard_setting_tile.dart';
 
 class LogsSection extends ConsumerWidget {
   const LogsSection({super.key});
@@ -39,12 +40,9 @@ class LogsSection extends ConsumerWidget {
   }
 
   Widget getLogsTile(BuildContext context, WidgetRef ref) {
-    return ListTile(
-      leading: Icon(Icons.storage, color: context.colors.primary),
-      title: Text(
-        context.local.settingsGetLogFile,
-        style: Theme.of(context).textTheme.titleSmall,
-      ),
+    return StandardSettingTile(
+      leading: Icons.storage,
+      title: context.local.settingsGetLogFile,
       onTap: () async {
         try {
           final Uint8List? logsData = await _getLogsData();
@@ -94,12 +92,9 @@ class LogsSection extends ConsumerWidget {
   }
 
   Widget getClearLogsTile(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.folder_delete, color: context.colors.primary),
-      title: Text(
-        'Clear all logs',
-        style: Theme.of(context).textTheme.titleSmall,
-      ),
+    return StandardSettingTile(
+      leading: Icons.folder_delete,
+      title: 'Clear all logs',
       onTap: () async {
         await LogsManager().clearLogs();
         AppUtils.showToast(msg: 'Successfully deleted all logs');

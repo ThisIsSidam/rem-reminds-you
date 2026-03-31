@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../app/enums/swipe_actions.dart';
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
+import '../../shared/subtitle_setting_tile.dart';
 import 'swipe_to_left_action_sheet.dart';
 import 'swipe_to_right_action_sheet.dart';
 
@@ -36,65 +37,40 @@ class GesturesSection extends ConsumerWidget {
   }
 
   Widget _buildSlideToLeftActionsSetting(BuildContext context) {
-    return Consumer(
-      builder: (BuildContext context, WidgetRef ref, Widget? child) {
-        final SwipeAction action = ref
-            .watch(userSettingsProvider)
-            .homeTileSwipeActionLeft;
-
-        return ListTile(
-          leading: Icon(Icons.swipe_left, color: context.colors.primary),
-          title: Text(
-            context.local.settingsSwipeToLeftActions,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          minVerticalPadding: 20,
-          subtitle: Text(
-            action.toString(),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          onTap: () async {
-            await showModalBottomSheet<void>(
-              isScrollControlled: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 5,
-              context: context,
-              builder: (BuildContext context) => const SwipeToLeftActionSheet(),
-            );
-          },
+    return SubtitleSettingTile<SwipeAction>(
+      leading: Icons.swipe_left,
+      title: context.local.settingsSwipeToLeftActions,
+      selector: (UserSettingsNotifier p) => p.homeTileSwipeActionLeft,
+      subtitleBuilder: (BuildContext context, SwipeAction? value) =>
+          value?.toString() ?? '',
+      minVerticalPadding: 20,
+      onTap: (BuildContext context, WidgetRef ref, SwipeAction? value) async {
+        await showModalBottomSheet<void>(
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 5,
+          context: context,
+          builder: (BuildContext context) => const SwipeToLeftActionSheet(),
         );
       },
     );
   }
 
   Widget _buildSlideToRightActionsSetting(BuildContext context) {
-    return Consumer(
-      builder: (BuildContext context, WidgetRef ref, Widget? child) {
-        final SwipeAction action = ref
-            .watch(userSettingsProvider)
-            .homeTileSwipeActionRight;
-
-        return ListTile(
-          leading: Icon(Icons.swipe_right, color: context.colors.primary),
-          title: Text(
-            context.local.settingsSwipeToRightActions,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          minVerticalPadding: 20,
-          subtitle: Text(
-            action.toString(),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          onTap: () async {
-            await showModalBottomSheet<void>(
-              isScrollControlled: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 5,
-              context: context,
-              builder: (BuildContext context) =>
-                  const SwipeToRightActionSheet(),
-            );
-          },
+    return SubtitleSettingTile<SwipeAction>(
+      leading: Icons.swipe_right,
+      title: context.local.settingsSwipeToRightActions,
+      selector: (UserSettingsNotifier p) => p.homeTileSwipeActionRight,
+      subtitleBuilder: (BuildContext context, SwipeAction? value) =>
+          value?.toString() ?? '',
+      minVerticalPadding: 20,
+      onTap: (BuildContext context, WidgetRef ref, SwipeAction? value) async {
+        await showModalBottomSheet<void>(
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 5,
+          context: context,
+          builder: (BuildContext context) => const SwipeToRightActionSheet(),
         );
       },
     );

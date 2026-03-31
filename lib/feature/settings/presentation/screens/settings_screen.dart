@@ -7,6 +7,7 @@ import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../../shared/widgets/whats_new_sheet/whats_new_sheet.dart';
 import '../providers/settings_provider.dart';
+import '../widgets/shared/standard_setting_tile.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -71,9 +72,9 @@ class SettingsScreen extends ConsumerWidget {
     required IconData icon,
     required AppRoute route,
   }) {
-    return ListTile(
-      leading: Icon(icon, color: context.colors.primary),
-      title: Text(title, style: context.texts.titleMedium),
+    return StandardSettingTile(
+      leading: icon,
+      title: title,
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
         Navigator.pushNamed(context, route.name);
@@ -83,12 +84,9 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Widget _buildWhatsNewTile(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.new_releases_outlined, color: context.colors.primary),
-      title: Text(
-        context.local.settingsWhatsNew,
-        style: context.texts.titleMedium,
-      ),
+    return StandardSettingTile(
+      leading: Icons.new_releases_outlined,
+      title: context.local.settingsWhatsNew,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       onTap: () => showWhatsNewSheet(context),
     );

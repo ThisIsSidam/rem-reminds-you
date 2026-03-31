@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
+import '../../shared/standard_setting_tile.dart';
+import '../../shared/subtitle_setting_tile.dart';
 import 'default_auto_snooze_duration_modal.dart';
 import 'default_lead_duration_modal.dart';
 import 'quick_time_table_modal.dart';
@@ -40,35 +42,20 @@ class NewReminderSection extends ConsumerWidget {
   }
 
   Widget _buildDefaultLeadDurationTile(BuildContext context, WidgetRef ref) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        final Duration dur = ref
-            .watch(userSettingsProvider)
-            .defaultLeadDuration;
-        final String durString = dur.pretty(tersity: DurationTersity.minute);
-
-        return ListTile(
-          leading: Icon(Icons.add, color: context.colors.primary),
-          title: Text(
-            context.local.settingsDefaultLeadDuration,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          minVerticalPadding: 20,
-          onTap: () async {
-            await showModalBottomSheet<void>(
-              isScrollControlled: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 5,
-              context: context,
-              builder: (BuildContext context) =>
-                  const DefaultLeadDurationModal(),
-            );
-            setState(() {}); // Refresh the tile after modal is closed
-          },
-          subtitle: Text(
-            durString,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+    return SubtitleSettingTile<Duration>(
+      leading: Icons.add,
+      title: context.local.settingsDefaultLeadDuration,
+      selector: (UserSettingsNotifier p) => p.defaultLeadDuration,
+      subtitleBuilder: (BuildContext context, Duration? value) =>
+          value?.pretty(tersity: DurationTersity.minute) ?? '',
+      minVerticalPadding: 20,
+      onTap: (BuildContext context, WidgetRef ref, Duration? value) async {
+        await showModalBottomSheet<void>(
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 5,
+          context: context,
+          builder: (BuildContext context) => const DefaultLeadDurationModal(),
         );
       },
     );
@@ -78,72 +65,49 @@ class NewReminderSection extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        final Duration dur = ref
-            .watch(userSettingsProvider)
-            .defaultAutoSnoozeDuration;
-        final String durString = context.local.settingsEvery(
-          dur.pretty(tersity: DurationTersity.minute),
-        );
-
-        return ListTile(
-          leading: Icon(Icons.snooze, color: context.colors.primary),
-          title: Text(
-            context.local.settingsDefaultAutoSnoozeDuration,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          minVerticalPadding: 20,
-          onTap: () async {
-            await showModalBottomSheet<void>(
-              isScrollControlled: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 5,
-              context: context,
-              builder: (BuildContext context) =>
-                  const DefaultAutoSnoozeDurationModal(),
-            );
-            setState(() {}); // Refresh the tile after modal is closed
-          },
-          subtitle: Text(
-            durString,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+    return SubtitleSettingTile<Duration>(
+      leading: Icons.snooze,
+      title: context.local.settingsDefaultAutoSnoozeDuration,
+      selector: (UserSettingsNotifier p) => p.defaultAutoSnoozeDuration,
+      subtitleBuilder: (BuildContext context, Duration? value) => value != null
+          ? context.local.settingsEvery(
+              value.pretty(tersity: DurationTersity.minute),
+            )
+          : '',
+      minVerticalPadding: 20,
+      onTap: (BuildContext context, WidgetRef ref, Duration? value) async {
+        await showModalBottomSheet<void>(
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 5,
+          context: context,
+          builder: (BuildContext context) =>
+              const DefaultAutoSnoozeDurationModal(),
         );
       },
     );
   }
 
   Widget _buildQuickTimeTableTile(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.table_chart_outlined, color: context.colors.primary),
-      title: Text(
-        context.local.settingsQuickTimeTable,
-        style: Theme.of(context).textTheme.titleSmall,
+    return StandardSettingTile(
+      leading: Icons.table_chart_outlined,
+      title: context.local.settingsQuickTimeTable,
+      onTap: () => showModalBottomSheet<void>(
+        isScrollControlled: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 5,
+        context: context,
+        builder: (BuildContext context) => const QuickTimeTableModal(),
       ),
-      minVerticalPadding: 20,
-      onTap: () {
-        showModalBottomSheet<void>(
-          isScrollControlled: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 5,
-          context: context,
-          builder: (BuildContext context) => const QuickTimeTableModal(),
-        );
-      },
     );
   }
 
   Widget _buildSnoozeOptionsTile(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.snooze_outlined, color: context.colors.primary),
-      title: Text(
-        context.local.settingsSnoozeOptions,
-        style: Theme.of(context).textTheme.titleSmall,
-      ),
-      minVerticalPadding: 20,
-      onTap: () {
-        showModalBottomSheet<void>(
+    return StandardSettingTile(
+      leading: Icons.snooze_outlined,
+      title: context.local.settingsSnoozeOptions,
+      onTap: () async {
+        await showModalBottomSheet<void>(
           isScrollControlled: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 5,

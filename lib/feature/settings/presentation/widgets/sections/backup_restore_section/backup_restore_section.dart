@@ -13,6 +13,7 @@ import '../../../../../../shared/utils/logger/app_logger.dart';
 import '../../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../../../reminder/presentation/providers/no_rush_provider.dart';
 import '../../../../../reminder/presentation/providers/reminders_provider.dart';
+import '../../shared/standard_setting_tile.dart';
 
 class BackupRestoreSection extends ConsumerWidget {
   const BackupRestoreSection({super.key});
@@ -43,12 +44,9 @@ class BackupRestoreSection extends ConsumerWidget {
   }
 
   Widget getBackupTile(BuildContext context, WidgetRef ref) {
-    return ListTile(
-      leading: Icon(Icons.backup_outlined, color: context.colors.primary),
-      title: Text(
-        context.local.settingsBackup,
-        style: Theme.of(context).textTheme.titleSmall,
-      ),
+    return StandardSettingTile(
+      leading: Icons.backup_outlined,
+      title: context.local.settingsBackup,
       onTap: () async {
         try {
           // Get backup data
@@ -100,15 +98,9 @@ class BackupRestoreSection extends ConsumerWidget {
   }
 
   Widget getRestoreTile(BuildContext context, WidgetRef ref) {
-    return ListTile(
-      leading: Icon(
-        Icons.settings_backup_restore,
-        color: context.colors.primary,
-      ),
-      title: Text(
-        context.local.settingsRestore,
-        style: Theme.of(context).textTheme.titleSmall,
-      ),
+    return StandardSettingTile(
+      leading: Icons.settings_backup_restore,
+      title: context.local.settingsRestore,
       onTap: () async {
         try {
           // Get file path of selected file

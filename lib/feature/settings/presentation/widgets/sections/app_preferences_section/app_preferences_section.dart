@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../app/enums/app_language.dart';
 import '../../../../../../core/extensions/context_ext.dart';
-import '../../../../../../shared/utils/extensions/string_ext.dart';
 import '../../../providers/settings_provider.dart';
+import '../../shared/dropdown_setting_tile.dart';
+import '../../shared/slider_setting_tile.dart';
+import '../../shared/switch_setting_tile.dart';
 
-class AppPreferencesSection extends HookConsumerWidget {
+class AppPreferencesSection extends ConsumerWidget {
   const AppPreferencesSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final MenuController controller = useMemoized(MenuController.new);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const SizedBox(height: 5),
         Column(
           children: <Widget>[
-            _buildThemeSetting(context, ref, controller),
+            const ThemeSettingTile(),
             _buildLanguageSetting(context, ref),
             _buildTextScaleSetting(context, ref),
             _buildUseSystemFontTile(context, ref),
@@ -30,123 +29,104 @@ class AppPreferencesSection extends HookConsumerWidget {
     );
   }
 
-  Widget _buildThemeSetting(
-    BuildContext context,
-    WidgetRef ref,
-    MenuController controller,
-  ) {
-    final UserSettingsNotifier settingsNotifier = ref.read(
-      userSettingsProvider,
-    );
-    final ThemeMode themeMode = ref.watch(userSettingsProvider).themeMode;
-    return MenuAnchor(
-      controller: controller,
-      menuChildren: <Widget>[
-        for (final ThemeMode mode in ThemeMode.values)
-          MenuItemButton(
-            child: Text(mode.name.capitalize()),
-            onPressed: () {
-              settingsNotifier.setThemeMode(mode);
-            },
-          ),
-      ],
-      child: ListTile(
-        onTap: () {
-          controller.isOpen ? controller.close() : controller.open();
-        },
-        leading: Icon(
-          themeMode == ThemeMode.system
-              ? Icons.brightness_6
-              : settingsNotifier.themeMode == ThemeMode.dark
-              ? Icons.dark_mode
-              : Icons.light_mode,
-          color: context.colors.primary,
-        ),
-        title: Text(
-          context.local.settingsTheme,
-          style: context.texts.titleMedium,
-        ),
-        subtitle: Text(
-          themeMode.name.capitalize(),
-          style: context.texts.bodySmall,
-        ),
-      ),
-    );
-  }
-
   Widget _buildTextScaleSetting(BuildContext context, WidgetRef ref) {
-    final double textScale = ref.watch(
-      userSettingsProvider.select((UserSettingsNotifier p) => p.textScale),
-    );
-    return ListTile(
-      leading: Icon(Icons.format_size, color: context.colors.primary),
-      title: Text(
-        context.local.settingsTextScale,
-        style: context.texts.titleMedium,
-      ),
-      subtitle: Row(
-        children: <Widget>[
-          Expanded(
-            child: Slider(
-              value: textScale,
-              min: 0.8,
-              max: 1.4,
-              divisions: 6,
-              onChanged: (double val) {
-                ref.read(userSettingsProvider).setTextScale(val);
-              },
-              inactiveColor: Theme.of(context).colorScheme.secondary,
-              activeColor: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          Text(
-            '${textScale.toStringAsPrecision(2)}x',
-            style: context.texts.bodyMedium,
-          ),
-        ],
-      ),
+    return SliderSettingTile(
+      leading: Icons.format_size,
+      title: context.local.settingsTextScale,
+      selector: (UserSettingsNotifier p) => p.textScale,
+      min: 0.8,
+      max: 1.4,
+      divisions: 6,
+      labelBuilder: (double value) => '${value.toStringAsPrecision(2)}x',
+      onChanged: (WidgetRef ref, double val) =>
+          ref.read(userSettingsProvider).setTextScale(val),
     );
   }
 
   Widget _buildLanguageSetting(BuildContext context, WidgetRef ref) {
-    final AppLanguage language = ref.watch(userSettingsProvider).language;
-    return ListTile(
-      leading: Icon(Icons.language, color: context.colors.primary),
-      title: Text('Language', style: context.texts.titleMedium),
-      trailing: DropdownButton<AppLanguage>(
-        dropdownColor: Theme.of(context).cardColor,
-        underline: const SizedBox(),
-        padding: const EdgeInsets.only(left: 8, right: 4),
-        iconSize: 20,
-        style: context.texts.bodyMedium,
-        borderRadius: BorderRadius.circular(12),
-        value: language,
-        items: AppLanguage.values
-            .map(
-              (lan) => DropdownMenuItem<AppLanguage>(
-                value: lan,
-                child: Text(lan.label),
-              ),
-            )
-            .toList(),
-        onChanged: (AppLanguage? value) {
-          if (value != null) {
-            ref.read(userSettingsProvider).setLanguage(value);
-          }
-        },
-      ),
+    return DropdownSettingTile<AppLanguage>(
+      leading: Icons.language,
+      title: 'Language',
+      selector: (UserSettingsNotifier p) => p.language,
+      items: AppLanguage.values
+          .map(
+            (AppLanguage lan) => DropdownMenuItem<AppLanguage>(
+              value: lan,
+              child: Text(lan.label),
+            ),
+          )
+          .toList(),
+      onChanged: (WidgetRef ref, AppLanguage value) =>
+          ref.read(userSettingsProvider).setLanguage(value),
     );
   }
 
   Widget _buildUseSystemFontTile(BuildContext context, WidgetRef ref) {
-    final bool useSystemFont = ref.watch(userSettingsProvider).useSystemFont;
+    return SwitchSettingTile(
+      leading: Icons.language,
+      title: 'Use system font',
+      selector: (UserSettingsNotifier p) => p.useSystemFont,
+      onChanged: (WidgetRef ref, bool value) =>
+          ref.read(userSettingsProvider).setUseSystemFont(value),
+    );
+  }
+}
+
+class ThemeSettingTile extends ConsumerWidget {
+  const ThemeSettingTile({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final UserSettingsNotifier settingsNotifier = ref.read(
+      userSettingsProvider,
+    );
+    final ThemeMode themeMode = ref.watch(
+      userSettingsProvider.select((s) => s.themeMode),
+    );
     return ListTile(
-      leading: Icon(Icons.language, color: context.colors.primary),
-      title: Text('Use system font', style: context.texts.titleMedium),
-      trailing: Switch(
-        value: useSystemFont,
-        onChanged: (value) =>
-            ref.read(userSettingsProvider).setUseSystemFont(value),
+      leading: Icon(Icons.brightness_medium, color: context.colors.primary),
+      title: Text(
+        context.local.settingsTheme,
+        style: context.texts.titleMedium,
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(
+              themeMode == ThemeMode.system
+                  ? Icons.brightness_auto
+                  : Icons.brightness_auto_outlined,
+            ),
+            color: themeMode == ThemeMode.system
+                ? context.colors.primary
+                : null,
+            onPressed: () {
+              settingsNotifier.setThemeMode(ThemeMode.system);
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              themeMode == ThemeMode.light
+                  ? Icons.light_mode
+                  : Icons.light_mode_outlined,
+            ),
+            color: themeMode == ThemeMode.light ? context.colors.primary : null,
+            onPressed: () {
+              settingsNotifier.setThemeMode(ThemeMode.light);
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              themeMode == ThemeMode.dark
+                  ? Icons.dark_mode
+                  : Icons.dark_mode_outlined,
+            ),
+            color: themeMode == ThemeMode.dark ? context.colors.primary : null,
+            onPressed: () {
+              settingsNotifier.setThemeMode(ThemeMode.dark);
+            },
+          ),
+        ],
       ),
     );
   }
