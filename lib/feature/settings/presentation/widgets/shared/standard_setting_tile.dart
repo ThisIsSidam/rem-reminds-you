@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/extensions/context_ext.dart';
+import 'setting_tile.dart';
 
 class StandardSettingTile extends StatelessWidget {
   const StandardSettingTile({
@@ -22,8 +23,8 @@ class StandardSettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(leading, color: context.colors.primary),
+    return SettingTile(
+      leading: leading,
       title: Text(title, style: context.texts.titleMedium),
       subtitle: subtitle != null
           ? Text(subtitle!, style: context.texts.bodySmall)

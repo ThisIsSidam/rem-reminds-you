@@ -31,31 +31,61 @@ class SettingsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 16),
-            _buildNavigationTile(
-              context,
+            StandardSettingTile(
+              leading: Icons.palette_outlined,
               title: 'Personalization',
-              icon: Icons.palette_outlined,
-              route: AppRoute.settingsPersonalization,
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoute.settingsPersonalization.name,
+                );
+              },
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
             ),
-            _buildNavigationTile(
-              context,
+
+            StandardSettingTile(
+              leading: Icons.notifications_active_outlined,
               title: 'Reminder Settings',
-              icon: Icons.notifications_active_outlined,
-              route: AppRoute.settingsReminder,
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoute.settingsReminder.name);
+              },
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
             ),
-            _buildNavigationTile(
-              context,
+
+            StandardSettingTile(
+              leading: Icons.view_agenda_outlined,
               title: 'Agenda Settings',
-              icon: Icons.view_agenda_outlined,
-              route: AppRoute.settingsAgenda,
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoute.settingsAgenda.name);
+              },
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
             ),
-            _buildNavigationTile(
-              context,
+
+            StandardSettingTile(
+              leading: Icons.settings_system_daydream_outlined,
               title: 'Advanced',
-              icon: Icons.settings_system_daydream_outlined,
-              route: AppRoute.settingsAdvanced,
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoute.settingsAdvanced.name);
+              },
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
             ),
+
             _buildWhatsNewTile(context),
             const SizedBox(height: 16),
             _buildVersionWidget(),
@@ -63,23 +93,6 @@ class SettingsScreen extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildNavigationTile(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required AppRoute route,
-  }) {
-    return StandardSettingTile(
-      leading: icon,
-      title: title,
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        Navigator.pushNamed(context, route.name);
-      },
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../providers/settings_provider.dart';
+import 'setting_tile.dart';
 
 class DropdownSettingTile<T> extends ConsumerWidget {
   const DropdownSettingTile({
@@ -26,8 +27,8 @@ class DropdownSettingTile<T> extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final T value = ref.watch(userSettingsProvider.select(selector));
 
-    return ListTile(
-      leading: Icon(leading, color: context.colors.primary),
+    return SettingTile(
+      leading: leading,
       title: Text(title, style: context.texts.titleMedium),
       trailing: DropdownButton<T>(
         dropdownColor: dropdownColor ?? Theme.of(context).cardColor,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../providers/settings_provider.dart';
+import 'setting_tile.dart';
 
 class SliderSettingTile extends ConsumerWidget {
   const SliderSettingTile({
@@ -30,8 +31,8 @@ class SliderSettingTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final double value = ref.watch(userSettingsProvider.select(selector));
 
-    return ListTile(
-      leading: Icon(leading, color: context.colors.primary),
+    return SettingTile(
+      leading: leading,
       title: Text(title, style: context.texts.titleMedium),
       subtitle: Row(
         children: <Widget>[

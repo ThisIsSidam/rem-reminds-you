@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../providers/settings_provider.dart';
+import 'setting_tile.dart';
 
 class SwitchSettingTile extends ConsumerWidget {
   const SwitchSettingTile({
@@ -22,8 +23,8 @@ class SwitchSettingTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bool value = ref.watch(userSettingsProvider.select(selector));
 
-    return ListTile(
-      leading: Icon(leading, color: context.colors.primary),
+    return SettingTile(
+      leading: leading,
       title: Text(title, style: context.texts.titleMedium),
       trailing: Switch(
         value: value,

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
 import '../../shared/dropdown_setting_tile.dart';
-import '../../shared/subtitle_setting_tile.dart';
+import '../../shared/dynamic_subtitle_setting_tile.dart';
 import 'no_rush_hours_sheet.dart';
 
 class ReminderPreferencesSection extends ConsumerWidget {
@@ -63,7 +63,7 @@ class ReminderPreferencesSection extends ConsumerWidget {
   }
 
   Widget _buildNoRushHoursSettings(BuildContext context, WidgetRef ref) {
-    return SubtitleSettingTile<({TimeOfDay start, TimeOfDay end})>(
+    return DynamicSubtitleSettingTile<({TimeOfDay start, TimeOfDay end})>(
       leading: Icons.nightlight,
       title: context.local.settingsNoRushHours,
       selector: (UserSettingsNotifier p) =>

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../app/enums/swipe_actions.dart';
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
-import '../../shared/subtitle_setting_tile.dart';
+import '../../shared/dynamic_subtitle_setting_tile.dart';
 import 'swipe_to_left_action_sheet.dart';
 import 'swipe_to_right_action_sheet.dart';
 
@@ -37,13 +37,12 @@ class GesturesSection extends ConsumerWidget {
   }
 
   Widget _buildSlideToLeftActionsSetting(BuildContext context) {
-    return SubtitleSettingTile<SwipeAction>(
+    return DynamicSubtitleSettingTile<SwipeAction>(
       leading: Icons.swipe_left,
       title: context.local.settingsSwipeToLeftActions,
       selector: (UserSettingsNotifier p) => p.homeTileSwipeActionLeft,
       subtitleBuilder: (BuildContext context, SwipeAction? value) =>
           value?.toString() ?? '',
-      minVerticalPadding: 20,
       onTap: (BuildContext context, WidgetRef ref, SwipeAction? value) async {
         await showModalBottomSheet<void>(
           isScrollControlled: true,
@@ -57,13 +56,12 @@ class GesturesSection extends ConsumerWidget {
   }
 
   Widget _buildSlideToRightActionsSetting(BuildContext context) {
-    return SubtitleSettingTile<SwipeAction>(
+    return DynamicSubtitleSettingTile<SwipeAction>(
       leading: Icons.swipe_right,
       title: context.local.settingsSwipeToRightActions,
       selector: (UserSettingsNotifier p) => p.homeTileSwipeActionRight,
       subtitleBuilder: (BuildContext context, SwipeAction? value) =>
           value?.toString() ?? '',
-      minVerticalPadding: 20,
       onTap: (BuildContext context, WidgetRef ref, SwipeAction? value) async {
         await showModalBottomSheet<void>(
           isScrollControlled: true,

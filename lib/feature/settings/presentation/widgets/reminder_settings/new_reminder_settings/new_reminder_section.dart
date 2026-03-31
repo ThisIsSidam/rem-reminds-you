@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
+import '../../shared/dynamic_subtitle_setting_tile.dart';
 import '../../shared/standard_setting_tile.dart';
-import '../../shared/subtitle_setting_tile.dart';
 import 'default_auto_snooze_duration_modal.dart';
 import 'default_lead_duration_modal.dart';
 import 'quick_time_table_modal.dart';
@@ -42,13 +42,12 @@ class NewReminderSection extends ConsumerWidget {
   }
 
   Widget _buildDefaultLeadDurationTile(BuildContext context, WidgetRef ref) {
-    return SubtitleSettingTile<Duration>(
+    return DynamicSubtitleSettingTile<Duration>(
       leading: Icons.add,
       title: context.local.settingsDefaultLeadDuration,
       selector: (UserSettingsNotifier p) => p.defaultLeadDuration,
       subtitleBuilder: (BuildContext context, Duration? value) =>
           value?.pretty(tersity: DurationTersity.minute) ?? '',
-      minVerticalPadding: 20,
       onTap: (BuildContext context, WidgetRef ref, Duration? value) async {
         await showModalBottomSheet<void>(
           isScrollControlled: true,
@@ -65,7 +64,7 @@ class NewReminderSection extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    return SubtitleSettingTile<Duration>(
+    return DynamicSubtitleSettingTile<Duration>(
       leading: Icons.snooze,
       title: context.local.settingsDefaultAutoSnoozeDuration,
       selector: (UserSettingsNotifier p) => p.defaultAutoSnoozeDuration,
@@ -74,7 +73,6 @@ class NewReminderSection extends ConsumerWidget {
               value.pretty(tersity: DurationTersity.minute),
             )
           : '',
-      minVerticalPadding: 20,
       onTap: (BuildContext context, WidgetRef ref, Duration? value) async {
         await showModalBottomSheet<void>(
           isScrollControlled: true,
