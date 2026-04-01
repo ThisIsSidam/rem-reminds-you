@@ -118,7 +118,7 @@ class SettingsScreen extends ConsumerWidget {
           context,
           title: context.local.settingsResetDialogTitle,
         );
-        if (result == false && !context.mounted) return;
+        if (result == false || !context.mounted) return;
         notifier.resetSettings();
       },
     );
