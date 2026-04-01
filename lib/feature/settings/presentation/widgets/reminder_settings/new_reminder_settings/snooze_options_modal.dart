@@ -5,52 +5,41 @@ import '../../../../../../core/extensions/context_ext.dart';
 import '../../../../../../core/extensions/duration_ext.dart';
 import '../../../../../../shared/widgets/hm_duration_picker.dart';
 import '../../../../../../shared/widgets/save_close_buttons.dart';
-import '../../../providers/settings_provider.dart';
+import '../../../../../../shared/widgets/sheet_handle.dart';
 
-class SnoozeOptionsModal extends ConsumerStatefulWidget {
-  const SnoozeOptionsModal({super.key});
-
-  @override
-  ConsumerState<SnoozeOptionsModal> createState() => _SnoozeOptionsModalState();
+Future<Map<int, Duration>?> showSnoozeOptionsSheet(
+  BuildContext context, {
+  required Map<int, Duration> initialDurations,
+}) {
+  return showModalBottomSheet<Map<int, Duration>>(
+    isScrollControlled: true,
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    elevation: 5,
+    context: context,
+    builder: (BuildContext context) =>
+        SnoozeOptionsSheet(initialDurations: initialDurations),
+  );
 }
 
-class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
-  int selectedSettingOption = 0; // 0-5 for autoSnoozeOption1 to 6
-  late Map<int, Duration> durations;
+class SnoozeOptionsSheet extends ConsumerStatefulWidget {
+  const SnoozeOptionsSheet({required this.initialDurations, super.key});
+
+  final Map<int, Duration> initialDurations;
 
   @override
-  void initState() {
-    super.initState();
-    initializeDurations();
-  }
+  ConsumerState<SnoozeOptionsSheet> createState() => _SnoozeOptionsSheetState();
+}
 
-  void initializeDurations() {
-    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
-    durations = <int, Duration>{
-      0: settings.autoSnoozeOption1,
-      1: settings.autoSnoozeOption2,
-      2: settings.autoSnoozeOption3,
-      3: settings.autoSnoozeOption4,
-      4: settings.autoSnoozeOption5,
-      5: settings.autoSnoozeOption6,
-    };
-  }
+class _SnoozeOptionsSheetState extends ConsumerState<SnoozeOptionsSheet> {
+  late final ValueNotifier<int> _selectedOptionNotifier = ValueNotifier(0);
+  late final ValueNotifier<Map<int, Duration>> _durationsNotifier =
+      ValueNotifier(Map<int, Duration>.from(widget.initialDurations));
 
-  void setSelectedOption(int option) {
-    setState(() {
-      selectedSettingOption = option;
-    });
-  }
-
-  Future<void> onSave() async {
-    final UserSettingsNotifier settings = ref.read(userSettingsProvider);
-
-    await settings.setAutoSnoozeOption1(durations[0]!);
-    await settings.setAutoSnoozeOption2(durations[1]!);
-    await settings.setAutoSnoozeOption3(durations[2]!);
-    await settings.setAutoSnoozeOption4(durations[3]!);
-    await settings.setAutoSnoozeOption5(durations[4]!);
-    await settings.setAutoSnoozeOption6(durations[5]!);
+  @override
+  void dispose() {
+    _selectedOptionNotifier.dispose();
+    _durationsNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,34 +49,48 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          const SheetHandle(),
+          const SizedBox(height: 16),
           Text(
             context.local.settingsSnoozeOptionsTitle,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
-          const Divider(),
-          const SizedBox(height: 10),
-          _buildButtonsGrid(),
+          const SizedBox(height: 16),
+          ValueListenableBuilder<int>(
+            valueListenable: _selectedOptionNotifier,
+            builder: (context, selectedOption, child) {
+              return ValueListenableBuilder<Map<int, Duration>>(
+                valueListenable: _durationsNotifier,
+                builder: (context, durations, child) {
+                  return _buildButtonsGrid(
+                    selectedOption,
+                    durations,
+                    (option) => _selectedOptionNotifier.value = option,
+                  );
+                },
+              );
+            },
+          ),
           HMDurationPicker(
             onDurationChange: (Duration dur) {
-              setState(() {
-                durations[selectedSettingOption] = dur;
-              });
+              final newMap = Map<int, Duration>.from(_durationsNotifier.value);
+              newMap[_selectedOptionNotifier.value] = dur;
+              _durationsNotifier.value = newMap;
             },
           ),
           SaveCloseButtons(
-            onTapSave: () async {
-              await onSave();
-              if (context.mounted) {
-                Navigator.pop(context);
-              }
-            },
+            onTapSave: () => Navigator.pop(context, _durationsNotifier.value),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildButtonsGrid() {
+  Widget _buildButtonsGrid(
+    int selectedOption,
+    Map<int, Duration> durations,
+    void Function(int) onSelect,
+  ) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(25),
       child: GridView.count(
@@ -101,26 +104,30 @@ class _SnoozeOptionsModalState extends ConsumerState<SnoozeOptionsModal> {
             _buildButton(
               entry.value.friendly(),
               entry.key,
+              selectedOption,
+              onSelect,
             ),
         ],
       ),
     );
   }
 
-  Widget _buildButton(String label, int option) {
+  Widget _buildButton(
+    String label,
+    int option,
+    int selectedOption,
+    void Function(int) onSelect,
+  ) {
     return ElevatedButton(
-      onPressed: () => setSelectedOption(option),
+      onPressed: () => onSelect(option),
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.zero,
-        backgroundColor: option == selectedSettingOption
+        backgroundColor: option == selectedOption
             ? Theme.of(context).colorScheme.primaryContainer
             : Theme.of(context).colorScheme.secondaryContainer,
         shape: const BeveledRectangleBorder(),
       ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
+      child: Text(label, style: Theme.of(context).textTheme.titleSmall),
     );
   }
 }

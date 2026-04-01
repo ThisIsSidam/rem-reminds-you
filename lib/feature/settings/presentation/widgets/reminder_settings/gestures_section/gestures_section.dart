@@ -44,13 +44,15 @@ class GesturesSection extends ConsumerWidget {
       subtitleBuilder: (BuildContext context, SwipeAction? value) =>
           value?.localizedName(context) ?? '',
       onTap: (BuildContext context, WidgetRef ref, SwipeAction? value) async {
-        await showModalBottomSheet<void>(
-          isScrollControlled: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 5,
-          context: context,
-          builder: (BuildContext context) => const SwipeToLeftActionSheet(),
+        final SwipeAction? newAction = await showSwipeToLeftActionSheet(
+          context,
+          initialAction: value ?? SwipeAction.none,
         );
+        if (newAction != null) {
+          await ref
+              .read(userSettingsProvider)
+              .setHomeTileSwipeActionLeft(newAction);
+        }
       },
     );
   }
@@ -63,13 +65,15 @@ class GesturesSection extends ConsumerWidget {
       subtitleBuilder: (BuildContext context, SwipeAction? value) =>
           value?.localizedName(context) ?? '',
       onTap: (BuildContext context, WidgetRef ref, SwipeAction? value) async {
-        await showModalBottomSheet<void>(
-          isScrollControlled: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 5,
-          context: context,
-          builder: (BuildContext context) => const SwipeToRightActionSheet(),
+        final SwipeAction? newAction = await showSwipeToRightActionSheet(
+          context,
+          initialAction: value ?? SwipeAction.none,
         );
+        if (newAction != null) {
+          await ref
+              .read(userSettingsProvider)
+              .setHomeTileSwipeActionRight(newAction);
+        }
       },
     );
   }
