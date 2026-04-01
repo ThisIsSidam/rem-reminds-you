@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../app/constants/app_images.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../router/app_routes.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
+import '../../../../shared/widgets/confirmation_dialog.dart';
+import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../../shared/widgets/whats_new_sheet/whats_new_sheet.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/shared/standard_setting_tile.dart';
@@ -88,7 +92,7 @@ class SettingsScreen extends ConsumerWidget {
 
             _buildWhatsNewTile(context),
             const SizedBox(height: 16),
-            _buildVersionWidget(),
+            const SettingsFooter(),
             SizedBox(height: MediaQuery.viewPaddingOf(context).bottom + 16),
           ],
         ),
@@ -108,66 +112,68 @@ class SettingsScreen extends ConsumerWidget {
   Widget resetIcon(BuildContext context, UserSettingsNotifier notifier) {
     return IconButton(
       icon: const Icon(Icons.refresh),
-      onPressed: () {
+      onPressed: () async {
         AppLogger.i('Tapped reset icon');
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                context.local.settingsResetDialogTitle,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      AppLogger.i('Reset cancelled');
-                      Navigator.pop(context);
-                    },
-                    child: Text(context.local.settingsNo),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      AppLogger.i('Resetting settings');
-                      notifier.resetSettings();
-                      Navigator.pop(context);
-                    },
-                    child: Text(context.local.settingsYes),
-                  ),
-                ],
-              ),
-            );
-          },
+        final result = await showConfirmationDialog(
+          context,
+          title: context.local.settingsResetDialogTitle,
         );
+        if (result == false && !context.mounted) return;
+        notifier.resetSettings();
       },
     );
   }
+}
 
-  Widget _buildVersionWidget() {
-    final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
+class SettingsFooter extends StatefulWidget {
+  const SettingsFooter({super.key});
+
+  @override
+  State<SettingsFooter> createState() => _SettingsFooterState();
+}
+
+class _SettingsFooterState extends State<SettingsFooter> {
+  final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
-      child: FutureBuilder<PackageInfo>(
-        future: packageInfo,
-        builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox(
-              height: 24,
-              width: 24,
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
+      child: Row(
+        spacing: 8,
+        mainAxisSize: .min,
+        children: [
+          InkWell(
+            borderRadius: .circular(50),
+            onTap: () => AppUtils.openUrl(
+              'https://github.com/ThisIsSidam/rem-reminds-you',
+            ),
+            child: SvgPicture.asset(
+              AppSvgs.githubIcon.path,
+              colorFilter: ColorFilter.mode(context.colors.onSurface, .srcIn),
+            ),
+          ),
+          FutureBuilder<PackageInfo>(
+            future: packageInfo,
+            builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
 
-          if (snapshot.hasData) {
-            return Text(
-              'v${snapshot.data!.version}',
-              style: context.texts.bodySmall?.copyWith(color: Colors.grey),
-            );
-          }
+              if (snapshot.hasData) {
+                return Text(
+                  'v${snapshot.data!.version}',
+                  style: context.texts.bodySmall?.copyWith(color: Colors.grey),
+                );
+              }
 
-          return const SizedBox.shrink();
-        },
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
     );
   }

@@ -6,7 +6,7 @@ import '../../core/extensions/context_ext.dart';
 Future<bool?> showConfirmationDialog(
   BuildContext context, {
   required String title,
-  required String description,
+  String? description,
 }) {
   return showDialog<bool>(
     context: context,
@@ -19,14 +19,10 @@ Future<bool?> showConfirmationDialog(
 }
 
 class _ConfirmationDialog extends HookWidget {
-  const _ConfirmationDialog({
-    required this.title,
-    required this.description,
-    super.key,
-  });
+  const _ConfirmationDialog({required this.title, this.description, super.key});
 
   final String title;
-  final String description;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +42,13 @@ class _ConfirmationDialog extends HookWidget {
           style: context.texts.titleMedium?.copyWith(fontWeight: .bold),
           overflow: TextOverflow.visible,
         ),
-        content: Text(
-          description,
-          style: context.texts.bodyMedium,
-          overflow: TextOverflow.visible,
-        ),
+        content: description == null
+            ? null
+            : Text(
+                description!,
+                style: context.texts.bodyMedium,
+                overflow: TextOverflow.visible,
+              ),
         actions: <Widget>[
           Row(
             spacing: 12,

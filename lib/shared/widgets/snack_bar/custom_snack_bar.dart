@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppUtils {
   static void showToast({
@@ -16,9 +17,7 @@ class AppUtils {
       showProgressBar: false,
       type: type,
       autoCloseDuration: const Duration(seconds: 3),
-      title: Text(
-        msg,
-      ),
+      title: Text(msg),
       closeOnClick: true,
       description: description != null ? Text(description) : null,
       callbacks: ToastificationCallbacks(
@@ -31,5 +30,13 @@ class AppUtils {
         },
       ),
     );
+  }
+
+  static Future<void> openUrl(String url) async {
+    try {
+      if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
+    } catch (_) {
+      AppUtils.showToast(msg: 'Could not launch url');
+    }
   }
 }
