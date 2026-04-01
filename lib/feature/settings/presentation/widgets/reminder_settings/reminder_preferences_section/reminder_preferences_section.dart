@@ -63,30 +63,23 @@ class ReminderPreferencesSection extends ConsumerWidget {
   }
 
   Widget _buildNoRushHoursSettings(BuildContext context, WidgetRef ref) {
-    return DynamicSubtitleSettingTile<({TimeOfDay start, TimeOfDay end})>(
+    return DynamicSubtitleSettingTile<TimeRange>(
       leading: Icons.nightlight,
       title: context.local.settingsNoRushHours,
       selector: (UserSettingsNotifier p) =>
-          (start: p.noRushStartTime, end: p.noRushEndTime),
-      subtitleBuilder:
-          (BuildContext context, ({TimeOfDay start, TimeOfDay end})? value) =>
-              value != null
-              ? '${value.start.format(context)} - ${value.end.format(context)}'
-              : '',
-      onTap:
-          (
-            BuildContext context,
-            WidgetRef ref,
-            ({TimeOfDay start, TimeOfDay end})? value,
-          ) async {
-            await showModalBottomSheet<void>(
-              isScrollControlled: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 5,
-              context: context,
-              builder: (BuildContext context) => const NoRushHoursSheet(),
-            );
-          },
+          (from: p.noRushStartTime, to: p.noRushEndTime),
+      subtitleBuilder: (BuildContext context, TimeRange? value) => value != null
+          ? '${value.from?.format(context)} - ${value.to?.format(context)}'
+          : '',
+      onTap: (BuildContext context, WidgetRef ref, TimeRange? value) async {
+        final newRange = await showNoRushHoursSheet(
+          context,
+          initialRange: value,
+        );
+        if (newRange == null || !context.mounted) return;
+        await ref.read(userSettingsProvider).setNoRushStartTime(newRange.from!);
+        await ref.read(userSettingsProvider).setNoRushEndTime(newRange.to!);
+      },
     );
   }
 }

@@ -10,4 +10,6 @@ extension ContextExt on BuildContext {
   TextTheme get texts => theme.textTheme;
 
   AppLocalizations get local => AppLocalizations.of(this)!;
+
+  void pop<T extends Object?>(T result) => Navigator.pop<T>(this, result);
 }

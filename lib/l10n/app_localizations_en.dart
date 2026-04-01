@@ -195,6 +195,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'No rush reminders are shown only within this time range, so that you only get notified when you want to.';
 
   @override
+  String get settingsFrom => 'From';
+
+  @override
+  String get settingsTo => 'To';
+
+  @override
   String get settingsSwipeToLeftActions => 'Swipe to Left Actions';
 
   @override

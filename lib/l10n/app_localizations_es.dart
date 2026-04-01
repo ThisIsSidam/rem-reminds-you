@@ -196,6 +196,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'Los recordatorios sin prisa se muestran solo dentro de este rango de tiempo, para que solo seas notificado cuando quieras.';
 
   @override
+  String get settingsFrom => 'Desde';
+
+  @override
+  String get settingsTo => 'Hasta';
+
+  @override
   String get settingsSwipeToLeftActions =>
       'Acciones de deslizar a la izquierda';
 

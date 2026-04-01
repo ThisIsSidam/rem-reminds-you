@@ -248,6 +248,14 @@
   "@settingsNoRushDescription": {
     "description": "Description for no rush hours setting"
   },
+  "settingsFrom": "From",
+  "@settingsFrom": {
+    "description": "Label for 'From' time in no rush hours"
+  },
+  "settingsTo": "To",
+  "@settingsTo": {
+    "description": "Label for 'To' time in no rush hours"
+  },
   "settingsSwipeToLeftActions": "Swipe to Left Actions",
   "@settingsSwipeToLeftActions": {
     "description": "Title for swipe to left actions setting"

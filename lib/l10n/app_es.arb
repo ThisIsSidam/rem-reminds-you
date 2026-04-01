@@ -75,6 +75,8 @@
   "settings2Hours": "2 horas",
   "settingsNoRushHours": "Horas sin prisa",
   "settingsNoRushDescription": "Los recordatorios sin prisa se muestran solo dentro de este rango de tiempo, para que solo seas notificado cuando quieras.",
+  "settingsFrom": "Desde",
+  "settingsTo": "Hasta",
   "settingsSwipeToLeftActions": "Acciones de deslizar a la izquierda",
   "settingsSwipeLeft": "Deslizar a la izquierda",
   "settingsSwipeToRightActions": "Acciones de deslizar a la derecha",

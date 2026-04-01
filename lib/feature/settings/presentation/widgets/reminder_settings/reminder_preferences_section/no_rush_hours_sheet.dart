@@ -1,110 +1,121 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../../core/extensions/context_ext.dart';
-import '../../../providers/settings_provider.dart';
+import '../../../../../../shared/widgets/save_close_buttons.dart';
+import '../../../../../../shared/widgets/sheet_handle.dart';
 
-enum SelectedTime { start, end }
+typedef TimeRange = ({TimeOfDay? from, TimeOfDay? to});
 
-class NoRushHoursSheet extends HookWidget {
-  const NoRushHoursSheet({super.key});
+enum TimeButtonType {
+  from,
+  to;
+
+  String getLocalizedLabel(BuildContext context) => switch (this) {
+    from => context.local.settingsFrom,
+    to => context.local.settingsTo,
+  };
+}
+
+Future<TimeRange?> showNoRushHoursSheet(
+  BuildContext context, {
+  TimeRange? initialRange,
+}) {
+  return showModalBottomSheet<TimeRange>(
+    isScrollControlled: true,
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    elevation: 5,
+    context: context,
+    builder: (BuildContext context) =>
+        NoRushHoursSheet(initialRange: initialRange),
+  );
+}
+
+class NoRushHoursSheet extends ConsumerStatefulWidget {
+  const NoRushHoursSheet({this.initialRange, super.key});
+
+  final TimeRange? initialRange;
+
+  @override
+  ConsumerState<NoRushHoursSheet> createState() => _NoRushHoursSheetState();
+}
+
+class _NoRushHoursSheetState extends ConsumerState<NoRushHoursSheet> {
+  late final ValueNotifier<TimeOfDay> _fromTimeNotifier = ValueNotifier(
+    widget.initialRange?.from ?? TimeOfDay.now(),
+  );
+
+  late final ValueNotifier<TimeOfDay> _toTimeNotifier = ValueNotifier(
+    widget.initialRange?.to ?? TimeOfDay.now(),
+  );
+
+  final ValueNotifier<TimeButtonType> _selectedTypeNotifier = ValueNotifier(
+    TimeButtonType.from,
+  );
+
+  @override
+  void dispose() {
+    _selectedTypeNotifier.dispose();
+    _fromTimeNotifier.dispose();
+    _toTimeNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<SelectedTime> selectedTimeNotifier =
-        ValueNotifier<SelectedTime>(SelectedTime.start);
-
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 300),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: ValueListenableBuilder<SelectedTime>(
-          valueListenable: selectedTimeNotifier,
-          builder:
-              (BuildContext context, SelectedTime selectedTime, Widget? child) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  context.local.settingsNoRushHours,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const Divider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 32,
-                  ),
-                  child: Text(
-                    // ignore: lines_longer_than_80_chars
-                    context.local.settingsNoRushDescription,
-                    style: Theme.of(context).textTheme.labelSmall,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                _buildTimeButtonsRow(selectedTime, selectedTimeNotifier),
-                const SizedBox(height: 40),
-                _buildTimePicker(selectedTime),
-                const SizedBox(height: 40),
-              ],
-            );
-          },
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const SheetHandle(),
+          const SizedBox(height: 16),
+          Text(
+            context.local.settingsNoRushHours,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(32, 0, 32, 16),
+            child: Text(
+              // ignore: lines_longer_than_80_chars
+              context.local.settingsNoRushDescription,
+              style: Theme.of(context).textTheme.labelSmall,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          _buildTimeButtonsRow(),
+          const SizedBox(height: 40),
+          _buildTimePicker(),
+          const SizedBox(height: 10),
+          SaveCloseButtons(
+            onTapSave: () => context.pop((
+              from: _fromTimeNotifier.value,
+              to: _toTimeNotifier.value,
+            )),
+          ),
+        ],
       ),
     );
   }
 
-  Consumer _buildTimeButtonsRow(
-    SelectedTime timeType,
-    ValueNotifier<SelectedTime> selectedTime,
-  ) {
-    return Consumer(
-      builder: (BuildContext context, WidgetRef ref, Widget? child) {
-        final (TimeOfDay, TimeOfDay) noRushHours = ref.watch(
-          userSettingsProvider.select(
-            (UserSettingsNotifier p) => (p.noRushStartTime, p.noRushEndTime),
-          ),
-        );
+  Widget _buildTimeButtonsRow() {
+    return ValueListenableBuilder(
+      valueListenable: _selectedTypeNotifier,
+      builder: (context, value, child) {
         return Row(
           children: <Widget>[
             Expanded(
-              child: SizedBox(
-                height: 75,
-                child: ElevatedButton(
-                  onPressed: timeType != SelectedTime.start
-                      ? () {
-                          selectedTime.value = SelectedTime.start;
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.tertiaryContainer,
-                    surfaceTintColor: Colors.transparent,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.horizontal(
-                        left: Radius.circular(12),
-                      ),
-                    ),
-                    disabledBackgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
-                  ),
-                  child: Text(
-                    // ignore: lines_longer_than_80_chars
-                    '${noRushHours.$1.hour.toString().padLeft(2, '0')}:${noRushHours.$1.minute.toString().padLeft(2, '0')}',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: timeType == SelectedTime.start
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
-                  ),
-                ),
+              child: _buildTimeButton(
+                type: .from,
+                isSelected: TimeButtonType.from == value,
+                timeNotifier: _fromTimeNotifier,
               ),
             ),
             DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
+                color: context.colors.secondaryContainer,
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -112,36 +123,10 @@ class NoRushHoursSheet extends HookWidget {
               ),
             ),
             Expanded(
-              child: SizedBox(
-                height: 75,
-                child: ElevatedButton(
-                  onPressed: selectedTime.value != SelectedTime.end
-                      ? () {
-                          selectedTime.value = SelectedTime.end;
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.tertiaryContainer,
-                    surfaceTintColor: Colors.transparent,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.horizontal(
-                        right: Radius.circular(12),
-                      ),
-                    ),
-                    disabledBackgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
-                  ),
-                  child: Text(
-                    // ignore: lines_longer_than_80_chars
-                    '${noRushHours.$2.hour.toString().padLeft(2, '0')}:${noRushHours.$2.minute.toString().padLeft(2, '0')}',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: timeType == SelectedTime.end
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
-                  ),
-                ),
+              child: _buildTimeButton(
+                type: .to,
+                isSelected: TimeButtonType.to == value,
+                timeNotifier: _toTimeNotifier,
               ),
             ),
           ],
@@ -150,30 +135,87 @@ class NoRushHoursSheet extends HookWidget {
     );
   }
 
-  SizedBox _buildTimePicker(SelectedTime selectedTime) {
+  Widget _buildTimeButton({
+    required TimeButtonType type,
+    required bool isSelected,
+    required ValueNotifier<TimeOfDay> timeNotifier,
+  }) {
+    return SizedBox(
+      height: 75,
+      child: ElevatedButton(
+        onPressed: () => _selectedTypeNotifier.value = type,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected
+              ? context.colors.primaryContainer
+              : context.colors.secondaryContainer,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: isSelected
+                ? BorderSide(color: context.colors.primary)
+                : .none,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              type.getLocalizedLabel(context),
+              style: context.texts.titleSmall?.copyWith(
+                fontWeight: isSelected ? .bold : .normal,
+              ),
+            ),
+            ValueListenableBuilder(
+              valueListenable: timeNotifier,
+              builder: (context, time, child) {
+                return Text(
+                  // ignore: lines_longer_than_80_chars
+                  time.format(context),
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimePicker() {
     return SizedBox(
       height: 125,
-      child: Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          final UserSettingsNotifier settings = ref.watch(userSettingsProvider);
+      child: ValueListenableBuilder(
+        valueListenable: _selectedTypeNotifier,
+        builder: (context, selectedType, child) {
+          final initialTime = switch (selectedType) {
+            .from => _fromTimeNotifier.value,
+            .to => _toTimeNotifier.value,
+          };
           return CupertinoDatePicker(
+            key: ValueKey(selectedType),
             mode: CupertinoDatePickerMode.time,
             use24hFormat: true,
+            initialDateTime: DateTime(
+              2024,
+              1,
+              1,
+              initialTime.hour,
+              initialTime.minute,
+            ),
             onDateTimeChanged: (DateTime dt) {
-              if (selectedTime == SelectedTime.start) {
-                settings.setNoRushStartTime(
-                  TimeOfDay(
-                    hour: dt.hour,
-                    minute: dt.minute,
-                  ),
-                );
-              } else {
-                settings.setNoRushEndTime(
-                  TimeOfDay(
-                    hour: dt.hour,
-                    minute: dt.minute,
-                  ),
-                );
+              final TimeOfDay newTime = TimeOfDay(
+                hour: dt.hour,
+                minute: dt.minute,
+              );
+              switch (selectedType) {
+                case .from:
+                  _fromTimeNotifier.value = newTime;
+                case .to:
+                  _toTimeNotifier.value = newTime;
               }
             },
           );

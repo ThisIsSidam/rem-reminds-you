@@ -452,6 +452,18 @@ abstract class AppLocalizations {
   /// **'No rush reminders are shown only within this time range, so that you only get notified when you want to.'**
   String get settingsNoRushDescription;
 
+  /// Label for 'From' time in no rush hours
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get settingsFrom;
+
+  /// Label for 'To' time in no rush hours
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get settingsTo;
+
   /// Title for swipe to left actions setting
   ///
   /// In en, this message translates to:
