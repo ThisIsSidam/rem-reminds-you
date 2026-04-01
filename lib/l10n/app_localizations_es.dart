@@ -15,22 +15,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get somethingWentWrong => '¡Algo salió mal!';
 
   @override
-  String get homeTitle => 'Recordatorios';
+  String get remindersTitle => 'Recordatorios';
 
   @override
-  String get homeSectionOverdue => 'Vencidos';
+  String get remindersSectionOverdue => 'Vencidos';
 
   @override
-  String get homeSectionToday => 'Hoy';
+  String get remindersSectionToday => 'Hoy';
 
   @override
-  String get homeSectionTomorrow => 'Mañana';
+  String get remindersSectionTomorrow => 'Mañana';
 
   @override
-  String get homeSectionLater => 'Más tarde';
+  String get remindersSectionLater => 'Más tarde';
 
   @override
-  String get homeSectionNoRush => 'Sin prisa';
+  String get remindersSectionNoRush => 'Sin prisa';
 
   @override
   String get emptyReminders => '¡No tienes ningún recordatorio!';

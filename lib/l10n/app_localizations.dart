@@ -114,37 +114,37 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Reminders'**
-  String get homeTitle;
+  String get remindersTitle;
 
   /// Section title for overdue reminders
   ///
   /// In en, this message translates to:
   /// **'Overdue'**
-  String get homeSectionOverdue;
+  String get remindersSectionOverdue;
 
   /// Section title for today reminders
   ///
   /// In en, this message translates to:
   /// **'Today'**
-  String get homeSectionToday;
+  String get remindersSectionToday;
 
   /// Section title for tomorrow reminders
   ///
   /// In en, this message translates to:
   /// **'Tomorrow'**
-  String get homeSectionTomorrow;
+  String get remindersSectionTomorrow;
 
   /// Section title for later reminders
   ///
   /// In en, this message translates to:
   /// **'Later'**
-  String get homeSectionLater;
+  String get remindersSectionLater;
 
   /// Section title for no-rush reminders
   ///
   /// In en, this message translates to:
   /// **'No Rush'**
-  String get homeSectionNoRush;
+  String get remindersSectionNoRush;
 
   /// Message shown when no reminders exist
   ///

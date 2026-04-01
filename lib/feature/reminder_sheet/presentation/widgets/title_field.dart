@@ -168,7 +168,7 @@ class NoRushTitleField extends HookConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8, top: 4),
             child: Text(
-              context.local.homeSectionNoRush,
+              context.local.remindersSectionNoRush,
               style: theme.textTheme.titleSmall!.copyWith(
                 color: color,
                 fontWeight: FontWeight.w900,

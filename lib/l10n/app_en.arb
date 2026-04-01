@@ -8,28 +8,28 @@
   "@somethingWentWrong": {
     "description": "Message for when something goes wrong."
   },
-  "homeTitle": "Reminders",
-  "@homeTitle": {
+  "remindersTitle": "Reminders",
+  "@remindersTitle": {
     "description": "Title of homescreen"
   },
-  "homeSectionOverdue": "Overdue",
-  "@homeSectionOverdue": {
+  "remindersSectionOverdue": "Overdue",
+  "@remindersSectionOverdue": {
     "description": "Section title for overdue reminders"
   },
-  "homeSectionToday": "Today",
-  "@homeSectionToday": {
+  "remindersSectionToday": "Today",
+  "@remindersSectionToday": {
     "description": "Section title for today reminders"
   },
-  "homeSectionTomorrow": "Tomorrow",
-  "@homeSectionTomorrow": {
+  "remindersSectionTomorrow": "Tomorrow",
+  "@remindersSectionTomorrow": {
     "description": "Section title for tomorrow reminders"
   },
-  "homeSectionLater": "Later",
-  "@homeSectionLater": {
+  "remindersSectionLater": "Later",
+  "@remindersSectionLater": {
     "description": "Section title for later reminders"
   },
-  "homeSectionNoRush": "No Rush",
-  "@homeSectionNoRush": {
+  "remindersSectionNoRush": "No Rush",
+  "@remindersSectionNoRush": {
     "description": "Section title for no-rush reminders"
   },
   "emptyReminders": "You don't have any reminders!",

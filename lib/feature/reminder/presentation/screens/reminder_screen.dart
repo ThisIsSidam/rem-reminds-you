@@ -18,11 +18,11 @@ enum ReminderSection {
 
   String localizedTitle(BuildContext context) {
     return switch (this) {
-      ReminderSection.overdue => context.local.homeSectionOverdue,
-      ReminderSection.today => context.local.homeSectionToday,
-      ReminderSection.tomorrow => context.local.homeSectionTomorrow,
-      ReminderSection.later => context.local.homeSectionLater,
-      ReminderSection.noRush => context.local.homeSectionNoRush,
+      ReminderSection.overdue => context.local.remindersSectionOverdue,
+      ReminderSection.today => context.local.remindersSectionToday,
+      ReminderSection.tomorrow => context.local.remindersSectionTomorrow,
+      ReminderSection.later => context.local.remindersSectionLater,
+      ReminderSection.noRush => context.local.remindersSectionNoRush,
     };
   }
 
@@ -79,7 +79,7 @@ class ReminderScreen extends ConsumerWidget {
     return SliverAppBar(
       backgroundColor: Colors.transparent,
       title: Text(
-        context.local.homeTitle,
+        context.local.remindersTitle,
         style: Theme.of(context).textTheme.titleLarge,
       ),
     );
