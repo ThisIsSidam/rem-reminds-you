@@ -482,16 +482,16 @@ class UserSettingsNotifier extends ChangeNotifier {
 
   AppLanguage get language {
     const SettingsKey key = SettingsKey.language;
-    final String? value = prefs.getString(key.name);
+    final AppLanguage? value = prefs.getAppLanguage(key.name);
     if (value == null) {
       return defaultSettings[key] as AppLanguage;
     }
-    return AppLanguage.fromString(value);
+    return value;
   }
 
   Future<void> setLanguage(AppLanguage value) async {
     const SettingsKey key = SettingsKey.language;
-    await prefs.setString(key.name, value.localeStr);
+    await prefs.setAppLanguage(key.name, value);
     notifyListeners();
   }
 

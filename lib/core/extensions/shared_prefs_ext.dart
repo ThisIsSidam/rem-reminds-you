@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../app/enums/app_language.dart';
 import '../../app/enums/swipe_actions.dart';
 
 extension SharedPrefsX on SharedPreferences {
@@ -52,6 +53,17 @@ extension SharedPrefsX on SharedPreferences {
   Future<bool> setSwipeAction(String key, SwipeAction value) async {
     final String swipeActionStr = value.toString();
     return setString(key, swipeActionStr);
+  }
+
+  AppLanguage? getAppLanguage(String key) {
+    final String? lan = getString(key);
+    if (lan == null) return null;
+    return AppLanguage.fromString(lan);
+  }
+
+  Future<bool> setAppLanguage(String key, AppLanguage lan) async {
+    final String lanStr = lan.localeStr;
+    return setString(key, lanStr);
   }
 
   TimeOfDay? getTimeOfDay(String key) {
