@@ -359,4 +359,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get swipeActionDoneAndDelete => 'Done/Delete';
+
+  @override
+  String get settingsRestoreNoRush => 'No Rush Reminders';
+
+  @override
+  String get settingsRestoreAgenda => 'Agenda Tasks';
+
+  @override
+  String get settingsRestoreNotFound => 'Backup not found';
+
+  @override
+  String get settingsRestoreError => 'Failed to restore';
+
+  @override
+  String get settingsLabelOk => 'OK';
 }

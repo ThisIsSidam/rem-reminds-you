@@ -469,5 +469,25 @@
   "swipeActionDoneAndDelete": "Done/Delete",
   "@swipeActionDoneAndDelete": {
     "description": "Label for 'done and delete' swipe action"
+  },
+  "settingsRestoreNoRush": "No Rush Reminders",
+  "@settingsRestoreNoRush": {
+    "description": "Label for no rush reminders in restore dialog"
+  },
+  "settingsRestoreAgenda": "Agenda Tasks",
+  "@settingsRestoreAgenda": {
+    "description": "Label for agenda tasks in restore dialog"
+  },
+  "settingsRestoreNotFound": "Backup not found",
+  "@settingsRestoreNotFound": {
+    "description": "Message when a specific backup file is not found in zip"
+  },
+  "settingsRestoreError": "Failed to restore",
+  "@settingsRestoreError": {
+    "description": "Message when a specific backup restore fails"
+  },
+  "settingsLabelOk": "OK",
+  "@settingsLabelOk": {
+    "description": "Generic OK label"
   }
 }

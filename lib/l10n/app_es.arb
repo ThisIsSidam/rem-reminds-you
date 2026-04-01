@@ -136,5 +136,10 @@
   "swipeActionDone": "Hecho",
   "swipeActionDelete": "Eliminar",
   "swipeActionPostpone": "Posponer",
-  "swipeActionDoneAndDelete": "Hecho y Eliminar"
+  "swipeActionDoneAndDelete": "Hecho y Eliminar",
+  "settingsRestoreNoRush": "Recordatorios sin prisa",
+  "settingsRestoreAgenda": "Tareas de la agenda",
+  "settingsRestoreNotFound": "Copia de seguridad no encontrada",
+  "settingsRestoreError": "Error al restaurar",
+  "settingsLabelOk": "Aceptar"
 }

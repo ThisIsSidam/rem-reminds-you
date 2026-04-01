@@ -9,15 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../../core/extensions/context_ext.dart';
-import '../../../../../core/services/notification_service/notification_service.dart';
 import '../../../../../shared/utils/logger/app_logger.dart';
-import '../../../../../shared/utils/misc_methods.dart';
 import '../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../../agenda/presentation/providers/agenda_provider.dart';
 import '../../../../reminder/presentation/providers/no_rush_provider.dart';
 import '../../../../reminder/presentation/providers/reminders_provider.dart';
 import '../../providers/settings_provider.dart';
 import '../shared/standard_setting_tile.dart';
+import 'restore_progress_dialog.dart';
 
 class BackupRestoreSection extends ConsumerWidget {
   const BackupRestoreSection({super.key});
@@ -130,22 +129,13 @@ class BackupRestoreSection extends ConsumerWidget {
 
           final Archive archive = ZipDecoder().decodeBytes(bytes);
 
-          // Use Reminders backup part if available
-          await _loadRemindersFromBackup(ref, archive);
-
-          // Use no rush reminders backup part if available
-          await _loadNoRushFromBackup(ref, archive);
-
-          // Use agenda backup part if available
-          await _loadAgendaFromBackup(ref, archive);
-
-          // Use settings backup part if available
-          await _loadSettingsFromBackup(ref, archive);
-
           if (!context.mounted) return;
-          AppUtils.showToast(
-            msg: context.local.settingsBackupRestored,
-            type: ToastificationType.success,
+
+          // Show restoration progress dialog
+          await showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => RestoreProgressDialog(archive: archive),
           );
         } catch (e, stackTrace) {
           AppLogger.e('Error during restore', error: e, stackTrace: stackTrace);
@@ -206,106 +196,5 @@ class BackupRestoreSection extends ConsumerWidget {
       );
     final List<int> zipData = ZipEncoder().encode(archive);
     return Uint8List.fromList(zipData);
-  }
-
-  Future<void> _loadRemindersFromBackup(WidgetRef ref, Archive archive) async {
-    try {
-      final ArchiveFile? remindersJsonFile = archive.findFile(
-        'reminders_backup.json',
-      );
-
-      if (remindersJsonFile == null) {
-        AppLogger.e("File 'reminders_backup.json' not found in the zip file");
-      } else {
-        final String remindersJsonContent = utf8.decode(
-          remindersJsonFile.content as List<int>,
-        );
-        await ref
-            .read(remindersProvider.notifier)
-            .restoreBackup(remindersJsonContent);
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e(
-        'Failed to restore Reminders',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
-  }
-
-  Future<void> _loadNoRushFromBackup(WidgetRef ref, Archive archive) async {
-    try {
-      final ArchiveFile? archivesJsonFile = archive.findFile(
-        'no_rush_backup.json',
-      );
-
-      if (archivesJsonFile == null) {
-        AppLogger.e(
-          "File 'no_rush_reminders_backup.json' not found in the zip file",
-        );
-      } else {
-        final String archivesJsonContent = utf8.decode(
-          archivesJsonFile.content as List<int>,
-        );
-        await ref
-            .read(noRushRemindersProvider.notifier)
-            .restoreBackup(archivesJsonContent);
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e(
-        'Failed to restore No Rush Reminders',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
-  }
-
-  Future<void> _loadAgendaFromBackup(WidgetRef ref, Archive archive) async {
-    try {
-      final ArchiveFile? agendaJsonFile = archive.findFile(
-        'agenda_backup.json',
-      );
-
-      if (agendaJsonFile == null) {
-        AppLogger.e("File 'agenda_backup.json' not found in the zip file");
-      } else {
-        final String agendaJsonContent = utf8.decode(
-          agendaJsonFile.content as List<int>,
-        );
-        ref.read(agendaProvider.notifier).restoreBackup(agendaJsonContent);
-        final agendaTime = ref.read(userSettingsProvider).defaultAgendaTime;
-        final agendaDateTime = MiscMethods.getAgendaDateTime(agendaTime);
-        await NotificationService.scheduleAgenda(agendaDateTime);
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e(
-        'Failed to restore Agenda Tasks',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
-  }
-
-  Future<void> _loadSettingsFromBackup(WidgetRef ref, Archive archive) async {
-    try {
-      final ArchiveFile? settingsJsonFile = archive.findFile(
-        'settings_backup.json',
-      );
-
-      if (settingsJsonFile == null) {
-        AppLogger.e("File 'settings_backup.json' not found in the zip file");
-      } else {
-        final String settingsJsonContent = utf8.decode(
-          settingsJsonFile.content as List<int>,
-        );
-        await ref.read(userSettingsProvider).restoreBackup(settingsJsonContent);
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e(
-        'Failed to restore User Settings',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
   }
 }

@@ -775,6 +775,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done/Delete'**
   String get swipeActionDoneAndDelete;
+
+  /// Label for no rush reminders in restore dialog
+  ///
+  /// In en, this message translates to:
+  /// **'No Rush Reminders'**
+  String get settingsRestoreNoRush;
+
+  /// Label for agenda tasks in restore dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Agenda Tasks'**
+  String get settingsRestoreAgenda;
+
+  /// Message when a specific backup file is not found in zip
+  ///
+  /// In en, this message translates to:
+  /// **'Backup not found'**
+  String get settingsRestoreNotFound;
+
+  /// Message when a specific backup restore fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to restore'**
+  String get settingsRestoreError;
+
+  /// Generic OK label
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get settingsLabelOk;
 }
 
 class _AppLocalizationsDelegate

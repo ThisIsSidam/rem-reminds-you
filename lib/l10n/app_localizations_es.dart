@@ -369,4 +369,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get swipeActionDoneAndDelete => 'Hecho y Eliminar';
+
+  @override
+  String get settingsRestoreNoRush => 'Recordatorios sin prisa';
+
+  @override
+  String get settingsRestoreAgenda => 'Tareas de la agenda';
+
+  @override
+  String get settingsRestoreNotFound => 'Copia de seguridad no encontrada';
+
+  @override
+  String get settingsRestoreError => 'Error al restaurar';
+
+  @override
+  String get settingsLabelOk => 'Aceptar';
 }

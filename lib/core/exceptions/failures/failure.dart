@@ -11,3 +11,7 @@ class UnknownReminderTypeFailure extends Failure {
   const UnknownReminderTypeFailure(Type reminderType)
     : super('Unknown type of reminder found : $reminderType');
 }
+
+class BackupFileNotFoundFailure extends Failure {
+  const BackupFileNotFoundFailure() : super('Backup file not found!');
+}
