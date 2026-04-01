@@ -6,10 +6,10 @@ import '../../../../../../core/extensions/context_ext.dart';
 import '../../../providers/settings_provider.dart';
 import '../../shared/dynamic_subtitle_setting_tile.dart';
 import '../../shared/standard_setting_tile.dart';
-import 'default_auto_snooze_duration_modal.dart';
-import 'default_lead_duration_modal.dart';
-import 'quick_time_table_modal.dart';
-import 'snooze_options_modal.dart';
+import 'default_auto_snooze_duration_sheet.dart';
+import 'default_lead_duration_sheet.dart';
+import 'quick_time_table_sheet.dart';
+import 'snooze_options_sheet.dart';
 
 class NewReminderSection extends ConsumerWidget {
   const NewReminderSection({super.key});
