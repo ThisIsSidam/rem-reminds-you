@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../app/enums/swipe_actions.dart';
 import '../../../../core/extensions/context_ext.dart';
+import '../../../../core/extensions/datetime_ext.dart';
 import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
 import '../../data/models/no_rush_reminder.dart';
 import '../../domain/model/dragged_reminder.dart';
@@ -76,14 +78,26 @@ class NoRushReminderTile extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: SizedBox(
             width: double.maxFinite,
-            child: Text(
-              reminder.title,
-              style: context.texts.titleMedium,
-              softWrap: true,
-            ),
+            child: kDebugMode
+                ? _buildDebutContent(reminder)
+                : Text(
+                    reminder.title,
+                    style: context.texts.titleMedium,
+                    softWrap: true,
+                  ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDebutContent(NoRushReminderModel reminder) {
+    return ListTile(
+      visualDensity: .compact,
+      contentPadding: .zero,
+      dense: true,
+      title: Text(reminder.title, softWrap: true),
+      subtitle: Text(reminder.dateTime.friendly()),
     );
   }
 }

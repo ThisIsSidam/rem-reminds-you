@@ -221,7 +221,9 @@ class NoRushPaneManager {
       motion: const StretchMotion(),
       children: <Widget>[
         SlidableAction(
+          backgroundColor: Colors.transparent,
           icon: Icons.add,
+          foregroundColor: context.colors.onSurface,
           onPressed: (BuildContext context) {
             noRushNotifier.postponeReminder(reminder);
             AppUtils.showToast(

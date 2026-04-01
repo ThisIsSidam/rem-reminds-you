@@ -765,14 +765,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
-  random_datetime:
-    dependency: "direct main"
-    description:
-      name: random_datetime
-      sha256: f017de9a45056f77f814f0c5719cf3276b9f693c6018ce2c28a98c3a555ebe3a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.4"
   riverpod:
     dependency: transitive
     description:

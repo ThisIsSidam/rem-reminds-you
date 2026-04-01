@@ -1,6 +1,6 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:random_datetime/random_datetime.dart';
-import 'package:random_datetime/random_dt_options.dart';
 
 import '../entities/no_rush_entity.dart';
 import 'reminder_base.dart';
@@ -21,8 +21,9 @@ class NoRushReminderModel implements ReminderBase {
       id: int.parse(map['id']!),
       title: map['title'] ?? '',
       dateTime: DateTime.parse(map['dateTime']!),
-      autoSnoozeInterval:
-          Duration(seconds: int.parse(map['autoSnoozeInterval']!)),
+      autoSnoozeInterval: Duration(
+        seconds: int.parse(map['autoSnoozeInterval']!),
+      ),
     );
   }
 
@@ -69,30 +70,48 @@ class NoRushReminderModel implements ReminderBase {
     TimeOfDay startTime,
     TimeOfDay endTime,
   ) {
-    final DateTime now = DateTime.now();
-    final DateTime startDate = now.add(const Duration(days: 3));
-    final DateTime endDate = now.add(const Duration(days: 14));
+    final now = DateTime.now();
+    final random = Random();
 
-    final RandomDateTime randomTime = RandomDateTime(
-      options: RandomDTOptions.withRange(
-        yearRange: TimeRange(start: startDate.year, end: endDate.year),
-        monthRange: TimeRange(start: startDate.month, end: endDate.month),
-        dayRange: TimeRange(start: startDate.day, end: endDate.day),
-        hourRange: TimeRange(start: startTime.hour, end: endTime.hour),
-        minuteRange: TimeRange(start: startTime.minute, end: endTime.minute),
-        secondRange: const TimeRange(start: 0, end: 0),
-        millisecondRange: const TimeRange(start: 0, end: 0),
-        microsecondRange: const TimeRange(start: 0, end: 0),
-      ),
-    );
+    // Pick a random future date (3 → 14 days ahead)
+    // nextInt(12) gives 0–11 → +3 shifts it to 3–14
+    final int dayOffset = 3 + random.nextInt(12);
 
-    return randomTime.random();
+    // This is the base date (only date matters, not time yet)
+    final DateTime baseDate = now.add(Duration(days: dayOffset));
+
+    // Convert TimeOfDay → total minutes
+    // Easier to work with a single number instead of hour+minute
+    final int startMinutes = startTime.hour * 60 + startTime.minute;
+    final int endMinutes = endTime.hour * 60 + endTime.minute;
+
+    // Calculate duration between start and end time
+    // Case 1: Normal range (e.g. 9 → 18)
+    // Case 2: Overnight range (e.g. 22 → 6)
+    final int totalMinutes = endMinutes >= startMinutes
+        ? endMinutes - startMinutes
+        // Wrap around midnight
+        : (1440 - startMinutes + endMinutes);
+
+    // Pick a random offset inside that time window
+    final int randomMinutesOffset = random.nextInt(totalMinutes + 1);
+
+    // Add offset to start time
+    // %1440 ensures we stay within a 24-hour clock
+    final int finalMinutes = (startMinutes + randomMinutesOffset) % 1440;
+
+    // Convert back to hour + minute
+    final int hour = finalMinutes ~/ 60;
+    final int minute = finalMinutes % 60;
+
+    // Combine date + time into final DateTime
+    return DateTime(baseDate.year, baseDate.month, baseDate.day, hour, minute);
   }
 
   NoRushReminderEntity get toEntity => NoRushReminderEntity(
-        id: id,
-        title: title,
-        dateTime: dateTime,
-        autoSnoozeInterval: autoSnoozeInterval.inSeconds,
-      );
+    id: id,
+    title: title,
+    dateTime: dateTime,
+    autoSnoozeInterval: autoSnoozeInterval.inSeconds,
+  );
 }
