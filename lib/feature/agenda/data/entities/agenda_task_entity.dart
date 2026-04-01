@@ -15,6 +15,23 @@ class AgendaTaskEntity {
     required this.recurrenceRule,
   });
 
+  factory AgendaTaskEntity.fromJson(
+    Map<String, dynamic> map, {
+    bool asNew = false,
+  }) {
+    return AgendaTaskEntity(
+      id: asNew ? 0 : (map['id'] as int? ?? 0),
+      title: map['title'] as String? ?? '',
+      baseDate: DateTime.fromMillisecondsSinceEpoch(
+        map['baseDate'] as int? ?? 0,
+      ),
+      completedDates:
+          (map['completedDates'] as List<dynamic>?)?.cast<int>() ?? <int>[],
+      order: map['order'] as int? ?? 0,
+      recurrenceRule: map['recurrenceRule'] as String? ?? '',
+    );
+  }
+
   int id;
   String title;
   @Property(type: PropertyType.date)
@@ -46,5 +63,16 @@ class AgendaTaskEntity {
       order: order,
       recurrenceRule: recurrenceRule,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'title': title,
+      'baseDate': baseDate.millisecondsSinceEpoch,
+      'completedDates': completedDates,
+      'order': order,
+      'recurrenceRule': recurrenceRule,
+    };
   }
 }

@@ -9,10 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../../core/extensions/context_ext.dart';
+import '../../../../../core/services/notification_service/notification_service.dart';
 import '../../../../../shared/utils/logger/app_logger.dart';
+import '../../../../../shared/utils/misc_methods.dart';
 import '../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
+import '../../../../agenda/presentation/providers/agenda_provider.dart';
 import '../../../../reminder/presentation/providers/no_rush_provider.dart';
 import '../../../../reminder/presentation/providers/reminders_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../shared/standard_setting_tile.dart';
 
 class BackupRestoreSection extends ConsumerWidget {
@@ -132,6 +136,12 @@ class BackupRestoreSection extends ConsumerWidget {
           // Use no rush reminders backup part if available
           await _loadNoRushFromBackup(ref, archive);
 
+          // Use agenda backup part if available
+          await _loadAgendaFromBackup(ref, archive);
+
+          // Use settings backup part if available
+          await _loadSettingsFromBackup(ref, archive);
+
           if (!context.mounted) return;
           AppUtils.showToast(
             msg: context.local.settingsBackupRestored,
@@ -161,6 +171,8 @@ class BackupRestoreSection extends ConsumerWidget {
     final String noRushJsonData = await ref
         .read(noRushRemindersProvider.notifier)
         .getBackup();
+    final String agendaJsonData = ref.read(agendaProvider.notifier).getBackup();
+    final String settingsJsonData = ref.read(userSettingsProvider).getBackup();
 
     // Create a temporary zip file in memory
     final Archive archive = Archive()
@@ -177,44 +189,123 @@ class BackupRestoreSection extends ConsumerWidget {
           noRushJsonData.length,
           utf8.encode(noRushJsonData),
         ),
+      )
+      ..addFile(
+        ArchiveFile(
+          'agenda_backup.json',
+          agendaJsonData.length,
+          utf8.encode(agendaJsonData),
+        ),
+      )
+      ..addFile(
+        ArchiveFile(
+          'settings_backup.json',
+          settingsJsonData.length,
+          utf8.encode(settingsJsonData),
+        ),
       );
     final List<int> zipData = ZipEncoder().encode(archive);
     return Uint8List.fromList(zipData);
   }
 
   Future<void> _loadRemindersFromBackup(WidgetRef ref, Archive archive) async {
-    final ArchiveFile? remindersJsonFile = archive.findFile(
-      'reminders_backup.json',
-    );
-
-    if (remindersJsonFile == null) {
-      AppLogger.e("File 'reminders_backup.json' not found in the zip file");
-    } else {
-      final String remindersJsonContent = utf8.decode(
-        remindersJsonFile.content as List<int>,
+    try {
+      final ArchiveFile? remindersJsonFile = archive.findFile(
+        'reminders_backup.json',
       );
-      await ref
-          .read(remindersProvider.notifier)
-          .restoreBackup(remindersJsonContent);
+
+      if (remindersJsonFile == null) {
+        AppLogger.e("File 'reminders_backup.json' not found in the zip file");
+      } else {
+        final String remindersJsonContent = utf8.decode(
+          remindersJsonFile.content as List<int>,
+        );
+        await ref
+            .read(remindersProvider.notifier)
+            .restoreBackup(remindersJsonContent);
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+        'Failed to restore Reminders',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
   Future<void> _loadNoRushFromBackup(WidgetRef ref, Archive archive) async {
-    final ArchiveFile? archivesJsonFile = archive.findFile(
-      'no_rush_backup.json',
-    );
+    try {
+      final ArchiveFile? archivesJsonFile = archive.findFile(
+        'no_rush_backup.json',
+      );
 
-    if (archivesJsonFile == null) {
+      if (archivesJsonFile == null) {
+        AppLogger.e(
+          "File 'no_rush_reminders_backup.json' not found in the zip file",
+        );
+      } else {
+        final String archivesJsonContent = utf8.decode(
+          archivesJsonFile.content as List<int>,
+        );
+        await ref
+            .read(noRushRemindersProvider.notifier)
+            .restoreBackup(archivesJsonContent);
+      }
+    } catch (e, stackTrace) {
       AppLogger.e(
-        "File 'no_rush_reminders_backup.json' not found in the zip file",
+        'Failed to restore No Rush Reminders',
+        error: e,
+        stackTrace: stackTrace,
       );
-    } else {
-      final String archivesJsonContent = utf8.decode(
-        archivesJsonFile.content as List<int>,
+    }
+  }
+
+  Future<void> _loadAgendaFromBackup(WidgetRef ref, Archive archive) async {
+    try {
+      final ArchiveFile? agendaJsonFile = archive.findFile(
+        'agenda_backup.json',
       );
-      await ref
-          .read(noRushRemindersProvider.notifier)
-          .restoreBackup(archivesJsonContent);
+
+      if (agendaJsonFile == null) {
+        AppLogger.e("File 'agenda_backup.json' not found in the zip file");
+      } else {
+        final String agendaJsonContent = utf8.decode(
+          agendaJsonFile.content as List<int>,
+        );
+        ref.read(agendaProvider.notifier).restoreBackup(agendaJsonContent);
+        final agendaTime = ref.read(userSettingsProvider).defaultAgendaTime;
+        final agendaDateTime = MiscMethods.getAgendaDateTime(agendaTime);
+        await NotificationService.scheduleAgenda(agendaDateTime);
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+        'Failed to restore Agenda Tasks',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> _loadSettingsFromBackup(WidgetRef ref, Archive archive) async {
+    try {
+      final ArchiveFile? settingsJsonFile = archive.findFile(
+        'settings_backup.json',
+      );
+
+      if (settingsJsonFile == null) {
+        AppLogger.e("File 'settings_backup.json' not found in the zip file");
+      } else {
+        final String settingsJsonContent = utf8.decode(
+          settingsJsonFile.content as List<int>,
+        );
+        await ref.read(userSettingsProvider).restoreBackup(settingsJsonContent);
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+        'Failed to restore User Settings',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 }

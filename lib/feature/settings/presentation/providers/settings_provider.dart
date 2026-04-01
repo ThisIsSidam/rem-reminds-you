@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -507,6 +509,66 @@ class UserSettingsNotifier extends ChangeNotifier {
   Future<void> setUseSystemFont(bool value) async {
     const SettingsKey key = SettingsKey.useSystemFont;
     await prefs.setBool(key.name, value);
+    notifyListeners();
+  }
+
+  // ----------------------------
+  // ----- BACKUP & RESTORE -------------------
+  // ----------------------------
+
+  String getBackup() {
+    final Map<String, dynamic> jsonData = <String, dynamic>{};
+    for (final SettingsKey key in SettingsKey.values) {
+      final String keyName = key.name;
+      final Object? value = prefs.get(keyName);
+      if (value != null) {
+        jsonData[keyName] = value;
+      }
+    }
+    return jsonEncode(<String, Object>{
+      'settings': jsonData,
+      'timestamp': DateTime.now().toIso8601String(),
+      'version': '1.0',
+    });
+  }
+
+  Future<void> restoreBackup(String json) async {
+    final Map<String, dynamic> decoded =
+        jsonDecode(json) as Map<String, dynamic>;
+    final Map<String, dynamic> settingsData =
+        (decoded['settings'] as Map<dynamic, dynamic>).cast<String, dynamic>();
+
+    for (final MapEntry<String, dynamic> entry in settingsData.entries) {
+      final String keyName = entry.key;
+      final dynamic value = entry.value;
+
+      SettingsKey? settingsKey;
+      try {
+        settingsKey = SettingsKey.values.firstWhere((e) => e.name == keyName);
+      } catch (_) {
+        continue;
+      }
+
+      final dynamic defaultValue = defaultSettings[settingsKey];
+
+      if (defaultValue is double) {
+        await prefs.setDouble(keyName, (value as num).toDouble());
+      } else if (defaultValue is int ||
+          defaultValue is Duration ||
+          defaultValue is DateTime) {
+        await prefs.setInt(keyName, value as int);
+      } else if (defaultValue is bool) {
+        await prefs.setBool(keyName, value as bool);
+      } else if (defaultValue is String ||
+          defaultValue is TimeOfDay ||
+          defaultValue is ThemeMode ||
+          defaultValue is AppLanguage ||
+          defaultValue is SwipeAction) {
+        await prefs.setString(keyName, value as String);
+      } else if (value is List) {
+        await prefs.setStringList(keyName, value.cast<String>());
+      }
+    }
     notifyListeners();
   }
 }

@@ -106,5 +106,17 @@ class AgendaNotifier extends _$AgendaNotifier {
 
   void refresh() => _recomputeAgenda();
 
+  // ----------------------------
+  // ----- BACKUP & RESTORE -------------------
+  // ----------------------------
+
+  String getBackup() {
+    return _repo.getBackup();
+  }
+
+  void restoreBackup(String json) {
+    _repo.restoreBackup(json);
+  }
+
   void _log(String msg) => AppLogger.d('[AgendaNotifier] $msg');
 }

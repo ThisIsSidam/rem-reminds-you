@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:objectbox/objectbox.dart';
 
 import '../../../../core/extensions/datetime_ext.dart';
@@ -77,5 +79,35 @@ class AgendaTaskRepository {
 
     final updated = task.copyWith(completedDates: completedDates);
     _box.put(updated);
+  }
+
+  // ----------------------------
+  // ----- BACKUP & RESTORE -------------------
+  // ----------------------------
+
+  String getBackup() {
+    final List<AgendaTaskEntity> tasks = _box.query().build().find();
+    final List<Map<String, dynamic>> jsonData = tasks
+        .map((AgendaTaskEntity e) => e.toJson())
+        .toList();
+
+    return jsonEncode(<String, Object>{
+      'tasks': jsonData,
+      'timestamp': DateTime.now().toIso8601String(),
+      'version': '1.0',
+    });
+  }
+
+  void restoreBackup(String json) {
+    final Map<String, dynamic> decoded =
+        jsonDecode(json) as Map<String, dynamic>;
+    final List<Map<String, dynamic>> tasksData =
+        (decoded['tasks'] as List<dynamic>).cast<Map<String, dynamic>>();
+
+    final List<AgendaTaskEntity> tasks = tasksData.map((e) {
+      return AgendaTaskEntity.fromJson(e, asNew: true);
+    }).toList();
+
+    _box.putMany(tasks);
   }
 }
