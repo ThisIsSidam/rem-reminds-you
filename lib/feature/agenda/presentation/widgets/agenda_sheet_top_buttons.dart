@@ -17,7 +17,7 @@ class AgendaSheetTopButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final int? id = ref.watch(
+    final int id = ref.watch(
       agendaTaskSheetProvider.select((AgendaTask t) => t.id),
     );
     final RecurrenceRule rule = ref.watch(
@@ -30,7 +30,7 @@ class AgendaSheetTopButtons extends ConsumerWidget {
         spacing: 8,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          if (id != null)
+          if (id != 0)
             _buildButton(
               context: context,
               icon: Icons.delete,
