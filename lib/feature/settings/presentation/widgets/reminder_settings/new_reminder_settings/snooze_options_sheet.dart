@@ -45,7 +45,7 @@ class _SnoozeOptionsSheetState extends ConsumerState<SnoozeOptionsSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 10 + context.bottomPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

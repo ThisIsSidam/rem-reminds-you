@@ -49,59 +49,68 @@ class _AgendaTaskSheetState extends ConsumerState<AgendaTaskSheet> {
     final double keyboardInsets = MediaQuery.of(context).viewInsets.bottom;
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 500 + keyboardInsets),
+      constraints: BoxConstraints(
+        maxHeight: 500 + keyboardInsets + context.bottomPadding,
+      ),
       child: SingleChildScrollView(
         child: AnimatedPadding(
           duration: const Duration(milliseconds: 200),
           padding: EdgeInsets.only(bottom: keyboardInsets),
-          child: _buildBody(theme),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBody(ThemeData theme) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        const AgendaSheetTopButtons(),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
-            color: theme.colorScheme.surfaceContainer,
-          ),
           child: Column(
-            spacing: 8,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: _TitleField(
-                  key: ValueKey<String>('agenda-task-sheet-title'),
+              const AgendaSheetTopButtons(),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  8,
+                  16,
+                  // Only have bottomPadding for navbar, if
+                  // keyboard is not present
+                  keyboardInsets > 0 ? 4 : context.bottomPadding,
                 ),
-              ),
-              const _DateChips(
-                key: ValueKey<String>('agenda-task-sheet-date-chips'),
-              ),
-              SaveCloseButtons(
-                onTapClose: () => Navigator.pop(context),
-                onTapSave: () {
-                  final AgendaTask task = ref.read(agendaTaskSheetProvider);
-                  if (task.title.isEmpty) {
-                    return AppUtils.showToast(
-                      msg: context.local.sheetEnterTitleError,
-                      type: .error,
-                    );
-                  }
-                  ref.read(agendaProvider.notifier).addTask(task);
-                  Navigator.pop(context);
-                },
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(25),
+                  ),
+                  color: theme.colorScheme.surfaceContainer,
+                ),
+                child: Column(
+                  spacing: 8,
+                  children: <Widget>[
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: _TitleField(
+                        key: ValueKey<String>('agenda-task-sheet-title'),
+                      ),
+                    ),
+                    const _DateChips(
+                      key: ValueKey<String>('agenda-task-sheet-date-chips'),
+                    ),
+                    SaveCloseButtons(
+                      onTapClose: () => Navigator.pop(context),
+                      onTapSave: () {
+                        final AgendaTask task = ref.read(
+                          agendaTaskSheetProvider,
+                        );
+                        if (task.title.isEmpty) {
+                          return AppUtils.showToast(
+                            msg: context.local.sheetEnterTitleError,
+                            type: .error,
+                          );
+                        }
+                        ref.read(agendaProvider.notifier).addTask(task);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

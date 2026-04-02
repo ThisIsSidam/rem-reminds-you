@@ -22,14 +22,14 @@ class RecurrenceRuleSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+      padding: EdgeInsets.fromLTRB(8, 16, 8, context.bottomPadding),
       child: Column(
         spacing: 8,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           const SheetHandle(),
           Text(
-            'Select Recurrence Interval',
+            context.local.recurrenceSelectInterval,
             style: context.texts.titleMedium?.copyWith(fontWeight: .bold),
           ),
           ClipRRect(
@@ -50,7 +50,6 @@ class RecurrenceRuleSheet extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
         ],
       ),
     );

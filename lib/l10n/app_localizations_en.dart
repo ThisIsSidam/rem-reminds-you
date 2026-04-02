@@ -374,4 +374,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsLabelOk => 'OK';
+
+  @override
+  String get recurrenceSelectInterval => 'Select Recurrence Interval';
 }

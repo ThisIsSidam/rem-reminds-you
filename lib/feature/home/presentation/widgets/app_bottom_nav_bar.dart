@@ -79,6 +79,7 @@ class AppBottomNavBar extends StatelessWidget {
 
     return Container(
       margin: margin,
+      padding: EdgeInsets.only(top: 4, bottom: context.bottomPadding),
       decoration: BoxDecoration(
         color: context.colors.inversePrimary.withValues(alpha: 0.10),
         borderRadius: isFloating ? BorderRadius.circular(50) : null,

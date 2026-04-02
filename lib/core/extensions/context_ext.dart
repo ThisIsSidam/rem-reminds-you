@@ -12,4 +12,6 @@ extension ContextExt on BuildContext {
   AppLocalizations get local => AppLocalizations.of(this)!;
 
   void pop<T extends Object?>(T result) => Navigator.pop<T>(this, result);
+
+  double get bottomPadding => MediaQuery.viewPaddingOf(this).bottom;
 }

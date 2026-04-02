@@ -47,7 +47,7 @@ class _DefaultAutoSnoozeDurationSheetState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 10 + context.bottomPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -77,7 +77,7 @@ class _DefaultAutoSnoozeDurationSheetState
 
   Widget _dateTimeWidget(Duration dur) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Container(
         width: double.maxFinite,
         decoration: BoxDecoration(

@@ -21,7 +21,10 @@ class WhatsNewSheet extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.only(top: 16, bottom: 24),
+      padding: EdgeInsets.only(
+        top: 16,
+        bottom: MediaQuery.viewPaddingOf(context).bottom,
+      ),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),

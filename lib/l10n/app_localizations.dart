@@ -805,6 +805,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get settingsLabelOk;
+
+  /// Title for the recurrence rule selection sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Select Recurrence Interval'**
+  String get recurrenceSelectInterval;
 }
 
 class _AppLocalizationsDelegate

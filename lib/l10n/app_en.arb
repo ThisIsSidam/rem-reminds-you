@@ -489,5 +489,9 @@
   "settingsLabelOk": "OK",
   "@settingsLabelOk": {
     "description": "Generic OK label"
+  },
+  "recurrenceSelectInterval": "Select Recurrence Interval",
+  "@recurrenceSelectInterval": {
+    "description": "Title for the recurrence rule selection sheet"
   }
 }

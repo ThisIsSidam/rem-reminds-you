@@ -32,8 +32,7 @@ class SwipeToLeftActionSheet extends ConsumerStatefulWidget {
 
 class _SwipeToLeftActionSheetState
     extends ConsumerState<SwipeToLeftActionSheet> {
-  late final ValueNotifier<SwipeAction> _selectedActionNotifier =
-      ValueNotifier(widget.initialAction);
+  late final _selectedActionNotifier = ValueNotifier(widget.initialAction);
 
   @override
   void dispose() {
@@ -44,7 +43,7 @@ class _SwipeToLeftActionSheetState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 10 + context.bottomPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -64,8 +63,8 @@ class _SwipeToLeftActionSheetState
                 Text(
                   context.local.settingsSwipeLeft,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      ),
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
                 ),
                 const SizedBox(width: 20),
                 for (int i = 0; i < 3; i++) const Icon(Icons.chevron_left),

@@ -56,7 +56,7 @@ class _QuickTimeTableSheetState extends ConsumerState<QuickTimeTableSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + context.bottomPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
