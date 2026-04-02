@@ -104,8 +104,7 @@ class LogsSection extends ConsumerWidget {
   }
 
   Future<Uint8List?> _getLogsData() async {
-    final List<int>? zipData = await LogsManager().createLogsZipData();
-    if (zipData == null) return null;
+    final List<int> zipData = await LogsManager().createLogsZipData();
     return Uint8List.fromList(zipData);
   }
 }

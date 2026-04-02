@@ -14,24 +14,32 @@ class LogsManager {
     return '${directory.path}/${FilesNFolders.logsFolder.name}';
   }
 
-  Future<List<int>?> createLogsZipData() async {
+  Future<List<int>> createLogsZipData() async {
+    // Forces a IOSink Flush in logger since 'w' is one
+    // of the logs that gets flushed immediately.
+    AppLogger.w('Flushing logs before export');
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
     final Directory srcDirectory = Directory(await directoryPath);
 
     final ZipEncoder encoder = ZipEncoder();
     final Archive archive = Archive();
 
     // Get all files in the source directoryz
-    final List<FileSystemEntity> entities =
-        await srcDirectory.list(recursive: true).toList();
+    final List<FileSystemEntity> entities = await srcDirectory
+        .list(recursive: true)
+        .toList();
 
     // Add each file to the archive
     for (final FileSystemEntity entity in entities) {
       if (entity is File) {
-        final String relativePath =
-            p.relative(entity.path, from: srcDirectory.path);
+        final String relativePath = p.relative(
+          entity.path,
+          from: srcDirectory.path,
+        );
         final Uint8List data = await entity.readAsBytes();
         final ArchiveFile archiveFile = ArchiveFile(
-          relativePath,
+          'rem-logs/$relativePath',
           data.length,
           data,
         );
@@ -39,8 +47,7 @@ class LogsManager {
       }
     }
 
-    final List<int>? zipData = encoder.encode(archive);
-    return zipData;
+    return encoder.encode(archive);
   }
 
   Future<void> clearLogs() async {

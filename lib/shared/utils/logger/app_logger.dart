@@ -42,7 +42,7 @@ class AppLogger {
 
     _initialized = true;
 
-    _logger.i('Logger initialized at $directory');
+    _logger.i('Logger initialized at $dirPath');
   }
 
   // --------------------
