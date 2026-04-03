@@ -180,6 +180,7 @@ class NotificationService {
     required AgendaTask task,
     required bool isLast,
   }) async {
+    _log('Showing Agenda Notification: ${task.id}');
     final payload = <String, String>{'currentTaskId': task.id.toString()};
 
     await AwesomeNotifications().createNotification(
@@ -207,13 +208,14 @@ class NotificationService {
 
   /// Remove notifications using the notification [id].
   static Future<void> removeNotificationsById(int id) async {
+    _log('Removing notification: ID: $id');
     await AwesomeNotifications().cancel(id);
   }
 
   /// Used to remove notifications present in user's notification space.
   static Future<void> removeNotificationsByGroupKey(String? groupKey) async {
     if (groupKey == null) {
-      AppLogger.w('Received null groupKey in removeNotifications');
+      _logW('Received null groupKey in removeNotifications');
       return;
     }
 
@@ -224,7 +226,7 @@ class NotificationService {
   /// Cancels the scheduled notification.
   static Future<void> cancelScheduledNotification(String? groupKey) async {
     if (groupKey == null) {
-      AppLogger.w('Received null groupKey in cancelScheduleNotification');
+      _logW('Received null groupKey in cancelScheduleNotification');
       return;
     }
 
@@ -363,4 +365,5 @@ class NotificationService {
   }
 
   static void _log(String msg) => AppLogger.i('[NotificationController] $msg');
+  static void _logW(String msg) => AppLogger.w('[NotificationController] $msg');
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
 import 'logs_manager.dart';
@@ -25,6 +26,7 @@ class AppLogger {
       path: dirPath,
       fileNameFormatter: (DateTime timestamp) =>
           'log_${timestamp.millisecondsSinceEpoch}.log',
+      writeImmediately: kDebugMode ? [.all] : null,
     );
 
     _logger = Logger(
