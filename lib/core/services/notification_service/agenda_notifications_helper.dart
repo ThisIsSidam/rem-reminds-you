@@ -9,9 +9,8 @@ import '../../../shared/utils/logger/app_logger.dart';
 import '../../../shared/utils/misc_methods.dart';
 import '../../extensions/datetime_ext.dart';
 import '../../extensions/list_ext.dart';
+import 'agenda_task_payload.dart';
 import 'notification_service.dart';
-
-typedef NextAgendaTask = ({AgendaTask? task, bool isLast});
 
 class AgendaNotificationsHelper {
   AgendaNotificationsHelper({required Store store})
@@ -19,7 +18,7 @@ class AgendaNotificationsHelper {
 
   final AgendaTaskRepository _repo;
 
-  Future<NextAgendaTask> getNextTask() async {
+  Future<AgendaTaskPayload?> getNextTask() async {
     _log('Fetching next agenda task');
     final today = DateTime.now().date;
     final List<AgendaTask> allTasks = _repo.getAllTasks();
@@ -28,7 +27,7 @@ class AgendaNotificationsHelper {
     // No tasks found
     if (tasks.isEmpty) {
       _log('No tasks found!');
-      return (task: null, isLast: false);
+      return null;
     }
 
     // Get first task which isn't completed
@@ -37,13 +36,17 @@ class AgendaNotificationsHelper {
     // No Un-completed task
     if (nextTask == null) {
       _log('No Un-Completed task found!');
-      return (task: null, isLast: false);
+      return null;
     }
 
-    return (task: nextTask, isLast: tasks.last.id == nextTask.id);
+    return AgendaTaskPayload(
+      taskId: nextTask.id,
+      taskTitle: nextTask.title,
+      isLastTask: tasks.last.id == nextTask.id,
+    );
   }
 
-  Future<NextAgendaTask> nextPressed(int agendaTaskId) async {
+  Future<AgendaTaskPayload?> nextPressed(int agendaTaskId) async {
     _log("Handling 'Next' Pressed on notification");
     final DateTime today = DateTime.now().date;
     _repo.setCompletion(agendaTaskId, today, true);

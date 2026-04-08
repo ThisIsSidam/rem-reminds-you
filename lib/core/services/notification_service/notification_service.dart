@@ -9,12 +9,12 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../app/constants/const_strings.dart';
-import '../../../feature/agenda/data/models/agenda_task.dart';
 import '../../../feature/reminder/data/models/reminder_base.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/id_handler.dart';
 import '../../../shared/utils/logger/app_logger.dart';
 import 'agenda_notifications_helper.dart';
+import 'agenda_task_payload.dart';
 import 'notification_actions_enum.dart';
 import 'notification_channels.dart';
 import 'reminder_actions_handler.dart';
@@ -163,38 +163,37 @@ class NotificationService {
 
     final Store store = await _getObjectboxStore();
     final helper = AgendaNotificationsHelper(store: store);
-    final NextAgendaTask nextTask = await helper.getNextTask();
+    final AgendaTaskPayload? nextTask = await helper.getNextTask();
     store.close();
 
-    if (nextTask.task == null) {
+    if (nextTask == null || !nextTask.hasTask) {
       _log('No next task present');
       await AgendaNotificationsHelper.scheduleNextAgendaNotification();
       return;
     }
 
-    await showAgendaNotification(task: nextTask.task!, isLast: nextTask.isLast);
+    await showAgendaNotification(nextTask);
   }
 
   @pragma('vm:entry-point')
-  static Future<void> showAgendaNotification({
-    required AgendaTask task,
-    required bool isLast,
-  }) async {
-    _log('Showing Agenda Notification: ${task.id}');
-    final payload = <String, String>{'currentTaskId': task.id.toString()};
+  static Future<void> showAgendaNotification(
+    AgendaTaskPayload taskPayload,
+  ) async {
+    _log('Showing Agenda Notification: ${taskPayload.taskId}');
+    final payload = taskPayload.payload;
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: IdHandler.agendaNotificationId,
         channelKey: NotificationChannels.agenda.key,
         title: "Today's Agenda",
-        body: task.title,
+        body: taskPayload.taskTitle,
         locked: true,
         autoDismissible: false,
         payload: payload,
       ),
       actionButtons: [
-        if (isLast)
+        if (taskPayload.isLastTask)
           NotificationActions.agendaDone.button
         else
           NotificationActions.agendaNext.button,
@@ -244,9 +243,34 @@ class NotificationService {
   static Future<void> startListeningNotificationEvents() async {
     await AwesomeNotifications().setListeners(
       onActionReceivedMethod: onActionReceivedMethod,
+      onDismissActionReceivedMethod: onDismissActionReceivedMethod,
     );
 
     _log('Started Listening to notification events');
+  }
+
+  /// Called when a notification is dismissed (not tapped).
+  @pragma('vm:entry-point')
+  static Future<void> onDismissActionReceivedMethod(
+    ReceivedAction receivedAction,
+  ) async {
+    await AppLogger.init();
+    _log('Notification dismissed | Action: ${receivedAction.actionType}');
+
+    // Show again only if no button was pressed
+    if (receivedAction.buttonKeyPressed.isNotEmpty) return;
+
+    // Only handle for agenda notifications
+    if (receivedAction.channelKey != NotificationChannels.agenda.key) return;
+
+    // Re-show the agenda notification for the current task
+    final Map<String, String?>? payload = receivedAction.payload;
+    if (payload == null) return;
+
+    final taskPayload = AgendaTaskPayload.fromPayload(payload);
+    if (!taskPayload.hasTask) return;
+
+    await showAgendaNotification(taskPayload);
   }
 
   @pragma('vm:entry-point')
@@ -268,6 +292,7 @@ class NotificationService {
   static Future<void> _handleReminderNotificationAction(
     ReceivedAction receivedAction,
   ) async {
+    _log('Handling action on Reminder notification');
     final String buttonPressed = receivedAction.buttonKeyPressed;
     if (!NotificationActions.isReminderAction(buttonPressed)) return;
 
@@ -303,26 +328,33 @@ class NotificationService {
   static Future<void> _handleAgendaNotificationAction(
     ReceivedAction receivedAction,
   ) async {
+    _log('Handling action on Agenda notification');
     final buttonPressed = receivedAction.buttonKeyPressed;
     if (!NotificationActions.isAgendaActiono(buttonPressed)) return;
 
     // Parse task id
-    final int? currentTaskId = int.tryParse(
-      receivedAction.payload?['currentTaskId'] ?? '',
-    );
+    final Map<String, String?>? payload = receivedAction.payload;
+    if (payload == null) {
+      _logW('No payload found');
+      return;
+    }
 
-    if (currentTaskId == null) return;
+    final taskPayload = AgendaTaskPayload.fromPayload(payload);
+    if (!taskPayload.hasTask) {
+      _logW('No task found from payload');
+      return;
+    }
 
     // Get repository instance
     final Store store = await _getObjectboxStore();
     final handler = AgendaNotificationsHelper(store: store);
 
     // Handle action
-    late final NextAgendaTask nextTask;
+    late final AgendaTaskPayload? nextTask;
     if (buttonPressed == NotificationActions.agendaDone.key) {
-      nextTask = await handler.nextPressed(currentTaskId);
+      nextTask = await handler.nextPressed(taskPayload.taskId);
     } else if (buttonPressed == NotificationActions.agendaNext.key) {
-      nextTask = await handler.nextPressed(currentTaskId);
+      nextTask = await handler.nextPressed(taskPayload.taskId);
     } else if (buttonPressed == NotificationActions.agendaSkip.key) {
       await handler.skipPressed();
       // To be handled
@@ -330,14 +362,14 @@ class NotificationService {
 
     store.close();
 
-    if (nextTask.task == null) {
+    if (nextTask == null || !nextTask.hasTask) {
       _log('No next task present');
       await removeNotificationsById(IdHandler.agendaNotificationId);
       await AgendaNotificationsHelper.scheduleNextAgendaNotification();
       return;
     }
 
-    await showAgendaNotification(task: nextTask.task!, isLast: nextTask.isLast);
+    await showAgendaNotification(nextTask);
   }
 
   // -----------------------------------------

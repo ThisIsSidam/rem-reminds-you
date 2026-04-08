@@ -30,11 +30,12 @@ enum NotificationChannels {
       values.map((NotificationChannels e) => e.channel).toList();
 
   NotificationChannel get channel => NotificationChannel(
-        channelKey: key,
-        channelName: name,
-        channelDescription: description,
-        importance: importance,
-        soundSource: 'resource://raw/res_default_sound',
-        playSound: true,
-      );
+    channelKey: key,
+    channelName: name,
+    channelDescription: description,
+    importance: importance,
+    soundSource: 'resource://raw/res_default_sound',
+    playSound: this == .reminder,
+    enableVibration: true,
+  );
 }
