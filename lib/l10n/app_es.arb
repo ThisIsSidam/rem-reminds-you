@@ -10,6 +10,8 @@
   "remindersSectionNoRush": "Sin prisa",
   "emptyReminders": "¡No tienes ningún recordatorio!",
   "setReminder": "Establecer recordatorio",
+  "normalReminderTitleHint": "Haz esto..",
+  "noRushReminderTitleHint": "Haz esto en algún momento..",
   "actionResume": "Reanudar",
   "actionPause": "Pausar",
   "actionTapToUndo": "Toca para deshacer",

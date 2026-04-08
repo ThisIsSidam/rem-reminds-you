@@ -23,15 +23,14 @@ class TitleField extends HookConsumerWidget {
     final TextEditingController titleController = useTextEditingController();
     final FocusNode focusNode = useFocusNode();
 
-    if (noRush) {
-      return NoRushTitleField(
-        controller: titleController,
-        focusNode: focusNode,
-      );
-    }
-    return NormalTitleField(
-      focusNode: focusNode,
-      titleController: titleController,
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: noRush
+          ? NoRushTitleField(controller: titleController, focusNode: focusNode)
+          : NormalTitleField(
+              focusNode: focusNode,
+              titleController: titleController,
+            ),
     );
   }
 }
@@ -78,61 +77,57 @@ class NormalTitleField extends HookConsumerWidget {
     final ThemeData theme = Theme.of(context);
     final Color color = dateTime.isBefore(DateTime.now())
         ? theme.colorScheme.onErrorContainer
-        : theme.colorScheme.onTertiaryContainer;
+        : theme.colorScheme.onPrimaryContainer;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Row(
-        spacing: 8,
-        children: <Widget>[
-          Expanded(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: kHeight),
-              child: TextField(
-                textCapitalization: TextCapitalization.sentences,
-                decoration: InputDecoration(
-                  label: Text(
-                    context.local.sheetTitle,
-                    style: theme.textTheme.titleSmall!.copyWith(
-                      color: color,
-                      fontStyle: FontStyle.normal,
-                    ),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(width: 2, color: color),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: color),
+    return Row(
+      spacing: 8,
+      children: <Widget>[
+        Expanded(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: kHeight),
+            child: TextField(
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                hintText: context.local.normalReminderTitleHint,
+                label: Text(
+                  context.local.sheetTitle,
+                  style: theme.textTheme.titleSmall!.copyWith(
+                    color: color,
+                    fontStyle: FontStyle.normal,
                   ),
                 ),
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium!.copyWith(color: color),
-                controller: titleController,
-                focusNode: focusNode,
-                onChanged: (String str) {
-                  ref
-                      .read(sheetReminderProvider.notifier)
-                      .updatePreParsedTitle(str);
-                  titleParser.parse(str);
-                },
-                onTap: () {
-                  // Defer the bottom element removal
-                  Future<void>.microtask(() {
-                    ref.read(centralWidgetProvider.notifier).reset();
-                  });
-                },
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(width: 2, color: color),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: color),
+                ),
               ),
+              style: context.texts.titleMedium!.copyWith(color: color),
+              controller: titleController,
+              focusNode: focusNode,
+              onChanged: (String str) {
+                ref
+                    .read(sheetReminderProvider.notifier)
+                    .updatePreParsedTitle(str);
+                titleParser.parse(str);
+              },
+              onTap: () {
+                // Defer the bottom element removal
+                Future<void>.microtask(() {
+                  ref.read(centralWidgetProvider.notifier).reset();
+                });
+              },
             ),
           ),
-          const PauseButton(height: kHeight),
-        ],
-      ),
+        ),
+        const PauseButton(height: kHeight),
+      ],
     );
   }
 }
@@ -156,61 +151,46 @@ class NoRushTitleField extends HookConsumerWidget {
     final ThemeData theme = Theme.of(context);
     final Color color = theme.colorScheme.onSecondaryContainer;
 
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 8, top: 4),
-            child: Text(
+    return TextField(
+      textCapitalization: TextCapitalization.sentences,
+      decoration: InputDecoration(
+        hintText: context.local.noRushReminderTitleHint,
+        label: Row(
+          spacing: 4,
+          mainAxisSize: .min,
+          children: [
+            Text(
               context.local.remindersSectionNoRush,
-              style: theme.textTheme.titleSmall!.copyWith(
+              style: theme.textTheme.titleMedium!.copyWith(
                 color: color,
                 fontWeight: FontWeight.w900,
               ),
             ),
-          ),
-          TextField(
-            textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(
-              label: Text(
-                context.local.sheetTitle,
-                style: theme.textTheme.titleSmall!.copyWith(color: color),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(width: 2, color: color),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: color),
-              ),
-            ),
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium!.copyWith(color: color),
-            controller: controller,
-            focusNode: focusNode,
-            onChanged: (String str) {
-              ref.read(sheetReminderProvider.notifier).updateTitle(str);
-            },
-            onTap: () {
-              // Defer the bottom element removal
-              Future<void>.microtask(() {
-                ref.read(centralWidgetProvider.notifier).reset();
-              });
-            },
-          ),
-        ],
+            Icon(Icons.free_cancellation_outlined, size: 18, color: color),
+          ],
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(width: 2, color: color),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: color),
+        ),
       ),
+      style: context.texts.titleMedium!.copyWith(color: color),
+      controller: controller,
+      focusNode: focusNode,
+      onChanged: (String str) {
+        ref.read(sheetReminderProvider.notifier).updateTitle(str);
+      },
+      onTap: () {
+        // Defer the bottom element removal
+        Future<void>.microtask(() {
+          ref.read(centralWidgetProvider.notifier).reset();
+        });
+      },
     );
   }
 }

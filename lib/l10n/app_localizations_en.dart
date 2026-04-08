@@ -39,6 +39,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setReminder => 'Set a reminder';
 
   @override
+  String get normalReminderTitleHint => 'Do this..';
+
+  @override
+  String get noRushReminderTitleHint => 'Do this sometime..';
+
+  @override
   String get actionResume => 'Resume';
 
   @override

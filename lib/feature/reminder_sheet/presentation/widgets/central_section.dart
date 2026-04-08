@@ -34,7 +34,7 @@ class CentralSection extends HookConsumerWidget {
         ? theme.colorScheme.onErrorContainer
         : noRush
         ? theme.colorScheme.onSecondaryContainer
-        : theme.colorScheme.onTertiaryContainer;
+        : theme.colorScheme.onPrimaryContainer;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[

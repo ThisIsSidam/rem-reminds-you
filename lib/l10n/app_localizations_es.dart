@@ -39,6 +39,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get setReminder => 'Establecer recordatorio';
 
   @override
+  String get normalReminderTitleHint => 'Haz esto..';
+
+  @override
+  String get noRushReminderTitleHint => 'Haz esto en algún momento..';
+
+  @override
   String get actionResume => 'Reanudar';
 
   @override

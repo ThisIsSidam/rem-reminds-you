@@ -23,7 +23,7 @@ class ReminderSnoozeOptionsWidget extends ConsumerWidget {
     ];
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: BorderRadius.circular(24),
       child: GridView.count(
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,

@@ -158,6 +158,18 @@ abstract class AppLocalizations {
   /// **'Set a reminder'**
   String get setReminder;
 
+  /// Hint text in the normal reminder's title field
+  ///
+  /// In en, this message translates to:
+  /// **'Do this..'**
+  String get normalReminderTitleHint;
+
+  /// Hint text in the NoRush reminder's title field
+  ///
+  /// In en, this message translates to:
+  /// **'Do this sometime..'**
+  String get noRushReminderTitleHint;
+
   /// Button text for resuming a recurring reminder
   ///
   /// In en, this message translates to:

@@ -40,6 +40,14 @@
   "@setReminder": {
     "description": "Button text for creating a new reminder"
   },
+  "normalReminderTitleHint": "Do this..",
+  "@normalReminderTitleHint": {
+    "description": "Hint text in the normal reminder's title field"
+  },
+  "noRushReminderTitleHint": "Do this sometime..",
+  "@noRushReminderTitleHint": {
+    "description": "Hint text in the NoRush reminder's title field"
+  },
   "actionResume": "Resume",
   "@actionResume": {
     "description": "Button text for resuming a recurring reminder"
