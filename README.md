@@ -1,35 +1,33 @@
-## Notice
-
-Hey guys! Anyone using the app or thinking of using it.. The app works. Normally. But can have improvements.. Also there are some issues.. obvsiouly. It is just that I am a little too busy. I know what needs to be done in it.. I just can't find the time to do it.. so I'm sorry about that. I'll handle it whenever I get it. Thanks for using the app.
-
 # Rem Reminds You : A Reminder Application
 
 This is a simple reminder app built using Flutter. But it is not so simple as it reminds user repetetively until the reminder gets marked as "Done".
 
 ## Images
 
-<img src="screenshots/image_1.png" width="200" /> <img src="screenshots/image_2.png" width="200" /> <img src="screenshots/image_3.png" width="200" />
+<img src="screenshots/reminders-screen-image.jpg" width="200" /> <img src="screenshots/reminder-sheet-image.jpg" width="200" /> <img src="screenshots/agenda-screen-image.jpg" width="200" /> <img src="screenshots/agenda-task-sheet-image.jpg" width="200" />
 
 ## Features
 
-- Normal once-off reminders.
-- Recurring reminders.
-- Autosnooze reminders.
-- No Rush reminders for when you don't have a specific time (They are assigned between next 3-14 days).
-- Title Parsing. Entering "Take a nap in 15 minutes" would automatically parse title "Take a nap" while reminder time would be set as 15 minutes from the time of setting the reminder.
-- Quick Access to reminders through notification.
-- Editable default values in reminder sheet.
-- Swipe gestures. Like, swipe to mark as done, postpone and more.
-- Increment or decrement font size.
-- Backup and Restore reminders.
+- [x] Reminders, Recurring reminders, Autosnooze reminders
+- [x] Auto snooze notifications so you don't forget.
+- [x] Title Parsing. Entering "Take a nap in 15 minutes" would automatically parse title "Take a nap" while reminder time would be set as 15 minutes from the time of setting the reminder.
+- [x] Material Theme, Changeable in-app font size
+- [x] Drag-n-Drop reminders across sections
 
-## Features to be implemented
+- [x] Agenda. A notification arrives at a fixed time daily and lets you go through the added tasks, one by one. Notification is non-removable until all tasks are completed.
 
-- Routine Reminders. Such as, "Drink Water" every 30 minutes. These wouldn't have repetitive notifications.
-- Update Quick Access to Quick Edit. Instead of tapping and moving to the reminder, edit it right in the notification section.
-- Drag reminders between sections in homepage.
-- Different notification tones.
-- More recurrence options.
+- [x] Support to different languages. _Only Spanish present as of now._
+
+- [ ] Be able to change timing from notifications. Remove 'Pending' button and have the Quick-Timetable like the reminders sheet, right there in notifications.
+- [ ] Different notification tones.
+- [ ] More recurrence options.
+- [ ] Routine Reminders. I don't see its uses other than the "Drink water" every 30 minutes, which can be performed using the autosnooze feature. So, won't be working on it. 
+
+## Contributing
+
+The normal flutter application building situation. Just that there are two flavors of the applications, so `flutter run` won't work properly. 
+
+The two flavors are `prod` and `dev`. So you'd have to use `flutter run --flavor prod` and similar. Check the `.vscode/launch.json` for the configurations. Builds can be performed by adding the flavors to the usual build command `flutter build apk`.
 
 ## License
 
