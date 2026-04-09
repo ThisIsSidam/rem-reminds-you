@@ -26,6 +26,14 @@ class AppPermissionHandler {
     }
   }
 
+  static Future<void> openAppSettings() async {
+    try {
+      await platform.invokeMethod('openAppSettings');
+    } on PlatformException catch (e) {
+      AppLogger.e('Failed to open app settings', error: e);
+    }
+  }
+
   static Future<void> openAlarmSettings() async {
     try {
       await platform.invokeMethod('openAlarmSettings');
@@ -51,6 +59,22 @@ class AppPermissionHandler {
       await platform.invokeMethod('requestIgnoreBatteryOptimization');
     } on PlatformException catch (e) {
       AppLogger.e('Failed to request battery settings', error: e);
+    }
+  }
+
+  static Future<void> openBatteryOptimizationSettings() async {
+    try {
+      await platform.invokeMethod('openBatteryOptimizationSettings');
+    } on PlatformException catch (e) {
+      AppLogger.e('Failed to open battery optimization settings', error: e);
+    }
+  }
+
+  static Future<void> openAutoStartSettings() async {
+    try {
+      await platform.invokeMethod('openAutoStartSettings');
+    } on PlatformException catch (e) {
+      AppLogger.e('Failed to open auto-start settings', error: e);
     }
   }
 }

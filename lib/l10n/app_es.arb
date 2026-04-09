@@ -144,5 +144,18 @@
   "settingsRestoreNotFound": "Copia de seguridad no encontrada",
   "settingsRestoreError": "Error al restaurar",
   "settingsLabelOk": "Aceptar",
-  "recurrenceSelectInterval": "Seleccionar intervalo de recurrencia"
+  "recurrenceSelectInterval": "Seleccionar intervalo de recurrencia",
+  "settingsNotificationHelp": "Ayuda con las notificaciones",
+  "notificationHelpTitle": "Ayuda con las notificaciones",
+  "notificationHelpIntro": "Los dispositivos Android modernos a menudo restringen la actividad en segundo plano para ahorrar batería. Si las notificaciones no llegan, es probable que se deba a estas restricciones del sistema y no a un error de la aplicación.",
+  "notificationHelpBatteryOptimizationTitle": "Desactivar optimización de batería",
+  "notificationHelpBatteryOptimizationDesc": "Excluye la aplicación de la optimización de batería para evitar que el sistema la cierre en segundo plano.",
+  "notificationHelpAutoStartTitle": "Activar inicio automático / Actividad en segundo plano",
+  "notificationHelpAutoStartDesc": "Asegúrate de que la aplicación pueda iniciarse automáticamente y ejecutarse en segundo plano. Crítico para marcas como Xiaomi, Vivo, Oppo, etc.",
+  "notificationHelpLockAppTitle": "Bloquear la aplicación en Recientes",
+  "notificationHelpLockAppDesc": "Bloquear la aplicación en la lista de aplicaciones recientes evita que el sistema la cierre al limpiar todas las aplicaciones.",
+  "notificationHelpDataSaverTitle": "Desactivar ahorro de datos / Restricciones en segundo plano",
+  "notificationHelpDataSaverDesc": "Permite el uso de datos en segundo plano para asegurar que la aplicación funcione correctamente.",
+  "notificationHelpOpenSettings": "Abrir ajustes",
+  "notificationHelpBanner": "Estos ajustes son gestionados por el sistema de tu dispositivo, no por la aplicación."
 }

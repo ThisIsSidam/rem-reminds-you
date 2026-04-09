@@ -823,6 +823,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Recurrence Interval'**
   String get recurrenceSelectInterval;
+
+  /// Title for notification help settings item
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Help'**
+  String get settingsNotificationHelp;
+
+  /// Title for notification help screen
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Help'**
+  String get notificationHelpTitle;
+
+  /// Intro text for notification help
+  ///
+  /// In en, this message translates to:
+  /// **'Modern Android devices often restrict background activity to save battery. If notifications are not arriving, it\'s likely due to these system-level restrictions rather than an app bug.'**
+  String get notificationHelpIntro;
+
+  /// Title for battery optimization step
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Battery Optimization'**
+  String get notificationHelpBatteryOptimizationTitle;
+
+  /// Description for battery optimization step
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude the app from battery optimization to prevent the system from killing it in the background.'**
+  String get notificationHelpBatteryOptimizationDesc;
+
+  /// Title for auto-start step
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Auto-Start / Background Activity'**
+  String get notificationHelpAutoStartTitle;
+
+  /// Description for auto-start step
+  ///
+  /// In en, this message translates to:
+  /// **'Ensure the app can start automatically and run in the background. Critical for brands like Xiaomi, Vivo, Oppo, etc.'**
+  String get notificationHelpAutoStartDesc;
+
+  /// Title for lock app step
+  ///
+  /// In en, this message translates to:
+  /// **'Lock the App in Recents'**
+  String get notificationHelpLockAppTitle;
+
+  /// Description for lock app step
+  ///
+  /// In en, this message translates to:
+  /// **'Locking the app in the recent apps list prevents the system from closing it when clearing all apps.'**
+  String get notificationHelpLockAppDesc;
+
+  /// Title for data saver step
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Data Saver / Background Restrictions'**
+  String get notificationHelpDataSaverTitle;
+
+  /// Description for data saver step
+  ///
+  /// In en, this message translates to:
+  /// **'Allow background data usage to ensure the app can function correctly in the background.'**
+  String get notificationHelpDataSaverDesc;
+
+  /// Button text to open app settings
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get notificationHelpOpenSettings;
+
+  /// No description provided for @notificationHelpBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'These settings are managed by your device system, not the app.'**
+  String get notificationHelpBanner;
 }
 
 class _AppLocalizationsDelegate

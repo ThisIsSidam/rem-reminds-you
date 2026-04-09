@@ -501,5 +501,54 @@
   "recurrenceSelectInterval": "Select Recurrence Interval",
   "@recurrenceSelectInterval": {
     "description": "Title for the recurrence rule selection sheet"
-  }
+  },
+  "settingsNotificationHelp": "Notification Help",
+  "@settingsNotificationHelp": {
+    "description": "Title for notification help settings item"
+  },
+  "notificationHelpTitle": "Notification Help",
+  "@notificationHelpTitle": {
+    "description": "Title for notification help screen"
+  },
+  "notificationHelpIntro": "Modern Android devices often restrict background activity to save battery. If notifications are not arriving, it's likely due to these system-level restrictions rather than an app bug.",
+  "@notificationHelpIntro": {
+    "description": "Intro text for notification help"
+  },
+  "notificationHelpBatteryOptimizationTitle": "Disable Battery Optimization",
+  "@notificationHelpBatteryOptimizationTitle": {
+    "description": "Title for battery optimization step"
+  },
+  "notificationHelpBatteryOptimizationDesc": "Exclude the app from battery optimization to prevent the system from killing it in the background.",
+  "@notificationHelpBatteryOptimizationDesc": {
+    "description": "Description for battery optimization step"
+  },
+  "notificationHelpAutoStartTitle": "Enable Auto-Start / Background Activity",
+  "@notificationHelpAutoStartTitle": {
+    "description": "Title for auto-start step"
+  },
+  "notificationHelpAutoStartDesc": "Ensure the app can start automatically and run in the background. Critical for brands like Xiaomi, Vivo, Oppo, etc.",
+  "@notificationHelpAutoStartDesc": {
+    "description": "Description for auto-start step"
+  },
+  "notificationHelpLockAppTitle": "Lock the App in Recents",
+  "@notificationHelpLockAppTitle": {
+    "description": "Title for lock app step"
+  },
+  "notificationHelpLockAppDesc": "Locking the app in the recent apps list prevents the system from closing it when clearing all apps.",
+  "@notificationHelpLockAppDesc": {
+    "description": "Description for lock app step"
+  },
+  "notificationHelpDataSaverTitle": "Disable Data Saver / Background Restrictions",
+  "@notificationHelpDataSaverTitle": {
+    "description": "Title for data saver step"
+  },
+  "notificationHelpDataSaverDesc": "Allow background data usage to ensure the app can function correctly in the background.",
+  "@notificationHelpDataSaverDesc": {
+    "description": "Description for data saver step"
+  },
+  "notificationHelpOpenSettings": "Open Settings",
+  "@notificationHelpOpenSettings": {
+    "description": "Button text to open app settings"
+  },
+  "notificationHelpBanner": "These settings are managed by your device system, not the app."
 }

@@ -63,7 +63,6 @@ class SettingsScreen extends ConsumerWidget {
                 vertical: 8,
               ),
             ),
-
             StandardSettingTile(
               leading: Icons.view_agenda_outlined,
               title: context.local.settingsAgenda,
@@ -83,6 +82,22 @@ class SettingsScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.pushNamed(context, AppRoute.settingsAdvanced.name);
+              },
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+            ),
+
+            StandardSettingTile(
+              leading: Icons.help_outline,
+              title: context.local.settingsNotificationHelp,
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoute.settingsNotificationHelp.name,
+                );
               },
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,

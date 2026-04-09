@@ -7,6 +7,7 @@ import '../feature/permissions/presentation/screens/permissions_screen.dart';
 import '../feature/reminder/presentation/screens/reminder_screen.dart';
 import '../feature/settings/presentation/screens/advanced_settings_screen.dart';
 import '../feature/settings/presentation/screens/agenda_settings_screen.dart';
+import '../feature/settings/presentation/screens/notification_help_screen.dart';
 import '../feature/settings/presentation/screens/personalization_screen.dart';
 import '../feature/settings/presentation/screens/reminder_settings_screen.dart';
 import '../feature/settings/presentation/screens/settings_screen.dart';
@@ -24,5 +25,7 @@ Map<String, WidgetBuilder> routeBuilder() {
     AppRoute.settingsReminder.name: (_) => const ReminderSettingsScreen(),
     AppRoute.settingsAgenda.name: (_) => const AgendaSettingsScreen(),
     AppRoute.settingsAdvanced.name: (_) => const AdvancedSettingsScreen(),
+    AppRoute.settingsNotificationHelp.name: (_) =>
+        const NotificationHelpScreen(),
   };
 }

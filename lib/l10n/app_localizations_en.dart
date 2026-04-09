@@ -383,4 +383,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recurrenceSelectInterval => 'Select Recurrence Interval';
+
+  @override
+  String get settingsNotificationHelp => 'Notification Help';
+
+  @override
+  String get notificationHelpTitle => 'Notification Help';
+
+  @override
+  String get notificationHelpIntro =>
+      'Modern Android devices often restrict background activity to save battery. If notifications are not arriving, it\'s likely due to these system-level restrictions rather than an app bug.';
+
+  @override
+  String get notificationHelpBatteryOptimizationTitle =>
+      'Disable Battery Optimization';
+
+  @override
+  String get notificationHelpBatteryOptimizationDesc =>
+      'Exclude the app from battery optimization to prevent the system from killing it in the background.';
+
+  @override
+  String get notificationHelpAutoStartTitle =>
+      'Enable Auto-Start / Background Activity';
+
+  @override
+  String get notificationHelpAutoStartDesc =>
+      'Ensure the app can start automatically and run in the background. Critical for brands like Xiaomi, Vivo, Oppo, etc.';
+
+  @override
+  String get notificationHelpLockAppTitle => 'Lock the App in Recents';
+
+  @override
+  String get notificationHelpLockAppDesc =>
+      'Locking the app in the recent apps list prevents the system from closing it when clearing all apps.';
+
+  @override
+  String get notificationHelpDataSaverTitle =>
+      'Disable Data Saver / Background Restrictions';
+
+  @override
+  String get notificationHelpDataSaverDesc =>
+      'Allow background data usage to ensure the app can function correctly in the background.';
+
+  @override
+  String get notificationHelpOpenSettings => 'Open Settings';
+
+  @override
+  String get notificationHelpBanner =>
+      'These settings are managed by your device system, not the app.';
 }

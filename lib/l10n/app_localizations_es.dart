@@ -393,4 +393,53 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get recurrenceSelectInterval => 'Seleccionar intervalo de recurrencia';
+
+  @override
+  String get settingsNotificationHelp => 'Ayuda con las notificaciones';
+
+  @override
+  String get notificationHelpTitle => 'Ayuda con las notificaciones';
+
+  @override
+  String get notificationHelpIntro =>
+      'Los dispositivos Android modernos a menudo restringen la actividad en segundo plano para ahorrar batería. Si las notificaciones no llegan, es probable que se deba a estas restricciones del sistema y no a un error de la aplicación.';
+
+  @override
+  String get notificationHelpBatteryOptimizationTitle =>
+      'Desactivar optimización de batería';
+
+  @override
+  String get notificationHelpBatteryOptimizationDesc =>
+      'Excluye la aplicación de la optimización de batería para evitar que el sistema la cierre en segundo plano.';
+
+  @override
+  String get notificationHelpAutoStartTitle =>
+      'Activar inicio automático / Actividad en segundo plano';
+
+  @override
+  String get notificationHelpAutoStartDesc =>
+      'Asegúrate de que la aplicación pueda iniciarse automáticamente y ejecutarse en segundo plano. Crítico para marcas como Xiaomi, Vivo, Oppo, etc.';
+
+  @override
+  String get notificationHelpLockAppTitle =>
+      'Bloquear la aplicación en Recientes';
+
+  @override
+  String get notificationHelpLockAppDesc =>
+      'Bloquear la aplicación en la lista de aplicaciones recientes evita que el sistema la cierre al limpiar todas las aplicaciones.';
+
+  @override
+  String get notificationHelpDataSaverTitle =>
+      'Desactivar ahorro de datos / Restricciones en segundo plano';
+
+  @override
+  String get notificationHelpDataSaverDesc =>
+      'Permite el uso de datos en segundo plano para asegurar que la aplicación funcione correctamente.';
+
+  @override
+  String get notificationHelpOpenSettings => 'Abrir ajustes';
+
+  @override
+  String get notificationHelpBanner =>
+      'Estos ajustes son gestionados por el sistema de tu dispositivo, no por la aplicación.';
 }
