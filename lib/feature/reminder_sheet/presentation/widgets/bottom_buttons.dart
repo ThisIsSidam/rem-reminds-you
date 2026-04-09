@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toastification/toastification.dart';
 
 import '../../../../app/constants/const_strings.dart';
 import '../../../../core/extensions/context_ext.dart';
-import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
+import '../../../../shared/utils/app_utils.dart';
 import '../../../reminder/data/models/no_rush_reminder.dart';
 import '../../../reminder/data/models/reminder.dart';
 import '../../../reminder/data/models/reminder_base.dart';
@@ -64,17 +63,11 @@ class SaveButton extends ConsumerWidget {
 
   bool _hasProblem(BuildContext context, ReminderBase reminder) {
     if (reminder.title == '') {
-      AppUtils.showToast(
-        msg: context.local.sheetEnterTitleError,
-        style: ToastificationStyle.simple,
-      );
+      showToast(context, msg: context.local.sheetEnterTitleError, type: .error);
       return true;
     }
     if (reminder.dateTime.isBefore(DateTime.now())) {
-      AppUtils.showToast(
-        msg: context.local.sheetPastTimeError,
-        style: ToastificationStyle.simple,
-      );
+      showToast(context, msg: context.local.sheetPastTimeError, type: .error);
       return true;
     }
     return false;

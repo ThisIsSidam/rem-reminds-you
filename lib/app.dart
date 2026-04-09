@@ -1,7 +1,6 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toastification/toastification.dart';
 
 import 'app/enums/app_language.dart';
 import 'app/theme/color_schemes.dart';
@@ -64,31 +63,26 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           darkColorScheme = appDarkColorScheme;
         }
 
-        return ToastificationWrapper(
-          child: MaterialApp(
-            locale: language.locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            navigatorKey: navigatorKey,
-            builder: (BuildContext context, Widget? child) {
-              return MediaQuery(
-                data: MediaQuery.of(
-                  context,
-                ).copyWith(textScaler: TextScaler.linear(textScale)),
-                child: child!,
-              );
-            },
-            routes: routeBuilder(),
-            home: const SplashScreen(),
-            themeMode: theme,
-            theme: getLightTheme(
-              lightColorScheme,
-              useSystemFont: useSystemFont,
-            ),
-            darkTheme: getDarkTheme(
-              darkColorScheme,
-              useSystemFont: useSystemFont,
-            ),
+        return MaterialApp(
+          locale: language.locale,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: navigatorKey,
+          builder: (BuildContext context, Widget? child) {
+            return MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(textScale)),
+              child: child!,
+            );
+          },
+          routes: routeBuilder(),
+          home: const SplashScreen(),
+          themeMode: theme,
+          theme: getLightTheme(lightColorScheme, useSystemFont: useSystemFont),
+          darkTheme: getDarkTheme(
+            darkColorScheme,
+            useSystemFont: useSystemFont,
           ),
         );
       },

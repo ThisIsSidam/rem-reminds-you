@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../../core/extensions/context_ext.dart';
+import '../../../../../shared/utils/app_utils.dart';
 import '../../../../../shared/utils/logger/app_logger.dart';
 import '../../../../../shared/utils/logger/logs_manager.dart';
-import '../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../shared/standard_setting_tile.dart';
 
 class LogsSection extends ConsumerWidget {
@@ -58,11 +58,11 @@ class LogsSection extends ConsumerWidget {
           // User cancelled operation
           if (saveLocation == null) {
             if (!context.mounted) return;
-            AppUtils.showToast(
+            return showToast(
+              context,
               msg: context.local.settingsNoDirectorySelected,
               type: ToastificationType.warning,
             );
-            return;
           }
 
           // Save new backup file
@@ -78,14 +78,15 @@ class LogsSection extends ConsumerWidget {
           );
 
           if (!context.mounted) return;
-          AppUtils.showToast(
+          showToast(
+            context,
             msg: context.local.settingsLogsSaved,
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
           AppLogger.e('Error exporting logs', error: e, stackTrace: stackTrace);
           if (!context.mounted) return;
-          AppUtils.showToast(msg: context.local.settingsExportLogsFailed);
+          showToast(context, msg: context.local.settingsExportLogsFailed);
         }
       },
     );
@@ -98,7 +99,7 @@ class LogsSection extends ConsumerWidget {
       onTap: () async {
         await LogsManager().clearLogs();
         if (!context.mounted) return;
-        AppUtils.showToast(msg: context.local.settingsLogsDeleted);
+        showToast(context, msg: context.local.settingsLogsDeleted);
       },
     );
   }

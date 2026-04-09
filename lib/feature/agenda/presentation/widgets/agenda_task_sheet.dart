@@ -5,8 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/extensions/datetime_ext.dart';
+import '../../../../shared/utils/app_utils.dart';
 import '../../../../shared/widgets/save_close_buttons.dart';
-import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../data/models/agenda_task.dart';
 import '../providers/agenda_provider.dart';
 import '../providers/agenda_task_sheet_notifier.dart';
@@ -95,7 +95,8 @@ class _AgendaTaskSheetState extends ConsumerState<AgendaTaskSheet> {
                           agendaTaskSheetProvider,
                         );
                         if (task.title.isEmpty) {
-                          return AppUtils.showToast(
+                          return showToast(
+                            context,
                             msg: context.local.sheetEnterTitleError,
                             type: .error,
                           );
@@ -131,7 +132,7 @@ class _TitleField extends HookConsumerWidget {
       text: title,
     );
 
-    final Color color = context.colors.onTertiaryContainer;
+    final Color color = context.colors.onPrimaryContainer;
 
     return Row(
       spacing: 8,

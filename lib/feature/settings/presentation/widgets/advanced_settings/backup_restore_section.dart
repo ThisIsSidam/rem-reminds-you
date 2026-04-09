@@ -9,8 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../../core/extensions/context_ext.dart';
+import '../../../../../shared/utils/app_utils.dart';
 import '../../../../../shared/utils/logger/app_logger.dart';
-import '../../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../../agenda/presentation/providers/agenda_provider.dart';
 import '../../../../reminder/presentation/providers/no_rush_provider.dart';
 import '../../../../reminder/presentation/providers/reminders_provider.dart';
@@ -66,11 +66,11 @@ class BackupRestoreSection extends ConsumerWidget {
           // User cancelled operation
           if (saveLocation == null) {
             if (!context.mounted) return;
-            AppUtils.showToast(
+            return showToast(
+              context,
               msg: context.local.settingsNoDirectorySelected,
               type: ToastificationType.warning,
             );
-            return;
           }
 
           // Save new backup file
@@ -85,13 +85,15 @@ class BackupRestoreSection extends ConsumerWidget {
             replace: true,
           );
           if (!context.mounted) return;
-          AppUtils.showToast(
+          showToast(
+            context,
             msg: context.local.settingsBackupCreated,
             type: ToastificationType.success,
           );
         } catch (e, stackTrace) {
           AppLogger.e('Error during backup', error: e, stackTrace: stackTrace);
-          AppUtils.showToast(
+          showToast(
+            context,
             msg: context.local.settingsBackupFailed,
             type: ToastificationType.error,
           );
@@ -116,11 +118,11 @@ class BackupRestoreSection extends ConsumerWidget {
           // Check if user did select a file
           if (filePath == null) {
             if (!context.mounted) return;
-            AppUtils.showToast(
+            return showToast(
+              context,
               msg: context.local.settingsNoFileSelected,
               type: ToastificationType.warning,
             );
-            return;
           }
 
           // Get file instance and restore backup
@@ -140,7 +142,8 @@ class BackupRestoreSection extends ConsumerWidget {
         } catch (e, stackTrace) {
           AppLogger.e('Error during restore', error: e, stackTrace: stackTrace);
           if (!context.mounted) return;
-          AppUtils.showToast(
+          showToast(
+            context,
             msg: context.local.settingsRestoreFailed,
             type: ToastificationType.error,
           );

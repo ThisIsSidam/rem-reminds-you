@@ -6,9 +6,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../app/constants/app_images.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../router/app_routes.dart';
+import '../../../../shared/utils/app_utils.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../../shared/widgets/confirmation_dialog.dart';
-import '../../../../shared/widgets/snack_bar/custom_snack_bar.dart';
 import '../../../../shared/widgets/whats_new_sheet/whats_new_sheet.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/shared/standard_setting_tile.dart';
@@ -144,7 +144,8 @@ class _SettingsFooterState extends State<SettingsFooter> {
         children: [
           InkWell(
             borderRadius: .circular(50),
-            onTap: () => AppUtils.openUrl(
+            onTap: () => openUrl(
+              context,
               'https://github.com/ThisIsSidam/rem-reminds-you',
             ),
             child: SvgPicture.asset(
