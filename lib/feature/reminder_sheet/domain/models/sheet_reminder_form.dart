@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/exceptions/failures/failure.dart';
+import '../../../recurrence/data/models/no_recurrence_rule.dart';
 import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../../../reminder/data/models/no_rush_reminder.dart';
 import '../../../reminder/data/models/reminder.dart';
@@ -45,7 +46,7 @@ sealed class SheetReminderForm with _$SheetReminderForm {
       dateTime: now.add(leadDuration),
       baseDateTime: now,
       autoSnoozeInterval: defaultAutoSnoozeDuration,
-      recurrenceRule: RecurrenceRule(),
+      recurrenceRule: const NoRecurrenceRule(),
       noRush: isNoRush,
       isPaused: false,
       originalType: isNoRush ? .noRush : .normal,
@@ -77,7 +78,7 @@ sealed class SheetReminderForm with _$SheetReminderForm {
         dateTime: reminder.dateTime,
         baseDateTime: reminder.dateTime,
         autoSnoozeInterval: Duration.zero,
-        recurrenceRule: RecurrenceRule(),
+        recurrenceRule: const NoRecurrenceRule(),
         noRush: true,
         isPaused: false,
         originalType: ReminderType.noRush,

@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../app/enums/list_item_pos.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/widgets/sheet_handle.dart';
+import '../../data/models/daily_rule.dart';
+import '../../data/models/monthly_rule.dart';
+import '../../data/models/no_recurrence_rule.dart';
 import '../../data/models/recurrence_rule.dart';
+import '../../data/models/weekly_rule.dart';
 
 Future<RecurrenceRule?> pickRecurrenceRule(
   BuildContext context, {
@@ -11,7 +15,8 @@ Future<RecurrenceRule?> pickRecurrenceRule(
 }) {
   return showModalBottomSheet<RecurrenceRule>(
     context: context,
-    builder: (_) => RecurrenceRuleSheet(selected: selected ?? RecurrenceRule()),
+    builder: (_) =>
+        RecurrenceRuleSheet(selected: selected ?? const NoRecurrenceRule()),
   );
 }
 
@@ -39,17 +44,17 @@ class RecurrenceRuleSheet extends StatelessWidget {
               shrinkWrap: true,
               children: <Widget>[
                 IntervalTile(
-                  rule: RecurrenceRule(),
+                  rule: const NoRecurrenceRule(),
                   selected: selected,
                   pos: .top,
                 ),
                 const SizedBox(height: 2),
-                IntervalTile(rule: RecurrenceRule.daily(), selected: selected),
+                IntervalTile(rule: const DailyRule(), selected: selected),
                 const SizedBox(height: 2),
-                IntervalTile(rule: RecurrenceRule.weekly(), selected: selected),
+                IntervalTile(rule: const WeeklyRule(), selected: selected),
                 const SizedBox(height: 2),
                 IntervalTile(
-                  rule: RecurrenceRule.monthly(),
+                  rule: const MonthlyRule(),
                   selected: selected,
                   pos: .bottom,
                 ),

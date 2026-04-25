@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/extensions/datetime_ext.dart';
+import '../../../recurrence/data/models/no_recurrence_rule.dart';
 import '../../../recurrence/data/models/recurrence_rule.dart';
 import '../entities/agenda_task_entity.dart';
 
@@ -24,7 +25,7 @@ sealed class AgendaTask with _$AgendaTask {
     title: '',
     baseDate: dateTime ?? DateTime.now().add(const Duration(days: 1)),
     completedDates: <DateTime>[],
-    recurrenceRule: RecurrenceRule(),
+    recurrenceRule: const NoRecurrenceRule(),
   );
 
   const AgendaTask._();

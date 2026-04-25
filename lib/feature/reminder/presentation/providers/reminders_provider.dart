@@ -9,7 +9,7 @@ import '../../../../core/services/notification_service/notification_service.dart
 import '../../../../main.dart';
 import '../../../../shared/utils/id_handler.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
-import '../../../recurrence/data/models/recurrence_rule.dart';
+import '../../../recurrence/data/models/no_recurrence_rule.dart';
 import '../../data/entities/reminder_entity.dart';
 import '../../data/models/no_rush_reminder.dart';
 import '../../data/models/reminder.dart';
@@ -251,8 +251,7 @@ class RemindersNotifier extends _$RemindersNotifier {
           dateTime: dateTime,
           preParsedTitle: title,
           autoSnoozeInterval: autoSnoozeInterval,
-          // The normal 'no recurring' default mode.
-          recurrenceRule: RecurrenceRule(),
+          recurrenceRule: const NoRecurrenceRule(),
           baseDateTime: dateTime,
         ),
       _ => throw UnknownReminderTypeFailure(original.runtimeType),
