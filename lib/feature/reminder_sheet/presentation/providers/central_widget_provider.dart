@@ -5,12 +5,7 @@ import '../../../../shared/utils/logger/app_logger.dart';
 
 part 'generated/central_widget_provider.g.dart';
 
-enum CentralElement {
-  dateTimeGrid,
-  timePicker,
-  snoozeOptions,
-  recurrenceOptions
-}
+enum CentralElement { dateTimeGrid, timePicker, snoozeOptions }
 
 @riverpod
 class CentralWidgetNotifier extends _$CentralWidgetNotifier

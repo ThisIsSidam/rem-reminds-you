@@ -9,7 +9,6 @@ import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../domain/models/sheet_reminder_form.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_provider.dart';
-import 'central_elements/recurrence_options.dart';
 import 'central_elements/snooze_options.dart';
 import 'time_button.dart';
 
@@ -126,16 +125,13 @@ class CentralWidget extends ConsumerWidget {
         },
         child: () {
           if (isNoRush) return const SizedBox.shrink();
-          switch (element) {
-            case CentralElement.dateTimeGrid:
-              return _buildTimeButtonsGrid(settings);
-            case CentralElement.timePicker:
-              return _buildTimePicker(context, ref, dateTime);
-            case CentralElement.snoozeOptions:
-              return ReminderSnoozeOptionsWidget(key: UniqueKey());
-            case CentralElement.recurrenceOptions:
-              return ReminderRecurrenceOptionsWidget(key: UniqueKey());
-          }
+          return switch (element) {
+            .dateTimeGrid => _buildTimeButtonsGrid(settings),
+            .timePicker => _buildTimePicker(context, ref, dateTime),
+            .snoozeOptions => const ReminderSnoozeOptionsWidget(
+              key: ValueKey<String>('snooze-option-sheet'),
+            ),
+          };
         }(),
       ),
     );

@@ -5,6 +5,7 @@ import '../../../../app/constants/const_strings.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../shared/widgets/confirmation_dialog.dart';
 import '../../../recurrence/data/models/recurrence_rule.dart';
+import '../../../recurrence/presentation/widgets/recurrence_rule_sheet.dart';
 import '../../domain/models/sheet_reminder_form.dart';
 import '../providers/central_widget_provider.dart';
 import '../providers/sheet_reminder_provider.dart';
@@ -79,11 +80,17 @@ class ReminderSheetTopButtons extends ConsumerWidget {
             _buildButton(
               context: context,
               icon: Icons.event_repeat,
-              active: centralElement == CentralElement.recurrenceOptions,
-              onTap: () {
+              active: false,
+              onTap: () async {
+                final rule = ref.read(sheetReminderProvider).recurrenceRule;
+                final RecurrenceRule? recurrenceRule = await pickRecurrenceRule(
+                  context,
+                  selected: rule,
+                );
+                if (recurrenceRule == null) return;
                 ref
-                    .read(centralWidgetProvider.notifier)
-                    .switchTo(CentralElement.recurrenceOptions);
+                    .read(sheetReminderProvider.notifier)
+                    .updateRecurrenceRule(recurrenceRule);
               },
             ),
           ],
