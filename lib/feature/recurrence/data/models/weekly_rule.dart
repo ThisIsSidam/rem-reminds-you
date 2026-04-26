@@ -1,10 +1,10 @@
 import 'recurrence_rule.dart';
 
 class WeeklyRule extends RecurrenceRule {
-  const WeeklyRule();
+  const WeeklyRule({this.noOfWeeks = 1});
 
   factory WeeklyRule.fromJson(Map<String, dynamic> json) {
-    return const WeeklyRule();
+    return WeeklyRule(noOfWeeks: json['noOfWeeks'] as int? ?? 1);
   }
 
   @override
@@ -14,5 +14,13 @@ class WeeklyRule extends RecurrenceRule {
   String get name => 'Weekly';
 
   @override
-  Map<String, dynamic> toJson() => {'type': type};
+  String get description => switch (noOfWeeks) {
+    1 => 'Repeats every week',
+    _ => 'Repeats every $noOfWeeks weeks',
+  };
+
+  final int noOfWeeks;
+
+  @override
+  Map<String, dynamic> toJson() => {'type': type, 'noOfWeeks': noOfWeeks};
 }

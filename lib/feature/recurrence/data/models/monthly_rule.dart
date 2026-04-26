@@ -14,5 +14,8 @@ class MonthlyRule extends RecurrenceRule {
   String get name => 'Monthly';
 
   @override
+  String get description => 'Repeats monthly';
+
+  @override
   Map<String, dynamic> toJson() => {'type': type};
 }

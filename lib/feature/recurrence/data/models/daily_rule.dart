@@ -14,5 +14,8 @@ class DailyRule extends RecurrenceRule {
   String get name => 'Daily';
 
   @override
+  String get description => 'Repeats daily';
+
+  @override
   Map<String, dynamic> toJson() => {'type': type};
 }

@@ -27,6 +27,8 @@ abstract class RecurrenceRule {
 
   String get name;
 
+  String get description;
+
   Map<String, dynamic> toJson();
 
   @override

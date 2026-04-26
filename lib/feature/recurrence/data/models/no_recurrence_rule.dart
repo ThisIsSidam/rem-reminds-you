@@ -10,5 +10,8 @@ class NoRecurrenceRule extends RecurrenceRule {
   String get name => 'None';
 
   @override
+  String get description => 'Never repeats';
+
+  @override
   Map<String, dynamic> toJson() => {'type': type};
 }

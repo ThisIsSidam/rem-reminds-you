@@ -7,7 +7,7 @@ import '../../data/models/daily_rule.dart';
 import '../../data/models/monthly_rule.dart';
 import '../../data/models/no_recurrence_rule.dart';
 import '../../data/models/recurrence_rule.dart';
-import '../../data/models/weekly_rule.dart';
+import 'weekly_recurrence_tile.dart';
 
 Future<RecurrenceRule?> pickRecurrenceRule(
   BuildContext context, {
@@ -51,7 +51,7 @@ class RecurrenceRuleSheet extends StatelessWidget {
                 const SizedBox(height: 2),
                 IntervalTile(rule: const DailyRule(), selected: selected),
                 const SizedBox(height: 2),
-                IntervalTile(rule: const WeeklyRule(), selected: selected),
+                WeeklyRecurrenceTile(selected: selected),
                 const SizedBox(height: 2),
                 IntervalTile(
                   rule: const MonthlyRule(),
@@ -70,19 +70,19 @@ class RecurrenceRuleSheet extends StatelessWidget {
 class IntervalTile extends StatelessWidget {
   const IntervalTile({
     required this.rule,
-    this.selected,
+    required this.selected,
     this.pos = .middle,
     super.key,
   });
 
   final RecurrenceRule rule;
-  final RecurrenceRule? selected;
+  final RecurrenceRule selected;
   final ListItemPos pos;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = context.colors;
-    final bool isPicked = selected?.type == rule.type;
+    final bool isPicked = selected.type == rule.type;
 
     return DecoratedBox(
       decoration: BoxDecoration(

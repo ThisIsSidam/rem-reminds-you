@@ -103,7 +103,7 @@ class ReminderListTile extends ConsumerWidget {
                     reminder.dateTime.friendly(
                       is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
                     ),
-                    style: context.texts.bodyMedium,
+                    style: context.texts.bodySmall,
                   ),
                   Text(
                     reminder.dateTime.formattedDuration,
@@ -145,6 +145,7 @@ class RecurringReminderListTile extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: .end,
             children: <Widget>[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,14 +153,20 @@ class RecurringReminderListTile extends ConsumerWidget {
                 children: <Widget>[
                   Text(
                     reminder.title,
-                    style: context.texts.titleMedium,
+                    style: context.texts.titleMedium?.copyWith(
+                      fontWeight: .bold,
+                    ),
                     softWrap: true,
                   ),
                   Text(
                     reminder.dateTime.friendly(
                       is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
                     ),
-                    style: context.texts.bodyMedium,
+                    style: context.texts.bodySmall,
+                  ),
+                  Text(
+                    '⟳ ${reminder.recurrenceRule.description}',
+                    style: context.texts.bodySmall,
                   ),
                 ],
               ),
@@ -167,13 +174,8 @@ class RecurringReminderListTile extends ConsumerWidget {
                 _buildResumeButton(context, ref, reminder.paused)
               else
                 Column(
-                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    Text(
-                      '⟳ ${reminder.recurrenceRule.name}',
-                      style: context.texts.bodySmall,
-                    ),
                     Text(
                       reminder.dateTime.formattedDuration,
                       style: context.texts.bodySmall,
