@@ -21,6 +21,9 @@ class WeeklyRule extends RecurrenceRule {
 
   final int noOfWeeks;
 
+  WeeklyRule copyWith({int? noOfWeeks}) =>
+      WeeklyRule(noOfWeeks: noOfWeeks ?? this.noOfWeeks);
+
   @override
   Map<String, dynamic> toJson() => {'type': type, 'noOfWeeks': noOfWeeks};
 }
