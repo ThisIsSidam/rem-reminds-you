@@ -7,16 +7,12 @@ import '../../../../shared/utils/app_utils.dart';
 import '../../../../shared/widgets/enter_value_sheet.dart';
 import '../../data/models/recurrence_rule.dart';
 import '../../data/models/weekly_rule.dart';
+import '../providers/recurrence_sheet_provider.dart';
 
 class WeeklyRecurrenceTile extends ConsumerStatefulWidget {
-  const WeeklyRecurrenceTile({
-    required this.selected,
-    this.pos = ListItemPos.middle,
-    super.key,
-  });
+  const WeeklyRecurrenceTile({this.pos = ListItemPos.middle, super.key});
 
   final ListItemPos pos;
-  final RecurrenceRule selected;
 
   @override
   ConsumerState<WeeklyRecurrenceTile> createState() =>
@@ -24,28 +20,25 @@ class WeeklyRecurrenceTile extends ConsumerStatefulWidget {
 }
 
 class _WeeklyRecurrenceTileState extends ConsumerState<WeeklyRecurrenceTile> {
-  RecurrenceRule get selected => widget.selected;
-
-  late final ValueNotifier<WeeklyRule> _ruleNotifier;
-  late final ValueNotifier<bool> _showOptionsNotifier;
+  final WeeklyRule rule = const WeeklyRule();
   late final ValueNotifier<int?> _customWeeksNotifier;
 
   @override
   void initState() {
-    _showOptionsNotifier = ValueNotifier<bool>(false);
+    super.initState();
+    final selected = ref.read(recurrenceSheetProvider);
     final noOfWeeks = switch (selected) {
       WeeklyRule(:final noOfWeeks) => noOfWeeks,
       _ => 1,
     };
-    _ruleNotifier = ValueNotifier<WeeklyRule>(WeeklyRule(noOfWeeks: noOfWeeks));
     _customWeeksNotifier = ValueNotifier<int?>(
       noOfWeeks > 2 ? noOfWeeks : null,
     );
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final RecurrenceRule selected = ref.watch(recurrenceSheetProvider);
     final ColorScheme colors = context.colors;
     final bool isPicked = selected is WeeklyRule;
 
@@ -57,105 +50,88 @@ class _WeeklyRecurrenceTileState extends ConsumerState<WeeklyRecurrenceTile> {
           color: isPicked ? colors.primaryContainer : colors.secondaryContainer,
           borderRadius: widget.pos.getBorderRadius(),
         ),
-        child: ValueListenableBuilder(
-          valueListenable: _ruleNotifier,
-          builder: (context, rule, _) {
-            return Column(
-              children: [
-                ListTile(
-                  onTap: () => Navigator.pop(context, _ruleNotifier.value),
-                  title: Text(
-                    rule.name,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: isPicked
-                          ? colors.onPrimaryContainer
-                          : colors.onSecondaryContainer,
-                    ),
-                  ),
-                  subtitle: Text(
-                    rule.description,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: isPicked
-                          ? colors.onPrimaryContainer
-                          : colors.onSecondaryContainer,
-                    ),
-                  ),
-                  trailing: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      _showOptionsNotifier.value = !_showOptionsNotifier.value;
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isPicked ? colors.primary : colors.secondary,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '${rule.noOfWeeks}',
-                            style: TextStyle(
-                              color: isPicked
-                                  ? colors.onPrimary
-                                  : colors.onSecondary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Icon(
-                            Icons.edit_rounded,
-                            size: 18,
-                            color: isPicked
-                                ? colors.onPrimary
-                                : colors.onSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+        child: Column(
+          children: [
+            ListTile(
+              onTap: () {
+                if (isPicked) return;
+                ref
+                    .read(recurrenceSheetProvider.notifier)
+                    .switchTo(const WeeklyRule());
+              },
+              title: Text(
+                rule.name,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: isPicked
+                      ? colors.onPrimaryContainer
+                      : colors.onSecondaryContainer,
                 ),
-
-                ValueListenableBuilder<bool>(
-                  valueListenable: _showOptionsNotifier,
-                  builder: (context, show, child) {
-                    if (!show) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                      child: Row(
-                        mainAxisAlignment: .spaceAround,
-                        children: [
-                          _buildWeeksButton(1, rule),
-                          _buildWeeksButton(2, rule),
-                          _buildCustomWeeksButton(rule),
-                        ],
-                      ),
-                    );
-                  },
+              ),
+              subtitle: Text(
+                selected is WeeklyRule
+                    ? selected.description
+                    : rule.description,
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: isPicked
+                      ? colors.onPrimaryContainer
+                      : colors.onSecondaryContainer,
                 ),
-              ],
-            );
-          },
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: isPicked ? colors.primary : colors.secondary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${selected is WeeklyRule ? selected.noOfWeeks : 1}',
+                      style: TextStyle(
+                        color: isPicked ? colors.onPrimary : colors.onSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(
+                      Icons.edit_rounded,
+                      size: 18,
+                      color: isPicked ? colors.onPrimary : colors.onSecondary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            if (selected is WeeklyRule)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                child: Row(
+                  mainAxisAlignment: .spaceAround,
+                  children: [
+                    _buildWeeksButton(1, selected),
+                    _buildWeeksButton(2, selected),
+                    _buildCustomWeeksButton(selected),
+                  ],
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 
-  GestureDetector _buildWeeksButton(int value, WeeklyRule rule) {
+  GestureDetector _buildWeeksButton(int value, WeeklyRule selected) {
     final colors = context.colors;
-    final bool active = rule.noOfWeeks == value;
+    final bool active = selected.noOfWeeks == value;
     return GestureDetector(
-      onTap: () => Navigator.pop(
-        context,
-        _ruleNotifier.value.copyWith(noOfWeeks: value),
-      ),
+      onTap: () => ref
+          .read(recurrenceSheetProvider.notifier)
+          .switchTo(selected.copyWith(noOfWeeks: value)),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 2),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -175,13 +151,13 @@ class _WeeklyRecurrenceTileState extends ConsumerState<WeeklyRecurrenceTile> {
     );
   }
 
-  Widget _buildCustomWeeksButton(WeeklyRule rule) {
+  Widget _buildCustomWeeksButton(WeeklyRule seleected) {
     final colors = context.colors;
 
     return ValueListenableBuilder(
       valueListenable: _customWeeksNotifier,
       builder: (context, value, child) {
-        final bool active = rule.noOfWeeks == value;
+        final bool active = seleected.noOfWeeks == value;
         return GestureDetector(
           onTap: () async {
             final int? customWeeks = await showNumInputSheet<int>(
@@ -194,9 +170,9 @@ class _WeeklyRecurrenceTileState extends ConsumerState<WeeklyRecurrenceTile> {
               return showToast(context, msg: 'Enter a valid number of weeks!');
             }
             _customWeeksNotifier.value = customWeeks;
-            _ruleNotifier.value = _ruleNotifier.value.copyWith(
-              noOfWeeks: customWeeks,
-            );
+            ref
+                .read(recurrenceSheetProvider.notifier)
+                .switchTo(WeeklyRule(noOfWeeks: customWeeks));
           },
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 2),

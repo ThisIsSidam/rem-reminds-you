@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../app/enums/list_item_pos.dart';
 import '../../../../core/extensions/context_ext.dart';
+import '../../../../shared/widgets/save_close_buttons.dart';
 import '../../../../shared/widgets/sheet_handle.dart';
 import '../../data/models/daily_rule.dart';
 import '../../data/models/monthly_rule.dart';
 import '../../data/models/no_recurrence_rule.dart';
 import '../../data/models/recurrence_rule.dart';
+import '../providers/recurrence_sheet_provider.dart';
+import 'recurrence_tile.dart';
 import 'weekly_recurrence_tile.dart';
 
 Future<RecurrenceRule?> pickRecurrenceRule(
@@ -15,91 +18,55 @@ Future<RecurrenceRule?> pickRecurrenceRule(
 }) {
   return showModalBottomSheet<RecurrenceRule>(
     context: context,
-    builder: (_) =>
-        RecurrenceRuleSheet(selected: selected ?? const NoRecurrenceRule()),
+    isScrollControlled: true,
+    builder: (_) => ProviderScope(
+      overrides: [
+        recurrenceSheetProvider.overrideWithBuild(
+          (_, _) => selected ?? const NoRecurrenceRule(),
+        ),
+      ],
+      child: const RecurrenceRuleSheet(),
+    ),
   );
 }
 
-class RecurrenceRuleSheet extends StatelessWidget {
-  const RecurrenceRuleSheet({required this.selected, super.key});
-
-  final RecurrenceRule selected;
+class RecurrenceRuleSheet extends ConsumerWidget {
+  const RecurrenceRuleSheet({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(8, 16, 8, context.bottomPadding),
-        child: Column(
-          spacing: 8,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const SheetHandle(),
-            Text(
-              context.local.recurrenceSelectInterval,
-              style: context.texts.titleMedium?.copyWith(fontWeight: .bold),
-            ),
-            ListView(
-              padding: const EdgeInsets.only(bottom: 16, left: 8, right: 8),
-              shrinkWrap: true,
-              children: <Widget>[
-                IntervalTile(
-                  rule: const NoRecurrenceRule(),
-                  selected: selected,
-                  pos: .top,
-                ),
-                const SizedBox(height: 2),
-                IntervalTile(rule: const DailyRule(), selected: selected),
-                const SizedBox(height: 2),
-                WeeklyRecurrenceTile(selected: selected),
-                const SizedBox(height: 2),
-                IntervalTile(
-                  rule: const MonthlyRule(),
-                  selected: selected,
-                  pos: .bottom,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class IntervalTile extends StatelessWidget {
-  const IntervalTile({
-    required this.rule,
-    required this.selected,
-    this.pos = .middle,
-    super.key,
-  });
-
-  final RecurrenceRule rule;
-  final RecurrenceRule selected;
-  final ListItemPos pos;
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colors = context.colors;
-    final bool isPicked = selected.type == rule.type;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: isPicked ? colors.primaryContainer : colors.secondaryContainer,
-        borderRadius: pos.getBorderRadius(),
-      ),
-      child: ListTile(
-        onTap: () => Navigator.pop(context, rule),
-        title: Text(
-          rule.name,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: isPicked
-                ? colors.onPrimaryContainer
-                : colors.onSecondaryContainer,
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.fromLTRB(8, 16, 8, context.bottomPadding),
+      children: <Widget>[
+        const Center(child: SheetHandle()),
+        const SizedBox(height: 8),
+        Center(
+          child: Text(
+            context.local.recurrenceSelectInterval,
+            style: context.texts.titleMedium?.copyWith(fontWeight: .bold),
           ),
         ),
-      ),
+        const Padding(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            spacing: 2,
+            children: [
+              RecurrenceTile(rule: NoRecurrenceRule(), pos: .top),
+              RecurrenceTile(rule: DailyRule()),
+              WeeklyRecurrenceTile(),
+              RecurrenceTile(rule: MonthlyRule(), pos: .bottom),
+            ],
+          ),
+        ),
+        SaveCloseButtons(
+          onTapSave: () {
+            final selected = ref.read(recurrenceSheetProvider);
+            Navigator.pop(context, selected);
+          },
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }
