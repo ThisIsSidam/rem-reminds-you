@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../../shared/widgets/whats_new_sheet/whats_new_sheet.dart';
 import '../../../agenda/presentation/screens/agenda_screen.dart';
+import '../../../agenda/presentation/widgets/agenda_task_sheet.dart';
 import '../../../reminder/data/models/reminder.dart';
 import '../../../reminder/presentation/screens/reminder_screen.dart';
 import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
@@ -25,12 +27,12 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
-  late int _selectedIndex;
+  late final ValueNotifier<int> _selectedIndexNotifier;
 
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.initialScreen ?? 1;
+    _selectedIndexNotifier = ValueNotifier<int>(widget.initialScreen ?? 1);
     Future<void>.delayed(Duration.zero, () {
       _checkAndShowWhatsNewDialog();
       _handleInitialAction(ref);
@@ -39,12 +41,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   late final List<Widget> _screens = <Widget>[
     const AgendaScreen(key: ValueKey<String>('agenda-screen')),
-    const ReminderScreen(key: ValueKey<String>('home-screen')),
+    const ReminderScreen(key: ValueKey<String>('reminder-screen')),
     const SettingsScreen(key: ValueKey<String>('settings-screen')),
   ];
 
   /// Update the current screen being shown
-  void _onItemSelected(int index) => setState(() => _selectedIndex = index);
+  void _onItemSelected(int index) =>
+      setState(() => _selectedIndexNotifier.value = index);
 
   /// Check if app version stored in SharedPrefs match with current
   /// version or not. If not, show the dialog and save the
@@ -94,29 +97,102 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _screens),
-      bottomNavigationBar: AppBottomNavBar(
-        height: 50,
-        iconSize: 16,
-        items: <BottomNavItem>[
-          BottomNavItem(
-            label: 'Agenda',
-            icon: Icons.view_agenda_outlined,
-            selectedIcon: Icons.view_agenda,
+      body: Stack(
+        children: [
+          ValueListenableBuilder(
+            valueListenable: _selectedIndexNotifier,
+            builder: (context, selectedIndex, _) {
+              return IndexedStack(index: selectedIndex, children: _screens);
+            },
           ),
-          BottomNavItem(
-            label: 'Home',
-            icon: Icons.home_outlined,
-            selectedIcon: Icons.home,
-          ),
-          BottomNavItem(
-            label: 'Settings',
-            icon: Icons.settings_outlined,
-            selectedIcon: Icons.settings,
+          Positioned(
+            bottom: 16,
+            left: 16,
+            right: 16,
+            child: ValueListenableBuilder(
+              valueListenable: _selectedIndexNotifier,
+              builder: (context, selectedIndex, _) {
+                final bool showFab = selectedIndex == 0 || selectedIndex == 1;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: AnimatedSize(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        child: _buildNavBar(selectedIndex),
+                      ),
+                    ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) {
+                        return SizeTransition(
+                          sizeFactor: animation,
+                          axis: Axis.horizontal,
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: showFab
+                          ? _buildFab(selectedIndex)
+                          : const SizedBox(key: ValueKey('empty')),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ],
-        selectedIndex: _selectedIndex,
-        onItemSelected: _onItemSelected,
+      ),
+    );
+  }
+
+  AppBottomNavBar _buildNavBar(int selectedIndex) {
+    return AppBottomNavBar(
+      height: 50,
+      iconSize: 16,
+      isFloating: true,
+      items: <BottomNavItem>[
+        BottomNavItem(
+          label: 'Agenda',
+          icon: Icons.view_agenda_outlined,
+          selectedIcon: Icons.view_agenda,
+        ),
+        BottomNavItem(
+          label: 'Reminders',
+          icon: Icons.checklist_rounded,
+          selectedIcon: Icons.checklist_rounded,
+        ),
+        BottomNavItem(
+          label: 'Settings',
+          icon: Icons.settings_outlined,
+          selectedIcon: Icons.settings,
+        ),
+      ],
+      selectedIndex: selectedIndex,
+      onItemSelected: _onItemSelected,
+    );
+  }
+
+  Padding _buildFab(int selectedIndex) {
+    return Padding(
+      key: const ValueKey('fab'),
+      padding: const EdgeInsets.only(left: 8),
+      child: ElevatedButton(
+        onPressed: () {
+          if (selectedIndex == 0) {
+            showAgendaTaskSheet(context, ref);
+          } else if (selectedIndex == 1) {
+            showReminderSheet(context);
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size.square(70),
+          backgroundColor: context.colors.primaryContainer,
+          foregroundColor: context.colors.onPrimaryContainer,
+        ),
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../data/models/agenda.dart';
 import '../providers/agenda_provider.dart';
-import '../widgets/agenda_task_sheet.dart';
 import '../widgets/agenda_widget.dart';
 
 /// Screen for displaying the agenda.
@@ -41,11 +40,6 @@ class AgendaScreen extends HookConsumerWidget {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'new-agenda-task-floating-button',
-        onPressed: () => showAgendaTaskSheet(context, ref),
-        child: const Icon(Icons.add),
       ),
     );
   }

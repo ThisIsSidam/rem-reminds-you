@@ -64,13 +64,6 @@ class ReminderScreen extends ConsumerWidget {
             getListedReminderPage(context),
         ],
       ),
-      floatingActionButton: isEmpty
-          ? null
-          : FloatingActionButton(
-              heroTag: 'new-reminder-floating-button',
-              onPressed: () => showReminderSheet(context),
-              child: const Icon(Icons.add),
-            ),
     );
   }
 
