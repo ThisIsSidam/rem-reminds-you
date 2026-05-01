@@ -10,6 +10,7 @@ import '../../data/models/no_recurrence_rule.dart';
 import '../../data/models/recurrence_rule.dart';
 import '../providers/recurrence_sheet_provider.dart';
 import 'recurrence_tile.dart';
+import 'reschedule_tile.dart';
 import 'selected_dates_tile.dart';
 import 'selected_days_tile.dart';
 import 'weekly_recurrence_tile.dart';
@@ -49,6 +50,9 @@ class RecurrenceRuleSheet extends ConsumerWidget {
             style: context.texts.titleMedium?.copyWith(fontWeight: .bold),
           ),
         ),
+
+        const RescheduleTile(),
+
         const Padding(
           padding: EdgeInsets.all(8),
           child: Column(

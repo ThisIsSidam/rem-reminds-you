@@ -1,11 +1,15 @@
 import 'recurrence_rule.dart';
 
 class SelectedDaysRule extends RecurrenceRule {
-  const SelectedDaysRule({required this.weekdays});
+  const SelectedDaysRule({
+    required this.weekdays,
+    super.rescheduleFromDueDate = true,
+  });
 
   factory SelectedDaysRule.fromJson(Map<String, dynamic> json) {
     return SelectedDaysRule(
       weekdays: Set<int>.from(json['weekdays'] as List? ?? []),
+      rescheduleFromDueDate: (json['rescheduleFromDueDate'] as bool?) ?? true,
     );
   }
 
@@ -31,8 +35,17 @@ class SelectedDaysRule extends RecurrenceRule {
     return 'Repeats on $selectedDays';
   }
 
-  SelectedDaysRule copyWith({Set<int>? weekdays}) =>
-      SelectedDaysRule(weekdays: weekdays ?? this.weekdays);
+  SelectedDaysRule copyWith({
+    Set<int>? weekdays,
+    bool? rescheduleFromDueDate,
+  }) => SelectedDaysRule(
+    weekdays: weekdays ?? this.weekdays,
+    rescheduleFromDueDate: rescheduleFromDueDate ?? this.rescheduleFromDueDate,
+  );
+
+  @override
+  SelectedDaysRule copyWithReschedule(bool rescheduleFromDueDate) =>
+      copyWith(rescheduleFromDueDate: rescheduleFromDueDate);
 
   static const Map<int, String> days = {
     DateTime.monday: 'Mon',
@@ -46,7 +59,7 @@ class SelectedDaysRule extends RecurrenceRule {
 
   @override
   Map<String, dynamic> toJson() => {
-    'type': type,
     'weekdays': weekdays.toList(),
+    ...super.toJson(),
   };
 }

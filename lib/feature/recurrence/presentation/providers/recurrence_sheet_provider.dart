@@ -23,6 +23,10 @@ class RecurrenceSheetNotifier extends _$RecurrenceSheetNotifier
     notifyListeners();
   }
 
+  void switchRescheduleFromDueDate() {
+    state = state.copyWithReschedule(!state.rescheduleFromDueDate);
+  }
+
   void reset() {
     state = const NoRecurrenceRule();
     notifyListeners();

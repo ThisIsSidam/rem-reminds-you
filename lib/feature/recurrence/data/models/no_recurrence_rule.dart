@@ -14,4 +14,8 @@ class NoRecurrenceRule extends RecurrenceRule {
 
   @override
   Map<String, dynamic> toJson() => {'type': type};
+
+  @override
+  RecurrenceRule copyWithReschedule(bool rescheduleFromDueDate) =>
+      const NoRecurrenceRule();
 }

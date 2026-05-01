@@ -3,11 +3,15 @@ import 'dart:convert';
 import 'recurrence_rule.dart';
 
 class SelectedDatesRule extends RecurrenceRule {
-  const SelectedDatesRule({required this.daysOfMonth});
+  const SelectedDatesRule({
+    required this.daysOfMonth,
+    super.rescheduleFromDueDate = true,
+  });
 
   factory SelectedDatesRule.fromJson(Map<String, dynamic> json) {
     return SelectedDatesRule(
       daysOfMonth: Set<int>.from(json['daysOfMonth'] as List? ?? []),
+      rescheduleFromDueDate: (json['rescheduleFromDueDate'] as bool?) ?? true,
     );
   }
 
@@ -32,14 +36,25 @@ class SelectedDatesRule extends RecurrenceRule {
     return 'Repeats on ${sorted.join(', ')}';
   }
 
-  SelectedDatesRule copyWith({Set<int>? daysOfMonth}) {
-    return SelectedDatesRule(daysOfMonth: daysOfMonth ?? this.daysOfMonth);
+  SelectedDatesRule copyWith({
+    Set<int>? daysOfMonth,
+    bool? rescheduleFromDueDate,
+  }) {
+    return SelectedDatesRule(
+      daysOfMonth: daysOfMonth ?? this.daysOfMonth,
+      rescheduleFromDueDate:
+          rescheduleFromDueDate ?? this.rescheduleFromDueDate,
+    );
   }
 
   @override
+  SelectedDatesRule copyWithReschedule(bool rescheduleFromDueDate) =>
+      copyWith(rescheduleFromDueDate: rescheduleFromDueDate);
+
+  @override
   Map<String, dynamic> toJson() => {
-    'type': type,
     'daysOfMonth': daysOfMonth.toList(),
+    ...super.toJson(),
   };
 
   @override

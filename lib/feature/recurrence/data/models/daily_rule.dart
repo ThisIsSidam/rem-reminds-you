@@ -1,10 +1,12 @@
 import 'recurrence_rule.dart';
 
 class DailyRule extends RecurrenceRule {
-  const DailyRule();
+  const DailyRule({super.rescheduleFromDueDate = true});
 
   factory DailyRule.fromJson(Map<String, dynamic> json) {
-    return const DailyRule();
+    return DailyRule(
+      rescheduleFromDueDate: (json['rescheduleFromDueDate'] as bool?) ?? true,
+    );
   }
 
   @override
@@ -16,6 +18,11 @@ class DailyRule extends RecurrenceRule {
   @override
   String get description => 'Repeats daily';
 
+  DailyRule copyWith({bool? rescheduleFromDueDate}) => DailyRule(
+    rescheduleFromDueDate: rescheduleFromDueDate ?? this.rescheduleFromDueDate,
+  );
+
   @override
-  Map<String, dynamic> toJson() => {'type': type};
+  DailyRule copyWithReschedule(bool rescheduleFromDueDate) =>
+      copyWith(rescheduleFromDueDate: rescheduleFromDueDate);
 }

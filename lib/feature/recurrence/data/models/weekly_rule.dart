@@ -1,10 +1,13 @@
 import 'recurrence_rule.dart';
 
 class WeeklyRule extends RecurrenceRule {
-  const WeeklyRule({this.noOfWeeks = 1});
+  const WeeklyRule({this.noOfWeeks = 1, super.rescheduleFromDueDate = true});
 
   factory WeeklyRule.fromJson(Map<String, dynamic> json) {
-    return WeeklyRule(noOfWeeks: json['noOfWeeks'] as int? ?? 1);
+    return WeeklyRule(
+      noOfWeeks: json['noOfWeeks'] as int? ?? 1,
+      rescheduleFromDueDate: (json['rescheduleFromDueDate'] as bool?) ?? true,
+    );
   }
 
   @override
@@ -21,9 +24,17 @@ class WeeklyRule extends RecurrenceRule {
 
   final int noOfWeeks;
 
-  WeeklyRule copyWith({int? noOfWeeks}) =>
-      WeeklyRule(noOfWeeks: noOfWeeks ?? this.noOfWeeks);
+  WeeklyRule copyWith({int? noOfWeeks, bool? rescheduleFromDueDate}) =>
+      WeeklyRule(
+        noOfWeeks: noOfWeeks ?? this.noOfWeeks,
+        rescheduleFromDueDate:
+            rescheduleFromDueDate ?? this.rescheduleFromDueDate,
+      );
 
   @override
-  Map<String, dynamic> toJson() => {'type': type, 'noOfWeeks': noOfWeeks};
+  WeeklyRule copyWithReschedule(bool rescheduleFromDueDate) =>
+      copyWith(rescheduleFromDueDate: rescheduleFromDueDate);
+
+  @override
+  Map<String, dynamic> toJson() => {'noOfWeeks': noOfWeeks, ...super.toJson()};
 }

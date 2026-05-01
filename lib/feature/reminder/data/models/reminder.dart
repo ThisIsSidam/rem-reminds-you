@@ -92,7 +92,7 @@ class ReminderModel implements ReminderBase {
   void moveToNextOccurrence() {
     final DateTime? nextOccurence = RecurrenceFactory.fromRule(
       recurrenceRule,
-    ).next(baseDateTime);
+    ).next(recurrenceRule.rescheduleFromDueDate ? baseDateTime : dateTime);
     if (nextOccurence == null) return;
     baseDateTime = nextOccurence;
     dateTime = nextOccurence;

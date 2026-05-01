@@ -1,10 +1,12 @@
 import 'recurrence_rule.dart';
 
 class MonthlyRule extends RecurrenceRule {
-  const MonthlyRule();
+  const MonthlyRule({super.rescheduleFromDueDate = true});
 
   factory MonthlyRule.fromJson(Map<String, dynamic> json) {
-    return const MonthlyRule();
+    return MonthlyRule(
+      rescheduleFromDueDate: (json['rescheduleFromDueDate'] as bool?) ?? true,
+    );
   }
 
   @override
@@ -16,6 +18,11 @@ class MonthlyRule extends RecurrenceRule {
   @override
   String get description => 'Repeats monthly';
 
+  MonthlyRule copyWith({bool? rescheduleFromDueDate}) => MonthlyRule(
+    rescheduleFromDueDate: rescheduleFromDueDate ?? this.rescheduleFromDueDate,
+  );
+
   @override
-  Map<String, dynamic> toJson() => {'type': type};
+  MonthlyRule copyWithReschedule(bool rescheduleFromDueDate) =>
+      copyWith(rescheduleFromDueDate: rescheduleFromDueDate);
 }

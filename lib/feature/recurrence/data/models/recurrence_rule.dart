@@ -8,7 +8,7 @@ import 'selected_days_rule.dart';
 import 'weekly_rule.dart';
 
 abstract class RecurrenceRule {
-  const RecurrenceRule();
+  const RecurrenceRule({this.rescheduleFromDueDate = true});
 
   factory RecurrenceRule.fromJson(Map<String, dynamic> json) {
     final int type = json['type'] as int? ?? 0;
@@ -27,13 +27,26 @@ abstract class RecurrenceRule {
     return RecurrenceRule.fromJson(jsonDecode(encoded) as Map<String, dynamic>);
   }
 
+  /// Type of the [RecurrenceRule]. Same for all instances of a type.
   int get type;
 
+  /// Name of the [RecurrenceRule]. Same for all instances of a type.
   String get name;
 
+  /// Description of the [RecurrenceRule]. Uses a rule's specific fields to
+  /// describe when the reminder would recurr.
   String get description;
 
-  Map<String, dynamic> toJson();
+  /// A boolean specifying whether the reschedule date would be generated based
+  /// on the due date or the postponed (if-postponed) date.
+  final bool rescheduleFromDueDate;
+
+  RecurrenceRule copyWithReschedule(bool rescheduleFromDueDate);
+
+  Map<String, dynamic> toJson() => {
+    'type': type,
+    'rescheduleFromDueDate': rescheduleFromDueDate,
+  };
 
   @override
   String toString() => jsonEncode(toJson());
