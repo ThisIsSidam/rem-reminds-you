@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'daily_rule.dart';
 import 'monthly_rule.dart';
 import 'no_recurrence_rule.dart';
+import 'selected_dates_rule.dart';
 import 'selected_days_rule.dart';
 import 'weekly_rule.dart';
 
@@ -16,6 +17,7 @@ abstract class RecurrenceRule {
       101 => DailyRule.fromJson(json),
       707 => WeeklyRule.fromJson(json),
       1501 => SelectedDaysRule.fromJson(json),
+      1701 => SelectedDatesRule.fromJson(json),
       1001 => MonthlyRule.fromJson(json),
       _ => const NoRecurrenceRule(),
     };
