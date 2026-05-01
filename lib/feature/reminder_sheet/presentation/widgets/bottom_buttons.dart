@@ -30,14 +30,14 @@ class BottomButtons extends ConsumerWidget {
   }
 
   Widget _closeButton(BuildContext context) {
-    return IconButton.filled(
-      icon: const Icon(Icons.close),
+    return ElevatedButton(
       onPressed: () {
         Navigator.of(context).pop();
       },
       style: IconButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        backgroundColor: context.colors.secondaryContainer,
       ),
+      child: const Icon(Icons.close),
     );
   }
 }
