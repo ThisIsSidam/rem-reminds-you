@@ -10,6 +10,7 @@ import '../../data/models/no_recurrence_rule.dart';
 import '../../data/models/recurrence_rule.dart';
 import '../providers/recurrence_sheet_provider.dart';
 import 'recurrence_tile.dart';
+import 'selected_days_tile.dart';
 import 'weekly_recurrence_tile.dart';
 
 Future<RecurrenceRule?> pickRecurrenceRule(
@@ -55,6 +56,7 @@ class RecurrenceRuleSheet extends ConsumerWidget {
               RecurrenceTile(rule: NoRecurrenceRule(), pos: .top),
               RecurrenceTile(rule: DailyRule()),
               WeeklyRecurrenceTile(),
+              SelectedDaysRecurrenceTile(),
               RecurrenceTile(rule: MonthlyRule(), pos: .bottom),
             ],
           ),

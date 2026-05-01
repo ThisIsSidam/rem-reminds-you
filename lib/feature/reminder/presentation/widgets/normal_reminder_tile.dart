@@ -147,28 +147,31 @@ class RecurringReminderListTile extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: .end,
             children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    reminder.title,
-                    style: context.texts.titleMedium?.copyWith(
-                      fontWeight: .bold,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      reminder.title,
+                      style: context.texts.titleMedium?.copyWith(
+                        fontWeight: .bold,
+                      ),
+                      softWrap: true,
                     ),
-                    softWrap: true,
-                  ),
-                  Text(
-                    reminder.dateTime.friendly(
-                      is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
+                    Text(
+                      reminder.dateTime.friendly(
+                        is24Hour: MediaQuery.alwaysUse24HourFormatOf(context),
+                      ),
+                      style: context.texts.bodySmall,
                     ),
-                    style: context.texts.bodySmall,
-                  ),
-                  Text(
-                    '⟳ ${reminder.recurrenceRule.description}',
-                    style: context.texts.bodySmall,
-                  ),
-                ],
+                    Text(
+                      '⟳ ${reminder.recurrenceRule.description}',
+                      style: context.texts.bodySmall,
+                      softWrap: true,
+                    ),
+                  ],
+                ),
               ),
               if (reminder.paused)
                 _buildResumeButton(context, ref, reminder.paused)
