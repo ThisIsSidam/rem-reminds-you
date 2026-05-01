@@ -24,6 +24,8 @@ class RecurrenceTile extends ConsumerWidget {
         borderRadius: pos.getBorderRadius(),
       ),
       child: ListTile(
+        dense: true,
+        visualDensity: .compact,
         shape: RoundedRectangleBorder(borderRadius: pos.getBorderRadius()),
         onTap: () => ref.read(recurrenceSheetProvider.notifier).switchTo(rule),
         title: Text(

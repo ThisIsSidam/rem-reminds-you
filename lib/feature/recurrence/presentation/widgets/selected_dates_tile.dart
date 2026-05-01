@@ -34,6 +34,8 @@ class SelectedDatesRecurrenceTile extends ConsumerWidget {
         child: Column(
           children: [
             ListTile(
+              dense: true,
+              visualDensity: .compact,
               onTap: () {
                 if (isPicked) return;
 

@@ -53,6 +53,8 @@ class _WeeklyRecurrenceTileState extends ConsumerState<WeeklyRecurrenceTile> {
         child: Column(
           children: [
             ListTile(
+              dense: true,
+              visualDensity: .compact,
               onTap: () {
                 if (isPicked) return;
                 ref
