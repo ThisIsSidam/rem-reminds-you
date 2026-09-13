@@ -398,42 +398,6 @@
   "@settingsWhatsNew": {
     "description": "Label for what's new dialog"
   },
-  "agendaTitle": "Agenda",
-  "@agendaTitle": {
-    "description": "Title of agenda screen"
-  },
-  "agendaNoTasks": "No tasks for this day.",
-  "@agendaNoTasks": {
-    "description": "Message shown when no tasks exist for a day"
-  },
-  "agendaToday": "Today",
-  "@agendaToday": {
-    "description": "Label for today in agenda"
-  },
-  "agendaTomorrow": "Tomorrow",
-  "@agendaTomorrow": {
-    "description": "Label for tomorrow in agenda"
-  },
-  "agendaDayAfter": "Day After",
-  "@agendaDayAfter": {
-    "description": "Label for the day after tomorrow in agenda"
-  },
-  "agendaTaskTitle": "Task Title",
-  "@agendaTaskTitle": {
-    "description": "Label for task title input field"
-  },
-  "agendaEnterTaskHint": "Enter task...",
-  "@agendaEnterTaskHint": {
-    "description": "Hint text for task title input field"
-  },
-  "agendaTapToCreateTask": "Tap card to create new task",
-  "@agendaTapToCreateTask": {
-    "description": "Instructions for creating a new task in agenda"
-  },
-  "settingsAgendaTimeTitle": "When to show Agenda?",
-  "@settingsAgendaTimeTitle": {
-    "description": "Label for agenda time setting"
-  },
   "settingsLanguage": "Language",
   "@settingsLanguage": {
     "description": "Label for language setting"
@@ -445,10 +409,6 @@
   "settingsAdvanced": "Advanced",
   "@settingsAdvanced": {
     "description": "Title for advanced settings screen"
-  },
-  "settingsAgenda": "Agenda Settings",
-  "@settingsAgenda": {
-    "description": "Title for agenda settings screen"
   },
   "settingsPersonalization": "Personalization",
   "@settingsPersonalization": {
@@ -481,10 +441,6 @@
   "settingsRestoreNoRush": "No Rush Reminders",
   "@settingsRestoreNoRush": {
     "description": "Label for no rush reminders in restore dialog"
-  },
-  "settingsRestoreAgenda": "Agenda Tasks",
-  "@settingsRestoreAgenda": {
-    "description": "Label for agenda tasks in restore dialog"
   },
   "settingsRestoreNotFound": "Backup not found",
   "@settingsRestoreNotFound": {

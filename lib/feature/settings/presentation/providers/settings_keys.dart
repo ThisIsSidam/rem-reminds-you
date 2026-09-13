@@ -1,7 +1,6 @@
 enum SettingsKey {
   defaultLeadDuration,
   defaultAutoSnoozeDuration,
-  defaultAgendaTime,
   quickTimeSetOption1,
   quickTimeSetOption2,
   quickTimeSetOption3,

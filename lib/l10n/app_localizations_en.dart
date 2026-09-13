@@ -307,33 +307,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsWhatsNew => 'What\'s New?';
 
   @override
-  String get agendaTitle => 'Agenda';
-
-  @override
-  String get agendaNoTasks => 'No tasks for this day.';
-
-  @override
-  String get agendaToday => 'Today';
-
-  @override
-  String get agendaTomorrow => 'Tomorrow';
-
-  @override
-  String get agendaDayAfter => 'Day After';
-
-  @override
-  String get agendaTaskTitle => 'Task Title';
-
-  @override
-  String get agendaEnterTaskHint => 'Enter task...';
-
-  @override
-  String get agendaTapToCreateTask => 'Tap card to create new task';
-
-  @override
-  String get settingsAgendaTimeTitle => 'When to show Agenda?';
-
-  @override
   String get settingsLanguage => 'Language';
 
   @override
@@ -341,9 +314,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAdvanced => 'Advanced';
-
-  @override
-  String get settingsAgenda => 'Agenda Settings';
 
   @override
   String get settingsPersonalization => 'Personalization';
@@ -368,9 +338,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsRestoreNoRush => 'No Rush Reminders';
-
-  @override
-  String get settingsRestoreAgenda => 'Agenda Tasks';
 
   @override
   String get settingsRestoreNotFound => 'Backup not found';

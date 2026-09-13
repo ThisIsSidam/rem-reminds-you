@@ -11,7 +11,6 @@ import 'package:toastification/toastification.dart';
 import '../../../../../core/extensions/context_ext.dart';
 import '../../../../../shared/utils/app_utils.dart';
 import '../../../../../shared/utils/logger/app_logger.dart';
-import '../../../../agenda/presentation/providers/agenda_provider.dart';
 import '../../../../reminder/presentation/providers/no_rush_provider.dart';
 import '../../../../reminder/presentation/providers/reminders_provider.dart';
 import '../../providers/settings_provider.dart';
@@ -164,7 +163,6 @@ class BackupRestoreSection extends ConsumerWidget {
     final String noRushJsonData = await ref
         .read(noRushRemindersProvider.notifier)
         .getBackup();
-    final String agendaJsonData = ref.read(agendaProvider.notifier).getBackup();
     final String settingsJsonData = ref.read(userSettingsProvider).getBackup();
 
     // Create a temporary zip file in memory
@@ -181,13 +179,6 @@ class BackupRestoreSection extends ConsumerWidget {
           'no_rush_backup.json',
           noRushJsonData.length,
           utf8.encode(noRushJsonData),
-        ),
-      )
-      ..addFile(
-        ArchiveFile(
-          'agenda_backup.json',
-          agendaJsonData.length,
-          utf8.encode(agendaJsonData),
         ),
       )
       ..addFile(

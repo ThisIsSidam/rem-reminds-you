@@ -13,8 +13,6 @@ import '../../../feature/reminder/data/models/reminder_base.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/id_handler.dart';
 import '../../../shared/utils/logger/app_logger.dart';
-import 'agenda_notifications_helper.dart';
-import 'agenda_task_payload.dart';
 import 'notification_actions_enum.dart';
 import 'notification_channels.dart';
 import 'reminder_actions_handler.dart';
@@ -135,73 +133,6 @@ class NotificationService {
   }
 
   // -----------------------------------------
-  // ----- AGENDA ----------------------------------
-  // -----------------------------------------
-
-  @pragma('vm:entry-point')
-  static Future<void> scheduleAgenda(DateTime scheduledTime) async {
-    _log('Agenda Scheduled | DT: $scheduledTime');
-
-    await AndroidAlarmManager.oneShotAt(
-      scheduledTime,
-      IdHandler.agendaAlarmId,
-      showAgendaNotificationCallback,
-      allowWhileIdle: true,
-      exact: true,
-      wakeup: true,
-      rescheduleOnReboot: true,
-    );
-  }
-
-  @pragma('vm:entry-point')
-  static Future<void> showAgendaNotificationCallback(
-    int id,
-    Map<String, dynamic> params,
-  ) async {
-    await AppLogger.init();
-    _log('Agenda Callback Running');
-
-    final Store store = await _getObjectboxStore();
-    final helper = AgendaNotificationsHelper(store: store);
-    final AgendaTaskPayload? nextTask = await helper.getNextTask();
-    store.close();
-
-    if (nextTask == null || !nextTask.hasTask) {
-      _log('No next task present');
-      await AgendaNotificationsHelper.scheduleNextAgendaNotification();
-      return;
-    }
-
-    await showAgendaNotification(nextTask);
-  }
-
-  @pragma('vm:entry-point')
-  static Future<void> showAgendaNotification(
-    AgendaTaskPayload taskPayload,
-  ) async {
-    _log('Showing Agenda Notification: ${taskPayload.taskId}');
-    final payload = taskPayload.payload;
-
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: IdHandler.agendaNotificationId,
-        channelKey: NotificationChannels.agenda.key,
-        title: "Today's Agenda",
-        body: taskPayload.taskTitle,
-        locked: true,
-        autoDismissible: false,
-        payload: payload,
-      ),
-      actionButtons: [
-        if (taskPayload.isLastTask)
-          NotificationActions.agendaDone.button
-        else
-          NotificationActions.agendaNext.button,
-      ],
-    );
-  }
-
-  // -----------------------------------------
   // ----- NOTIFICATION HANDLERS --------------------------
   // -----------------------------------------
 
@@ -259,18 +190,6 @@ class NotificationService {
 
     // Show again only if no button was pressed
     if (receivedAction.buttonKeyPressed.isNotEmpty) return;
-
-    // Only handle for agenda notifications
-    if (receivedAction.channelKey != NotificationChannels.agenda.key) return;
-
-    // Re-show the agenda notification for the current task
-    final Map<String, String?>? payload = receivedAction.payload;
-    if (payload == null) return;
-
-    final taskPayload = AgendaTaskPayload.fromPayload(payload);
-    if (!taskPayload.hasTask) return;
-
-    await showAgendaNotification(taskPayload);
   }
 
   @pragma('vm:entry-point')
@@ -283,8 +202,6 @@ class NotificationService {
 
     if (receivedAction.channelKey == NotificationChannels.reminder.key) {
       await _handleReminderNotificationAction(receivedAction);
-    } else if (receivedAction.channelKey == NotificationChannels.agenda.key) {
-      await _handleAgendaNotificationAction(receivedAction);
     }
   }
 
@@ -322,54 +239,6 @@ class NotificationService {
 
     // Close store
     store.close();
-  }
-
-  @pragma('vm:entry-point')
-  static Future<void> _handleAgendaNotificationAction(
-    ReceivedAction receivedAction,
-  ) async {
-    _log('Handling action on Agenda notification');
-    final buttonPressed = receivedAction.buttonKeyPressed;
-    if (!NotificationActions.isAgendaActiono(buttonPressed)) return;
-
-    // Parse task id
-    final Map<String, String?>? payload = receivedAction.payload;
-    if (payload == null) {
-      _logW('No payload found');
-      return;
-    }
-
-    final taskPayload = AgendaTaskPayload.fromPayload(payload);
-    if (!taskPayload.hasTask) {
-      _logW('No task found from payload');
-      return;
-    }
-
-    // Get repository instance
-    final Store store = await _getObjectboxStore();
-    final handler = AgendaNotificationsHelper(store: store);
-
-    // Handle action
-    late final AgendaTaskPayload? nextTask;
-    if (buttonPressed == NotificationActions.agendaDone.key) {
-      nextTask = await handler.nextPressed(taskPayload.taskId);
-    } else if (buttonPressed == NotificationActions.agendaNext.key) {
-      nextTask = await handler.nextPressed(taskPayload.taskId);
-    } else if (buttonPressed == NotificationActions.agendaSkip.key) {
-      await handler.skipPressed();
-      // To be handled
-    }
-
-    store.close();
-
-    if (nextTask == null || !nextTask.hasTask) {
-      _log('No next task present');
-      await removeNotificationsById(IdHandler.agendaNotificationId);
-      await AgendaNotificationsHelper.scheduleNextAgendaNotification();
-      return;
-    }
-
-    await showAgendaNotification(nextTask);
   }
 
   // -----------------------------------------

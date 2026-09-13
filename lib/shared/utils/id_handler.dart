@@ -38,13 +38,4 @@ class IdHandler {
     }
     return reminder.id.toString();
   }
-
-  /// Since there will always be a single alarm for agenda, constant id.
-  @pragma('vm:entry-point')
-  static int get agendaAlarmId => 99; // Temporary value
-
-  /// Since agenda notification's are supposed to be overritten,
-  /// constant id.
-  @pragma('vm:entry-point')
-  static int get agendaNotificationId => 100000000; // Temporary value
 }

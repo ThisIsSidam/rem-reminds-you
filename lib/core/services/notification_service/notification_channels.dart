@@ -6,12 +6,6 @@ enum NotificationChannels {
     'Reminder notifications',
     'Shows notifications for reminders you create.',
     NotificationImportance.High,
-  ),
-  agenda(
-    'agenda',
-    'Agenda notificaitons',
-    "Shows notification for the day's agenda.",
-    NotificationImportance.High,
   );
 
   const NotificationChannels(

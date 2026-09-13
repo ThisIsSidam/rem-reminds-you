@@ -64,19 +64,6 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             StandardSettingTile(
-              leading: Icons.view_agenda_outlined,
-              title: context.local.settingsAgenda,
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.pushNamed(context, AppRoute.settingsAgenda.name);
-              },
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-            ),
-
-            StandardSettingTile(
               leading: Icons.settings_system_daydream_outlined,
               title: context.local.settingsAdvanced,
               trailing: const Icon(Icons.chevron_right),

@@ -316,34 +316,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsWhatsNew => '¿Qué hay de nuevo?';
 
   @override
-  String get agendaTitle => 'Agenda';
-
-  @override
-  String get agendaNoTasks => 'No hay tareas para este día.';
-
-  @override
-  String get agendaToday => 'Hoy';
-
-  @override
-  String get agendaTomorrow => 'Mañana';
-
-  @override
-  String get agendaDayAfter => 'Pasado Mañana';
-
-  @override
-  String get agendaTaskTitle => 'Título de la Tarea';
-
-  @override
-  String get agendaEnterTaskHint => 'Introducir tarea...';
-
-  @override
-  String get agendaTapToCreateTask =>
-      'Toca la tarjeta para crear una nueva tarea';
-
-  @override
-  String get settingsAgendaTimeTitle => '¿Cuándo mostrar la Agenda?';
-
-  @override
   String get settingsLanguage => 'Idioma';
 
   @override
@@ -351,9 +323,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsAdvanced => 'Avanzado';
-
-  @override
-  String get settingsAgenda => 'Configuración de Agenda';
 
   @override
   String get settingsPersonalization => 'Personalización';
@@ -378,9 +347,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsRestoreNoRush => 'Recordatorios sin prisa';
-
-  @override
-  String get settingsRestoreAgenda => 'Tareas de la agenda';
 
   @override
   String get settingsRestoreNotFound => 'Copia de seguridad no encontrada';

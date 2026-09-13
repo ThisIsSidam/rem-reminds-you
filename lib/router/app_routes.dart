@@ -1,5 +1,4 @@
 enum AppRoute {
-  agenda('/agenda'),
   dashboard('/dashboard'),
   reminder('/reminder'),
   permissions('/permissions'),
@@ -7,7 +6,6 @@ enum AppRoute {
   settings('/settings'),
   settingsPersonalization('/settings/personalization'),
   settingsReminder('/settings/reminder'),
-  settingsAgenda('/settings/agenda'),
   settingsAdvanced('/settings/advanced'),
   settingsNotificationHelp('/settings/notification_help');
 

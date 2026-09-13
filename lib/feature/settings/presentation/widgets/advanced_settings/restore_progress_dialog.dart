@@ -6,9 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/exceptions/failures/failure.dart';
 import '../../../../../core/extensions/context_ext.dart';
-import '../../../../../core/services/notification_service/notification_service.dart';
-import '../../../../../shared/utils/misc_methods.dart';
-import '../../../../agenda/presentation/providers/agenda_provider.dart';
 import '../../../../reminder/presentation/providers/no_rush_provider.dart';
 import '../../../../reminder/presentation/providers/reminders_provider.dart';
 import '../../providers/settings_provider.dart';
@@ -25,7 +22,6 @@ class RestoreProgressDialog extends ConsumerStatefulWidget {
 class _RestoreProgressDialogState extends ConsumerState<RestoreProgressDialog> {
   late final Future<void> _remindersFuture;
   late final Future<void> _noRushFuture;
-  late final Future<void> _agendaFuture;
   late final Future<void> _settingsFuture;
   late final Future<List<void>> _allRestorations;
 
@@ -37,7 +33,6 @@ class _RestoreProgressDialogState extends ConsumerState<RestoreProgressDialog> {
       _loadRemindersFromBackup,
     );
     _noRushFuture = _restoreItem('no_rush_backup.json', _loadNoRushFromBackup);
-    _agendaFuture = _restoreItem('agenda_backup.json', _loadAgendaFromBackup);
     _settingsFuture = _restoreItem(
       'settings_backup.json',
       _loadSettingsFromBackup,
@@ -46,7 +41,6 @@ class _RestoreProgressDialogState extends ConsumerState<RestoreProgressDialog> {
     _allRestorations = Future.wait([
       _remindersFuture,
       _noRushFuture,
-      _agendaFuture,
       _settingsFuture,
     ]);
   }
@@ -70,28 +64,11 @@ class _RestoreProgressDialogState extends ConsumerState<RestoreProgressDialog> {
         .restoreBackup(archivesJsonContent);
   }
 
-  Future<void> _loadAgendaFromBackup(ArchiveFile agendaJsonFile) async {
-    final String agendaJsonContent = utf8.decode(
-      agendaJsonFile.content as List<int>,
-    );
-    ref.read(agendaProvider.notifier).restoreBackup(agendaJsonContent);
-    final TimeOfDay agendaTime = ref
-        .read(userSettingsProvider)
-        .defaultAgendaTime;
-    final DateTime agendaDateTime = MiscMethods.getAgendaDateTime(agendaTime);
-    await NotificationService.scheduleAgenda(agendaDateTime);
-  }
-
   Future<void> _loadSettingsFromBackup(ArchiveFile settingsJsonFile) async {
     final String settingsJsonContent = utf8.decode(
       settingsJsonFile.content as List<int>,
     );
     await ref.read(userSettingsProvider).restoreBackup(settingsJsonContent);
-
-    /// Re-Schedule the next agenda, the time may have been updated
-    final agendaTime = ref.read(userSettingsProvider).defaultAgendaTime;
-    final agendaDateTime = MiscMethods.getAgendaDateTime(agendaTime);
-    await NotificationService.scheduleAgenda(agendaDateTime);
   }
 
   Future<dynamic> _restoreItem(
@@ -116,7 +93,6 @@ class _RestoreProgressDialogState extends ConsumerState<RestoreProgressDialog> {
         children: [
           _buildFutureTile(context.local.remindersTitle, _remindersFuture),
           _buildFutureTile(context.local.settingsRestoreNoRush, _noRushFuture),
-          _buildFutureTile(context.local.settingsRestoreAgenda, _agendaFuture),
           _buildFutureTile(context.local.settingsTitle, _settingsFuture),
         ],
       ),

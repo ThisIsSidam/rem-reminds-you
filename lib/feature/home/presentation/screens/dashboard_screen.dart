@@ -9,8 +9,6 @@ import '../../../../core/services/notification_service/notification_service.dart
 import '../../../../main.dart';
 import '../../../../shared/utils/logger/app_logger.dart';
 import '../../../../shared/widgets/whats_new_sheet/whats_new_sheet.dart';
-import '../../../agenda/presentation/screens/agenda_screen.dart';
-import '../../../agenda/presentation/widgets/agenda_task_sheet.dart';
 import '../../../reminder/data/models/reminder.dart';
 import '../../../reminder/presentation/screens/reminder_screen.dart';
 import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
@@ -32,7 +30,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedIndexNotifier = ValueNotifier<int>(widget.initialScreen ?? 1);
+    _selectedIndexNotifier = ValueNotifier<int>(widget.initialScreen ?? 0);
     Future<void>.delayed(Duration.zero, () {
       _checkAndShowWhatsNewDialog();
       _handleInitialAction(ref);
@@ -40,7 +38,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   late final List<Widget> _screens = <Widget>[
-    const AgendaScreen(key: ValueKey<String>('agenda-screen')),
     const ReminderScreen(key: ValueKey<String>('reminder-screen')),
     const SettingsScreen(key: ValueKey<String>('settings-screen')),
   ];
@@ -112,7 +109,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             child: ValueListenableBuilder(
               valueListenable: _selectedIndexNotifier,
               builder: (context, selectedIndex, _) {
-                final bool showFab = selectedIndex == 0 || selectedIndex == 1;
+                final bool showFab = selectedIndex == 0;
                 return Row(
                   children: [
                     Expanded(
@@ -155,11 +152,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       isFloating: true,
       items: <BottomNavItem>[
         BottomNavItem(
-          label: 'Agenda',
-          icon: Icons.view_agenda_outlined,
-          selectedIcon: Icons.view_agenda,
-        ),
-        BottomNavItem(
           label: 'Reminders',
           icon: Icons.checklist_rounded,
           selectedIcon: Icons.checklist_rounded,
@@ -182,8 +174,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       child: ElevatedButton(
         onPressed: () {
           if (selectedIndex == 0) {
-            showAgendaTaskSheet(context, ref);
-          } else if (selectedIndex == 1) {
             showReminderSheet(context);
           }
         },

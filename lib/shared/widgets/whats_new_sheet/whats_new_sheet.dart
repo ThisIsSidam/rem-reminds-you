@@ -58,16 +58,6 @@ class WhatsNewSheet extends StatelessWidget {
                 children: <Widget>[
                   _buildFeatureTile(
                     theme,
-                    icon: Icons.view_agenda_outlined,
-                    title: 'Introducing Agenda',
-                    description:
-                        'Plan your daily tasks of the dasy beforehand! '
-                        'A persistent interactive notification will keep you '
-                        'on track. Simply complete one and move on to the next '
-                        'until there are none left',
-                  ),
-                  _buildFeatureTile(
-                    theme,
                     icon: Icons.drag_indicator,
                     title: 'Effortless Reordering',
                     description:

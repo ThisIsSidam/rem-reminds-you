@@ -2,10 +2,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 enum NotificationActions {
   reminderDone('done', 'Done', .SilentBackgroundAction),
-  reminderPostpone('postpone', 'Postpone', .SilentBackgroundAction),
-  agendaDone('done', 'Done', .SilentBackgroundAction),
-  agendaNext('next', 'Next', .SilentBackgroundAction),
-  agendaSkip('skip', 'Skip For Now', .SilentBackgroundAction);
+  reminderPostpone('postpone', 'Postpone', .SilentBackgroundAction);
 
   const NotificationActions(this.key, this.label, this.actionType);
 
@@ -21,15 +18,6 @@ enum NotificationActions {
     reminderPostpone,
   ];
 
-  static List<NotificationActions> get agendaActions => [
-    agendaDone,
-    agendaNext,
-    agendaSkip,
-  ];
-
   static bool isReminderAction(String key) =>
       reminderActions.any((action) => action.key == key);
-
-  static bool isAgendaActiono(String key) =>
-      agendaActions.any((action) => action.key == key);
 }

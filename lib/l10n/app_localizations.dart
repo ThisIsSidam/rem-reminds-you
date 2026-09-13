@@ -668,60 +668,6 @@ abstract class AppLocalizations {
   /// **'What\'s New?'**
   String get settingsWhatsNew;
 
-  /// Title of agenda screen
-  ///
-  /// In en, this message translates to:
-  /// **'Agenda'**
-  String get agendaTitle;
-
-  /// Message shown when no tasks exist for a day
-  ///
-  /// In en, this message translates to:
-  /// **'No tasks for this day.'**
-  String get agendaNoTasks;
-
-  /// Label for today in agenda
-  ///
-  /// In en, this message translates to:
-  /// **'Today'**
-  String get agendaToday;
-
-  /// Label for tomorrow in agenda
-  ///
-  /// In en, this message translates to:
-  /// **'Tomorrow'**
-  String get agendaTomorrow;
-
-  /// Label for the day after tomorrow in agenda
-  ///
-  /// In en, this message translates to:
-  /// **'Day After'**
-  String get agendaDayAfter;
-
-  /// Label for task title input field
-  ///
-  /// In en, this message translates to:
-  /// **'Task Title'**
-  String get agendaTaskTitle;
-
-  /// Hint text for task title input field
-  ///
-  /// In en, this message translates to:
-  /// **'Enter task...'**
-  String get agendaEnterTaskHint;
-
-  /// Instructions for creating a new task in agenda
-  ///
-  /// In en, this message translates to:
-  /// **'Tap card to create new task'**
-  String get agendaTapToCreateTask;
-
-  /// Label for agenda time setting
-  ///
-  /// In en, this message translates to:
-  /// **'When to show Agenda?'**
-  String get settingsAgendaTimeTitle;
-
   /// Label for language setting
   ///
   /// In en, this message translates to:
@@ -739,12 +685,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Advanced'**
   String get settingsAdvanced;
-
-  /// Title for agenda settings screen
-  ///
-  /// In en, this message translates to:
-  /// **'Agenda Settings'**
-  String get settingsAgenda;
 
   /// Title for personalization settings screen
   ///
@@ -793,12 +733,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Rush Reminders'**
   String get settingsRestoreNoRush;
-
-  /// Label for agenda tasks in restore dialog
-  ///
-  /// In en, this message translates to:
-  /// **'Agenda Tasks'**
-  String get settingsRestoreAgenda;
 
   /// Message when a specific backup file is not found in zip
   ///
