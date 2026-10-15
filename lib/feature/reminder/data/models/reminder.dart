@@ -134,4 +134,24 @@ extension ReminderX on ReminderModel {
       return dateTime.add(dur);
     }
   }
+
+  /// Postpones to the given time-of-day, on the earliest day (today or
+  /// tomorrow) that keeps it in the future. Mirrors [getPostponeDt]'s
+  /// "use now as the base if this reminder already fired" rule, applied
+  /// to one of the quick-time-table's absolute-time options.
+  DateTime getPostponeDtToTime(DateTime timeOfDay) {
+    final DateTime now = DateTime.now();
+    final DateTime base = dateTime.isBefore(now) ? now : dateTime;
+    DateTime updated = DateTime(
+      base.year,
+      base.month,
+      base.day,
+      timeOfDay.hour,
+      timeOfDay.minute,
+    );
+    if (updated.isBefore(now)) {
+      updated = updated.add(const Duration(days: 1));
+    }
+    return updated;
+  }
 }

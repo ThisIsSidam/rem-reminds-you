@@ -2,14 +2,21 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/constants/const_strings.dart';
+import '../../../core/extensions/datetime_ext.dart';
+import '../../../core/extensions/duration_ext.dart';
+import '../../../feature/recurrence/data/models/recurrence_rule.dart';
+import '../../../feature/reminder/data/models/reminder.dart';
 import '../../../feature/reminder/data/models/reminder_base.dart';
+import '../../../feature/settings/presentation/providers/settings_provider.dart';
 import '../../../objectbox.g.dart';
 import '../../../shared/utils/id_handler.dart';
 import '../../../shared/utils/logger/app_logger.dart';
@@ -97,26 +104,7 @@ class NotificationService {
     final Map<String, String> strParams = params.cast<String, String>();
     final ReminderBase reminder = ReminderBase.fromJson(strParams);
 
-    // Should be different each time so that different notifications are shown.
-    final int notificationId = IdHandler.getReminderNotificationId(reminder.id);
-    final Map<String, String?> payload = reminder.toJson();
-
-    _log('Showing notification | notificationID: $notificationId');
-
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: notificationId,
-        channelKey: NotificationChannels.reminder.key,
-        title: 'Reminder: ${reminder.title}',
-        groupKey: IdHandler.getReminderGroupKey(reminder),
-        wakeUpScreen: true,
-        payload: payload,
-      ),
-      actionButtons: <NotificationActionButton>[
-        NotificationActions.reminderDone.button,
-        NotificationActions.reminderPostpone.button,
-      ],
-    );
+    await _showReminderNotification(reminder);
 
     // Get next schedule time
     final DateTime nextScheduledTime = reminder.dateTime.add(
@@ -130,6 +118,64 @@ class NotificationService {
     _log(
       'Scheduled Next Notification- ID:${reminder.id} | DT:${reminder.dateTime}',
     );
+  }
+
+  /// Builds and displays the actual notification for [reminder] - the
+  /// QuickTimeGrid layout for normal reminders, or the plain Done/Postpone
+  /// pair for no-rush reminders. Shared by the real alarm-triggered path
+  /// ([showReminderNotificationCallback]) and [showTestReminderNotification],
+  /// which shows one on demand without touching the DB or alarm scheduler.
+  static Future<void> _showReminderNotification(ReminderBase reminder) async {
+    // Should be different each time so that different notifications are shown.
+    final int notificationId = IdHandler.getReminderNotificationId(reminder.id);
+    final Map<String, String?> payload = reminder.toJson();
+
+    _log('Showing notification | notificationID: $notificationId');
+
+    // Only normal reminders have a quick-time-table to build the grid from;
+    // no-rush reminders keep the plain Done/Postpone pair.
+    final bool useQuickTimeGrid = reminder is ReminderModel;
+    final List<NotificationActionButton> actionButtons = useQuickTimeGrid
+        ? await _buildQuickTimeActionButtons()
+        : <NotificationActionButton>[
+            NotificationActions.reminderDone.button,
+            NotificationActions.reminderPostpone.button,
+          ];
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: notificationId,
+        channelKey: NotificationChannels.reminder.key,
+        title: 'Reminder: ${reminder.title}',
+        groupKey: IdHandler.getReminderGroupKey(reminder),
+        wakeUpScreen: true,
+        payload: payload,
+        notificationLayout: useQuickTimeGrid
+            ? NotificationLayout.QuickTimeGrid
+            : NotificationLayout.Default,
+      ),
+      actionButtons: actionButtons,
+    );
+  }
+
+  /// Shows a QuickTimeGrid test notification immediately, reading real
+  /// quick-time-table settings but without saving anything to the DB or
+  /// scheduling an alarm. For manually verifying the notification's
+  /// appearance/behavior on-device. Uses a fixed negative id so it can
+  /// never collide with a real (ObjectBox-assigned, always positive)
+  /// reminder id - tapping its buttons is a safe no-op against real data.
+  static Future<void> showTestReminderNotification() async {
+    final ReminderModel testReminder = ReminderModel(
+      id: -1,
+      title: 'Test Reminder',
+      dateTime: DateTime.now(),
+      preParsedTitle: 'Test Reminder',
+      autoSnoozeInterval: Duration.zero,
+      recurrenceRule: RecurrenceRule.fromString('{}'),
+      baseDateTime: DateTime.now(),
+    );
+
+    await _showReminderNotification(testReminder);
   }
 
   // -----------------------------------------
@@ -231,14 +277,66 @@ class NotificationService {
     );
 
     // Handle action based on button pressed
+    final int? quickTimeIndex = QuickTimeNotificationAction.indexFromKey(
+      buttonPressed,
+    );
     if (buttonPressed == NotificationActions.reminderDone.key) {
       actionHandler.donePressed();
     } else if (buttonPressed == NotificationActions.reminderPostpone.key) {
       await actionHandler.postponePressed();
+    } else if (quickTimeIndex != null) {
+      await actionHandler.quickTimePostponePressed(quickTimeIndex);
     }
 
     // Close store
     store.close();
+  }
+
+  /// Builds the 12 quick-time-table options (as `quick_0`..`quick_11`) plus
+  /// a trailing Done cell, for [NotificationLayout.QuickTimeGrid]. Reads
+  /// SharedPreferences directly since there's no Riverpod ProviderScope in
+  /// this background isolate - same pattern as [ReminderActionsHandler].
+  @pragma('vm:entry-point')
+  static Future<List<NotificationActionButton>>
+  _buildQuickTimeActionButtons() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final UserSettingsNotifier settings = UserSettingsNotifier(prefs: prefs);
+    final bool is24Hour = ui.PlatformDispatcher.instance.alwaysUse24HourFormat;
+
+    final List<DateTime> setOptions = <DateTime>[
+      settings.quickTimeSetOption1,
+      settings.quickTimeSetOption2,
+      settings.quickTimeSetOption3,
+      settings.quickTimeSetOption4,
+    ];
+    final List<Duration> editOptions = <Duration>[
+      settings.quickTimeEditOption1,
+      settings.quickTimeEditOption2,
+      settings.quickTimeEditOption3,
+      settings.quickTimeEditOption4,
+      settings.quickTimeEditOption5,
+      settings.quickTimeEditOption6,
+      settings.quickTimeEditOption7,
+      settings.quickTimeEditOption8,
+    ];
+
+    final List<NotificationActionButton> buttons = <NotificationActionButton>[
+      for (int i = 0; i < setOptions.length; i++)
+        NotificationActionButton(
+          key: QuickTimeNotificationAction.keyForIndex(i),
+          label: setOptions[i].formattedHM(is24Hour: is24Hour),
+          actionType: ActionType.SilentBackgroundAction,
+        ),
+      for (int i = 0; i < editOptions.length; i++)
+        NotificationActionButton(
+          key: QuickTimeNotificationAction.keyForIndex(setOptions.length + i),
+          label: editOptions[i].friendly(),
+          actionType: ActionType.SilentBackgroundAction,
+        ),
+      NotificationActions.reminderDone.button,
+    ];
+
+    return buttons;
   }
 
   // -----------------------------------------

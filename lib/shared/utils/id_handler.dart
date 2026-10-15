@@ -7,14 +7,15 @@ class IdHandler {
   /// [id] is usually the reminder's id.
   ///
   /// Notification id is created by joining [id] and the seconds
-  /// since epoch
+  /// since epoch. Uses [id.abs] so a negative [id] (e.g. a sentinel/test
+  /// reminder id) can never produce a negative notification id.
   @pragma('vm:entry-point')
   static int getReminderNotificationId(int id) {
     final int secondsSinceEpoch =
         DateTime.now().millisecondsSinceEpoch ~/ Duration.millisecondsPerSecond;
     final String seconds = secondsSinceEpoch.toString();
     final int len = seconds.length;
-    return int.parse(id.toString() + seconds.substring(len - 6));
+    return int.parse(id.abs().toString() + seconds.substring(len - 6));
   }
 
   /// Id for the Alarm Manager.

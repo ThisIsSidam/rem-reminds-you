@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/extensions/context_ext.dart';
+import '../../../../core/services/notification_service/notification_service.dart';
 import '../../../reminder_sheet/presentation/sheet/reminder_sheet.dart';
 import '../providers/no_rush_provider.dart';
 import '../providers/reminders_provider.dart';
@@ -95,7 +96,8 @@ class ReminderScreen extends ConsumerWidget {
               height: 75,
               width: 200,
               child: ElevatedButton(
-                onPressed: () => showReminderSheet(context),
+                // onPressed: () => showReminderSheet(context),
+                onPressed: NotificationService.showTestReminderNotification,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(
                     context,

@@ -10,7 +10,8 @@ environment:
 dependencies:
   android_alarm_manager_plus: ^5.0.0
   archive: ^4.0.9
-  awesome_notifications: ^0.11.0
+  awesome_notifications:
+    path: ../awesome_notifications
   double_back_to_close_app: ^2.1.0
   duration: ^4.0.3
   dynamic_color: ^1.7.0

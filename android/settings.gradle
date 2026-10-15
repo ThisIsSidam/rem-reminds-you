@@ -23,3 +23,8 @@ plugins {
 }
 
 include ":app"
+
+// Native core for the forked awesome_notifications plugin (QuickTimeGrid notification layout).
+// See ../../awesome_notifications/README.md and ../../AndroidAwnCore/README.md.
+include ":core"
+project(":core").projectDir = new File(rootDir, "../../AndroidAwnCore/core")

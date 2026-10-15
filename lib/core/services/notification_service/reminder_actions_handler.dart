@@ -101,6 +101,61 @@ class ReminderActionsHandler {
     _log('NoRushReminder ${model.id} postponed to ${model.dateTime}');
   }
 
+  /// Postpones a normal reminder to one of the 12 quick-time-table options
+  /// (0-3: absolute times in quickTimeSetOption1-4, 4-11: durations in
+  /// quickTimeEditOption1-8), tapped directly from a QuickTimeGrid
+  /// notification. Mirrors [_normalPostponePressed] but resolves the target
+  /// time from [optionIndex] instead of the single defaultPostponeDuration.
+  Future<void> quickTimePostponePressed(int optionIndex) async {
+    if (reminder is! ReminderModel) {
+      _log('quickTimePostponePressed on a non-normal reminder | ignored');
+      return;
+    }
+    if (optionIndex < 0 || optionIndex >= 12) {
+      _log('quickTimePostponePressed got out-of-range index $optionIndex');
+      return;
+    }
+
+    final Box<ReminderEntity> box = store.box<ReminderEntity>();
+    final ReminderEntity? entity = box.get(reminder.id);
+    if (entity == null) {
+      _log('Reminder not found in database | Quick postpone cancelled');
+      return;
+    }
+    final ReminderModel model = entity.toModel;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final UserSettingsNotifier settings = UserSettingsNotifier(prefs: prefs);
+
+    if (optionIndex < 4) {
+      final DateTime timeOfDay = <DateTime>[
+        settings.quickTimeSetOption1,
+        settings.quickTimeSetOption2,
+        settings.quickTimeSetOption3,
+        settings.quickTimeSetOption4,
+      ][optionIndex];
+      model.dateTime = model.getPostponeDtToTime(timeOfDay);
+    } else {
+      final Duration duration = <Duration>[
+        settings.quickTimeEditOption1,
+        settings.quickTimeEditOption2,
+        settings.quickTimeEditOption3,
+        settings.quickTimeEditOption4,
+        settings.quickTimeEditOption5,
+        settings.quickTimeEditOption6,
+        settings.quickTimeEditOption7,
+        settings.quickTimeEditOption8,
+      ][optionIndex - 4];
+      model.dateTime = model.getPostponeDt(duration);
+    }
+
+    final int id = box.put(model.toEntity);
+    await NotificationService.scheduleReminder(model.copyWith(id: id));
+    _log(
+      'Reminder ${model.id} quick-postponed (option $optionIndex) to '
+      '${model.dateTime}',
+    );
+  }
+
   /// Opens box, retrieves the entitiy object and converts it to model.
   /// Gets sharedPref instance, fetches required info to get postponeDuration
   /// Adds the duration to the model dataTime and schedules the reminder
